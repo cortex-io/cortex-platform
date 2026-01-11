@@ -1,0 +1,835 @@
+{
+  "scan_type": "legacy_api_calls",
+  "timestamp": "2025-12-05T16:11:01Z",
+  "count": 138,
+  "findings": [
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 14,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 15,
+      "pattern": "localhost:3000",
+      "content": "        assert client.base_url == 'http://localhost:3000'"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 30,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 32,
+      "pattern": "localhost:3000",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 36,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 38,
+      "pattern": "localhost:3000",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/examples/basic_usage.py",
+      "line": 23,
+      "pattern": "localhost:3000",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/daily_report.py",
+      "line": 29,
+      "pattern": "localhost:3000",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/task_creation.py",
+      "line": 132,
+      "pattern": "localhost:3000",
+      "content": "    print(\"  - Monitor progress at: http://localhost:3000\")"
+    },
+    {
+      "file": "python-sdk/examples/health_monitoring.py",
+      "line": 21,
+      "pattern": "localhost:3000",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/analytics_demo.py",
+      "line": 22,
+      "pattern": "localhost:3000",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/health_monitoring_demo.py",
+      "line": 98,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/complete_workflow.py",
+      "line": 37,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 32,
+      "pattern": "localhost:3000",
+      "content": "        >>> client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 39,
+      "pattern": "localhost:3000",
+      "content": "        ...     base_url='http://localhost:3000',"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 58,
+      "pattern": "localhost:3000",
+      "content": "        base_url: str = 'http://localhost:3000',"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 66,
+      "pattern": "localhost:3000",
+      "content": "            base_url: Base URL of the dashboard API (default: http://localhost:3000)"
+    },
+    {
+      "file": "python-sdk/commit_relay/__init__.py",
+      "line": 9,
+      "pattern": "localhost:3000",
+      "content": "    >>> client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 125,
+      "pattern": "localhost:3000",
+      "content": "        \"localhost:3000\""
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 14,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 15,
+      "pattern": "localhost:3000",
+      "content": "        assert client.base_url == 'http://localhost:3000'"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 30,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 32,
+      "pattern": "localhost:3000",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 36,
+      "pattern": "localhost:3000",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 38,
+      "pattern": "localhost:3000",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 52,
+      "pattern": "localhost:3000",
+      "content": "API_URL=${DASHBOARD_URL:-\"http://localhost:3000\"}"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 421,
+      "pattern": "localhost:3000",
+      "content": "        echo \"  DASHBOARD_URL          - API server URL (default: http://localhost:3000)\""
+    },
+    {
+      "file": "scripts/submit-self-optimization.sh",
+      "line": 157,
+      "pattern": "localhost:3000",
+      "content": "echo \"   http://localhost:3000\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 223,
+      "pattern": "localhost:3000",
+      "content": "echo -e \"  Grafana:    ${CYAN}http://localhost:3000${NC} (admin/admin)\""
+    },
+    {
+      "file": "lib/observability/api/server.js",
+      "line": 18,
+      "pattern": "localhost:3000",
+      "content": "      corsOrigins: config.corsOrigins || ['http://localhost:3000', 'http://localhost:3001'],"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 126,
+      "pattern": "localhost:8080",
+      "content": "        \"localhost:8080\""
+    },
+    {
+      "file": "scripts/launch-marimo-dashboard.sh",
+      "line": 52,
+      "pattern": "localhost:8080",
+      "content": "        echo \"  - Routing: http://localhost:8080\""
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 127,
+      "pattern": "localhost:9000",
+      "content": "        \"localhost:9000\""
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 14,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 15,
+      "pattern": "http://localhost",
+      "content": "        assert client.base_url == 'http://localhost:3000'"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 30,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 32,
+      "pattern": "http://localhost",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 36,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 38,
+      "pattern": "http://localhost",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/examples/basic_usage.py",
+      "line": 23,
+      "pattern": "http://localhost",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/daily_report.py",
+      "line": 29,
+      "pattern": "http://localhost",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/task_creation.py",
+      "line": 132,
+      "pattern": "http://localhost",
+      "content": "    print(\"  - Monitor progress at: http://localhost:3000\")"
+    },
+    {
+      "file": "python-sdk/examples/health_monitoring.py",
+      "line": 21,
+      "pattern": "http://localhost",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/analytics_demo.py",
+      "line": 22,
+      "pattern": "http://localhost",
+      "content": "    client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/health_monitoring_demo.py",
+      "line": 98,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/examples/complete_workflow.py",
+      "line": 37,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 32,
+      "pattern": "http://localhost",
+      "content": "        >>> client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 39,
+      "pattern": "http://localhost",
+      "content": "        ...     base_url='http://localhost:3000',"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 58,
+      "pattern": "http://localhost",
+      "content": "        base_url: str = 'http://localhost:3000',"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 66,
+      "pattern": "http://localhost",
+      "content": "            base_url: Base URL of the dashboard API (default: http://localhost:3000)"
+    },
+    {
+      "file": "python-sdk/commit_relay/__init__.py",
+      "line": 9,
+      "pattern": "http://localhost",
+      "content": "    >>> client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 128,
+      "pattern": "http://localhost",
+      "content": "        \"http://localhost\""
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 14,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 15,
+      "pattern": "http://localhost",
+      "content": "        assert client.base_url == 'http://localhost:3000'"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 30,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 32,
+      "pattern": "http://localhost",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 36,
+      "pattern": "http://localhost",
+      "content": "        client = CommitRelayClient(base_url='http://localhost:3000')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 38,
+      "pattern": "http://localhost",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "testing/api/test-governance-apis.sh",
+      "line": 15,
+      "pattern": "http://localhost",
+      "content": "    response=$(curl -s -w \"\\n%{http_code}\" \"http://localhost:5001$endpoint\" 2>&1)"
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 14,
+      "pattern": "http://localhost",
+      "content": "    response=$(curl -s -w \"\\n%{http_code}\" \"http://localhost:5001$endpoint\" 2>&1)"
+    },
+    {
+      "file": "testing/workers/test-user-api.sh",
+      "line": 6,
+      "pattern": "http://localhost",
+      "content": "API_BASE=\"http://localhost:5001/api\""
+    },
+    {
+      "file": "eui-dashboard/dist/assets/index-CzLOni_-.js",
+      "line": 1226,
+      "pattern": "http://localhost",
+      "content": "        not configured. This callback must be implemented to handle pagination changes`);return x(pt,{token:\"euiBasicTable.tablePagination\",default:\"Pagination for table: {tableCaption}\",values:{tableCaption:u}},function(f){return x(Bxe,{pagination:l,onPageSizeChange:n.onPageSizeChange.bind(n),onPageChange:n.onPageChange.bind(n),\"aria-controls\":n.tableId,\"aria-label\":f})})}}}],[{key:\"getDerivedStateFromProps\",value:function(n,o){if(!n.selection)return{selection:[]};var a=n.selection.selected,l=a??o.selection,u=n.itemId,d=n.items,f=l.filter(function(h){return d.findIndex(function(S){return Ii(S,u)===Ii(h,u)})!==-1});if(f.length!==l.length){var g,b;return(g=(b=n.selection).onSelectionChange)===null||g===void 0||g.call(b,f),{selection:f}}return a?{selection:f}:null}}])})(L.Component);po(rg,\"contextType\",jf);po(rg,\"defaultProps\",{tableLayout:\"fixed\",noItemsMessage:x(pt,{token:\"euiBasicTable.noItemsMessage\",default:\"No items found\"})});rg.propTypes={className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,itemId:c.oneOfType([c.string.isRequired,c.number.isRequired,c.func.isRequired]),itemIdToExpandedRowMap:c.shape({}),items:c.arrayOf(c.any.isRequired),cellProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),columns:c.arrayOf(c.oneOfType([c.shape({field:c.oneOfType([c.any.isRequired,c.any.isRequired]).isRequired,name:c.node.isRequired,description:c.string,dataType:c.oneOf([\"auto\",\"string\",\"number\",\"boolean\",\"date\"]),width:c.string,sortable:c.oneOfType([c.bool.isRequired,c.func.isRequired]),readOnly:c.bool,align:c.any,textOnly:c.bool,truncateText:c.oneOfType([c.bool.isRequired,c.shape({lines:c.number.isRequired}).isRequired]),mobileOptions:c.shape({render:c.func}),render:c.func,footer:c.oneOfType([c.string.isRequired,c.element.isRequired,c.func.isRequired]),isExpander:c.bool,className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any}).isRequired,c.shape({className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,render:c.func.isRequired,name:c.node,sortable:c.func}).isRequired,c.shape({actions:c.arrayOf(c.oneOfType([c.shape({type:c.oneOfType([c.oneOf([\"button\"]),c.oneOf([\"icon\"]).isRequired]),color:c.oneOfType([c.any.isRequired,c.func.isRequired]),name:c.oneOfType([c.node.isRequired,c.func.isRequired]).isRequired,description:c.oneOfType([c.string.isRequired,c.func.isRequired]).isRequired,onClick:c.func,href:c.oneOfType([c.string.isRequired,c.func.isRequired]),target:c.string,available:c.func,enabled:c.func,\"data-test-subj\":c.oneOfType([c.string.isRequired,c.func.isRequired]),isPrimary:c.bool,showOnHover:c.bool,icon:c.oneOfType([c.oneOf([\"accessibility\",\"addDataApp\",\"advancedSettingsApp\",\"agentApp\",\"aggregate\",\"analyzeEvent\",\"annotation\",\"anomalyChart\",\"anomalySwimLane\",\"apmApp\",\"apmTrace\",\"appSearchApp\",\"apps\",\"arrowDown\",\"arrowLeft\",\"arrowRight\",\"arrowUp\",\"arrowStart\",\"arrowEnd\",\"article\",\"asterisk\",\"at\",\"auditbeatApp\",\"beaker\",\"bell\",\"bellSlash\",\"beta\",\"bolt\",\"boxesHorizontal\",\"boxesVertical\",\"branch\",\"branchUser\",\"broom\",\"brush\",\"bug\",\"bullseye\",\"calendar\",\"canvasApp\",\"casesApp\",\"changePointDetection\",\"check\",\"checkInCircleFilled\",\"cheer\",\"classificationJob\",\"clickLeft\",\"clickRight\",\"clock\",\"clockCounter\",\"cloudDrizzle\",\"cloudStormy\",\"cloudSunny\",\"cluster\",\"codeApp\",\"color\",\"compute\",\"console\",\"consoleApp\",\"container\",\"continuityAbove\",\"continuityAboveBelow\",\"continuityBelow\",\"continuityWithin\",\"controlsHorizontal\",\"controlsVertical\",\"copy\",\"copyClipboard\",\"createAdvancedJob\",\"createMultiMetricJob\",\"createPopulationJob\",\"createSingleMetricJob\",\"cross\",\"crossClusterReplicationApp\",\"crossInCircle\",\"crosshairs\",\"currency\",\"cut\",\"dashboardApp\",\"dataVisualizer\",\"database\",\"desktop\",\"devToolsApp\",\"diff\",\"discoverApp\",\"discuss\",\"document\",\"documentEdit\",\"documentation\",\"documents\",\"dot\",\"dotInCircle\",\"doubleArrowLeft\",\"doubleArrowRight\",\"download\",\"editorAlignCenter\",\"editorAlignLeft\",\"editorAlignRight\",\"editorBold\",\"editorChecklist\",\"editorCodeBlock\",\"editorComment\",\"editorDistributeHorizontal\",\"editorDistributeVertical\",\"editorHeading\",\"editorItalic\",\"editorItemAlignBottom\",\"editorItemAlignCenter\",\"editorItemAlignLeft\",\"editorItemAlignMiddle\",\"editorItemAlignRight\",\"editorItemAlignTop\",\"editorLink\",\"editorOrderedList\",\"editorPositionBottomLeft\",\"editorPositionBottomRight\",\"editorPositionTopLeft\",\"editorPositionTopRight\",\"editorRedo\",\"editorStrike\",\"editorTable\",\"editorUnderline\",\"editorUndo\",\"editorUnorderedList\",\"email\",\"empty\",\"emsApp\",\"endpoint\",\"eql\",\"eraser\",\"error\",\"errorFilled\",\"esqlVis\",\"exit\",\"expand\",\"expandMini\",\"exportAction\",\"eye\",\"eyeClosed\",\"faceHappy\",\"faceNeutral\",\"faceSad\",\"fieldStatistics\",\"filebeatApp\",\"filter\",\"filterExclude\",\"filterIgnore\",\"filterInclude\",\"filterInCircle\",\"flag\",\"fleetApp\",\"fold\",\"folderCheck\",\"folderClosed\",\"folderExclamation\",\"folderOpen\",\"frameNext\",\"framePrevious\",\"fullScreen\",\"fullScreenExit\",\"function\",\"gear\",\"gisApp\",\"glasses\",\"globe\",\"grab\",\"grabHorizontal\",\"grabOmnidirectional\",\"gradient\",\"graphApp\",\"grid\",\"grokApp\",\"heart\",\"heartbeatApp\",\"heatmap\",\"help\",\"home\",\"iInCircle\",\"image\",\"importAction\",\"index\",\"indexClose\",\"indexEdit\",\"indexFlush\",\"indexManagementApp\",\"indexMapping\",\"indexOpen\",\"indexPatternApp\",\"indexRollupApp\",\"indexRuntime\",\"indexSettings\",\"indexTemporary\",\"infinity\",\"inputOutput\",\"inspect\",\"invert\",\"ip\",\"key\",\"keyboard\",\"kqlField\",\"kqlFunction\",\"kqlOperand\",\"kqlSelector\",\"kqlValue\",\"kubernetesNode\",\"kubernetesPod\",\"launch\",\"layers\",\"lensApp\",\"lettering\",\"lineDashed\",\"lineDotted\",\"lineSolid\",\"link\",\"list\",\"listAdd\",\"lock\",\"lockOpen\",\"logPatternAnalysis\",\"logRateAnalysis\",\"logoAWS\",\"logoAWSMono\",\"logoAerospike\",\"logoApache\",\"logoAppSearch\",\"logoAzure\",\"logoAzureMono\",\"logoBeats\",\"logoBusinessAnalytics\",\"logoCeph\",\"logoCloud\",\"logoCloudEnterprise\",\"logoCode\",\"logoCodesandbox\",\"logoCouchbase\",\"logoDocker\",\"logoDropwizard\",\"logoElastic\",\"logoElasticStack\",\"logoElasticsearch\",\"logoEnterpriseSearch\",\"logoEtcd\",\"logoGCP\",\"logoGCPMono\",\"logoGithub\",\"logoGmail\",\"logoGolang\",\"logoGoogleG\",\"logoHAproxy\",\"logoIBM\",\"logoIBMMono\",\"logoKafka\",\"logoKibana\",\"logoKubernetes\",\"logoLogging\",\"logoLogstash\",\"logoMaps\",\"logoMemcached\",\"logoMetrics\",\"logoMongodb\",\"logoMySQL\",\"logoNginx\",\"logoObservability\",\"logoOsquery\",\"logoPhp\",\"logoPostgres\",\"logoPrometheus\",\"logoRabbitmq\",\"logoRedis\",\"logoSecurity\",\"logoSiteSearch\",\"logoSketch\",\"logoSlack\",\"logoUptime\",\"logoVulnerabilityManagement\",\"logoWebhook\",\"logoWindows\",\"logoWorkplaceSearch\",\"logsApp\",\"logstashFilter\",\"logstashIf\",\"logstashInput\",\"logstashOutput\",\"logstashQueue\",\"machineLearningApp\",\"magnet\",\"magnifyWithExclamation\",\"magnifyWithMinus\",\"magnifyWithPlus\",\"managementApp\",\"mapMarker\",\"memory\",\"menu\",\"menuDown\",\"menuLeft\",\"menuRight\",\"menuUp\",\"merge\",\"metricbeatApp\",\"metricsApp\",\"minimize\",\"minus\",\"minusInCircle\",\"minusInCircleFilled\",\"minusInSquare\",\"mobile\",\"monitoringApp\",\"moon\",\"move\",\"namespace\",\"nested\",\"newChat\",\"node\",\"notebookApp\",\"number\",\"offline\",\"online\",\"outlierDetectionJob\",\"package\",\"packetbeatApp\",\"pageSelect\",\"pagesSelect\",\"palette\",\"paperClip\",\"partial\",\"pause\",\"payment\",\"pencil\",\"percent\",\"pin\",\"pinFilled\",\"pipeBreaks\",\"pipelineApp\",\"pipeNoBreaks\",\"pivot\",\"play\",\"playFilled\",\"plus\",\"plusInCircle\",\"plusInCircleFilled\",\"plusInSquare\",\"popout\",\"push\",\"questionInCircle\",\"quote\",\"recentlyViewedApp\",\"refresh\",\"regressionJob\",\"reporter\",\"reportingApp\",\"returnKey\",\"save\",\"savedObjectsApp\",\"scale\",\"search\",\"searchProfilerApp\",\"securityAnalyticsApp\",\"securityApp\",\"securitySignal\",\"securitySignalDetected\",\"securitySignalResolved\",\"sessionViewer\",\"shard\",\"share\",\"singleMetricViewer\",\"snowflake\",\"sortAscending\",\"sortDescending\",\"sortDown\",\"sortLeft\",\"sortRight\",\"sortUp\",\"sortable\",\"spaces\",\"spacesApp\",\"sparkles\",\"sqlApp\",\"starEmpty\",\"starEmptySpace\",\"starFilled\",\"starFilledSpace\",\"starMinusEmpty\",\"starMinusFilled\",\"starPlusEmpty\",\"starPlusFilled\",\"stats\",\"stop\",\"stopFilled\",\"stopSlash\",\"storage\",\"string\",\"submodule\",\"sun\",\"swatchInput\",\"symlink\",\"tableDensityCompact\",\"tableDensityExpanded\",\"tableDensityNormal\",\"tableOfContents\",\"tag\",\"tear\",\"temperature\",\"timeline\",\"timelineWithArrow\",\"timelionApp\",\"timeRefresh\",\"timeslider\",\"training\",\"transitionLeftIn\",\"transitionLeftOut\",\"transitionTopIn\",\"transitionTopOut\",\"trash\",\"unfold\",\"unlink\",\"upgradeAssistantApp\",\"uptimeApp\",\"user\",\"userAvatar\",\"users\",\"usersRolesApp\",\"vector\",\"videoPlayer\",\"visArea\",\"visAreaStacked\",\"visBarHorizontal\",\"visBarHorizontalStacked\",\"visBarVertical\",\"visBarVerticalStacked\",\"visGauge\",\"visGoal\",\"visLine\",\"visMapCoordinate\",\"visMapRegion\",\"visMetric\",\"visPie\",\"visTable\",\"visTagCloud\",\"visText\",\"visTimelion\",\"visVega\",\"visVisualBuilder\",\"visualizeApp\",\"vulnerabilityManagementApp\",\"warning\",\"warningFilled\",\"alert\",\"watchesApp\",\"wordWrap\",\"wordWrapDisabled\",\"workplaceSearchApp\",\"wrench\",\"tokenAlias\",\"tokenAnnotation\",\"tokenArray\",\"tokenBinary\",\"tokenBoolean\",\"tokenClass\",\"tokenCompletionSuggester\",\"tokenConstant\",\"tokenDate\",\"tokenDimension\",\"tokenElement\",\"tokenEnum\",\"tokenEnumMember\",\"tokenEvent\",\"tokenException\",\"tokenField\",\"tokenFile\",\"tokenFlattened\",\"tokenFunction\",\"tokenGeo\",\"tokenHistogram\",\"tokenInterface\",\"tokenIP\",\"tokenJoin\",\"tokenKey\",\"tokenKeyword\",\"tokenMethod\",\"tokenMetricCounter\",\"tokenMetricGauge\",\"tokenModule\",\"tokenNamespace\",\"tokenNested\",\"tokenNull\",\"tokenNumber\",\"tokenObject\",\"tokenOperator\",\"tokenPackage\",\"tokenParameter\",\"tokenPercolator\",\"tokenProperty\",\"tokenRange\",\"tokenRankFeature\",\"tokenRankFeatures\",\"tokenRepo\",\"tokenSearchType\",\"tokenSemanticText\",\"tokenShape\",\"tokenString\",\"tokenStruct\",\"tokenSymbol\",\"tokenTag\",\"tokenText\",\"tokenTokenCount\",\"tokenVariable\",\"tokenVectorDense\",\"tokenDenseVector\",\"tokenVectorSparse\"]).isRequired,c.func.isRequired])}).isRequired,c.shape({render:c.func.isRequired,available:c.func,enabled:c.func}).isRequired]).isRequired).isRequired,name:c.node}).isRequired]).isRequired),error:c.string,tableCaption:c.string,rowHeader:c.string,loading:c.bool,noItemsMessage:c.node,onChange:c.func,pagination:c.oneOfType([c.oneOf([void 0]),c.shape({pageIndex:c.number.isRequired,pageSize:c.number,totalItemCount:c.number.isRequired,pageSizeOptions:c.arrayOf(c.number.isRequired),showPerPageOptions:c.bool})]),rowProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),selection:c.shape({onSelectionChange:c.func,selectable:c.func,selectableMessage:c.func,initialSelected:c.arrayOf(c.any.isRequired),selected:c.arrayOf(c.any.isRequired)}),sorting:c.shape({sort:c.shape({field:c.any.isRequired,direction:c.oneOf([\"asc\",\"desc\"]).isRequired}),allowNeutralSort:c.bool,enableAllColumns:c.bool,readOnly:c.bool}),tableLayout:c.oneOf([\"fixed\",\"auto\"])};const EA=\"http://localhost:3004\";class u0e{async get(t){const r=await fetch(`${EA}${t}`);if(!r.ok)throw new Error(`API Error: ${r.statusText}`);return r.json()}async post(t,r){const n=await fetch(`${EA}${t}`,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(r)});if(!n.ok)throw new Error(`API Error: ${n.statusText}`);return n.json()}getWorkers(){return this.get(\"/api/workers\")}getTokenBudget(){return this.get(\"/api/token-budget\")}getTasks(){return this.get(\"/api/tasks\")}getMetrics(){return this.get(\"/api/metrics\")}getHealth(){return this.get(\"/api/health\")}streamLogs(t){const r=new EventSource(`${EA}/api/logs/stream`);return r.onmessage=n=>{t(JSON.parse(n.data))},r}getMoEAccuracy(){return this.get(\"/api/moe/accuracy\")}getMoEConfidenceDistribution(){return this.get(\"/api/moe/confidence-distribution\")}getMoEPoolUtilization(){return this.get(\"/api/moe/pool-utilization\")}getOptimizerStats(){return this.get(\"/api/optimizer/scheduler/stats\")}getTokenForecast(){return this.get(\"/api/optimizer/tokens/forecast\")}getExecutionManagers(){return this.get(\"/api/execution-managers\")}getUsers(){return this.get(\"/api/users\")}createUser(t){return this.post(\"/api/users\",t)}scheduleDDQD(t){return this.post(\"/api/ddqd/schedule\",t)}getDDQDHistory(){return this.get(\"/api/ddqd/history\")}}const Ga=new u0e;function JU(){const[e,t]=L.useState(!0),[r,n]=L.useState(null),[o,a]=L.useState(null);L.useEffect(()=>{l();const g=setInterval(l,5e3);return()=>clearInterval(g)},[]);const l=async()=>{try{const[g,b]=await Promise.all([Ga.getMetrics(),Ga.getHealth()]);n(g),a(b),t(!1)}catch(g){console.error(\"Failed to fetch summary data:\",g),t(!1)}};if(e)return K.jsx(Er,{children:K.jsx(lc,{size:\"xl\"})});const u=[{title:(r==null?void 0:r.active_workers)||0,description:\"Active Workers\",color:\"primary\"},{title:(r==null?void 0:r.total_tasks)||0,description:\"Total Tasks\",color:\"success\"},{title:`${(r==null?void 0:r.success_rate)||0}%`,description:\"Success Rate\",color:(r==null?void 0:r.success_rate)>90?\"success\":\"warning\"},{title:(r==null?void 0:r.tokens_available)||0,description:\"Tokens Available\",color:(r==null?void 0:r.tokens_available)>1e5?\"success\":\"danger\"}],d=(o==null?void 0:o.status)||\"unknown\",f=d===\"healthy\"?\"success\":d===\"degraded\"?\"warning\":\"danger\";return K.jsx(K.Fragment,{children:K.jsxs(Er,{children:[K.jsx(dr,{size:\"m\",children:K.jsx(\"h2\",{children:\"Executive Summary\"})}),K.jsx(nt,{size:\"m\"}),K.jsx(zn,{children:K.jsx(rr,{children:K.jsxs(xu,{color:f,children:[\"System Status: \",d.toUpperCase()]})})}),K.jsx(nt,{size:\"l\"}),K.jsx(zn,{children:u.map((g,b)=>K.jsx(rr,{children:K.jsx(ql,{title:g.title,description:g.description,titleColor:g.color,textAlign:\"center\"})},b))})]})})}function c0e(){const[e,t]=L.useState([]),[r,n]=L.useState(\"all\"),[o,a]=L.useState(\"\"),[l,u]=L.useState(!0),d=L.useRef(null);L.useEffect(()=>{const h=Ga.streamLogs(S=>{t(w=>[...w.slice(-499),S])});return()=>h.close()},[]),L.useEffect(()=>{l&&d.current&&d.current.scrollIntoView({behavior:\"smooth\"})},[e,l]);const f=[{id:\"all\",label:\"All\"},{id:\"error\",label:\"Error\"},{id:\"warn\",label:\"Warn\"},{id:\"info\",label:\"Info\"}],g=e.filter(h=>{const S=r===\"all\"||h.level===r,w=!o||JSON.stringify(h).toLowerCase().includes(o.toLowerCase());return S&&w}),b=g.map(h=>`[${h.timestamp}] ${h.level.toUpperCase()}: ${h.message}`).join(`"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 201,
+      "pattern": "http://localhost",
+      "content": "  console.log(`🚀 Cortex EUI API Server running on http://localhost:${PORT}`)"
+    },
+    {
+      "file": "eui-dashboard/vite.config.js",
+      "line": 10,
+      "pattern": "http://localhost",
+      "content": "        target: 'http://localhost:3004',"
+    },
+    {
+      "file": "eui-dashboard/src/api/dashboardApi.js",
+      "line": 1,
+      "pattern": "http://localhost",
+      "content": "const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3004'"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 52,
+      "pattern": "http://localhost",
+      "content": "API_URL=${DASHBOARD_URL:-\"http://localhost:3000\"}"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 421,
+      "pattern": "http://localhost",
+      "content": "        echo \"  DASHBOARD_URL          - API server URL (default: http://localhost:3000)\""
+    },
+    {
+      "file": "scripts/submit-self-optimization.sh",
+      "line": 157,
+      "pattern": "http://localhost",
+      "content": "echo \"   http://localhost:3000\""
+    },
+    {
+      "file": "scripts/security/dependency-track-upload-sboms.sh",
+      "line": 184,
+      "pattern": "http://localhost",
+      "content": "  echo \"View results at: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/integrated-vulnerability-scan.sh",
+      "line": 153,
+      "pattern": "http://localhost",
+      "content": "echo -e \"   ${CYAN}http://localhost:8082${NC}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-report.sh",
+      "line": 260,
+      "pattern": "http://localhost",
+      "content": "echo \"View in web UI: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/dependency-track-webhook-server.sh",
+      "line": 28,
+      "pattern": "http://localhost",
+      "content": "echo \"  URL: http://localhost:$PORT/webhook\""
+    },
+    {
+      "file": "scripts/security/dependency-track-api.sh",
+      "line": 10,
+      "pattern": "http://localhost",
+      "content": "DTRACK_URL=\"${DTRACK_URL:-http://localhost:8081}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 105,
+      "pattern": "http://localhost",
+      "content": "  echo -e \"   ${CYAN}http://localhost:8082${NC}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 218,
+      "pattern": "http://localhost",
+      "content": "echo -e \"  Frontend: ${CYAN}http://localhost:8082${NC}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 219,
+      "pattern": "http://localhost",
+      "content": "echo -e \"  API:      ${CYAN}http://localhost:8081${NC}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 222,
+      "pattern": "http://localhost",
+      "content": "echo -e \"  Prometheus: ${CYAN}http://localhost:9090${NC}\""
+    },
+    {
+      "file": "scripts/security/dependency-track-setup.sh",
+      "line": 223,
+      "pattern": "http://localhost",
+      "content": "echo -e \"  Grafana:    ${CYAN}http://localhost:3000${NC} (admin/admin)\""
+    },
+    {
+      "file": "scripts/security/apply-all-fixes.sh",
+      "line": 218,
+      "pattern": "http://localhost",
+      "content": "TEST_BASE_URL=http://localhost:19999"
+    },
+    {
+      "file": "scripts/security/dependency-track-monitor.sh",
+      "line": 200,
+      "pattern": "http://localhost",
+      "content": "  printf \"║  %-68s║\\n\" \"Refresh: ${REFRESH_INTERVAL}s | Press Ctrl+C to exit | Web: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/token-rotation.sh",
+      "line": 118,
+      "pattern": "http://localhost",
+      "content": "   curl http://localhost:5001/api/health"
+    },
+    {
+      "file": "scripts/security/verify-dependency-track-deployment.sh",
+      "line": 201,
+      "pattern": "http://localhost",
+      "content": "  if curl -s http://localhost:8081/api/version > /dev/null 2>&1; then"
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 60,
+      "pattern": "http://localhost",
+      "content": "  echo \"1. Open: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 77,
+      "pattern": "http://localhost",
+      "content": "  echo \"1. Open: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 95,
+      "pattern": "http://localhost",
+      "content": "  if curl -s http://localhost:8888/health > /dev/null 2>&1; then"
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 107,
+      "pattern": "http://localhost",
+      "content": "  echo \"1. Open: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 150,
+      "pattern": "http://localhost",
+      "content": "  echo \"1. Open: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/security/dependency-track-config.sh",
+      "line": 249,
+      "pattern": "http://localhost",
+      "content": "DTRACK_URL=http://localhost:8081"
+    },
+    {
+      "file": "scripts/launch-marimo-dashboard.sh",
+      "line": 52,
+      "pattern": "http://localhost",
+      "content": "        echo \"  - Routing: http://localhost:8080\""
+    },
+    {
+      "file": "scripts/launch-marimo-dashboard.sh",
+      "line": 53,
+      "pattern": "http://localhost",
+      "content": "        echo \"  - Security: http://localhost:8081\""
+    },
+    {
+      "file": "scripts/launch-marimo-dashboard.sh",
+      "line": 54,
+      "pattern": "http://localhost",
+      "content": "        echo \"  - Performance: http://localhost:8082\""
+    },
+    {
+      "file": "scripts/start-commit-relay.sh",
+      "line": 51,
+      "pattern": "http://localhost",
+      "content": "        log_info \"Dashboard UI: http://localhost:$DASHBOARD_PORT/\""
+    },
+    {
+      "file": "scripts/start-commit-relay.sh",
+      "line": 170,
+      "pattern": "http://localhost",
+      "content": "    log_info \"Dashboard UI: http://localhost:${DASHBOARD_PORT:-5001}/\""
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 74,
+      "pattern": "http://localhost",
+      "content": "if curl -s http://localhost:5001/api/health > /dev/null 2>&1; then"
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 136,
+      "pattern": "http://localhost",
+      "content": "- Dashboard API: http://localhost:5001/api/ (health, metrics, events, tasks, etc.)"
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 141,
+      "pattern": "http://localhost",
+      "content": "1. Check service health: curl http://localhost:5001/api/health"
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 182,
+      "pattern": "http://localhost",
+      "content": "curl -s -X POST http://localhost:5001/api/workers/WORKER_ID_PLACEHOLDER/heartbeat \\"
+    },
+    {
+      "file": "lib/observability/api/server.js",
+      "line": 18,
+      "pattern": "http://localhost",
+      "content": "      corsOrigins: config.corsOrigins || ['http://localhost:3000', 'http://localhost:3001'],"
+    },
+    {
+      "file": "lib/rag/embeddings/ollama-embedder.js",
+      "line": 32,
+      "pattern": "http://localhost",
+      "content": "    this.baseURL = config.baseURL || process.env.OLLAMA_HOST || 'http://localhost:11434';"
+    },
+    {
+      "file": "data-intelligence/mlflow/start-mlflow-server.sh",
+      "line": 62,
+      "pattern": "http://localhost",
+      "content": "echo \"MLflow UI will be available at: http://localhost:$PORT\""
+    },
+    {
+      "file": "data-intelligence/deploy.sh",
+      "line": 33,
+      "pattern": "http://localhost",
+      "content": "echo \"✓ MLflow server started (http://localhost:5000)\""
+    },
+    {
+      "file": "data-intelligence/deploy.sh",
+      "line": 46,
+      "pattern": "http://localhost",
+      "content": "echo \"  - MLflow UI: http://localhost:5000\""
+    },
+    {
+      "file": "data-intelligence/deploy.sh",
+      "line": 47,
+      "pattern": "http://localhost",
+      "content": "echo \"  - Analytics API: http://localhost:8000\""
+    },
+    {
+      "file": "data-intelligence/deploy.sh",
+      "line": 52,
+      "pattern": "http://localhost",
+      "content": "echo \"  3. View MLflow experiments at http://localhost:5000\""
+    },
+    {
+      "file": "llm-mesh/gateway/llm-client.sh",
+      "line": 239,
+      "pattern": "http://localhost",
+      "content": "    local endpoint=\"${OLLAMA_ENDPOINT:-http://localhost:11434}\""
+    },
+    {
+      "file": "llm-mesh/gateway/providers/ollama.js",
+      "line": 74,
+      "pattern": "http://localhost",
+      "content": "   * @param {string} [config.baseUrl='http://localhost:11434'] - Ollama API base URL"
+    },
+    {
+      "file": "llm-mesh/gateway/providers/ollama.js",
+      "line": 81,
+      "pattern": "http://localhost",
+      "content": "      baseUrl: config.baseUrl || process.env.OLLAMA_HOST || 'http://localhost:11434',"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 129,
+      "pattern": "api/achievements",
+      "content": "        \"api/achievements\""
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 130,
+      "pattern": "api/dashboard",
+      "content": "        \"api/dashboard\""
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 44,
+      "pattern": "api/dashboard",
+      "content": "test_endpoint \"/api/dashboard-server/status\" \"Dashboard server status\""
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 100,
+      "pattern": "api/dashboard",
+      "content": "app.get('/api/dashboard/analytics/summary', (req, res) => {"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 31,
+      "pattern": "api/metrics",
+      "content": "        url = client._build_url('/api/metrics')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 32,
+      "pattern": "api/metrics",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 37,
+      "pattern": "api/metrics",
+      "content": "        url = client._build_url('api/metrics')"
+    },
+    {
+      "file": "python-sdk/tests/test_client.py",
+      "line": 38,
+      "pattern": "api/metrics",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "python-sdk/commit_relay/resources/metrics.py",
+      "line": 50,
+      "pattern": "api/metrics",
+      "content": "        return self.client.get('/api/metrics')"
+    },
+    {
+      "file": "python-sdk/commit_relay/resources/metrics.py",
+      "line": 86,
+      "pattern": "api/metrics",
+      "content": "        result = self.client.get('/api/metrics/history', params=params)"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 131,
+      "pattern": "api/metrics",
+      "content": "        \"api/metrics\""
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 31,
+      "pattern": "api/metrics",
+      "content": "        url = client._build_url('/api/metrics')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 32,
+      "pattern": "api/metrics",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 37,
+      "pattern": "api/metrics",
+      "content": "        url = client._build_url('api/metrics')"
+    },
+    {
+      "file": "testing/unit/python/test_client.py",
+      "line": 38,
+      "pattern": "api/metrics",
+      "content": "        assert url == 'http://localhost:3000/api/metrics'"
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 32,
+      "pattern": "api/metrics",
+      "content": "test_endpoint \"/api/metrics\" \"System metrics\""
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 33,
+      "pattern": "api/metrics",
+      "content": "test_endpoint \"/api/metrics/history\" \"Metrics history\""
+    },
+    {
+      "file": "eui-dashboard/dist/assets/index-CzLOni_-.js",
+      "line": 1226,
+      "pattern": "api/metrics",
+      "content": "        not configured. This callback must be implemented to handle pagination changes`);return x(pt,{token:\"euiBasicTable.tablePagination\",default:\"Pagination for table: {tableCaption}\",values:{tableCaption:u}},function(f){return x(Bxe,{pagination:l,onPageSizeChange:n.onPageSizeChange.bind(n),onPageChange:n.onPageChange.bind(n),\"aria-controls\":n.tableId,\"aria-label\":f})})}}}],[{key:\"getDerivedStateFromProps\",value:function(n,o){if(!n.selection)return{selection:[]};var a=n.selection.selected,l=a??o.selection,u=n.itemId,d=n.items,f=l.filter(function(h){return d.findIndex(function(S){return Ii(S,u)===Ii(h,u)})!==-1});if(f.length!==l.length){var g,b;return(g=(b=n.selection).onSelectionChange)===null||g===void 0||g.call(b,f),{selection:f}}return a?{selection:f}:null}}])})(L.Component);po(rg,\"contextType\",jf);po(rg,\"defaultProps\",{tableLayout:\"fixed\",noItemsMessage:x(pt,{token:\"euiBasicTable.noItemsMessage\",default:\"No items found\"})});rg.propTypes={className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,itemId:c.oneOfType([c.string.isRequired,c.number.isRequired,c.func.isRequired]),itemIdToExpandedRowMap:c.shape({}),items:c.arrayOf(c.any.isRequired),cellProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),columns:c.arrayOf(c.oneOfType([c.shape({field:c.oneOfType([c.any.isRequired,c.any.isRequired]).isRequired,name:c.node.isRequired,description:c.string,dataType:c.oneOf([\"auto\",\"string\",\"number\",\"boolean\",\"date\"]),width:c.string,sortable:c.oneOfType([c.bool.isRequired,c.func.isRequired]),readOnly:c.bool,align:c.any,textOnly:c.bool,truncateText:c.oneOfType([c.bool.isRequired,c.shape({lines:c.number.isRequired}).isRequired]),mobileOptions:c.shape({render:c.func}),render:c.func,footer:c.oneOfType([c.string.isRequired,c.element.isRequired,c.func.isRequired]),isExpander:c.bool,className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any}).isRequired,c.shape({className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,render:c.func.isRequired,name:c.node,sortable:c.func}).isRequired,c.shape({actions:c.arrayOf(c.oneOfType([c.shape({type:c.oneOfType([c.oneOf([\"button\"]),c.oneOf([\"icon\"]).isRequired]),color:c.oneOfType([c.any.isRequired,c.func.isRequired]),name:c.oneOfType([c.node.isRequired,c.func.isRequired]).isRequired,description:c.oneOfType([c.string.isRequired,c.func.isRequired]).isRequired,onClick:c.func,href:c.oneOfType([c.string.isRequired,c.func.isRequired]),target:c.string,available:c.func,enabled:c.func,\"data-test-subj\":c.oneOfType([c.string.isRequired,c.func.isRequired]),isPrimary:c.bool,showOnHover:c.bool,icon:c.oneOfType([c.oneOf([\"accessibility\",\"addDataApp\",\"advancedSettingsApp\",\"agentApp\",\"aggregate\",\"analyzeEvent\",\"annotation\",\"anomalyChart\",\"anomalySwimLane\",\"apmApp\",\"apmTrace\",\"appSearchApp\",\"apps\",\"arrowDown\",\"arrowLeft\",\"arrowRight\",\"arrowUp\",\"arrowStart\",\"arrowEnd\",\"article\",\"asterisk\",\"at\",\"auditbeatApp\",\"beaker\",\"bell\",\"bellSlash\",\"beta\",\"bolt\",\"boxesHorizontal\",\"boxesVertical\",\"branch\",\"branchUser\",\"broom\",\"brush\",\"bug\",\"bullseye\",\"calendar\",\"canvasApp\",\"casesApp\",\"changePointDetection\",\"check\",\"checkInCircleFilled\",\"cheer\",\"classificationJob\",\"clickLeft\",\"clickRight\",\"clock\",\"clockCounter\",\"cloudDrizzle\",\"cloudStormy\",\"cloudSunny\",\"cluster\",\"codeApp\",\"color\",\"compute\",\"console\",\"consoleApp\",\"container\",\"continuityAbove\",\"continuityAboveBelow\",\"continuityBelow\",\"continuityWithin\",\"controlsHorizontal\",\"controlsVertical\",\"copy\",\"copyClipboard\",\"createAdvancedJob\",\"createMultiMetricJob\",\"createPopulationJob\",\"createSingleMetricJob\",\"cross\",\"crossClusterReplicationApp\",\"crossInCircle\",\"crosshairs\",\"currency\",\"cut\",\"dashboardApp\",\"dataVisualizer\",\"database\",\"desktop\",\"devToolsApp\",\"diff\",\"discoverApp\",\"discuss\",\"document\",\"documentEdit\",\"documentation\",\"documents\",\"dot\",\"dotInCircle\",\"doubleArrowLeft\",\"doubleArrowRight\",\"download\",\"editorAlignCenter\",\"editorAlignLeft\",\"editorAlignRight\",\"editorBold\",\"editorChecklist\",\"editorCodeBlock\",\"editorComment\",\"editorDistributeHorizontal\",\"editorDistributeVertical\",\"editorHeading\",\"editorItalic\",\"editorItemAlignBottom\",\"editorItemAlignCenter\",\"editorItemAlignLeft\",\"editorItemAlignMiddle\",\"editorItemAlignRight\",\"editorItemAlignTop\",\"editorLink\",\"editorOrderedList\",\"editorPositionBottomLeft\",\"editorPositionBottomRight\",\"editorPositionTopLeft\",\"editorPositionTopRight\",\"editorRedo\",\"editorStrike\",\"editorTable\",\"editorUnderline\",\"editorUndo\",\"editorUnorderedList\",\"email\",\"empty\",\"emsApp\",\"endpoint\",\"eql\",\"eraser\",\"error\",\"errorFilled\",\"esqlVis\",\"exit\",\"expand\",\"expandMini\",\"exportAction\",\"eye\",\"eyeClosed\",\"faceHappy\",\"faceNeutral\",\"faceSad\",\"fieldStatistics\",\"filebeatApp\",\"filter\",\"filterExclude\",\"filterIgnore\",\"filterInclude\",\"filterInCircle\",\"flag\",\"fleetApp\",\"fold\",\"folderCheck\",\"folderClosed\",\"folderExclamation\",\"folderOpen\",\"frameNext\",\"framePrevious\",\"fullScreen\",\"fullScreenExit\",\"function\",\"gear\",\"gisApp\",\"glasses\",\"globe\",\"grab\",\"grabHorizontal\",\"grabOmnidirectional\",\"gradient\",\"graphApp\",\"grid\",\"grokApp\",\"heart\",\"heartbeatApp\",\"heatmap\",\"help\",\"home\",\"iInCircle\",\"image\",\"importAction\",\"index\",\"indexClose\",\"indexEdit\",\"indexFlush\",\"indexManagementApp\",\"indexMapping\",\"indexOpen\",\"indexPatternApp\",\"indexRollupApp\",\"indexRuntime\",\"indexSettings\",\"indexTemporary\",\"infinity\",\"inputOutput\",\"inspect\",\"invert\",\"ip\",\"key\",\"keyboard\",\"kqlField\",\"kqlFunction\",\"kqlOperand\",\"kqlSelector\",\"kqlValue\",\"kubernetesNode\",\"kubernetesPod\",\"launch\",\"layers\",\"lensApp\",\"lettering\",\"lineDashed\",\"lineDotted\",\"lineSolid\",\"link\",\"list\",\"listAdd\",\"lock\",\"lockOpen\",\"logPatternAnalysis\",\"logRateAnalysis\",\"logoAWS\",\"logoAWSMono\",\"logoAerospike\",\"logoApache\",\"logoAppSearch\",\"logoAzure\",\"logoAzureMono\",\"logoBeats\",\"logoBusinessAnalytics\",\"logoCeph\",\"logoCloud\",\"logoCloudEnterprise\",\"logoCode\",\"logoCodesandbox\",\"logoCouchbase\",\"logoDocker\",\"logoDropwizard\",\"logoElastic\",\"logoElasticStack\",\"logoElasticsearch\",\"logoEnterpriseSearch\",\"logoEtcd\",\"logoGCP\",\"logoGCPMono\",\"logoGithub\",\"logoGmail\",\"logoGolang\",\"logoGoogleG\",\"logoHAproxy\",\"logoIBM\",\"logoIBMMono\",\"logoKafka\",\"logoKibana\",\"logoKubernetes\",\"logoLogging\",\"logoLogstash\",\"logoMaps\",\"logoMemcached\",\"logoMetrics\",\"logoMongodb\",\"logoMySQL\",\"logoNginx\",\"logoObservability\",\"logoOsquery\",\"logoPhp\",\"logoPostgres\",\"logoPrometheus\",\"logoRabbitmq\",\"logoRedis\",\"logoSecurity\",\"logoSiteSearch\",\"logoSketch\",\"logoSlack\",\"logoUptime\",\"logoVulnerabilityManagement\",\"logoWebhook\",\"logoWindows\",\"logoWorkplaceSearch\",\"logsApp\",\"logstashFilter\",\"logstashIf\",\"logstashInput\",\"logstashOutput\",\"logstashQueue\",\"machineLearningApp\",\"magnet\",\"magnifyWithExclamation\",\"magnifyWithMinus\",\"magnifyWithPlus\",\"managementApp\",\"mapMarker\",\"memory\",\"menu\",\"menuDown\",\"menuLeft\",\"menuRight\",\"menuUp\",\"merge\",\"metricbeatApp\",\"metricsApp\",\"minimize\",\"minus\",\"minusInCircle\",\"minusInCircleFilled\",\"minusInSquare\",\"mobile\",\"monitoringApp\",\"moon\",\"move\",\"namespace\",\"nested\",\"newChat\",\"node\",\"notebookApp\",\"number\",\"offline\",\"online\",\"outlierDetectionJob\",\"package\",\"packetbeatApp\",\"pageSelect\",\"pagesSelect\",\"palette\",\"paperClip\",\"partial\",\"pause\",\"payment\",\"pencil\",\"percent\",\"pin\",\"pinFilled\",\"pipeBreaks\",\"pipelineApp\",\"pipeNoBreaks\",\"pivot\",\"play\",\"playFilled\",\"plus\",\"plusInCircle\",\"plusInCircleFilled\",\"plusInSquare\",\"popout\",\"push\",\"questionInCircle\",\"quote\",\"recentlyViewedApp\",\"refresh\",\"regressionJob\",\"reporter\",\"reportingApp\",\"returnKey\",\"save\",\"savedObjectsApp\",\"scale\",\"search\",\"searchProfilerApp\",\"securityAnalyticsApp\",\"securityApp\",\"securitySignal\",\"securitySignalDetected\",\"securitySignalResolved\",\"sessionViewer\",\"shard\",\"share\",\"singleMetricViewer\",\"snowflake\",\"sortAscending\",\"sortDescending\",\"sortDown\",\"sortLeft\",\"sortRight\",\"sortUp\",\"sortable\",\"spaces\",\"spacesApp\",\"sparkles\",\"sqlApp\",\"starEmpty\",\"starEmptySpace\",\"starFilled\",\"starFilledSpace\",\"starMinusEmpty\",\"starMinusFilled\",\"starPlusEmpty\",\"starPlusFilled\",\"stats\",\"stop\",\"stopFilled\",\"stopSlash\",\"storage\",\"string\",\"submodule\",\"sun\",\"swatchInput\",\"symlink\",\"tableDensityCompact\",\"tableDensityExpanded\",\"tableDensityNormal\",\"tableOfContents\",\"tag\",\"tear\",\"temperature\",\"timeline\",\"timelineWithArrow\",\"timelionApp\",\"timeRefresh\",\"timeslider\",\"training\",\"transitionLeftIn\",\"transitionLeftOut\",\"transitionTopIn\",\"transitionTopOut\",\"trash\",\"unfold\",\"unlink\",\"upgradeAssistantApp\",\"uptimeApp\",\"user\",\"userAvatar\",\"users\",\"usersRolesApp\",\"vector\",\"videoPlayer\",\"visArea\",\"visAreaStacked\",\"visBarHorizontal\",\"visBarHorizontalStacked\",\"visBarVertical\",\"visBarVerticalStacked\",\"visGauge\",\"visGoal\",\"visLine\",\"visMapCoordinate\",\"visMapRegion\",\"visMetric\",\"visPie\",\"visTable\",\"visTagCloud\",\"visText\",\"visTimelion\",\"visVega\",\"visVisualBuilder\",\"visualizeApp\",\"vulnerabilityManagementApp\",\"warning\",\"warningFilled\",\"alert\",\"watchesApp\",\"wordWrap\",\"wordWrapDisabled\",\"workplaceSearchApp\",\"wrench\",\"tokenAlias\",\"tokenAnnotation\",\"tokenArray\",\"tokenBinary\",\"tokenBoolean\",\"tokenClass\",\"tokenCompletionSuggester\",\"tokenConstant\",\"tokenDate\",\"tokenDimension\",\"tokenElement\",\"tokenEnum\",\"tokenEnumMember\",\"tokenEvent\",\"tokenException\",\"tokenField\",\"tokenFile\",\"tokenFlattened\",\"tokenFunction\",\"tokenGeo\",\"tokenHistogram\",\"tokenInterface\",\"tokenIP\",\"tokenJoin\",\"tokenKey\",\"tokenKeyword\",\"tokenMethod\",\"tokenMetricCounter\",\"tokenMetricGauge\",\"tokenModule\",\"tokenNamespace\",\"tokenNested\",\"tokenNull\",\"tokenNumber\",\"tokenObject\",\"tokenOperator\",\"tokenPackage\",\"tokenParameter\",\"tokenPercolator\",\"tokenProperty\",\"tokenRange\",\"tokenRankFeature\",\"tokenRankFeatures\",\"tokenRepo\",\"tokenSearchType\",\"tokenSemanticText\",\"tokenShape\",\"tokenString\",\"tokenStruct\",\"tokenSymbol\",\"tokenTag\",\"tokenText\",\"tokenTokenCount\",\"tokenVariable\",\"tokenVectorDense\",\"tokenDenseVector\",\"tokenVectorSparse\"]).isRequired,c.func.isRequired])}).isRequired,c.shape({render:c.func.isRequired,available:c.func,enabled:c.func}).isRequired]).isRequired).isRequired,name:c.node}).isRequired]).isRequired),error:c.string,tableCaption:c.string,rowHeader:c.string,loading:c.bool,noItemsMessage:c.node,onChange:c.func,pagination:c.oneOfType([c.oneOf([void 0]),c.shape({pageIndex:c.number.isRequired,pageSize:c.number,totalItemCount:c.number.isRequired,pageSizeOptions:c.arrayOf(c.number.isRequired),showPerPageOptions:c.bool})]),rowProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),selection:c.shape({onSelectionChange:c.func,selectable:c.func,selectableMessage:c.func,initialSelected:c.arrayOf(c.any.isRequired),selected:c.arrayOf(c.any.isRequired)}),sorting:c.shape({sort:c.shape({field:c.any.isRequired,direction:c.oneOf([\"asc\",\"desc\"]).isRequired}),allowNeutralSort:c.bool,enableAllColumns:c.bool,readOnly:c.bool}),tableLayout:c.oneOf([\"fixed\",\"auto\"])};const EA=\"http://localhost:3004\";class u0e{async get(t){const r=await fetch(`${EA}${t}`);if(!r.ok)throw new Error(`API Error: ${r.statusText}`);return r.json()}async post(t,r){const n=await fetch(`${EA}${t}`,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(r)});if(!n.ok)throw new Error(`API Error: ${n.statusText}`);return n.json()}getWorkers(){return this.get(\"/api/workers\")}getTokenBudget(){return this.get(\"/api/token-budget\")}getTasks(){return this.get(\"/api/tasks\")}getMetrics(){return this.get(\"/api/metrics\")}getHealth(){return this.get(\"/api/health\")}streamLogs(t){const r=new EventSource(`${EA}/api/logs/stream`);return r.onmessage=n=>{t(JSON.parse(n.data))},r}getMoEAccuracy(){return this.get(\"/api/moe/accuracy\")}getMoEConfidenceDistribution(){return this.get(\"/api/moe/confidence-distribution\")}getMoEPoolUtilization(){return this.get(\"/api/moe/pool-utilization\")}getOptimizerStats(){return this.get(\"/api/optimizer/scheduler/stats\")}getTokenForecast(){return this.get(\"/api/optimizer/tokens/forecast\")}getExecutionManagers(){return this.get(\"/api/execution-managers\")}getUsers(){return this.get(\"/api/users\")}createUser(t){return this.post(\"/api/users\",t)}scheduleDDQD(t){return this.post(\"/api/ddqd/schedule\",t)}getDDQDHistory(){return this.get(\"/api/ddqd/history\")}}const Ga=new u0e;function JU(){const[e,t]=L.useState(!0),[r,n]=L.useState(null),[o,a]=L.useState(null);L.useEffect(()=>{l();const g=setInterval(l,5e3);return()=>clearInterval(g)},[]);const l=async()=>{try{const[g,b]=await Promise.all([Ga.getMetrics(),Ga.getHealth()]);n(g),a(b),t(!1)}catch(g){console.error(\"Failed to fetch summary data:\",g),t(!1)}};if(e)return K.jsx(Er,{children:K.jsx(lc,{size:\"xl\"})});const u=[{title:(r==null?void 0:r.active_workers)||0,description:\"Active Workers\",color:\"primary\"},{title:(r==null?void 0:r.total_tasks)||0,description:\"Total Tasks\",color:\"success\"},{title:`${(r==null?void 0:r.success_rate)||0}%`,description:\"Success Rate\",color:(r==null?void 0:r.success_rate)>90?\"success\":\"warning\"},{title:(r==null?void 0:r.tokens_available)||0,description:\"Tokens Available\",color:(r==null?void 0:r.tokens_available)>1e5?\"success\":\"danger\"}],d=(o==null?void 0:o.status)||\"unknown\",f=d===\"healthy\"?\"success\":d===\"degraded\"?\"warning\":\"danger\";return K.jsx(K.Fragment,{children:K.jsxs(Er,{children:[K.jsx(dr,{size:\"m\",children:K.jsx(\"h2\",{children:\"Executive Summary\"})}),K.jsx(nt,{size:\"m\"}),K.jsx(zn,{children:K.jsx(rr,{children:K.jsxs(xu,{color:f,children:[\"System Status: \",d.toUpperCase()]})})}),K.jsx(nt,{size:\"l\"}),K.jsx(zn,{children:u.map((g,b)=>K.jsx(rr,{children:K.jsx(ql,{title:g.title,description:g.description,titleColor:g.color,textAlign:\"center\"})},b))})]})})}function c0e(){const[e,t]=L.useState([]),[r,n]=L.useState(\"all\"),[o,a]=L.useState(\"\"),[l,u]=L.useState(!0),d=L.useRef(null);L.useEffect(()=>{const h=Ga.streamLogs(S=>{t(w=>[...w.slice(-499),S])});return()=>h.close()},[]),L.useEffect(()=>{l&&d.current&&d.current.scrollIntoView({behavior:\"smooth\"})},[e,l]);const f=[{id:\"all\",label:\"All\"},{id:\"error\",label:\"Error\"},{id:\"warn\",label:\"Warn\"},{id:\"info\",label:\"Info\"}],g=e.filter(h=>{const S=r===\"all\"||h.level===r,w=!o||JSON.stringify(h).toLowerCase().includes(o.toLowerCase());return S&&w}),b=g.map(h=>`[${h.timestamp}] ${h.level.toUpperCase()}: ${h.message}`).join(`"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 63,
+      "pattern": "api/metrics",
+      "content": "app.get('/api/metrics', (req, res) => {"
+    },
+    {
+      "file": "eui-dashboard/src/api/dashboardApi.js",
+      "line": 41,
+      "pattern": "api/metrics",
+      "content": "    return this.get('/api/metrics')"
+    },
+    {
+      "file": "python-sdk/commit_relay/client.py",
+      "line": 301,
+      "pattern": "api/health",
+      "content": "            self.get('/api/health')"
+    },
+    {
+      "file": "python-sdk/commit_relay/resources/health.py",
+      "line": 36,
+      "pattern": "api/health",
+      "content": "        return self.client.get('/api/health')"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 132,
+      "pattern": "api/health",
+      "content": "        \"api/health\""
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 31,
+      "pattern": "api/health",
+      "content": "test_endpoint \"/api/health\" \"Health check\""
+    },
+    {
+      "file": "testing/api/test-apis.sh",
+      "line": 45,
+      "pattern": "api/health",
+      "content": "test_endpoint \"/api/health-alerts\" \"Health alerts\""
+    },
+    {
+      "file": "eui-dashboard/dist/assets/index-CzLOni_-.js",
+      "line": 1226,
+      "pattern": "api/health",
+      "content": "        not configured. This callback must be implemented to handle pagination changes`);return x(pt,{token:\"euiBasicTable.tablePagination\",default:\"Pagination for table: {tableCaption}\",values:{tableCaption:u}},function(f){return x(Bxe,{pagination:l,onPageSizeChange:n.onPageSizeChange.bind(n),onPageChange:n.onPageChange.bind(n),\"aria-controls\":n.tableId,\"aria-label\":f})})}}}],[{key:\"getDerivedStateFromProps\",value:function(n,o){if(!n.selection)return{selection:[]};var a=n.selection.selected,l=a??o.selection,u=n.itemId,d=n.items,f=l.filter(function(h){return d.findIndex(function(S){return Ii(S,u)===Ii(h,u)})!==-1});if(f.length!==l.length){var g,b;return(g=(b=n.selection).onSelectionChange)===null||g===void 0||g.call(b,f),{selection:f}}return a?{selection:f}:null}}])})(L.Component);po(rg,\"contextType\",jf);po(rg,\"defaultProps\",{tableLayout:\"fixed\",noItemsMessage:x(pt,{token:\"euiBasicTable.noItemsMessage\",default:\"No items found\"})});rg.propTypes={className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,itemId:c.oneOfType([c.string.isRequired,c.number.isRequired,c.func.isRequired]),itemIdToExpandedRowMap:c.shape({}),items:c.arrayOf(c.any.isRequired),cellProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),columns:c.arrayOf(c.oneOfType([c.shape({field:c.oneOfType([c.any.isRequired,c.any.isRequired]).isRequired,name:c.node.isRequired,description:c.string,dataType:c.oneOf([\"auto\",\"string\",\"number\",\"boolean\",\"date\"]),width:c.string,sortable:c.oneOfType([c.bool.isRequired,c.func.isRequired]),readOnly:c.bool,align:c.any,textOnly:c.bool,truncateText:c.oneOfType([c.bool.isRequired,c.shape({lines:c.number.isRequired}).isRequired]),mobileOptions:c.shape({render:c.func}),render:c.func,footer:c.oneOfType([c.string.isRequired,c.element.isRequired,c.func.isRequired]),isExpander:c.bool,className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any}).isRequired,c.shape({className:c.string,\"aria-label\":c.string,\"data-test-subj\":c.string,css:c.any,render:c.func.isRequired,name:c.node,sortable:c.func}).isRequired,c.shape({actions:c.arrayOf(c.oneOfType([c.shape({type:c.oneOfType([c.oneOf([\"button\"]),c.oneOf([\"icon\"]).isRequired]),color:c.oneOfType([c.any.isRequired,c.func.isRequired]),name:c.oneOfType([c.node.isRequired,c.func.isRequired]).isRequired,description:c.oneOfType([c.string.isRequired,c.func.isRequired]).isRequired,onClick:c.func,href:c.oneOfType([c.string.isRequired,c.func.isRequired]),target:c.string,available:c.func,enabled:c.func,\"data-test-subj\":c.oneOfType([c.string.isRequired,c.func.isRequired]),isPrimary:c.bool,showOnHover:c.bool,icon:c.oneOfType([c.oneOf([\"accessibility\",\"addDataApp\",\"advancedSettingsApp\",\"agentApp\",\"aggregate\",\"analyzeEvent\",\"annotation\",\"anomalyChart\",\"anomalySwimLane\",\"apmApp\",\"apmTrace\",\"appSearchApp\",\"apps\",\"arrowDown\",\"arrowLeft\",\"arrowRight\",\"arrowUp\",\"arrowStart\",\"arrowEnd\",\"article\",\"asterisk\",\"at\",\"auditbeatApp\",\"beaker\",\"bell\",\"bellSlash\",\"beta\",\"bolt\",\"boxesHorizontal\",\"boxesVertical\",\"branch\",\"branchUser\",\"broom\",\"brush\",\"bug\",\"bullseye\",\"calendar\",\"canvasApp\",\"casesApp\",\"changePointDetection\",\"check\",\"checkInCircleFilled\",\"cheer\",\"classificationJob\",\"clickLeft\",\"clickRight\",\"clock\",\"clockCounter\",\"cloudDrizzle\",\"cloudStormy\",\"cloudSunny\",\"cluster\",\"codeApp\",\"color\",\"compute\",\"console\",\"consoleApp\",\"container\",\"continuityAbove\",\"continuityAboveBelow\",\"continuityBelow\",\"continuityWithin\",\"controlsHorizontal\",\"controlsVertical\",\"copy\",\"copyClipboard\",\"createAdvancedJob\",\"createMultiMetricJob\",\"createPopulationJob\",\"createSingleMetricJob\",\"cross\",\"crossClusterReplicationApp\",\"crossInCircle\",\"crosshairs\",\"currency\",\"cut\",\"dashboardApp\",\"dataVisualizer\",\"database\",\"desktop\",\"devToolsApp\",\"diff\",\"discoverApp\",\"discuss\",\"document\",\"documentEdit\",\"documentation\",\"documents\",\"dot\",\"dotInCircle\",\"doubleArrowLeft\",\"doubleArrowRight\",\"download\",\"editorAlignCenter\",\"editorAlignLeft\",\"editorAlignRight\",\"editorBold\",\"editorChecklist\",\"editorCodeBlock\",\"editorComment\",\"editorDistributeHorizontal\",\"editorDistributeVertical\",\"editorHeading\",\"editorItalic\",\"editorItemAlignBottom\",\"editorItemAlignCenter\",\"editorItemAlignLeft\",\"editorItemAlignMiddle\",\"editorItemAlignRight\",\"editorItemAlignTop\",\"editorLink\",\"editorOrderedList\",\"editorPositionBottomLeft\",\"editorPositionBottomRight\",\"editorPositionTopLeft\",\"editorPositionTopRight\",\"editorRedo\",\"editorStrike\",\"editorTable\",\"editorUnderline\",\"editorUndo\",\"editorUnorderedList\",\"email\",\"empty\",\"emsApp\",\"endpoint\",\"eql\",\"eraser\",\"error\",\"errorFilled\",\"esqlVis\",\"exit\",\"expand\",\"expandMini\",\"exportAction\",\"eye\",\"eyeClosed\",\"faceHappy\",\"faceNeutral\",\"faceSad\",\"fieldStatistics\",\"filebeatApp\",\"filter\",\"filterExclude\",\"filterIgnore\",\"filterInclude\",\"filterInCircle\",\"flag\",\"fleetApp\",\"fold\",\"folderCheck\",\"folderClosed\",\"folderExclamation\",\"folderOpen\",\"frameNext\",\"framePrevious\",\"fullScreen\",\"fullScreenExit\",\"function\",\"gear\",\"gisApp\",\"glasses\",\"globe\",\"grab\",\"grabHorizontal\",\"grabOmnidirectional\",\"gradient\",\"graphApp\",\"grid\",\"grokApp\",\"heart\",\"heartbeatApp\",\"heatmap\",\"help\",\"home\",\"iInCircle\",\"image\",\"importAction\",\"index\",\"indexClose\",\"indexEdit\",\"indexFlush\",\"indexManagementApp\",\"indexMapping\",\"indexOpen\",\"indexPatternApp\",\"indexRollupApp\",\"indexRuntime\",\"indexSettings\",\"indexTemporary\",\"infinity\",\"inputOutput\",\"inspect\",\"invert\",\"ip\",\"key\",\"keyboard\",\"kqlField\",\"kqlFunction\",\"kqlOperand\",\"kqlSelector\",\"kqlValue\",\"kubernetesNode\",\"kubernetesPod\",\"launch\",\"layers\",\"lensApp\",\"lettering\",\"lineDashed\",\"lineDotted\",\"lineSolid\",\"link\",\"list\",\"listAdd\",\"lock\",\"lockOpen\",\"logPatternAnalysis\",\"logRateAnalysis\",\"logoAWS\",\"logoAWSMono\",\"logoAerospike\",\"logoApache\",\"logoAppSearch\",\"logoAzure\",\"logoAzureMono\",\"logoBeats\",\"logoBusinessAnalytics\",\"logoCeph\",\"logoCloud\",\"logoCloudEnterprise\",\"logoCode\",\"logoCodesandbox\",\"logoCouchbase\",\"logoDocker\",\"logoDropwizard\",\"logoElastic\",\"logoElasticStack\",\"logoElasticsearch\",\"logoEnterpriseSearch\",\"logoEtcd\",\"logoGCP\",\"logoGCPMono\",\"logoGithub\",\"logoGmail\",\"logoGolang\",\"logoGoogleG\",\"logoHAproxy\",\"logoIBM\",\"logoIBMMono\",\"logoKafka\",\"logoKibana\",\"logoKubernetes\",\"logoLogging\",\"logoLogstash\",\"logoMaps\",\"logoMemcached\",\"logoMetrics\",\"logoMongodb\",\"logoMySQL\",\"logoNginx\",\"logoObservability\",\"logoOsquery\",\"logoPhp\",\"logoPostgres\",\"logoPrometheus\",\"logoRabbitmq\",\"logoRedis\",\"logoSecurity\",\"logoSiteSearch\",\"logoSketch\",\"logoSlack\",\"logoUptime\",\"logoVulnerabilityManagement\",\"logoWebhook\",\"logoWindows\",\"logoWorkplaceSearch\",\"logsApp\",\"logstashFilter\",\"logstashIf\",\"logstashInput\",\"logstashOutput\",\"logstashQueue\",\"machineLearningApp\",\"magnet\",\"magnifyWithExclamation\",\"magnifyWithMinus\",\"magnifyWithPlus\",\"managementApp\",\"mapMarker\",\"memory\",\"menu\",\"menuDown\",\"menuLeft\",\"menuRight\",\"menuUp\",\"merge\",\"metricbeatApp\",\"metricsApp\",\"minimize\",\"minus\",\"minusInCircle\",\"minusInCircleFilled\",\"minusInSquare\",\"mobile\",\"monitoringApp\",\"moon\",\"move\",\"namespace\",\"nested\",\"newChat\",\"node\",\"notebookApp\",\"number\",\"offline\",\"online\",\"outlierDetectionJob\",\"package\",\"packetbeatApp\",\"pageSelect\",\"pagesSelect\",\"palette\",\"paperClip\",\"partial\",\"pause\",\"payment\",\"pencil\",\"percent\",\"pin\",\"pinFilled\",\"pipeBreaks\",\"pipelineApp\",\"pipeNoBreaks\",\"pivot\",\"play\",\"playFilled\",\"plus\",\"plusInCircle\",\"plusInCircleFilled\",\"plusInSquare\",\"popout\",\"push\",\"questionInCircle\",\"quote\",\"recentlyViewedApp\",\"refresh\",\"regressionJob\",\"reporter\",\"reportingApp\",\"returnKey\",\"save\",\"savedObjectsApp\",\"scale\",\"search\",\"searchProfilerApp\",\"securityAnalyticsApp\",\"securityApp\",\"securitySignal\",\"securitySignalDetected\",\"securitySignalResolved\",\"sessionViewer\",\"shard\",\"share\",\"singleMetricViewer\",\"snowflake\",\"sortAscending\",\"sortDescending\",\"sortDown\",\"sortLeft\",\"sortRight\",\"sortUp\",\"sortable\",\"spaces\",\"spacesApp\",\"sparkles\",\"sqlApp\",\"starEmpty\",\"starEmptySpace\",\"starFilled\",\"starFilledSpace\",\"starMinusEmpty\",\"starMinusFilled\",\"starPlusEmpty\",\"starPlusFilled\",\"stats\",\"stop\",\"stopFilled\",\"stopSlash\",\"storage\",\"string\",\"submodule\",\"sun\",\"swatchInput\",\"symlink\",\"tableDensityCompact\",\"tableDensityExpanded\",\"tableDensityNormal\",\"tableOfContents\",\"tag\",\"tear\",\"temperature\",\"timeline\",\"timelineWithArrow\",\"timelionApp\",\"timeRefresh\",\"timeslider\",\"training\",\"transitionLeftIn\",\"transitionLeftOut\",\"transitionTopIn\",\"transitionTopOut\",\"trash\",\"unfold\",\"unlink\",\"upgradeAssistantApp\",\"uptimeApp\",\"user\",\"userAvatar\",\"users\",\"usersRolesApp\",\"vector\",\"videoPlayer\",\"visArea\",\"visAreaStacked\",\"visBarHorizontal\",\"visBarHorizontalStacked\",\"visBarVertical\",\"visBarVerticalStacked\",\"visGauge\",\"visGoal\",\"visLine\",\"visMapCoordinate\",\"visMapRegion\",\"visMetric\",\"visPie\",\"visTable\",\"visTagCloud\",\"visText\",\"visTimelion\",\"visVega\",\"visVisualBuilder\",\"visualizeApp\",\"vulnerabilityManagementApp\",\"warning\",\"warningFilled\",\"alert\",\"watchesApp\",\"wordWrap\",\"wordWrapDisabled\",\"workplaceSearchApp\",\"wrench\",\"tokenAlias\",\"tokenAnnotation\",\"tokenArray\",\"tokenBinary\",\"tokenBoolean\",\"tokenClass\",\"tokenCompletionSuggester\",\"tokenConstant\",\"tokenDate\",\"tokenDimension\",\"tokenElement\",\"tokenEnum\",\"tokenEnumMember\",\"tokenEvent\",\"tokenException\",\"tokenField\",\"tokenFile\",\"tokenFlattened\",\"tokenFunction\",\"tokenGeo\",\"tokenHistogram\",\"tokenInterface\",\"tokenIP\",\"tokenJoin\",\"tokenKey\",\"tokenKeyword\",\"tokenMethod\",\"tokenMetricCounter\",\"tokenMetricGauge\",\"tokenModule\",\"tokenNamespace\",\"tokenNested\",\"tokenNull\",\"tokenNumber\",\"tokenObject\",\"tokenOperator\",\"tokenPackage\",\"tokenParameter\",\"tokenPercolator\",\"tokenProperty\",\"tokenRange\",\"tokenRankFeature\",\"tokenRankFeatures\",\"tokenRepo\",\"tokenSearchType\",\"tokenSemanticText\",\"tokenShape\",\"tokenString\",\"tokenStruct\",\"tokenSymbol\",\"tokenTag\",\"tokenText\",\"tokenTokenCount\",\"tokenVariable\",\"tokenVectorDense\",\"tokenDenseVector\",\"tokenVectorSparse\"]).isRequired,c.func.isRequired])}).isRequired,c.shape({render:c.func.isRequired,available:c.func,enabled:c.func}).isRequired]).isRequired).isRequired,name:c.node}).isRequired]).isRequired),error:c.string,tableCaption:c.string,rowHeader:c.string,loading:c.bool,noItemsMessage:c.node,onChange:c.func,pagination:c.oneOfType([c.oneOf([void 0]),c.shape({pageIndex:c.number.isRequired,pageSize:c.number,totalItemCount:c.number.isRequired,pageSizeOptions:c.arrayOf(c.number.isRequired),showPerPageOptions:c.bool})]),rowProps:c.oneOfType([c.any.isRequired,c.func.isRequired]),selection:c.shape({onSelectionChange:c.func,selectable:c.func,selectableMessage:c.func,initialSelected:c.arrayOf(c.any.isRequired),selected:c.arrayOf(c.any.isRequired)}),sorting:c.shape({sort:c.shape({field:c.any.isRequired,direction:c.oneOf([\"asc\",\"desc\"]).isRequired}),allowNeutralSort:c.bool,enableAllColumns:c.bool,readOnly:c.bool}),tableLayout:c.oneOf([\"fixed\",\"auto\"])};const EA=\"http://localhost:3004\";class u0e{async get(t){const r=await fetch(`${EA}${t}`);if(!r.ok)throw new Error(`API Error: ${r.statusText}`);return r.json()}async post(t,r){const n=await fetch(`${EA}${t}`,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(r)});if(!n.ok)throw new Error(`API Error: ${n.statusText}`);return n.json()}getWorkers(){return this.get(\"/api/workers\")}getTokenBudget(){return this.get(\"/api/token-budget\")}getTasks(){return this.get(\"/api/tasks\")}getMetrics(){return this.get(\"/api/metrics\")}getHealth(){return this.get(\"/api/health\")}streamLogs(t){const r=new EventSource(`${EA}/api/logs/stream`);return r.onmessage=n=>{t(JSON.parse(n.data))},r}getMoEAccuracy(){return this.get(\"/api/moe/accuracy\")}getMoEConfidenceDistribution(){return this.get(\"/api/moe/confidence-distribution\")}getMoEPoolUtilization(){return this.get(\"/api/moe/pool-utilization\")}getOptimizerStats(){return this.get(\"/api/optimizer/scheduler/stats\")}getTokenForecast(){return this.get(\"/api/optimizer/tokens/forecast\")}getExecutionManagers(){return this.get(\"/api/execution-managers\")}getUsers(){return this.get(\"/api/users\")}createUser(t){return this.post(\"/api/users\",t)}scheduleDDQD(t){return this.post(\"/api/ddqd/schedule\",t)}getDDQDHistory(){return this.get(\"/api/ddqd/history\")}}const Ga=new u0e;function JU(){const[e,t]=L.useState(!0),[r,n]=L.useState(null),[o,a]=L.useState(null);L.useEffect(()=>{l();const g=setInterval(l,5e3);return()=>clearInterval(g)},[]);const l=async()=>{try{const[g,b]=await Promise.all([Ga.getMetrics(),Ga.getHealth()]);n(g),a(b),t(!1)}catch(g){console.error(\"Failed to fetch summary data:\",g),t(!1)}};if(e)return K.jsx(Er,{children:K.jsx(lc,{size:\"xl\"})});const u=[{title:(r==null?void 0:r.active_workers)||0,description:\"Active Workers\",color:\"primary\"},{title:(r==null?void 0:r.total_tasks)||0,description:\"Total Tasks\",color:\"success\"},{title:`${(r==null?void 0:r.success_rate)||0}%`,description:\"Success Rate\",color:(r==null?void 0:r.success_rate)>90?\"success\":\"warning\"},{title:(r==null?void 0:r.tokens_available)||0,description:\"Tokens Available\",color:(r==null?void 0:r.tokens_available)>1e5?\"success\":\"danger\"}],d=(o==null?void 0:o.status)||\"unknown\",f=d===\"healthy\"?\"success\":d===\"degraded\"?\"warning\":\"danger\";return K.jsx(K.Fragment,{children:K.jsxs(Er,{children:[K.jsx(dr,{size:\"m\",children:K.jsx(\"h2\",{children:\"Executive Summary\"})}),K.jsx(nt,{size:\"m\"}),K.jsx(zn,{children:K.jsx(rr,{children:K.jsxs(xu,{color:f,children:[\"System Status: \",d.toUpperCase()]})})}),K.jsx(nt,{size:\"l\"}),K.jsx(zn,{children:u.map((g,b)=>K.jsx(rr,{children:K.jsx(ql,{title:g.title,description:g.description,titleColor:g.color,textAlign:\"center\"})},b))})]})})}function c0e(){const[e,t]=L.useState([]),[r,n]=L.useState(\"all\"),[o,a]=L.useState(\"\"),[l,u]=L.useState(!0),d=L.useRef(null);L.useEffect(()=>{const h=Ga.streamLogs(S=>{t(w=>[...w.slice(-499),S])});return()=>h.close()},[]),L.useEffect(()=>{l&&d.current&&d.current.scrollIntoView({behavior:\"smooth\"})},[e,l]);const f=[{id:\"all\",label:\"All\"},{id:\"error\",label:\"Error\"},{id:\"warn\",label:\"Warn\"},{id:\"info\",label:\"Info\"}],g=e.filter(h=>{const S=r===\"all\"||h.level===r,w=!o||JSON.stringify(h).toLowerCase().includes(o.toLowerCase());return S&&w}),b=g.map(h=>`[${h.timestamp}] ${h.level.toUpperCase()}: ${h.message}`).join(`"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 82,
+      "pattern": "api/health",
+      "content": "app.get('/api/health', (req, res) => {"
+    },
+    {
+      "file": "eui-dashboard/src/api/dashboardApi.js",
+      "line": 46,
+      "pattern": "api/health",
+      "content": "    return this.get('/api/health')"
+    },
+    {
+      "file": "scripts/security/token-rotation.sh",
+      "line": 118,
+      "pattern": "api/health",
+      "content": "   curl http://localhost:5001/api/health"
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 74,
+      "pattern": "api/health",
+      "content": "if curl -s http://localhost:5001/api/health > /dev/null 2>&1; then"
+    },
+    {
+      "file": "scripts/claude-worker-launcher-v2.sh",
+      "line": 141,
+      "pattern": "api/health",
+      "content": "1. Check service health: curl http://localhost:5001/api/health"
+    }
+  ]
+}

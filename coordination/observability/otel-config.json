@@ -1,0 +1,43 @@
+{
+  "service": {
+    "name": "cortex",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  "exporters": {
+    "stdout": {
+      "enabled": true,
+      "format": "json"
+    },
+    "file": {
+      "enabled": true,
+      "traces_path": "coordination/observability/traces",
+      "metrics_path": "coordination/observability/metrics",
+      "rotation": {
+        "max_size_mb": 100,
+        "max_age_days": 7
+      }
+    },
+    "otlp": {
+      "enabled": false,
+      "endpoint": "http://localhost:4317",
+      "protocol": "grpc",
+      "headers": {},
+      "timeout_seconds": 10
+    }
+  },
+  "sampling": {
+    "strategy": "always_on",
+    "rate": 1.0
+  },
+  "resource_attributes": {
+    "service.name": "cortex",
+    "deployment.environment": "${CORTEX_ENV:-development}",
+    "host.name": "${HOSTNAME}"
+  },
+  "batch_processing": {
+    "enabled": true,
+    "batch_size": 100,
+    "flush_interval_seconds": 5
+  }
+}

@@ -1,0 +1,717 @@
+{
+  "schema_version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "self_healing_config": {
+    "enabled": true,
+    "global_settings": {
+      "max_concurrent_remediations": 10,
+      "max_retries_per_incident": 3,
+      "default_timeout_seconds": 300,
+      "require_approval_for_critical": true,
+      "enable_learning_loop": true,
+      "enable_blast_radius_limiting": true
+    }
+  },
+
+  "anomaly_detection_rules": {
+    "cpu_usage_spike": {
+      "rule_id": "adr-001",
+      "name": "CPU Usage Spike Detection",
+      "enabled": true,
+      "algorithm": "moving_average_stddev",
+      "parameters": {
+        "window_size": 100,
+        "stddev_multiplier": 3.0,
+        "min_samples_required": 10
+      },
+      "metric": "cpu_usage_percent",
+      "threshold": 85,
+      "duration_seconds": 300,
+      "severity": "high",
+      "tags": ["infrastructure", "performance"]
+    },
+
+    "memory_leak_detection": {
+      "rule_id": "adr-002",
+      "name": "Memory Leak Detection",
+      "enabled": true,
+      "algorithm": "rate_of_change",
+      "parameters": {
+        "rate_threshold_percent_per_hour": 5,
+        "sustained_duration_hours": 2,
+        "max_acceptable_usage_percent": 90
+      },
+      "metric": "memory_usage_percent",
+      "severity": "high",
+      "tags": ["infrastructure", "memory", "leak"]
+    },
+
+    "disk_space_exhaustion": {
+      "rule_id": "adr-003",
+      "name": "Disk Space Exhaustion",
+      "enabled": true,
+      "algorithm": "threshold",
+      "parameters": {
+        "warning_threshold": 80,
+        "critical_threshold": 90,
+        "forecast_hours": 24
+      },
+      "metric": "disk_usage_percent",
+      "severity": "critical",
+      "tags": ["infrastructure", "disk"]
+    },
+
+    "error_rate_anomaly": {
+      "rule_id": "adr-004",
+      "name": "Error Rate Anomaly",
+      "enabled": true,
+      "algorithm": "statistical_outlier",
+      "parameters": {
+        "baseline_period_hours": 24,
+        "sensitivity": "high",
+        "min_error_count": 10
+      },
+      "metric": "error_rate_percent",
+      "threshold": 5,
+      "severity": "critical",
+      "tags": ["application", "errors"]
+    },
+
+    "latency_degradation": {
+      "rule_id": "adr-005",
+      "name": "Response Time Degradation",
+      "enabled": true,
+      "algorithm": "percentile_comparison",
+      "parameters": {
+        "percentile": 95,
+        "baseline_multiplier": 2.0,
+        "baseline_period_hours": 24
+      },
+      "metric": "response_time_ms",
+      "severity": "medium",
+      "tags": ["application", "performance"]
+    },
+
+    "pod_crashloop": {
+      "rule_id": "adr-006",
+      "name": "Kubernetes Pod CrashLoopBackOff",
+      "enabled": true,
+      "algorithm": "event_pattern",
+      "parameters": {
+        "restarts_threshold": 5,
+        "time_window_minutes": 15
+      },
+      "metric": "pod_restart_count",
+      "severity": "high",
+      "tags": ["kubernetes", "pods"]
+    },
+
+    "connection_pool_exhaustion": {
+      "rule_id": "adr-007",
+      "name": "Connection Pool Exhaustion",
+      "enabled": true,
+      "algorithm": "threshold",
+      "parameters": {
+        "usage_threshold_percent": 90,
+        "duration_seconds": 60
+      },
+      "metric": "connection_pool_usage_percent",
+      "severity": "high",
+      "tags": ["database", "connections"]
+    },
+
+    "ml_based_composite": {
+      "rule_id": "adr-008",
+      "name": "ML-Based Composite Anomaly",
+      "enabled": true,
+      "algorithm": "isolation_forest",
+      "parameters": {
+        "n_estimators": 100,
+        "contamination": 0.1,
+        "features": [
+          "cpu_usage",
+          "memory_usage",
+          "disk_io",
+          "network_throughput",
+          "response_time",
+          "error_rate"
+        ]
+      },
+      "severity": "medium",
+      "retrain_frequency_hours": 24,
+      "tags": ["ml", "composite"]
+    }
+  },
+
+  "remediation_playbooks": {
+    "disk-cleanup-001": {
+      "playbook_id": "disk-cleanup-001",
+      "name": "Disk Space Cleanup",
+      "version": "2.1.0",
+      "enabled": true,
+      "category": "infrastructure",
+      "severity": "high",
+      "trigger": {
+        "anomaly_rules": ["adr-003"],
+        "condition": "disk_usage_percent > 85",
+        "sustained_duration_seconds": 300
+      },
+      "pre_conditions": [
+        "writable_filesystem",
+        "no_active_backups",
+        "sufficient_permissions"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Clean temporary files",
+          "action": "cleanup_temp_files",
+          "parameters": {
+            "paths": ["/tmp/*", "/var/tmp/*"],
+            "age_threshold_days": 7
+          },
+          "timeout_seconds": 300,
+          "expected_recovery_percent": 10
+        },
+        {
+          "step_number": 2,
+          "name": "Rotate and compress logs",
+          "action": "rotate_logs",
+          "parameters": {
+            "paths": ["/var/log/*.log"],
+            "compress": true,
+            "keep_last": 5
+          },
+          "timeout_seconds": 600,
+          "expected_recovery_percent": 15
+        },
+        {
+          "step_number": 3,
+          "name": "Clean package cache",
+          "action": "package_manager_clean",
+          "parameters": {
+            "package_managers": ["apt", "yum", "npm", "docker"]
+          },
+          "timeout_seconds": 300,
+          "expected_recovery_percent": 10
+        }
+      ],
+      "verification": {
+        "check": "disk_usage_percent < 75",
+        "wait_time_seconds": 120,
+        "retry_count": 3
+      },
+      "rollback": {
+        "available": false,
+        "reason": "Cleanup operations are not reversible"
+      },
+      "blast_radius": "single_host",
+      "metadata": {
+        "success_rate": 0.94,
+        "avg_execution_time_seconds": 720,
+        "total_executions": 1247
+      }
+    },
+
+    "pod-restart-001": {
+      "playbook_id": "pod-restart-001",
+      "name": "Kubernetes Pod Restart",
+      "version": "1.5.0",
+      "enabled": true,
+      "category": "kubernetes",
+      "severity": "medium",
+      "trigger": {
+        "anomaly_rules": ["adr-006"],
+        "condition": "pod_crash_loop_detected"
+      },
+      "pre_conditions": [
+        "deployment_has_multiple_replicas",
+        "cluster_healthy"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Identify failing pod",
+          "action": "identify_crashloop_pod",
+          "timeout_seconds": 30
+        },
+        {
+          "step_number": 2,
+          "name": "Capture logs",
+          "action": "capture_pod_logs",
+          "parameters": {
+            "tail_lines": 500
+          },
+          "timeout_seconds": 60
+        },
+        {
+          "step_number": 3,
+          "name": "Delete pod",
+          "action": "delete_pod",
+          "parameters": {
+            "grace_period_seconds": 30
+          },
+          "timeout_seconds": 60
+        }
+      ],
+      "verification": {
+        "check": "pod_ready_and_stable",
+        "wait_time_seconds": 300,
+        "retry_count": 2
+      },
+      "rollback": {
+        "available": false,
+        "reason": "Pod deletion triggers automatic recreation"
+      },
+      "blast_radius": "single_instance",
+      "metadata": {
+        "success_rate": 0.87,
+        "avg_execution_time_seconds": 180,
+        "total_executions": 892
+      }
+    },
+
+    "service-restart-001": {
+      "playbook_id": "service-restart-001",
+      "name": "Service Restart",
+      "version": "1.8.0",
+      "enabled": true,
+      "category": "infrastructure",
+      "severity": "high",
+      "trigger": {
+        "anomaly_rules": ["adr-004", "adr-005"],
+        "condition": "service_unhealthy"
+      },
+      "pre_conditions": [
+        "service_exists",
+        "restart_safe"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Capture service status",
+          "action": "get_service_status",
+          "timeout_seconds": 30
+        },
+        {
+          "step_number": 2,
+          "name": "Restart service",
+          "action": "systemctl_restart",
+          "parameters": {
+            "wait_for_healthy": true
+          },
+          "timeout_seconds": 300
+        }
+      ],
+      "verification": {
+        "check": "service_running_and_healthy",
+        "wait_time_seconds": 120,
+        "retry_count": 3
+      },
+      "rollback": {
+        "available": true,
+        "action": "ensure_service_running"
+      },
+      "blast_radius": "single_service",
+      "metadata": {
+        "success_rate": 0.91,
+        "avg_execution_time_seconds": 240,
+        "total_executions": 1534
+      }
+    },
+
+    "scale-deployment-001": {
+      "playbook_id": "scale-deployment-001",
+      "name": "Scale Kubernetes Deployment",
+      "version": "1.3.0",
+      "enabled": true,
+      "category": "kubernetes",
+      "severity": "medium",
+      "trigger": {
+        "anomaly_rules": ["adr-001", "adr-005"],
+        "condition": "high_load_sustained"
+      },
+      "pre_conditions": [
+        "cluster_has_capacity",
+        "auto_scaling_not_maxed"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Calculate desired replicas",
+          "action": "calculate_replica_count",
+          "parameters": {
+            "scale_factor": 1.5,
+            "max_replicas": 20
+          },
+          "timeout_seconds": 30
+        },
+        {
+          "step_number": 2,
+          "name": "Scale deployment",
+          "action": "kubectl_scale",
+          "timeout_seconds": 300
+        }
+      ],
+      "verification": {
+        "check": "all_replicas_ready",
+        "wait_time_seconds": 300,
+        "retry_count": 2
+      },
+      "rollback": {
+        "available": true,
+        "action": "scale_to_original_count"
+      },
+      "blast_radius": "single_service",
+      "metadata": {
+        "success_rate": 0.96,
+        "avg_execution_time_seconds": 180,
+        "total_executions": 456
+      }
+    },
+
+    "connection-pool-reset-001": {
+      "playbook_id": "connection-pool-reset-001",
+      "name": "Database Connection Pool Reset",
+      "version": "1.2.0",
+      "enabled": true,
+      "category": "database",
+      "severity": "high",
+      "trigger": {
+        "anomaly_rules": ["adr-007"],
+        "condition": "connection_pool_exhausted"
+      },
+      "pre_conditions": [
+        "no_critical_transactions"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "name": "Identify idle connections",
+          "action": "query_idle_connections",
+          "parameters": {
+            "idle_threshold_seconds": 300
+          },
+          "timeout_seconds": 30
+        },
+        {
+          "step_number": 2,
+          "name": "Kill idle connections",
+          "action": "kill_idle_connections",
+          "timeout_seconds": 60
+        },
+        {
+          "step_number": 3,
+          "name": "Reset connection pool",
+          "action": "reset_pool",
+          "timeout_seconds": 120
+        }
+      ],
+      "verification": {
+        "check": "connection_pool_usage < 70%",
+        "wait_time_seconds": 60,
+        "retry_count": 2
+      },
+      "rollback": {
+        "available": false,
+        "reason": "Connection cleanup is not reversible"
+      },
+      "blast_radius": "single_service",
+      "metadata": {
+        "success_rate": 0.88,
+        "avg_execution_time_seconds": 150,
+        "total_executions": 234
+      }
+    }
+  },
+
+  "escalation_policies": {
+    "policy-infrastructure": {
+      "policy_id": "policy-infrastructure",
+      "name": "Critical Infrastructure Escalation",
+      "applies_to": [
+        "kubernetes_cluster",
+        "database_cluster",
+        "load_balancer",
+        "network_infrastructure"
+      ],
+      "escalation_chain": [
+        {
+          "level": 1,
+          "delay_seconds": 0,
+          "notify": ["on_call_sre"],
+          "method": "phone_call",
+          "conditions": []
+        },
+        {
+          "level": 2,
+          "delay_seconds": 300,
+          "notify": ["sre_team_lead"],
+          "method": "phone_call",
+          "conditions": ["not_acknowledged"]
+        },
+        {
+          "level": 3,
+          "delay_seconds": 900,
+          "notify": ["engineering_manager"],
+          "method": ["phone_call", "sms"],
+          "conditions": ["not_resolved"]
+        },
+        {
+          "level": 4,
+          "delay_seconds": 1800,
+          "notify": ["cto"],
+          "method": "phone_call",
+          "conditions": ["not_resolved"]
+        }
+      ]
+    },
+
+    "policy-application": {
+      "policy_id": "policy-application",
+      "name": "Application Services Escalation",
+      "applies_to": [
+        "api_services",
+        "background_workers",
+        "caching_layer",
+        "message_queues"
+      ],
+      "escalation_chain": [
+        {
+          "level": 1,
+          "delay_seconds": 0,
+          "notify": ["on_call_engineer"],
+          "method": "pagerduty",
+          "conditions": []
+        },
+        {
+          "level": 2,
+          "delay_seconds": 1800,
+          "notify": ["team_lead"],
+          "method": "phone_call",
+          "conditions": ["not_acknowledged"]
+        },
+        {
+          "level": 3,
+          "delay_seconds": 7200,
+          "notify": ["engineering_manager"],
+          "method": ["email", "slack"],
+          "conditions": ["not_resolved"]
+        }
+      ]
+    },
+
+    "policy-data": {
+      "policy_id": "policy-data",
+      "name": "Data Infrastructure Escalation",
+      "applies_to": [
+        "databases",
+        "data_pipelines",
+        "backup_systems",
+        "data_lakes"
+      ],
+      "escalation_chain": [
+        {
+          "level": 1,
+          "delay_seconds": 0,
+          "notify": ["on_call_dba", "on_call_sre"],
+          "method": "phone_call",
+          "conditions": []
+        },
+        {
+          "level": 2,
+          "delay_seconds": 600,
+          "notify": ["data_team_lead"],
+          "method": "phone_call",
+          "conditions": ["not_acknowledged"]
+        },
+        {
+          "level": 3,
+          "delay_seconds": 1800,
+          "notify": ["vp_engineering", "cto"],
+          "method": ["phone_call", "sms"],
+          "conditions": ["not_resolved", "data_loss_risk"]
+        }
+      ]
+    }
+  },
+
+  "auto_escalation_triggers": {
+    "remediation_failed": {
+      "trigger_id": "auto-escalate-001",
+      "condition": "remediation_attempts >= 3",
+      "action": "escalate_one_level",
+      "reason": "Automated remediation unsuccessful after 3 attempts"
+    },
+
+    "blast_radius_expanding": {
+      "trigger_id": "auto-escalate-002",
+      "condition": "affected_services > initial_count * 2",
+      "action": "escalate_to_sev1",
+      "reason": "Issue spreading to additional services"
+    },
+
+    "prolonged_degradation": {
+      "trigger_id": "auto-escalate-003",
+      "condition": "time_since_detection > 3600 AND state == degraded",
+      "action": "escalate_one_level",
+      "reason": "Issue not resolved within 1 hour SLA"
+    },
+
+    "customer_impact": {
+      "trigger_id": "auto-escalate-004",
+      "condition": "customer_reports > 10 OR vip_customer_affected == true",
+      "action": "escalate_to_sev1",
+      "reason": "Significant customer impact detected"
+    },
+
+    "data_integrity_risk": {
+      "trigger_id": "auto-escalate-005",
+      "condition": "data_consistency_check == failed",
+      "action": "escalate_to_sev0",
+      "reason": "Potential data corruption or loss"
+    },
+
+    "security_threat": {
+      "trigger_id": "auto-escalate-006",
+      "condition": "security_alert == true",
+      "action": "escalate_to_sev0",
+      "reason": "Security incident detected"
+    }
+  },
+
+  "blast_radius_limits": {
+    "single_instance": {
+      "level": "single_instance",
+      "auto_remediation": "always_allowed",
+      "approval_required": false,
+      "max_instances": 1
+    },
+
+    "single_service": {
+      "level": "single_service",
+      "auto_remediation": "allowed_with_conditions",
+      "approval_required_if": {
+        "severity_below": "SEV1",
+        "service_is_critical": true,
+        "instances_greater_than": 10
+      }
+    },
+
+    "multiple_services": {
+      "level": "multiple_services",
+      "auto_remediation": "restricted",
+      "approval_required": true,
+      "require_sign_off": ["sre_lead"]
+    },
+
+    "cluster_wide": {
+      "level": "cluster_wide",
+      "auto_remediation": "disabled",
+      "approval_required": true,
+      "require_sign_off": ["sre_lead", "engineering_manager"]
+    },
+
+    "multi_region": {
+      "level": "multi_region",
+      "auto_remediation": "disabled",
+      "approval_required": true,
+      "require_sign_off": ["cto", "vp_engineering"]
+    }
+  },
+
+  "circuit_breaker_config": {
+    "enabled": true,
+    "failure_threshold": 3,
+    "failure_window_seconds": 600,
+    "cooldown_seconds": 3600,
+    "half_open_max_calls": 2,
+    "per_playbook_override": {
+      "disk-cleanup-001": {
+        "failure_threshold": 2,
+        "cooldown_seconds": 7200
+      }
+    }
+  },
+
+  "learning_config": {
+    "enabled": true,
+    "knowledge_base_path": "/coordination/advanced/knowledge-base/",
+    "update_frequency": {
+      "playbook_metrics": "real_time",
+      "pattern_detection": "hourly",
+      "model_retraining": "daily"
+    },
+    "retention_policy": {
+      "incident_history_days": 730,
+      "metrics_history_days": 90,
+      "logs_history_days": 30
+    }
+  },
+
+  "notifications": {
+    "channels": {
+      "slack": {
+        "enabled": true,
+        "webhook_url": "${SLACK_WEBHOOK_URL}",
+        "channels": {
+          "incidents": "#incidents",
+          "sre": "#sre-alerts",
+          "general": "#engineering"
+        }
+      },
+      "pagerduty": {
+        "enabled": true,
+        "integration_key": "${PAGERDUTY_INTEGRATION_KEY}",
+        "severity_mapping": {
+          "SEV0": "critical",
+          "SEV1": "error",
+          "SEV2": "warning",
+          "SEV3": "info"
+        }
+      },
+      "email": {
+        "enabled": true,
+        "smtp_server": "${SMTP_SERVER}",
+        "from_address": "self-healing@cortex.local",
+        "distribution_lists": {
+          "sre_team": ["sre@cortex.local"],
+          "engineering": ["engineering@cortex.local"],
+          "leadership": ["cto@cortex.local", "vp-eng@cortex.local"]
+        }
+      }
+    }
+  },
+
+  "metrics_and_reporting": {
+    "collection_interval_seconds": 60,
+    "aggregation_intervals": ["1m", "5m", "1h", "24h"],
+    "dashboards": {
+      "real_time_monitoring": {
+        "enabled": true,
+        "refresh_interval_seconds": 10
+      },
+      "historical_analysis": {
+        "enabled": true,
+        "retention_days": 90
+      }
+    },
+    "reports": {
+      "daily": {
+        "enabled": true,
+        "schedule": "08:00 UTC",
+        "recipients": ["sre_team", "engineering_managers"]
+      },
+      "weekly": {
+        "enabled": true,
+        "schedule": "monday 09:00 UTC",
+        "recipients": ["engineering_team", "product_managers"]
+      },
+      "monthly": {
+        "enabled": true,
+        "schedule": "first monday 14:00 UTC",
+        "recipients": ["executives", "vp_engineering", "cto"]
+      }
+    }
+  }
+}

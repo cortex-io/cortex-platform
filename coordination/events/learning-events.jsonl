@@ -1,0 +1,2 @@
+{"timestamp":"2025-11-20T14:39:21Z","event":"task_killed","task_id":"task-moe-learning-1763235765769","details":{"reason":"No activity for 6896 minutes (threshold: 15m)","threshold_minutes":15}}
+{"timestamp":"2025-11-20T14:39:21Z","event":"task_killed","task_id":"task-moe-learning-1763253866091","details":{"reason":"No activity for 6594 minutes (threshold: 15m)","threshold_minutes":15}}

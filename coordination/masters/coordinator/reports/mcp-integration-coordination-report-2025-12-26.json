@@ -1,0 +1,266 @@
+{
+  "report_id": "mcp-integration-coordination-2025-12-26",
+  "generated_at": "2025-12-26T13:43:40Z",
+  "coordinator_session": "CE51B6D2-1BF9-4EF9-B147-EC76CC3BA2D8",
+  "mission": "MCP Server Integration Coordination",
+  "status": "routing_complete",
+
+  "executive_summary": {
+    "total_tasks": 4,
+    "tasks_routed": 4,
+    "development_master": 3,
+    "cicd_master": 1,
+    "overall_priority": "high",
+    "estimated_completion": "TBD - pending specialist master execution"
+  },
+
+  "current_mcp_infrastructure": {
+    "deployed_mcp_servers": [
+      {
+        "name": "sandfly-mcp-server",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.143.53",
+        "port": 3000,
+        "status": "running",
+        "url": "http://sandfly-mcp-server.cortex-system.svc.cluster.local:3000",
+        "integrated_in_cortex": true
+      },
+      {
+        "name": "unifi-mcp-server",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.178.37",
+        "port": 3000,
+        "status": "running",
+        "url": "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000",
+        "integrated_in_cortex": true
+      },
+      {
+        "name": "proxmox-mcp-server",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.19.252",
+        "port": 3000,
+        "status": "running",
+        "url": "http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000",
+        "integrated_in_cortex": true
+      },
+      {
+        "name": "cloudflare-mcp-server",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.183.185",
+        "port": 3000,
+        "status": "running",
+        "url": "http://cloudflare-mcp-server.cortex-system.svc.cluster.local:3000",
+        "integrated_in_cortex": false,
+        "target": "Task 1"
+      },
+      {
+        "name": "cortex-mcp-server",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.41.79",
+        "port": 3000,
+        "status": "running",
+        "url": "http://cortex-mcp-server.cortex-system.svc.cluster.local:3000",
+        "integrated_in_cortex": false,
+        "target": "Task 1"
+      },
+      {
+        "name": "security-master",
+        "namespace": "cortex-system",
+        "cluster_ip": "10.43.173.115",
+        "port": 8080,
+        "status": "running",
+        "url": "http://security-master.cortex-system.svc.cluster.local:8080",
+        "integrated_in_cortex": false,
+        "target": "Task 1",
+        "note": "May have MCP endpoint on port 8080"
+      }
+    ],
+    "total_deployed": 7,
+    "integrated_count": 3,
+    "pending_integration_count": 3
+  },
+
+  "tasks_routed": [
+    {
+      "task_id": "task-mcp-integration-001",
+      "handoff_id": "coord-to-dev-8FFCA60A",
+      "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-mcp-integration-001.json",
+      "title": "Integrate Existing MCP Servers into Cortex API",
+      "routed_to": "development-master",
+      "routing_rule": "code-development",
+      "priority": "high",
+      "confidence": 0.90,
+      "mcp_servers_to_add": [
+        "cloudflare-mcp-server (10.43.183.185:3000)",
+        "cortex-mcp-server (10.43.41.79:3000)",
+        "security-master (10.43.173.115:8080)"
+      ],
+      "deliverables": [
+        "Updated server.js with 3 new MCP server configs",
+        "Query functions for each MCP server",
+        "Claude tool definitions for each server",
+        "executeTool() cases for each server",
+        "Integration tests"
+      ],
+      "estimated_complexity": "medium",
+      "status": "pending_pickup"
+    },
+    {
+      "task_id": "task-mcp-integration-002",
+      "handoff_id": "coord-to-dev-381E7616",
+      "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-mcp-integration-002.json",
+      "title": "Build and Deploy K3s MCP Server",
+      "routed_to": "development-master",
+      "routing_rule": "code-development",
+      "priority": "high",
+      "confidence": 0.90,
+      "repository": "https://github.com/ry-ops/k3s-mcp-server",
+      "steps": [
+        "Clone repository",
+        "Build Docker image",
+        "Create k8s deployment manifest",
+        "Deploy to cortex-system namespace",
+        "Verify deployment and test",
+        "Integrate into Cortex server.js"
+      ],
+      "expected_service": {
+        "name": "k3s-mcp-server",
+        "namespace": "cortex-system",
+        "port": 3000,
+        "url": "http://k3s-mcp-server.cortex-system.svc.cluster.local:3000"
+      },
+      "estimated_complexity": "medium-high",
+      "status": "pending_pickup"
+    },
+    {
+      "task_id": "task-mcp-integration-003",
+      "handoff_id": "coord-to-dev-AAC555BA",
+      "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-mcp-integration-003.json",
+      "title": "Create Grafana MCP Server",
+      "routed_to": "development-master",
+      "routing_rule": "code-development",
+      "priority": "high",
+      "confidence": 0.90,
+      "type": "new_project",
+      "project_path": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana",
+      "steps": [
+        "Create project structure",
+        "Implement Grafana API client",
+        "Create MCP server implementation",
+        "Build Docker image",
+        "Create k8s deployment",
+        "Create dashboards for unrepresented services",
+        "Deploy to cortex-system namespace",
+        "Integrate into Cortex server.js"
+      ],
+      "expected_service": {
+        "name": "grafana-mcp-server",
+        "namespace": "cortex-system",
+        "port": 3000,
+        "url": "http://grafana-mcp-server.cortex-system.svc.cluster.local:3000"
+      },
+      "grafana_api": {
+        "base_url": "http://grafana.monitoring.svc.cluster.local:3000/api",
+        "authentication": "Bearer token (API key required)"
+      },
+      "estimated_complexity": "high",
+      "status": "pending_pickup"
+    },
+    {
+      "task_id": "task-mcp-integration-004",
+      "handoff_id": "coord-to-cicd-4383C528",
+      "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-mcp-integration-004.json",
+      "title": "Update Cortex Deployment with All MCP Servers",
+      "routed_to": "cicd-master",
+      "routing_rule": "cicd-operations",
+      "priority": "high",
+      "confidence": 0.88,
+      "dependencies": [
+        "task-mcp-integration-001",
+        "task-mcp-integration-002",
+        "task-mcp-integration-003"
+      ],
+      "steps": [
+        "Verify all MCP servers deployed and healthy",
+        "Update deployment.yaml with environment variables",
+        "Build new Cortex API Docker image",
+        "Deploy updated Cortex API",
+        "Run end-to-end integration tests",
+        "Update documentation"
+      ],
+      "environment_variables_to_add": {
+        "CLOUDFLARE_MCP_URL": "http://cloudflare-mcp-server.cortex-system.svc.cluster.local:3000",
+        "CORTEX_MCP_URL": "http://cortex-mcp-server.cortex-system.svc.cluster.local:3000",
+        "SECURITY_MASTER_MCP_URL": "http://security-master.cortex-system.svc.cluster.local:8080",
+        "K3S_MCP_URL": "http://k3s-mcp-server.cortex-system.svc.cluster.local:3000",
+        "GRAFANA_MCP_URL": "http://grafana-mcp-server.cortex-system.svc.cluster.local:3000"
+      },
+      "estimated_complexity": "medium",
+      "status": "pending_pickup"
+    }
+  ],
+
+  "final_mcp_architecture": {
+    "total_mcp_servers": 10,
+    "mcp_servers": [
+      "sandfly-mcp-server (existing - integrated)",
+      "unifi-mcp-server (existing - integrated)",
+      "proxmox-mcp-server (existing - integrated)",
+      "cloudflare-mcp-server (existing - to be integrated)",
+      "cortex-mcp-server (existing - to be integrated)",
+      "security-master (existing - to be integrated)",
+      "k3s-mcp-server (to be deployed)",
+      "grafana-mcp-server (to be created)"
+    ],
+    "cortex_api_file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/server.js",
+    "deployment_file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/deployment.yaml"
+  },
+
+  "routing_decisions": {
+    "development_master_tasks": [
+      "task-mcp-integration-001 (90% confidence)",
+      "task-mcp-integration-002 (90% confidence)",
+      "task-mcp-integration-003 (90% confidence)"
+    ],
+    "cicd_master_tasks": [
+      "task-mcp-integration-004 (88% confidence)"
+    ],
+    "routing_strategy": "Mixture of Experts (MoE) pattern-based routing",
+    "rules_applied": [
+      "code-development: implement|develop|code|feature|bug.*fix|refactor",
+      "cicd-operations: build|deploy|test|ci.*cd|pipeline|release"
+    ]
+  },
+
+  "coordination_metadata": {
+    "handoffs_created": 4,
+    "handoffs_directory": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/",
+    "routing_logged_to": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/knowledge-base/routing-decisions.jsonl",
+    "coordinator_master_state": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/context/master-state.json"
+  },
+
+  "next_steps": [
+    "Development master picks up tasks from handoff directory",
+    "Development master completes Tasks 1-3 (MCP integrations)",
+    "CI/CD master waits for Task 1-3 completion",
+    "CI/CD master executes Task 4 (deployment update)",
+    "End-to-end testing of all MCP integrations",
+    "Update system documentation",
+    "Coordinator aggregates results and updates metrics"
+  ],
+
+  "success_criteria": [
+    "All 5 new MCP servers integrated into Cortex API",
+    "k3s-mcp-server deployed and operational",
+    "grafana-mcp-server created and deployed",
+    "Cortex API deployment updated with all environment variables",
+    "All end-to-end tests passing",
+    "Documentation updated with new MCP servers"
+  ],
+
+  "monitoring": {
+    "check_handoff_status": "ls -lah /Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/",
+    "check_mcp_services": "kubectl get svc -n cortex-system -l component=mcp-server",
+    "check_cortex_api": "kubectl get pods -n cortex-system -l app=cortex-api"
+  }
+}

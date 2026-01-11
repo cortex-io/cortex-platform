@@ -1,0 +1,39 @@
+{
+  "storage": {
+    "max_cache_size_gb": 10,
+    "max_per_domain_gb": 2,
+    "pruning_threshold_percent": 80,
+    "retention_days": {
+      "high_priority": 90,
+      "medium_priority": 60,
+      "low_priority": 30
+    }
+  },
+  "rate_limiting": {
+    "requests_per_minute": 60,
+    "concurrent_crawls": 5,
+    "respect_robots_txt": true,
+    "crawl_delay_seconds": 1,
+    "max_retries": 3,
+    "timeout_seconds": 30
+  },
+  "token_budget": {
+    "max_tokens_per_crawl": 100000,
+    "max_tokens_per_query": 50000,
+    "daily_budget": 1000000,
+    "warning_threshold_percent": 80
+  },
+  "indexing": {
+    "max_file_size_mb": 10,
+    "max_index_size_mb": 100,
+    "batch_size": 100,
+    "parallel_workers": 4
+  },
+  "quality": {
+    "min_content_length": 100,
+    "max_content_length": 1000000,
+    "require_valid_html": false,
+    "detect_duplicates": true,
+    "similarity_threshold": 0.95
+  }
+}

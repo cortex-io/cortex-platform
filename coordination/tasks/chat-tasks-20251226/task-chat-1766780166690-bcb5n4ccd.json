@@ -1,0 +1,15 @@
+{
+  "id": "task-chat-1766780166690-bcb5n4ccd",
+  "type": "user_query",
+  "priority": 1,
+  "status": "in_progress",
+  "payload": {
+    "query": "Implement messaging system for inter-agent communication. Design and deploy event bus architecture using pub/sub pattern (consider Redis Pub/Sub, RabbitMQ, or NATS). Define standardized message format (JSON schema) for agent-to-agent communication. Implement message types: task_assignment, status_update, information_request, information_response, escalation, collaboration_request. Create agent discovery service so agents can find and communicate with each other. Build message queue monitoring and logging.",
+    "title": "PHASE 2.1: Build Inter-Agent Communication Framework",
+    "category": "development"
+  },
+  "metadata": {
+    "started_at": "2025-12-26T20:45:32.519Z",
+    "assigned_to": "development-master"
+  }
+}

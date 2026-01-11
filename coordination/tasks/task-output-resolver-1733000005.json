@@ -1,0 +1,50 @@
+{
+  "task_id": "task-output-resolver-1733000005",
+  "description": "Implement template variable resolver for {{ }} patterns to substitute step outputs and inputs",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:05Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/output-resolver.sh",
+    "dependencies": [],
+    "estimated_duration_minutes": 60
+  },
+  "requirements": {
+    "inputs": [
+      "Template string with {{ }} variables",
+      "Available outputs from completed steps",
+      "Workflow inputs"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/output-resolver.sh"
+    ],
+    "validation": [
+      "Parse {{ variable }} patterns",
+      "Substitute with actual values",
+      "Handle nested paths (steps.step1.outputs.field)",
+      "Handle missing variables gracefully"
+    ],
+    "features": [
+      "Parse {{ inputs.* }} patterns (workflow inputs)",
+      "Parse {{ steps.*.outputs.* }} patterns (step outputs)",
+      "Parse {{ env.* }} patterns (environment variables)",
+      "Support expressions: {{ value | filter }}",
+      "Support concatenation: {{ var1 + var2 }}",
+      "Support arithmetic: {{ count + 1 }}",
+      "Support conditionals: {{ value > 10 }}",
+      "Handle missing variables (error or default value)",
+      "Escape special characters in bash context",
+      "Validate syntax before substitution"
+    ]
+  },
+  "acceptance_criteria": [
+    "Resolves {{ inputs.repository_url }} correctly",
+    "Resolves {{ steps.clone_repo.outputs.repo_path }}",
+    "Resolves {{ env.NOTIFICATION_WEBHOOK }}",
+    "Handles {{ value | hash }} filter",
+    "Errors clearly on undefined variables",
+    "Includes comprehensive test suite with edge cases"
+  ]
+}

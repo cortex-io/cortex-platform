@@ -1,0 +1,385 @@
+---
+# Monitoring Stack Technical Specifications
+# Workflow: mon-001
+# Phase: 1 - Infrastructure Preparation (Complete)
+# Generated: 2025-12-10T11:23:00Z
+# Contractor: infrastructure-contractor
+
+workflow:
+  id: mon-001
+  name: "Deploy Monitoring Stack"
+  phase: 1
+  status: complete
+  next_phase: 2
+  next_contractor: talos-contractor
+
+infrastructure:
+  proxmox:
+    cluster_url: https://10.88.140.151:8006
+    node: pve01
+    api_token_available: true
+    api_access_note: "Direct API calls timing out - use UI or investigate"
+
+  current_state:
+    total_vms: 9
+    vm_type: lxc
+    all_running: true
+    uptime_hours: 15
+
+  capacity:
+    vcpu:
+      allocated: 18
+      available: "12+ additional cores recommended"
+    memory:
+      allocated_gb: 17.5
+      used_gb: 4.1
+      utilization: 23%
+      available_gb: "24+ additional GB recommended"
+    disk:
+      allocated_gb: 71
+      used_gb: 26.8
+      utilization: 38%
+      available_gb: "300+ additional GB recommended"
+
+existing_monitoring:
+  services:
+    - name: wazuh
+      vmid: 101
+      purpose: "Security Information and Event Management (SIEM)"
+      vcpu: 4
+      memory_gb: 4
+      memory_utilization: 58%
+      disk_gb: 24
+      disk_utilization: 48%
+      integration: "Feed security events to Prometheus via API exporter"
+
+    - name: checkmk
+      vmid: 103
+      purpose: "Infrastructure Monitoring and Alerting"
+      vcpu: 2
+      memory_gb: 2
+      memory_utilization: 37%
+      disk_gb: 5
+      disk_utilization: 46%
+      integration: "Federation with Prometheus or dual collection"
+
+    - name: uptimekuma
+      vmid: 106
+      purpose: "Uptime Monitoring and Status Pages"
+      vcpu: 1
+      memory_gb: 1
+      memory_utilization: 17%
+      disk_gb: 3
+      disk_utilization: 38%
+      integration: "Complement with Blackbox Exporter"
+
+monitoring_stack:
+  deployment_approach: lxc_containers
+  network:
+    vlan_id: 70
+    vlan_name: monitoring
+    subnet: 10.70.0.0/24
+    gateway: 10.70.0.1
+    dhcp_range: 10.70.0.100-10.70.0.200
+
+  components:
+    prometheus:
+      hostname: prometheus.internal.cortex.local
+      ip: 10.70.0.10
+      vcpu: 4
+      memory_gb: 8
+      disk_gb: 100
+      storage_type: ssd
+      ports:
+        - 9090
+      purpose: "Metrics collection and time-series storage"
+      retention_days: 15
+      estimated_growth_mb_per_day: 500
+
+    grafana:
+      hostname: grafana.internal.cortex.local
+      ip: 10.70.0.11
+      vcpu: 2
+      memory_gb: 4
+      disk_gb: 50
+      storage_type: ssd
+      ports:
+        - 3000
+      purpose: "Metrics visualization and dashboards"
+      external_url: "monitoring.yourdomain.com"
+      external_access: "Via Nginx Proxy Manager or Cloudflare Tunnel"
+
+    loki:
+      hostname: loki.internal.cortex.local
+      ip: 10.70.0.12
+      vcpu: 4
+      memory_gb: 8
+      disk_gb: 100
+      storage_type: ssd
+      ports:
+        - 3100
+      purpose: "Log aggregation and search"
+      retention_days: 7-14
+      estimated_growth_gb_per_day: 1-5
+
+    alertmanager:
+      hostname: alertmanager.internal.cortex.local
+      ip: 10.70.0.13
+      vcpu: 2
+      memory_gb: 4
+      disk_gb: 50
+      storage_type: ssd
+      ports:
+        - 9093
+      purpose: "Alert routing and notifications"
+      alert_retention_days: 30
+
+  totals:
+    vcpu: 12
+    memory_gb: 24
+    disk_gb: 300
+
+os_configuration:
+  distribution: ubuntu
+  version: "24.04"
+  lts: true
+  support_until: "2029-04"
+  packages:
+    - openssh-server
+    - cloud-init
+    - qemu-guest-agent
+    - prometheus (on prometheus vm)
+    - grafana (on grafana vm)
+    - loki (on loki vm)
+    - alertmanager (on alertmanager vm)
+
+exporters:
+  node_exporter:
+    install_on:
+      - all_existing_vms
+      - all_monitoring_vms
+    port: 9100
+    purpose: "Host-level metrics (CPU, memory, disk, network)"
+
+  pve_exporter:
+    install_on: prometheus_vm
+    purpose: "Proxmox cluster metrics via API"
+
+  blackbox_exporter:
+    install_on: prometheus_vm
+    purpose: "Endpoint availability monitoring (HTTP, ICMP, DNS, TCP)"
+
+  wazuh_exporter:
+    install_on: prometheus_vm
+    purpose: "Wazuh security metrics"
+    custom: true
+    method: "API scraping or custom exporter"
+
+network_configuration:
+  firewall_rules:
+    - name: "Allow monitoring to all VLANs"
+      source: 10.70.0.0/24
+      destination: any
+      ports: [22, 161, 9090, 9100, 3000]
+      protocol: tcp
+      action: allow
+
+    - name: "Allow syslog to monitoring"
+      source: any
+      destination: 10.70.0.0/24
+      port: 514
+      protocol: udp
+      action: allow
+
+    - name: "Allow Grafana from management"
+      source: 10.10.0.0/24
+      destination: 10.70.0.11
+      port: 3000
+      protocol: tcp
+      action: allow
+
+    - name: "Block direct internet to Prometheus"
+      source: wan
+      destination: 10.70.0.10
+      port: any
+      protocol: any
+      action: deny
+
+security:
+  authentication:
+    grafana: "OAuth/LDAP or strong built-in authentication"
+    prometheus: "Basic auth or authenticated reverse proxy"
+    alertmanager: "Basic auth for API access"
+
+  ssl_certificates:
+    method: "Let's Encrypt via Nginx Proxy Manager"
+    alternative: "Cloudflare Origin Certificates"
+
+  access_control:
+    - "Restrict Grafana external access to authenticated users"
+    - "Block direct internet access to Prometheus and Alertmanager"
+    - "Enable firewall rules per component"
+    - "Use strong passwords and rotate quarterly"
+
+backup:
+  schedule: daily
+  time: "02:00 UTC"
+  retention_days: 7
+  mode: snapshot
+  compression: lzo
+  storage: local-lvm
+
+monitoring_targets:
+  immediate:
+    - name: "Proxmox host"
+      target: "10.88.140.151"
+      exporter: pve_exporter
+      metrics: "CPU, memory, disk, network, VM status"
+
+    - name: "All existing VMs"
+      count: 9
+      exporter: node_exporter
+      estimated_series: 4500
+
+    - name: "Monitoring stack VMs"
+      count: 4
+      exporter: node_exporter
+      estimated_series: 2000
+
+  future:
+    - "Network infrastructure (UniFi, switches) via SNMP"
+    - "Application-specific exporters"
+    - "Cloudflare API metrics"
+    - "Backup status metrics"
+
+integration_architecture:
+  metrics_flow:
+    sources:
+      - "Proxmox host (pve_exporter)"
+      - "All VMs (node_exporter)"
+      - "CheckMK (federation)"
+      - "Wazuh (API exporter)"
+      - "UptimeKuma (blackbox_exporter)"
+    collectors:
+      - prometheus
+    visualization:
+      - grafana
+    alerting:
+      - alertmanager
+
+  logs_flow:
+    sources:
+      - "All VMs (rsyslog/promtail)"
+      - "Docker containers"
+      - "Proxmox host logs"
+    collectors:
+      - loki
+    visualization:
+      - grafana
+
+deployment_timeline:
+  phase_1_infra_prep:
+    duration_hours: 1
+    status: complete
+    completion: "2025-12-10T11:23:00Z"
+
+  phase_2_vm_deployment:
+    duration_hours: 2-3
+    tasks:
+      - "Create/verify VLAN 70"
+      - "Provision 4 LXC containers"
+      - "Configure static IPs"
+      - "Install base OS and dependencies"
+
+  phase_3_service_config:
+    duration_hours: 2-3
+    tasks:
+      - "Install Prometheus and configure"
+      - "Install Grafana with Prometheus data source"
+      - "Install Loki"
+      - "Install Alertmanager"
+      - "Create initial dashboards and alerts"
+
+  phase_4_integration:
+    duration_hours: 1-2
+    tasks:
+      - "Install node_exporter on all VMs"
+      - "Configure Prometheus scrape targets"
+      - "Test metrics collection"
+      - "Verify log aggregation"
+      - "Test alert routing"
+
+  total_estimated_hours: 6-8
+
+handoff_deliverables:
+  files:
+    - path: "/Users/ryandahlberg/Projects/cortex/coordination/workflows/active/mon-001-infra-handoff.json"
+      lines: 433
+      type: json
+      description: "Comprehensive infrastructure assessment data"
+
+    - path: "/Users/ryandahlberg/Projects/cortex/coordination/workflows/active/mon-001-infra-assessment-report.md"
+      lines: 312
+      type: markdown
+      description: "Human-readable infrastructure report"
+
+    - path: "/Users/ryandahlberg/Projects/cortex/coordination/workflows/active/mon-001-technical-specs.yaml"
+      type: yaml
+      description: "Technical specifications for quick reference"
+
+next_actions:
+  contractor: talos-contractor
+  phase: 2
+  tasks:
+    - "Review infrastructure assessment"
+    - "Validate LXC container approach"
+    - "Provision 4 LXC containers"
+    - "Configure network (static IPs, VLAN 70)"
+    - "Install monitoring services"
+    - "Create base configurations"
+    - "Hand off to monitoring-operations"
+
+  blockers: []
+  dependencies:
+    - "Verify VLAN 70 exists or create in UniFi"
+
+  validation_checklist:
+    - assessment_reviewed: false
+    - deployment_approach_confirmed: false
+    - vlan_verified: false
+    - vms_provisioned: false
+    - network_configured: false
+    - services_installed: false
+    - handoff_complete: false
+
+documentation_references:
+  local:
+    - "/Users/ryandahlberg/Projects/cortex/coordination/masters/inventory/knowledge-base/proxmox-infrastructure.md"
+    - "/Users/ryandahlberg/Projects/cortex/coordination/masters/inventory/proxmox-vm-inventory.json"
+    - "/Users/ryandahlberg/Projects/cortex/coordination/contractors/infrastructure-contractor-knowledge.json"
+
+  external:
+    prometheus: "https://prometheus.io/docs/prometheus/latest/installation/"
+    grafana: "https://grafana.com/docs/grafana/latest/setup-grafana/installation/"
+    loki: "https://grafana.com/docs/loki/latest/setup/install/"
+    alertmanager: "https://prometheus.io/docs/alerting/latest/alertmanager/"
+
+assessment_verdict:
+  infrastructure_ready: true
+  capacity_sufficient: true
+  network_topology_documented: true
+  integration_plan_defined: true
+  deployment_path_clear: true
+  blockers_identified: false
+  recommendation: "PROCEED TO PHASE 2"
+  confidence_level: high
+
+contractor_notes:
+  - "All 9 VMs running healthy with low resource utilization"
+  - "Existing monitoring services provide good foundation for integration"
+  - "LXC container approach aligns with existing infrastructure"
+  - "VLAN 70 configuration follows infrastructure best practices"
+  - "Deployment timeline realistic based on LXC provisioning speed"
+  - "API access issue non-blocking - can use Proxmox UI"
+  - "Security considerations documented and addressable"
+  - "Integration architecture supports both new and existing monitoring"

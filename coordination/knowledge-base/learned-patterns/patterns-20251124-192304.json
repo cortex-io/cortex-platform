@@ -1,0 +1,20 @@
+{
+  "extracted_at": "2025-11-25T01:23:04Z",
+  "min_examples": 3,
+  "successful_patterns": [],
+  "failed_patterns": [],
+  "routing_patterns": [
+    {
+      "task_type": null,
+      "complexity": null,
+      "preferred_worker_type": "feature-implementer",
+      "count": 4,
+      "avg_score": 92.75
+    }
+  ],
+  "summary": {
+    "successful_count": 0,
+    "failed_count": 0,
+    "routing_count": 1
+  }
+}

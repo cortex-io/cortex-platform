@@ -1,0 +1,74 @@
+{
+  "handoff_id": "coord-to-dev-sandfly-integration-002",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-sandfly-integration-002",
+  "priority": "critical",
+  "task_data": {
+    "title": "Integrate Sandfly Tools into Chat Backend",
+    "category": "development",
+    "description": "Add all 45+ Sandfly MCP tools to the chat backend tool definitions and routing",
+    "requirements": [
+      "Extract all tool definitions from Sandfly MCP server.py (lines 144-846)",
+      "Convert Python tool definitions to TypeScript format",
+      "Add all Sandfly tools to /tmp/cortex-chat/backend/src/tools/index.ts",
+      "Update tool-executor.ts to route 'sandfly_*' tools to sandfly-mcp service",
+      "Test tool routing to Sandfly MCP server",
+      "Verify all tools are accessible via /api/tools endpoint"
+    ],
+    "technical_details": {
+      "source_file": "/Users/ryandahlberg/Desktop/sandfly/src/mcp_sandfly/server.py",
+      "tool_definitions_start_line": 144,
+      "tool_definitions_end_line": 846,
+      "total_tools": 45,
+      "target_files": [
+        "/tmp/cortex-chat/backend/src/tools/index.ts",
+        "/tmp/cortex-chat/backend/src/services/tool-executor.ts"
+      ],
+      "tool_prefix": "sandfly",
+      "mcp_server_url": "http://sandfly-mcp.cortex-system.svc.cluster.local:3000",
+      "tool_categories": [
+        "Authentication & System (3 tools)",
+        "Hosts (11 tools)",
+        "Credentials (3 tools)",
+        "Scanning (2 tools)",
+        "Results (4 tools)",
+        "Sandflies/Detection Rules (4 tools)",
+        "Schedules (7 tools)",
+        "Jump Hosts (3 tools)",
+        "Notifications (3 tools)",
+        "Reports (2 tools)",
+        "Audit (1 tool)"
+      ]
+    },
+    "implementation_pattern": {
+      "tool_executor_addition": {
+        "location": "/tmp/cortex-chat/backend/src/services/tool-executor.ts",
+        "add_to_MCP_SERVERS": {
+          "sandfly": {
+            "baseUrl": "http://sandfly-mcp.cortex-system.svc.cluster.local:3000",
+            "timeout": 30000
+          }
+        }
+      },
+      "tool_definition_format": "Follow existing pattern in tools/index.ts - Anthropic.Messages.Tool[] format"
+    },
+    "success_criteria": [
+      "All 45+ Sandfly tools added to tools/index.ts",
+      "Tool executor routes sandfly_* tools correctly",
+      "GET /api/tools returns all Sandfly tools",
+      "Test tool execution succeeds (e.g., sandfly_list_hosts)"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development category",
+    "expected_outcome": "Sandfly tools fully integrated into chat backend",
+    "dependencies": [
+      "task-sandfly-integration-001 (Sandfly MCP deployment)"
+    ],
+    "governance_bypass": true,
+    "reason": "Development work for critical security integration"
+  },
+  "created_at": "2025-12-25T16:30:00Z",
+  "status": "pending_pickup"
+}

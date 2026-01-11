@@ -1,0 +1,28 @@
+{
+  "task_id": "execute-phase1-autonomous",
+  "description": "Execute all Phase 1 observability workers autonomously. Workers need to implement: metrics collection (llm-metrics-collector.sh), worker health monitoring (worker-health-monitor.sh), trace correlation (trace-correlator.sh, visualize-llm-trace.sh), dashboard API (observability.js), dashboard component (ObservabilityOverview.jsx), and integration tests. All worker specs are ready in coordination/worker-specs/active/. This is a meta-coordination task to oversee and manage the execution of all Phase 1 workers.",
+  "phase": "phase1-observability",
+  "priority": "critical",
+  "created_at": "$(date -Iseconds)",
+  "status": "pending",
+  "execution_mode": "autonomous",
+  "worker_specs_to_execute": [
+    "worker-implementation-048",
+    "worker-implementation-049",
+    "worker-implementation-050",
+    "worker-implementation-051",
+    "worker-implementation-052",
+    "worker-implementation-054",
+    "worker-implementation-056"
+  ],
+  "expected_deliverables": [
+    "scripts/lib/llm-metrics-collector.sh",
+    "scripts/lib/worker-health-monitor.sh",
+    "scripts/lib/trace-correlator.sh",
+    "scripts/visualize-llm-trace.sh",
+    "dashboard/server/api/observability.js",
+    "dashboard/components/ObservabilityOverview.jsx",
+    "coordination/metrics/llm-operations.jsonl",
+    "coordination/worker-health-metrics.jsonl"
+  ]
+}

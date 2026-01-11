@@ -1,0 +1,41 @@
+{
+  "workflow_run_id": "wf-run-20251130-065018-89544",
+  "workflow_name": "test-simple-workflow",
+  "status": "completed",
+  "started_at": "2025-11-30T12:50:18Z",
+  "updated_at": "2025-11-30T12:50:18Z",
+  "current_execution_group": 2,
+  "total_execution_groups": 0,
+  "inputs": {
+    "message": "Cortex"
+  },
+  "steps": {
+    "hello": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:50:18Z",
+      "completed_at": "2025-11-30T12:50:18Z",
+      "outputs": {
+        "stdout": "Hello Cortex"
+      }
+    },
+    "world": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:50:18Z",
+      "completed_at": "2025-11-30T12:50:18Z",
+      "outputs": {
+        "stdout": "World!\nSun Nov 30 06:50:18 CST 2025"
+      }
+    }
+  },
+  "outputs": {
+    "hello": {
+      "stdout": "Hello Cortex"
+    },
+    "world": {
+      "stdout": "World!\nSun Nov 30 06:50:18 CST 2025"
+    }
+  },
+  "completed_at": "2025-11-30T12:50:18Z"
+}

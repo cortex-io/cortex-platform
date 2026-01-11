@@ -1,0 +1,151 @@
+{
+  "handoff_id": "coord-to-cicd-4383C528",
+  "from_master": "coordinator",
+  "to_master": "cicd",
+  "task_id": "task-mcp-integration-004",
+  "priority": "high",
+  "task_data": {
+    "title": "Task 4: Update Cortex Deployment with All MCP Servers",
+    "description": "Update deployment configuration and rebuild Cortex API with all new MCP integrations",
+    "dependencies": [
+      "task-mcp-integration-001 (Existing MCP servers integrated)",
+      "task-mcp-integration-002 (K3s MCP server deployed)",
+      "task-mcp-integration-003 (Grafana MCP server deployed)"
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "action": "Verify all MCP servers are deployed and healthy",
+        "commands": [
+          "kubectl get svc -n cortex-system -l component=mcp-server",
+          "kubectl get pods -n cortex-system -l component=mcp-server"
+        ],
+        "expected_result": "All MCP servers running with ClusterIPs assigned"
+      },
+      {
+        "step": 2,
+        "action": "Update Cortex API deployment.yaml",
+        "file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/deployment.yaml",
+        "updates": [
+          "Add CLOUDFLARE_MCP_URL environment variable",
+          "Add CORTEX_MCP_URL environment variable",
+          "Add SECURITY_MASTER_MCP_URL environment variable",
+          "Add K3S_MCP_URL environment variable",
+          "Add GRAFANA_MCP_URL environment variable"
+        ],
+        "environment_variables": {
+          "CLOUDFLARE_MCP_URL": "http://cloudflare-mcp-server.cortex-system.svc.cluster.local:3000",
+          "CORTEX_MCP_URL": "http://cortex-mcp-server.cortex-system.svc.cluster.local:3000",
+          "SECURITY_MASTER_MCP_URL": "http://security-master.cortex-system.svc.cluster.local:8080",
+          "K3S_MCP_URL": "http://k3s-mcp-server.cortex-system.svc.cluster.local:3000",
+          "GRAFANA_MCP_URL": "http://grafana-mcp-server.cortex-system.svc.cluster.local:3000"
+        }
+      },
+      {
+        "step": 3,
+        "action": "Verify server.js has all integrations",
+        "file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/server.js",
+        "checks": [
+          "All 5 new MCP servers in MCP_SERVERS config",
+          "All 5 query functions implemented",
+          "All 5 tools in Claude tools array",
+          "All 5 cases in executeTool() switch"
+        ]
+      },
+      {
+        "step": 4,
+        "action": "Build new Cortex API Docker image",
+        "commands": [
+          "cd /Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api",
+          "docker build -t cortex-api:mcp-integration-$(date +%Y%m%d-%H%M%S) .",
+          "docker tag cortex-api:mcp-integration-$(date +%Y%m%d-%H%M%S) cortex-api:latest"
+        ],
+        "expected_result": "New Docker image with MCP integrations"
+      },
+      {
+        "step": 5,
+        "action": "Update deployment with new image",
+        "command": "kubectl apply -f /Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/deployment.yaml",
+        "expected_result": "Deployment updated, new pods rolling out"
+      },
+      {
+        "step": 6,
+        "action": "Verify deployment rollout",
+        "commands": [
+          "kubectl rollout status deployment/cortex-api -n cortex-system",
+          "kubectl get pods -n cortex-system -l app=cortex-api",
+          "kubectl logs -n cortex-system -l app=cortex-api --tail=50"
+        ],
+        "expected_result": "New pods running, logs show all MCP servers configured"
+      },
+      {
+        "step": 7,
+        "action": "Test end-to-end MCP integrations",
+        "test_cases": [
+          {
+            "query": "What Cloudflare zones do we have?",
+            "expected_tool": "cloudflare_query",
+            "expected_result": "List of Cloudflare zones/domains"
+          },
+          {
+            "query": "What services are running in the cortex-system namespace?",
+            "expected_tool": "k3s_query or kubectl",
+            "expected_result": "List of k8s services"
+          },
+          {
+            "query": "Show me all Grafana dashboards",
+            "expected_tool": "grafana_query",
+            "expected_result": "List of dashboards"
+          },
+          {
+            "query": "What is the security status?",
+            "expected_tool": "security_query or sandfly_query",
+            "expected_result": "Security alerts or status"
+          },
+          {
+            "query": "Show cortex system status",
+            "expected_tool": "cortex_query",
+            "expected_result": "Cortex system information"
+          }
+        ],
+        "test_endpoint": "POST http://cortex-api.cortex-system.svc.cluster.local:8000/api/tasks"
+      },
+      {
+        "step": 8,
+        "action": "Update documentation",
+        "files": [
+          "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/README.md",
+          "/Users/ryandahlberg/Projects/cortex/coordination/docs/mcp-servers.md"
+        ],
+        "content": "Document all MCP server integrations, URLs, and capabilities"
+      }
+    ],
+    "validation": [
+      "All MCP servers deployed and healthy",
+      "Cortex API deployment updated with env vars",
+      "New Docker image built and deployed",
+      "All end-to-end tests pass",
+      "Documentation updated"
+    ],
+    "rollback_plan": {
+      "if_deployment_fails": [
+        "kubectl rollout undo deployment/cortex-api -n cortex-system",
+        "Check logs: kubectl logs -n cortex-system -l app=cortex-api",
+        "Verify MCP server connectivity from cortex-api pod"
+      ]
+    }
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE: CI/CD build+deploy+test task",
+    "priority": "high",
+    "expected_outcome": "Cortex API fully integrated with all MCP servers and deployed",
+    "dependencies": [
+      "Tasks 1-3 must be completed first",
+      "All MCP servers must be running"
+    ],
+    "routing_confidence": 0.88,
+    "estimated_complexity": "medium"
+  },
+  "created_at": "2025-12-26T13:41:34Z",
+  "status": "pending_pickup"
+}

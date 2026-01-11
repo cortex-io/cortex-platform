@@ -1,0 +1,1 @@
+{"timestamp":"2025-12-01T15:39:08Z","scan_id":"deploy-scan-001","event_type":"security.scan_completed","severity":"low","finding_count":2,"details":{"scan_id":"deploy-scan-001","severity":"low","finding_count":2}}

@@ -1,0 +1,142 @@
+{
+  "issues": [
+    {
+      "id": "issue-001",
+      "number": 1,
+      "title": "Add user authentication feature",
+      "description": "Implement JWT-based authentication with refresh tokens",
+      "status": "open",
+      "priority": "high",
+      "labels": ["feature", "backend", "security"],
+      "created_at": "2025-01-09T10:00:00Z",
+      "updated_at": "2025-01-09T10:00:00Z"
+    },
+    {
+      "id": "issue-002",
+      "number": 2,
+      "title": "Fix memory leak in data processing pipeline",
+      "description": "Memory usage increases over time in the batch processor",
+      "status": "open",
+      "priority": "critical",
+      "labels": ["bug", "performance"],
+      "created_at": "2025-01-09T09:00:00Z",
+      "updated_at": "2025-01-09T11:00:00Z"
+    },
+    {
+      "id": "issue-003",
+      "number": 3,
+      "title": "Update API documentation",
+      "description": "Add examples for all endpoints and update response schemas",
+      "status": "in_progress",
+      "priority": "medium",
+      "labels": ["documentation"],
+      "created_at": "2025-01-08T15:00:00Z",
+      "updated_at": "2025-01-09T08:00:00Z"
+    }
+  ],
+  "repositories": [
+    {
+      "id": "repo-001",
+      "name": "cortex-backend",
+      "full_name": "cortex/cortex-backend",
+      "language": "JavaScript",
+      "framework": "Express",
+      "dependencies": [
+        "express@4.18.2",
+        "pg@8.11.3",
+        "redis@4.6.12",
+        "jsonwebtoken@9.0.2"
+      ],
+      "structure": {
+        "src": [
+          "index.js",
+          "routes/",
+          "controllers/",
+          "models/",
+          "middleware/",
+          "utils/"
+        ],
+        "tests": [
+          "unit/",
+          "integration/"
+        ],
+        "config": [
+          "database.js",
+          "redis.js"
+        ]
+      }
+    },
+    {
+      "id": "repo-002",
+      "name": "cortex-ai-service",
+      "full_name": "cortex/cortex-ai-service",
+      "language": "Python",
+      "framework": "FastAPI",
+      "dependencies": [
+        "fastapi==0.109.0",
+        "pydantic==2.5.3",
+        "transformers==4.36.2",
+        "torch==2.1.2"
+      ],
+      "structure": {
+        "src": [
+          "main.py",
+          "routes/",
+          "services/",
+          "models/",
+          "utils/"
+        ],
+        "tests": [
+          "test_main.py",
+          "test_services.py"
+        ]
+      }
+    }
+  ],
+  "codeGenerationRequests": [
+    {
+      "request_id": "codegen-001",
+      "issue_id": "issue-001",
+      "repo_id": "repo-001",
+      "prompt": "Generate JWT authentication middleware for Express.js",
+      "context": {
+        "language": "JavaScript",
+        "framework": "Express",
+        "existing_auth": false
+      },
+      "status": "pending"
+    },
+    {
+      "request_id": "codegen-002",
+      "issue_id": "issue-002",
+      "repo_id": "repo-001",
+      "prompt": "Fix memory leak in batch processor by implementing proper cleanup",
+      "context": {
+        "language": "JavaScript",
+        "framework": "Express",
+        "file": "src/processors/batch-processor.js"
+      },
+      "status": "completed"
+    }
+  ],
+  "users": [
+    {
+      "id": "user-001",
+      "username": "testuser",
+      "email": "testuser@example.com",
+      "role": "developer"
+    },
+    {
+      "id": "user-002",
+      "username": "admin",
+      "email": "admin@example.com",
+      "role": "admin"
+    }
+  ],
+  "mockResponses": {
+    "llm": {
+      "authMiddleware": "const jwt = require('jsonwebtoken');\n\nfunction authMiddleware(req, res, next) {\n  const token = req.headers.authorization?.split(' ')[1];\n  \n  if (!token) {\n    return res.status(401).json({ error: 'No token provided' });\n  }\n  \n  try {\n    const decoded = jwt.verify(token, process.env.JWT_SECRET);\n    req.user = decoded;\n    next();\n  } catch (error) {\n    return res.status(401).json({ error: 'Invalid token' });\n  }\n}\n\nmodule.exports = authMiddleware;",
+      "memoryLeakFix": "// Add proper cleanup in batch processor\nclass BatchProcessor {\n  constructor() {\n    this.items = [];\n  }\n  \n  process(batch) {\n    this.items.push(...batch);\n    // Process items\n    const results = this.items.map(item => this.processItem(item));\n    \n    // Clear processed items to prevent memory leak\n    this.items = [];\n    \n    return results;\n  }\n  \n  processItem(item) {\n    // Processing logic\n    return item;\n  }\n}"
+    }
+  }
+}

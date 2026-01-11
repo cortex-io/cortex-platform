@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dockerhub-config-sandfly
+  namespace: default
+data:
+  config.json: |
+    {
+      "auths": {
+        "https://index.docker.io/v1/": {}
+      }
+    }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-sandfly-build
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: git-clone
+        image: alpine/git:latest
+        command:
+          - sh
+          - -c
+          - |
+            echo "Cloning cortex repo..."
+            git clone --depth 1 https://github.com/ry-ops/cortex.git /workspace-temp
+            echo "Copying sandfly MCP server files..."
+            cp -r /workspace-temp/mcp-servers/sandfly/* /workspace/
+            echo "Contents of /workspace:"
+            ls -la /workspace/
+            echo "Checking for Dockerfile:"
+            ls -la /workspace/Dockerfile || echo "ERROR: No Dockerfile found!"
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+          - "--context=/workspace"
+          - "--dockerfile=/workspace/Dockerfile"
+          - "--destination=ryops/mcp-sandfly:latest"
+          - "--cache=true"
+          - "--skip-tls-verify"
+          - "--verbosity=debug"
+        env:
+          - name: DOCKER_CONFIG
+            value: /kaniko/.docker
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+          - name: docker-config
+            mountPath: /kaniko/.docker
+      volumes:
+        - name: workspace
+          emptyDir: {}
+        - name: docker-config
+          configMap:
+            name: dockerhub-config-sandfly

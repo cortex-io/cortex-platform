@@ -1,0 +1,38 @@
+{
+  "handoff_id": "self-opt-timeout-002",
+  "task_id": "self-opt-timeout-002",
+  "assigned_to": "\ndevelopment",
+  "created_at": "2025-12-05T08:26:32-0600",
+  "status": "pending",
+  "task": {
+    "id": "self-opt-timeout-002",
+    "title": "Integrate timeout learning with worker spawning",
+    "type": "development",
+    "description": "development: Modify scripts/spawn-worker.sh to use learned timeouts. Before spawning, call get_recommended_timeout() based on task type and complexity. After completion, record actual duration and outcome. Add timeout hit detection and logging.",
+    "priority": "high",
+    "status": "pending",
+    "created_at": "2025-12-05T08:23:22-0600",
+    "created_by": "self-optimization-initiative",
+    "context": {
+      "track_id": "track-a-timeout-learning",
+      "track_name": "Timeout Learning System",
+      "complexity": 6,
+      "dependencies": [
+        "timeout-001"
+      ],
+      "deliverables": [
+        "scripts/spawn-worker.sh (modified)",
+        "testing/integration/timeout-integration.test.sh"
+      ],
+      "test_command": "./testing/integration/timeout-integration.test.sh",
+      "acceptance_criteria": [
+        "Workers spawn with learned timeouts instead of default 300s",
+        "Successful completions record duration",
+        "Timeout events record duration",
+        "Integration tests validate end-to-end flow"
+      ],
+      "self_optimization": true,
+      "parallel_track": true
+    }
+  }
+}

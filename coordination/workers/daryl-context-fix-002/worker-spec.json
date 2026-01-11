@@ -1,0 +1,27 @@
+{
+  "worker_id": "daryl-context-fix-002",
+  "worker_type": "fix-worker",
+  "task_id": "task-context-persistence-003",
+  "parent_master": "development",
+  "status": "pending",
+  "created_at": "2025-12-25T22:56:20Z",
+  "context": {
+    "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-context-persistence-003.json",
+    "priority": "critical",
+    "governance_bypass": true,
+    "reason": "Development work for critical chat context persistence"
+  },
+  "resources": {
+    "token_budget": 50000,
+    "timeout_minutes": 120
+  },
+  "task_data": {
+    "title": "Fix Conversational Context Dropping Issue",
+    "description": "Diagnose and fix the conversation context dropping after a few messages using Redis",
+    "target_files": [
+      "/tmp/cortex-chat/backend/src/services/claude.ts",
+      "/tmp/cortex-chat/backend/src/routes/chat.ts"
+    ],
+    "solution_approach": "Redis-based session storage with automatic summarization"
+  }
+}

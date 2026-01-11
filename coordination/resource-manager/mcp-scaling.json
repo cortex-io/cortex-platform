@@ -1,0 +1,718 @@
+{
+  "version": "1.0.0",
+  "description": "KEDA ScaledObject templates and scaling configurations for MCP servers",
+  "last_updated": "2025-12-09",
+  "keda_version": "2.12.0",
+  "scaling_templates": {
+    "filesystem_server": {
+      "name": "mcp-filesystem-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-filesystem-server",
+      "scaling_config": {
+        "min_replicas": 0,
+        "max_replicas": 10,
+        "polling_interval_seconds": 30,
+        "cooldown_period_seconds": 300,
+        "scale_to_zero": true
+      },
+      "triggers": [
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "mcp_filesystem_request_rate",
+            "threshold": "10",
+            "activation_threshold": "1",
+            "query": "sum(rate(mcp_requests_total{server=\"filesystem\"}[1m]))"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "256Mi",
+          "cpu": "250m"
+        },
+        "limits": {
+          "memory": "512Mi",
+          "cpu": "500m"
+        }
+      }
+    },
+    "git_server": {
+      "name": "mcp-git-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-git-server",
+      "scaling_config": {
+        "min_replicas": 1,
+        "max_replicas": 15,
+        "polling_interval_seconds": 20,
+        "cooldown_period_seconds": 240,
+        "scale_to_zero": false
+      },
+      "triggers": [
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "git_operations_per_second",
+            "threshold": "20",
+            "query": "sum(rate(mcp_git_operations_total[1m]))"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "git_clone_queue_depth",
+            "threshold": "5",
+            "query": "sum(mcp_git_clone_queue_length)"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "512Mi",
+          "cpu": "500m",
+          "ephemeral_storage": "2Gi"
+        },
+        "limits": {
+          "memory": "1Gi",
+          "cpu": "1000m",
+          "ephemeral_storage": "5Gi"
+        }
+      }
+    },
+    "database_server": {
+      "name": "mcp-database-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-database-server",
+      "scaling_config": {
+        "min_replicas": 2,
+        "max_replicas": 20,
+        "polling_interval_seconds": 15,
+        "cooldown_period_seconds": 180,
+        "scale_to_zero": false
+      },
+      "triggers": [
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "database_query_rate",
+            "threshold": "100",
+            "query": "sum(rate(mcp_database_queries_total[1m]))"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "database_connection_pool_utilization",
+            "threshold": "0.8",
+            "query": "sum(mcp_database_connections_active) / sum(mcp_database_connections_max)"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "512Mi",
+          "cpu": "500m"
+        },
+        "limits": {
+          "memory": "1Gi",
+          "cpu": "1000m"
+        }
+      }
+    },
+    "http_server": {
+      "name": "mcp-http-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-http-server",
+      "scaling_config": {
+        "min_replicas": 0,
+        "max_replicas": 30,
+        "polling_interval_seconds": 10,
+        "cooldown_period_seconds": 120,
+        "scale_to_zero": true
+      },
+      "triggers": [
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "http_requests_per_second",
+            "threshold": "150",
+            "activation_threshold": "10",
+            "query": "sum(rate(http_requests_total{namespace=\"cortex-mcp\",service=\"mcp-http-server\"}[1m]))"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "http_request_duration_p95",
+            "threshold": "1.5",
+            "query": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"cortex-mcp\",service=\"mcp-http-server\"}[5m])) by (le))"
+          }
+        }
+      ],
+      "advanced_config": {
+        "behavior": {
+          "scale_down": {
+            "stabilization_window_seconds": 300,
+            "policies": [
+              {
+                "type": "Percent",
+                "value": 50,
+                "period_seconds": 60
+              }
+            ]
+          },
+          "scale_up": {
+            "stabilization_window_seconds": 0,
+            "policies": [
+              {
+                "type": "Percent",
+                "value": 100,
+                "period_seconds": 15
+              },
+              {
+                "type": "Pods",
+                "value": 5,
+                "period_seconds": 15
+              }
+            ],
+            "select_policy": "Max"
+          }
+        }
+      },
+      "resource_limits": {
+        "requests": {
+          "memory": "256Mi",
+          "cpu": "250m"
+        },
+        "limits": {
+          "memory": "512Mi",
+          "cpu": "500m"
+        }
+      }
+    },
+    "queue_processor": {
+      "name": "mcp-queue-processor-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-queue-processor",
+      "scaling_config": {
+        "min_replicas": 1,
+        "max_replicas": 50,
+        "polling_interval_seconds": 10,
+        "cooldown_period_seconds": 60,
+        "scale_to_zero": false
+      },
+      "triggers": [
+        {
+          "type": "redis",
+          "metadata": {
+            "address": "redis-master.cortex-mcp:6379",
+            "password_from_env": "REDIS_PASSWORD",
+            "database_index": "0",
+            "list_name": "mcp_task_queue",
+            "list_length": "5",
+            "activation_list_length": "1"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "queue_processing_lag_seconds",
+            "threshold": "30",
+            "query": "max(time() - mcp_queue_task_timestamp)"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "512Mi",
+          "cpu": "500m"
+        },
+        "limits": {
+          "memory": "1Gi",
+          "cpu": "1000m"
+        }
+      }
+    },
+    "ai_inference_server": {
+      "name": "mcp-ai-inference-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-ai-inference-server",
+      "scaling_config": {
+        "min_replicas": 2,
+        "max_replicas": 10,
+        "polling_interval_seconds": 20,
+        "cooldown_period_seconds": 300,
+        "scale_to_zero": false
+      },
+      "triggers": [
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "ai_inference_queue_depth",
+            "threshold": "10",
+            "query": "sum(ai_inference_queue_length)"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "ai_active_sessions",
+            "threshold": "20",
+            "query": "sum(ai_sessions_active)"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "gpu_utilization",
+            "threshold": "75",
+            "query": "avg(nvidia_gpu_duty_cycle{namespace=\"cortex-mcp\",pod=~\"mcp-ai-inference-.*\"})"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "2Gi",
+          "cpu": "1000m",
+          "nvidia_gpu": 1
+        },
+        "limits": {
+          "memory": "4Gi",
+          "cpu": "2000m",
+          "nvidia_gpu": 1
+        }
+      },
+      "node_selector": {
+        "nvidia.com/gpu": "true"
+      }
+    },
+    "batch_processor": {
+      "name": "mcp-batch-processor-scaler",
+      "namespace": "cortex-mcp",
+      "deployment": "mcp-batch-processor",
+      "scaling_config": {
+        "min_replicas": 0,
+        "max_replicas": 20,
+        "polling_interval_seconds": 30,
+        "cooldown_period_seconds": 300,
+        "scale_to_zero": true
+      },
+      "triggers": [
+        {
+          "type": "cron",
+          "metadata": {
+            "timezone": "America/Los_Angeles",
+            "start": "0 8 * * *",
+            "end": "0 18 * * *",
+            "desired_replicas": "5"
+          }
+        },
+        {
+          "type": "cron",
+          "metadata": {
+            "timezone": "America/Los_Angeles",
+            "start": "0 18 * * *",
+            "end": "0 8 * * *",
+            "desired_replicas": "1"
+          }
+        },
+        {
+          "type": "prometheus",
+          "metadata": {
+            "server_address": "http://prometheus-server.monitoring:9090",
+            "metric_name": "batch_jobs_pending",
+            "threshold": "10",
+            "query": "sum(batch_jobs_pending)"
+          }
+        }
+      ],
+      "resource_limits": {
+        "requests": {
+          "memory": "1Gi",
+          "cpu": "500m"
+        },
+        "limits": {
+          "memory": "2Gi",
+          "cpu": "1000m"
+        }
+      }
+    }
+  },
+  "scaling_thresholds": {
+    "low_traffic": {
+      "requests_per_second": 10,
+      "target_replicas": 1,
+      "scale_down_after_minutes": 10
+    },
+    "medium_traffic": {
+      "requests_per_second": 50,
+      "target_replicas": 5,
+      "scale_down_after_minutes": 5
+    },
+    "high_traffic": {
+      "requests_per_second": 150,
+      "target_replicas": 15,
+      "scale_down_after_minutes": 3
+    },
+    "peak_traffic": {
+      "requests_per_second": 300,
+      "target_replicas": 30,
+      "scale_down_after_minutes": 5
+    }
+  },
+  "scaling_policies": {
+    "aggressive_scale_up": {
+      "description": "Rapid scaling for traffic spikes",
+      "stabilization_window_seconds": 0,
+      "policies": [
+        {
+          "type": "Percent",
+          "value": 200,
+          "period_seconds": 15
+        },
+        {
+          "type": "Pods",
+          "value": 10,
+          "period_seconds": 15
+        }
+      ],
+      "select_policy": "Max"
+    },
+    "conservative_scale_up": {
+      "description": "Gradual scaling for cost optimization",
+      "stabilization_window_seconds": 60,
+      "policies": [
+        {
+          "type": "Percent",
+          "value": 50,
+          "period_seconds": 60
+        },
+        {
+          "type": "Pods",
+          "value": 2,
+          "period_seconds": 60
+        }
+      ],
+      "select_policy": "Min"
+    },
+    "aggressive_scale_down": {
+      "description": "Fast scale-down for cost savings",
+      "stabilization_window_seconds": 60,
+      "policies": [
+        {
+          "type": "Percent",
+          "value": 100,
+          "period_seconds": 30
+        }
+      ]
+    },
+    "conservative_scale_down": {
+      "description": "Slow scale-down to prevent flapping",
+      "stabilization_window_seconds": 300,
+      "policies": [
+        {
+          "type": "Percent",
+          "value": 25,
+          "period_seconds": 60
+        },
+        {
+          "type": "Pods",
+          "value": 1,
+          "period_seconds": 60
+        }
+      ],
+      "select_policy": "Min"
+    }
+  },
+  "warm_standby_configurations": {
+    "critical_services": {
+      "description": "Always-on services requiring immediate response",
+      "min_replicas": 3,
+      "max_replicas": 30,
+      "target_cpu_utilization": 70,
+      "target_memory_utilization": 80,
+      "pod_disruption_budget": {
+        "min_available": 2
+      },
+      "services": [
+        "mcp-database-server",
+        "mcp-git-server",
+        "mcp-ai-inference-server"
+      ]
+    },
+    "standard_services": {
+      "description": "Regular services with warm standby",
+      "min_replicas": 1,
+      "max_replicas": 20,
+      "target_cpu_utilization": 75,
+      "target_memory_utilization": 85,
+      "pod_disruption_budget": {
+        "min_available": 1
+      },
+      "services": [
+        "mcp-http-server"
+      ]
+    },
+    "ephemeral_services": {
+      "description": "Services that can scale to zero",
+      "min_replicas": 0,
+      "max_replicas": 15,
+      "target_cpu_utilization": 80,
+      "target_memory_utilization": 90,
+      "scale_to_zero_grace_period_minutes": 10,
+      "services": [
+        "mcp-filesystem-server",
+        "mcp-batch-processor"
+      ]
+    }
+  },
+  "cost_optimization": {
+    "spot_instance_config": {
+      "enabled": true,
+      "tolerations": [
+        {
+          "key": "node.kubernetes.io/spot",
+          "operator": "Equal",
+          "value": "true",
+          "effect": "NoSchedule"
+        }
+      ],
+      "node_affinity_weight": 100,
+      "applicable_to": [
+        "mcp-batch-processor",
+        "mcp-queue-processor",
+        "mcp-filesystem-server"
+      ]
+    },
+    "vertical_pod_autoscaler": {
+      "enabled": true,
+      "update_mode": "Auto",
+      "min_allowed": {
+        "cpu": "100m",
+        "memory": "128Mi"
+      },
+      "max_allowed": {
+        "cpu": "4000m",
+        "memory": "8Gi"
+      },
+      "applicable_to": [
+        "mcp-http-server",
+        "mcp-git-server",
+        "mcp-database-server"
+      ]
+    },
+    "scale_to_zero_strategy": {
+      "enabled": true,
+      "idle_timeout_minutes": 10,
+      "grace_period_seconds": 30,
+      "applicable_to": [
+        "mcp-filesystem-server",
+        "mcp-batch-processor"
+      ]
+    },
+    "resource_quotas": {
+      "namespace": "cortex-mcp",
+      "requests": {
+        "cpu": "50",
+        "memory": "100Gi",
+        "storage": "500Gi"
+      },
+      "limits": {
+        "cpu": "100",
+        "memory": "200Gi"
+      },
+      "max_pods": 100
+    }
+  },
+  "monitoring_config": {
+    "prometheus_rules": [
+      {
+        "name": "mcp_scaling_high_latency",
+        "expr": "mcp:request_duration:p95 > 2 and kube_deployment_status_replicas{namespace=\"cortex-mcp\"} >= kube_deployment_spec_replicas{namespace=\"cortex-mcp\"} * 0.9",
+        "for": "5m",
+        "severity": "warning",
+        "summary": "MCP server latency high despite scaling"
+      },
+      {
+        "name": "mcp_at_max_scale",
+        "expr": "kube_deployment_status_replicas{namespace=\"cortex-mcp\"} >= kube_horizontalpodautoscaler_spec_max_replicas{namespace=\"cortex-mcp\"}",
+        "for": "10m",
+        "severity": "critical",
+        "summary": "MCP server at maximum scale capacity"
+      },
+      {
+        "name": "mcp_frequent_scaling",
+        "expr": "rate(keda_scaler_activity{namespace=\"cortex-mcp\"}[15m]) > 0.5",
+        "for": "30m",
+        "severity": "warning",
+        "summary": "MCP server experiencing frequent scaling events"
+      },
+      {
+        "name": "mcp_scale_to_zero_stuck",
+        "expr": "kube_deployment_status_replicas{namespace=\"cortex-mcp\"} > 0 and rate(mcp_requests_total{namespace=\"cortex-mcp\"}[10m]) == 0",
+        "for": "30m",
+        "severity": "info",
+        "summary": "MCP server not scaling to zero despite no traffic"
+      },
+      {
+        "name": "mcp_cold_start_slow",
+        "expr": "avg(mcp_pod_startup_duration_seconds{namespace=\"cortex-mcp\"}) > 30",
+        "for": "5m",
+        "severity": "warning",
+        "summary": "MCP server cold start taking too long"
+      }
+    ],
+    "grafana_dashboards": [
+      {
+        "name": "MCP Scaling Overview",
+        "uid": "mcp-scaling-overview",
+        "panels": [
+          "request_rate",
+          "pod_replicas",
+          "response_time_p95",
+          "cpu_utilization",
+          "memory_utilization",
+          "scaling_events"
+        ]
+      },
+      {
+        "name": "MCP Cost Analysis",
+        "uid": "mcp-cost-analysis",
+        "panels": [
+          "hourly_pod_cost",
+          "total_cost_trend",
+          "resource_waste",
+          "spot_instance_savings"
+        ]
+      }
+    ],
+    "service_monitor": {
+      "enabled": true,
+      "interval": "30s",
+      "path": "/metrics",
+      "port": "metrics"
+    }
+  },
+  "cold_start_optimization": {
+    "image_pull_policy": "IfNotPresent",
+    "preload_modules": true,
+    "cache_warming": {
+      "enabled": true,
+      "init_container": true,
+      "warmup_script": "/app/scripts/warm-cache.js"
+    },
+    "lazy_loading": {
+      "enabled": true,
+      "modules": {
+        "filesystem": {
+          "load_on_demand": true,
+          "cache_timeout_seconds": 3600
+        },
+        "git": {
+          "load_on_demand": true,
+          "cache_timeout_seconds": 1800
+        },
+        "database": {
+          "load_on_demand": false,
+          "preload": true
+        }
+      }
+    },
+    "topology_aware_scheduling": {
+      "enabled": true,
+      "spread_across_zones": true,
+      "prefer_cached_nodes": true
+    }
+  },
+  "scaling_best_practices": {
+    "general": [
+      "Set appropriate resource requests and limits to prevent over-provisioning",
+      "Use multiple triggers for more accurate scaling decisions",
+      "Implement gradual scale-up and conservative scale-down to prevent flapping",
+      "Monitor cold start times and optimize container startup",
+      "Use scale-to-zero for cost savings on intermittent workloads",
+      "Keep warm standby for critical services requiring immediate response",
+      "Implement Pod Disruption Budgets to maintain availability during scaling"
+    ],
+    "keda_specific": [
+      "Use activation threshold to prevent scaling from zero on noise",
+      "Set appropriate polling intervals (lower for responsive, higher for cost)",
+      "Configure cooldown periods to prevent rapid scaling oscillations",
+      "Use fallback configuration for scaler failures",
+      "Combine multiple triggers with AND/OR logic for complex scenarios",
+      "Test scale-to-zero behavior in staging before production"
+    ],
+    "cost_optimization": [
+      "Enable scale-to-zero for non-critical workloads",
+      "Use spot/preemptible instances for fault-tolerant workloads",
+      "Implement VPA to right-size resource requests",
+      "Monitor resource waste and adjust limits accordingly",
+      "Use time-based scaling to reduce capacity during off-hours",
+      "Set resource quotas to prevent runaway costs"
+    ],
+    "performance": [
+      "Optimize cold starts with image caching and pre-warming",
+      "Use readiness probes to ensure pods are ready before receiving traffic",
+      "Implement health checks for graceful degradation",
+      "Monitor p95/p99 latencies and scale proactively",
+      "Use topology spread constraints for availability",
+      "Configure HPA behavior for aggressive scale-up, conservative scale-down"
+    ]
+  },
+  "troubleshooting": {
+    "scaling_not_happening": [
+      "Check KEDA operator logs: kubectl logs -n keda deploy/keda-operator",
+      "Verify ScaledObject status: kubectl describe scaledobject <name> -n cortex-mcp",
+      "Check metrics availability: kubectl get --raw /apis/external.metrics.k8s.io/v1beta1",
+      "Validate Prometheus queries return data",
+      "Ensure deployment has correct labels matching ScaledObject"
+    ],
+    "frequent_scaling_flapping": [
+      "Increase cooldown period to allow pods to stabilize",
+      "Adjust thresholds to create larger buffer zones",
+      "Increase stabilization window for scale-down",
+      "Check for metric spikes causing false positives",
+      "Review application performance for resource leaks"
+    ],
+    "slow_cold_starts": [
+      "Optimize Dockerfile for faster builds and smaller images",
+      "Use init containers to pre-warm caches",
+      "Implement lazy loading for non-critical modules",
+      "Ensure images are cached on nodes",
+      "Review startup probes and increase failure threshold if needed"
+    ],
+    "not_scaling_to_zero": [
+      "Check for lingering connections or active requests",
+      "Verify activation threshold is not triggering on noise",
+      "Review idle timeout configuration",
+      "Check for scheduled cron triggers preventing scale-down",
+      "Ensure no minimum replica count is set"
+    ],
+    "hitting_max_replicas": [
+      "Review max replica limit and increase if needed",
+      "Check for performance bottlenecks causing high load",
+      "Optimize application code to handle more load per pod",
+      "Consider vertical scaling (VPA) in addition to horizontal",
+      "Review resource limits preventing efficient pod utilization"
+    ]
+  },
+  "references": {
+    "keda_documentation": "https://keda.sh/docs/",
+    "keda_scalers": "https://keda.sh/docs/scalers/",
+    "kubernetes_hpa": "https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/",
+    "knative_serving": "https://knative.dev/docs/serving/",
+    "prometheus_operator": "https://prometheus-operator.dev/",
+    "vertical_pod_autoscaler": "https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler"
+  }
+}

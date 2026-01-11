@@ -1,0 +1,36 @@
+{
+  "patterns": [
+    {
+      "pattern_id": "indirect-dependency-axios",
+      "description": "Axios vulnerability through indirect dependency",
+      "indicators": ["axios as indirect dependency", "linkedin-jobs-api"],
+      "remediation_strategy": "Enable Dependabot auto-fix and monitor for PRs. If no PR generated within 48h, manually update parent package or use npm audit fix",
+      "success_rate": 0.85,
+      "learned_from": ["ATSFlow-axios-vulnerabilities"]
+    },
+    {
+      "pattern_id": "python-ml-packages",
+      "description": "ML/AI Python packages with security vulnerabilities",
+      "indicators": ["torch", "mlflow", "langchain", "transformers"],
+      "remediation_strategy": "Update to latest stable versions. These packages release security patches frequently",
+      "success_rate": 0.95,
+      "learned_from": ["cortex-ml-vulnerabilities"]
+    },
+    {
+      "pattern_id": "esbuild-dev-server",
+      "description": "esbuild development server vulnerability",
+      "indicators": ["esbuild <= 0.24.2"],
+      "remediation_strategy": "Update to esbuild >=0.25.0 in package.json",
+      "success_rate": 0.98,
+      "learned_from": ["DriveIQ-esbuild", "cortex-esbuild"]
+    },
+    {
+      "pattern_id": "no-fix-available",
+      "description": "Vulnerabilities with no fix available",
+      "indicators": ["ecdsa timing attack"],
+      "remediation_strategy": "Risk assessment required. Consider: 1) Accept risk if not exploitable in context, 2) Find alternative package, 3) Apply compensating controls",
+      "success_rate": null,
+      "learned_from": ["DriveIQ-ecdsa"]
+    }
+  ]
+}

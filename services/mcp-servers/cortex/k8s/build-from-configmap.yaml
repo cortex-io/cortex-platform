@@ -1,0 +1,108 @@
+---
+# Build Job using source from ConfigMap (no GitHub needed)
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cortex-mcp-build-from-cm
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: cortex-mcp-server
+        component: builder
+    spec:
+      restartPolicy: Never
+      serviceAccountName: kaniko-builder
+
+      initContainers:
+      # Extract source from ConfigMap
+      - name: prepare-workspace
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Preparing workspace from ConfigMap..."
+
+          # Create directory structure
+          mkdir -p /workspace/src/clients \
+                   /workspace/src/worker-pool \
+                   /workspace/src/masters \
+                   /workspace/src/tools
+
+          # Copy files from ConfigMap
+          cp /source/Dockerfile /workspace/
+          cp /source/package.json /workspace/
+
+          # Copy all src files
+          for file in /source/src/*; do
+            if [ -f "$file" ]; then
+              cp "$file" /workspace/src/
+            fi
+          done
+
+          # Copy subdirectory files
+          for subdir in clients worker-pool masters tools; do
+            for file in /source/src/${subdir}/*; do
+              if [ -f "$file" ]; then
+                cp "$file" /workspace/src/${subdir}/
+              fi
+            done
+          done
+
+          echo "Workspace prepared:"
+          ls -la /workspace/
+          ls -la /workspace/src/
+
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        - name: source
+          mountPath: /source
+
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+        - "--dockerfile=/workspace/Dockerfile"
+        - "--context=/workspace"
+        - "--destination=docker-registry.cortex-chat.svc.cluster.local:5000/cortex-mcp-server:latest"
+        - "--destination=docker-registry.cortex-chat.svc.cluster.local:5000/cortex-mcp-server:build-$(date +%Y%m%d-%H%M%S)"
+        - "--insecure"
+        - "--skip-tls-verify"
+        - "--cache=true"
+        - "--cache-repo=docker-registry.cortex-chat.svc.cluster.local:5000/cache"
+        - "--snapshot-mode=redo"
+        - "--log-format=text"
+        - "--verbosity=info"
+
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        - name: docker-config
+          mountPath: /kaniko/.docker
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      - name: source
+        configMap:
+          name: cortex-mcp-src
+      - name: docker-config
+        configMap:
+          name: docker-config

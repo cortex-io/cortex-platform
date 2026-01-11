@@ -1,0 +1,62 @@
+[
+  {
+    "query": "Fix SQL injection vulnerability in user login",
+    "expected_master": "security",
+    "expected_confidence": 0.95,
+    "routing_method": "keyword"
+  },
+  {
+    "query": "Implement user authentication with OAuth2",
+    "expected_master": "development",
+    "expected_confidence": 0.9,
+    "routing_method": "semantic"
+  },
+  {
+    "query": "Deploy new API version to production",
+    "expected_master": "cicd",
+    "expected_confidence": 0.92,
+    "routing_method": "keyword"
+  },
+  {
+    "query": "Update documentation for configuration options",
+    "expected_master": "inventory",
+    "expected_confidence": 0.88,
+    "routing_method": "semantic"
+  },
+  {
+    "query": "Optimize database connection pooling",
+    "expected_master": "development",
+    "expected_confidence": 0.85,
+    "routing_method": "semantic"
+  },
+  {
+    "query": "Scan for sensitive data exposure",
+    "expected_master": "security",
+    "expected_confidence": 0.93,
+    "routing_method": "keyword"
+  },
+  {
+    "query": "Create pull request with test coverage",
+    "expected_master": "achievement",
+    "expected_confidence": 0.87,
+    "routing_method": "semantic"
+  },
+  {
+    "query": "Refactor legacy authentication module",
+    "expected_master": "development",
+    "expected_confidence": 0.86,
+    "routing_method": "semantic"
+  },
+  {
+    "query": "Audit API key usage and permissions",
+    "expected_master": "security",
+    "expected_confidence": 0.91,
+    "routing_method": "keyword"
+  },
+  {
+    "query": "Generate performance metrics dashboard",
+    "expected_master": "achievement",
+    "expected_confidence": 0.84,
+    "routing_method": "rag_enhanced"
+  }
+]

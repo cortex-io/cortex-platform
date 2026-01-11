@@ -1,0 +1,201 @@
+{
+  "routing_strategy": "mixture_of_experts",
+  "version": "1.0.0",
+  "description": "MoE-inspired routing patterns for intelligent task distribution across specialist masters",
+  "thresholds": {
+    "single_expert": 0.8,
+    "multi_expert": 0.6,
+    "minimum_activation": 0.3
+  },
+  "experts": {
+    "development": {
+      "description": "Development specialist for features, bug fixes, and code improvements",
+      "specializations": [
+        "feature implementation",
+        "bug fixes",
+        "code refactoring",
+        "performance optimization",
+        "API development",
+        "testing"
+      ],
+      "activation_keywords": [
+        "implement",
+        "add",
+        "create",
+        "build",
+        "develop",
+        "fix",
+        "bug",
+        "refactor",
+        "optimize",
+        "improve",
+        "enhance",
+        "update",
+        "modify",
+        "change",
+        "test",
+        "unit test",
+        "integration test"
+      ],
+      "confidence_boosters": [
+        "code",
+        "function",
+        "class",
+        "method",
+        "API",
+        "endpoint",
+        "service",
+        "component",
+        "module",
+        "feature",
+        "functionality",
+        "algorithm",
+        "logic",
+        "performance",
+        "speed",
+        "efficiency"
+      ],
+      "negative_indicators": [
+        "document only",
+        "catalog only",
+        "list only",
+        "CVE",
+        "vulnerability",
+        "security audit"
+      ]
+    },
+    "security": {
+      "description": "Security specialist for vulnerability scanning and remediation",
+      "specializations": [
+        "vulnerability scanning",
+        "CVE remediation",
+        "dependency audits",
+        "security patches",
+        "compliance monitoring",
+        "secrets detection"
+      ],
+      "activation_keywords": [
+        "vulnerability",
+        "security",
+        "CVE",
+        "audit",
+        "scan",
+        "exploit",
+        "patch",
+        "fix security",
+        "secure",
+        "harden",
+        "compliance",
+        "secrets",
+        "credentials",
+        "authentication",
+        "authorization",
+        "encryption"
+      ],
+      "confidence_boosters": [
+        "attack",
+        "threat",
+        "malicious",
+        "injection",
+        "XSS",
+        "CSRF",
+        "SQL injection",
+        "buffer overflow",
+        "dependency",
+        "npm audit",
+        "OWASP",
+        "penetration",
+        "security scan"
+      ],
+      "negative_indicators": [
+        "feature",
+        "new functionality",
+        "performance",
+        "document",
+        "catalog"
+      ]
+    },
+    "inventory": {
+      "description": "Inventory specialist for cataloging and documentation",
+      "specializations": [
+        "repository discovery",
+        "metadata cataloging",
+        "documentation generation",
+        "dependency tracking",
+        "health monitoring",
+        "portfolio management"
+      ],
+      "activation_keywords": [
+        "document",
+        "catalog",
+        "inventory",
+        "list",
+        "discover",
+        "track",
+        "monitor",
+        "survey",
+        "audit repositories",
+        "metadata",
+        "portfolio",
+        "overview",
+        "status",
+        "health check"
+      ],
+      "confidence_boosters": [
+        "repository",
+        "repo",
+        "repositories",
+        "portfolio",
+        "projects",
+        "codebase",
+        "overview",
+        "summary",
+        "README",
+        "documentation",
+        "dependencies",
+        "versions",
+        "health",
+        "status report"
+      ],
+      "negative_indicators": [
+        "implement",
+        "fix bug",
+        "vulnerability",
+        "CVE",
+        "security issue"
+      ]
+    }
+  },
+  "routing_rules": {
+    "parallel_activation": {
+      "description": "Activate multiple experts when confidence is split",
+      "example": "Security vulnerability in a feature → activate both security + development"
+    },
+    "sparse_activation": {
+      "description": "Only activate experts above minimum threshold",
+      "rationale": "Like MoE activating 1B/7B params, only use what's needed"
+    },
+    "confidence_weighted": {
+      "description": "Primary expert gets full task, secondary experts provide support",
+      "example": "80% dev, 65% security → dev is primary, security reviews"
+    }
+  },
+  "merge_strategies": {
+    "sequential": {
+      "description": "Results flow from one expert to next",
+      "example": "Development implements → Security reviews → Inventory documents"
+    },
+    "parallel": {
+      "description": "Experts work independently, results aggregated",
+      "example": "Multiple repos scanned in parallel"
+    },
+    "voting": {
+      "description": "Multiple experts vote on best approach",
+      "example": "Conflicting solutions from different experts"
+    },
+    "weighted": {
+      "description": "Results weighted by expert confidence",
+      "example": "Combine recommendations based on confidence scores"
+    }
+  }
+}

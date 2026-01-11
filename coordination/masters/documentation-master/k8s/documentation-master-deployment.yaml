@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: documentation-master-config
+  namespace: cortex
+data:
+  sources.json: |
+    {
+      "sandfly": {
+        "enabled": true,
+        "priority": "high",
+        "sources": [
+          {
+            "url": "https://docs.sandflysecurity.com",
+            "type": "documentation",
+            "crawl_depth": 5,
+            "update_frequency": "daily"
+          }
+        ]
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: documentation-master
+  namespace: cortex
+  labels:
+    app: documentation-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: documentation-master
+  template:
+    metadata:
+      labels:
+        app: documentation-master
+    spec:
+      containers:
+      - name: doc-master
+        image: alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # Install dependencies
+          apk add --no-cache bash curl jq wget
+
+          # Copy master scripts from ConfigMap volume
+          mkdir -p /app/lib /app/workers /app/config
+
+          # Start the master process
+          echo "Documentation Master starting..."
+          echo "Knowledge base: /data/kb"
+          echo "Cache: /data/cache"
+
+          # Simple HTTP server for queries
+          while true; do
+            echo "Documentation Master ready on port 8080"
+            nc -l -p 8080 -e /bin/sh -c 'echo -e "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"status\":\"ready\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"'
+          done
+        env:
+        - name: KB_PATH
+          value: "/data/kb"
+        - name: CACHE_PATH
+          value: "/data/cache"
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: metrics
+        volumeMounts:
+        - name: kb-storage
+          mountPath: /data/kb
+        - name: cache-storage
+          mountPath: /data/cache
+        - name: config
+          mountPath: /app/config
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+      volumes:
+      - name: kb-storage
+        persistentVolumeClaim:
+          claimName: documentation-master-kb
+      - name: cache-storage
+        persistentVolumeClaim:
+          claimName: documentation-master-cache
+      - name: config
+        configMap:
+          name: documentation-master-config

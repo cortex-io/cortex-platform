@@ -1,0 +1,976 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "schema_version": "https://cortex.ai/schemas/permit-workflow/v1.0.0",
+  "description": "Permit workflow configuration including permit types, approval routing rules, and expiration policies",
+
+  "permit_types": {
+    "read_only": {
+      "permit_type_id": "read_only",
+      "certification_level": 1,
+      "display_name": "Read-Only Permit",
+      "description": "Non-destructive observation and diagnostics",
+
+      "characteristics": {
+        "read_only_access": true,
+        "data_modification_allowed": false,
+        "production_access": true,
+        "minimal_approval_overhead": true,
+        "audit_logging_required": true
+      },
+
+      "auto_approval_conditions": {
+        "max_risk_score": 10,
+        "min_worker_level": 1,
+        "allowed_environments": ["production", "staging", "development"],
+        "operation_types": ["read_only", "query", "export"],
+        "excluded_data_sensitivity": ["pii", "phi", "financial", "credentials"]
+      },
+
+      "use_cases": [
+        "Query production database for debugging",
+        "Read application logs",
+        "View system metrics",
+        "Export monitoring data",
+        "Read-only console access"
+      ]
+    },
+
+    "standard_production": {
+      "permit_type_id": "standard_production",
+      "certification_level": 2,
+      "display_name": "Standard Production Permit",
+      "description": "Regular production deployments and configuration changes",
+
+      "characteristics": {
+        "production_modifications": true,
+        "tested_rollback_required": true,
+        "business_hours_preferred": true,
+        "automated_monitoring": true
+      },
+
+      "requirements": {
+        "test_results": "passed",
+        "code_review": "approved",
+        "rollback_plan": "documented",
+        "monitoring": "configured"
+      },
+
+      "use_cases": [
+        "Deploy application to production",
+        "Update application configuration",
+        "Scale infrastructure resources",
+        "Enable feature flags",
+        "Non-critical service updates"
+      ]
+    },
+
+    "advanced_production": {
+      "permit_type_id": "advanced_production",
+      "certification_level": 3,
+      "display_name": "Advanced Production Permit",
+      "description": "High-risk operations on critical systems",
+
+      "characteristics": {
+        "critical_systems": true,
+        "sensitive_data_access": true,
+        "complex_rollback": true,
+        "rehearsed_execution": true,
+        "real_time_oversight": true
+      },
+
+      "requirements": {
+        "test_results": "comprehensive",
+        "code_review": "approved",
+        "security_review": "approved",
+        "rollback_plan": "tested",
+        "impact_analysis": "completed",
+        "monitoring": "enhanced",
+        "stakeholder_notification": "sent"
+      },
+
+      "use_cases": [
+        "Database schema migration",
+        "Multi-service coordinated deployment",
+        "Security configuration changes",
+        "Data migration with PII/PHI",
+        "Infrastructure architecture changes"
+      ]
+    },
+
+    "master_production": {
+      "permit_type_id": "master_production",
+      "certification_level": 4,
+      "display_name": "Master Production Permit",
+      "description": "System-wide changes with architectural impact",
+
+      "characteristics": {
+        "multi_region": true,
+        "architectural_changes": true,
+        "regulatory_compliance_impact": true,
+        "executive_visibility": true
+      },
+
+      "requirements": {
+        "test_results": "exhaustive",
+        "code_review": "approved",
+        "security_audit": "completed",
+        "architecture_review": "approved",
+        "rollback_plan": "rehearsed",
+        "risk_assessment": "comprehensive",
+        "business_justification": "documented",
+        "customer_communication": "planned",
+        "incident_response": "ready"
+      },
+
+      "use_cases": [
+        "Multi-region infrastructure migration",
+        "Core system architecture changes",
+        "Compliance framework implementation",
+        "Company-wide security policy changes",
+        "Data center migration"
+      ]
+    },
+
+    "emergency": {
+      "permit_type_id": "emergency",
+      "certification_level": 3,
+      "display_name": "Emergency Permit",
+      "description": "Critical incident response requiring immediate action",
+      "temporary": true,
+
+      "characteristics": {
+        "active_incident_required": true,
+        "time_sensitive": true,
+        "temporary_elevation": true,
+        "mandatory_post_review": true
+      },
+
+      "triggers": [
+        "production_outage_severity_1",
+        "security_breach",
+        "data_loss_event",
+        "customer_impact_critical"
+      ],
+
+      "requirements": {
+        "incident_ticket": "required",
+        "real_time_oversight": "mandatory",
+        "post_incident_review": "scheduled"
+      },
+
+      "use_cases": [
+        "Production outage hotfix",
+        "Security breach remediation",
+        "Data recovery operations",
+        "Emergency rollback"
+      ]
+    },
+
+    "destructive": {
+      "permit_type_id": "destructive",
+      "certification_level": 3,
+      "display_name": "Destructive Permit",
+      "description": "Irreversible operations requiring extreme caution",
+
+      "characteristics": {
+        "data_deletion_risk": true,
+        "no_automated_rollback": true,
+        "multiple_approval_stages": true,
+        "enhanced_audit_trail": true
+      },
+
+      "requirements": {
+        "data_backup": "verified",
+        "rollback_plan": "manual_documented",
+        "impact_analysis": "complete",
+        "legal_review": "if_data_retention_affected",
+        "business_justification": "strong"
+      },
+
+      "use_cases": [
+        "Production data deletion",
+        "Database truncation",
+        "Archive purging",
+        "Account deletion (GDPR)",
+        "Permanent resource deletion"
+      ]
+    }
+  },
+
+  "approval_routing_rules": {
+    "risk_score_calculation": {
+      "factors": {
+        "environment": {
+          "production": 10,
+          "staging": 5,
+          "development": 1,
+          "local": 0
+        },
+        "reversibility": {
+          "irreversible": 10,
+          "manual_rollback": 7,
+          "automated_rollback": 3,
+          "fully_reversible": 0
+        },
+        "data_sensitivity": {
+          "pii_phi_financial": 10,
+          "internal_confidential": 7,
+          "internal": 3,
+          "public": 0
+        },
+        "impact_scope": {
+          "multi_region": 10,
+          "system_wide": 8,
+          "multi_service": 6,
+          "single_service": 3,
+          "single_component": 1
+        },
+        "customer_impact": {
+          "all_customers": 10,
+          "customer_segment": 7,
+          "internal_users": 3,
+          "no_users": 0
+        },
+        "service_interruption": {
+          "full": 10,
+          "partial": 5,
+          "none": 0
+        }
+      },
+
+      "certification_thresholds": {
+        "level_0_non_union": {
+          "max_risk_score": 5,
+          "description": "Very low risk, development only"
+        },
+        "level_1_read_only": {
+          "min_risk_score": 0,
+          "max_risk_score": 10,
+          "description": "Low risk, read-only operations"
+        },
+        "level_2_standard": {
+          "min_risk_score": 6,
+          "max_risk_score": 20,
+          "description": "Low to medium risk, standard production"
+        },
+        "level_3_advanced": {
+          "min_risk_score": 21,
+          "max_risk_score": 35,
+          "description": "Medium to high risk, critical systems"
+        },
+        "level_4_master": {
+          "min_risk_score": 36,
+          "description": "Very high risk, system-wide changes"
+        }
+      }
+    },
+
+    "routing_tables": {
+      "level_1_read_only": {
+        "permit_type": "read_only",
+        "approvers": {
+          "roles": ["team_lead", "senior_engineer"],
+          "required_count": 1,
+          "selection_mode": "any"
+        },
+        "sla_hours": 4,
+        "approval_mode": "parallel",
+        "auto_approve_eligible": true
+      },
+
+      "level_2_standard": {
+        "permit_type": "standard_production",
+        "approvers": {
+          "roles": ["engineering_manager", "tech_lead", "senior_engineer"],
+          "required_count": 1,
+          "selection_mode": "any"
+        },
+        "sla_hours": 24,
+        "approval_mode": "parallel",
+        "auto_approve_eligible": false
+      },
+
+      "level_3_advanced": {
+        "permit_type": "advanced_production",
+        "approvers": {
+          "roles": ["engineering_director", "security_lead", "architecture_lead"],
+          "required_count": 2,
+          "selection_mode": "any_2"
+        },
+        "sla_hours": 48,
+        "approval_mode": "parallel",
+        "auto_approve_eligible": false
+      },
+
+      "level_4_master": {
+        "permit_type": "master_production",
+        "approvers": {
+          "roles": ["vp_engineering", "cto", "ciso", "coo"],
+          "required_count": 3,
+          "selection_mode": "minimum_3"
+        },
+        "sla_hours": 168,
+        "approval_mode": "change_advisory_board",
+        "auto_approve_eligible": false,
+        "cab_meeting": {
+          "frequency": "weekly",
+          "advance_notice_days": 7,
+          "presentation_required": true
+        }
+      },
+
+      "emergency": {
+        "permit_type": "emergency",
+        "approvers": {
+          "roles": ["incident_commander", "on_call_lead"],
+          "required_count": 1,
+          "selection_mode": "first_available"
+        },
+        "sla_minutes": 15,
+        "approval_mode": "sequential",
+        "auto_approve_eligible": false,
+        "temporary_certification": {
+          "grant_level": 3,
+          "duration_hours": 1,
+          "auto_revoke": true
+        }
+      },
+
+      "destructive": {
+        "permit_type": "destructive",
+        "approvers": {
+          "roles": ["data_lead", "security_lead", "engineering_director"],
+          "required_count": 3,
+          "selection_mode": "all_must_approve"
+        },
+        "sla_hours": 48,
+        "approval_mode": "sequential",
+        "auto_approve_eligible": false
+      }
+    },
+
+    "override_rules": {
+      "compliance_framework_override": {
+        "SOX": {
+          "min_certification_level": 4,
+          "reason": "Financial compliance requires executive approval"
+        },
+        "HIPAA": {
+          "min_certification_level": 3,
+          "additional_approvers": ["compliance_officer"],
+          "reason": "PHI access requires compliance oversight"
+        },
+        "PCI_DSS": {
+          "min_certification_level": 3,
+          "additional_approvers": ["security_lead"],
+          "reason": "Payment data requires security review"
+        },
+        "GDPR": {
+          "min_certification_level": 3,
+          "additional_requirements": ["data_protection_impact_assessment"],
+          "reason": "EU personal data requires DPA"
+        }
+      },
+
+      "operation_type_override": {
+        "database_migration": {
+          "min_certification_level": 3,
+          "reason": "Schema changes are high-risk"
+        },
+        "infrastructure_change": {
+          "min_certification_level": 3,
+          "reason": "Infrastructure affects system stability"
+        },
+        "security_operation": {
+          "min_certification_level": 3,
+          "additional_approvers": ["security_lead"],
+          "reason": "Security changes require specialized review"
+        },
+        "multi_region": {
+          "min_certification_level": 4,
+          "reason": "Multi-region affects global operations"
+        }
+      }
+    }
+  },
+
+  "expiration_policies": {
+    "by_permit_type": {
+      "read_only": {
+        "default_duration_hours": 168,
+        "max_duration_hours": 720,
+        "renewal_allowed": true,
+        "renewal_approval_required": false,
+        "renewal_auto_approve": true
+      },
+
+      "standard_production": {
+        "default_duration_hours": 24,
+        "max_duration_hours": 168,
+        "renewal_allowed": true,
+        "renewal_approval_required": true,
+        "renewal_same_approver_acceptable": true
+      },
+
+      "advanced_production": {
+        "default_duration_hours": 8,
+        "max_duration_hours": 48,
+        "renewal_allowed": true,
+        "renewal_approval_required": true,
+        "renewal_justification_required": true,
+        "renewal_same_approvers_required": true
+      },
+
+      "master_production": {
+        "default_duration_hours": 4,
+        "max_duration_hours": 24,
+        "renewal_allowed": false,
+        "new_permit_required": true,
+        "reason": "System-wide changes require fresh approval"
+      },
+
+      "emergency": {
+        "default_duration_hours": 1,
+        "max_duration_hours": 4,
+        "renewal_allowed": true,
+        "renewal_approval_required": true,
+        "renewal_incident_commander_only": true,
+        "max_renewals": 3
+      },
+
+      "destructive": {
+        "default_duration_hours": 2,
+        "max_duration_hours": 8,
+        "renewal_allowed": false,
+        "single_use": true,
+        "reason": "Destructive operations should not be extended"
+      }
+    },
+
+    "expiration_warnings": {
+      "warning_schedule": [
+        {
+          "warning_number": 1,
+          "before_expiration_minutes": 30,
+          "notification_channels": ["agent", "approvers"]
+        },
+        {
+          "warning_number": 2,
+          "before_expiration_minutes": 15,
+          "notification_channels": ["agent", "approvers", "monitoring"]
+        },
+        {
+          "warning_number": 3,
+          "before_expiration_minutes": 5,
+          "notification_channels": ["agent", "approvers", "monitoring"],
+          "urgency": "high"
+        }
+      ]
+    },
+
+    "auto_expiration_actions": {
+      "on_expiration": {
+        "revoke_permit": true,
+        "halt_operations": true,
+        "trigger_audit": true,
+        "notify_stakeholders": true
+      },
+      "grace_period_minutes": 5,
+      "allow_completion_if_in_progress": true,
+      "max_completion_time_minutes": 15
+    },
+
+    "renewal_process": {
+      "renewal_window_hours": 2,
+      "renewal_request_fields": [
+        "extension_hours",
+        "justification",
+        "progress_report",
+        "estimated_completion"
+      ],
+      "auto_renewal_conditions": {
+        "permit_types": ["read_only"],
+        "max_renewals": 5,
+        "total_max_duration_hours": 720
+      }
+    }
+  },
+
+  "revocation_triggers": {
+    "automatic_triggers": {
+      "time_expiration": {
+        "action": "immediate_revoke",
+        "notification": "all_stakeholders",
+        "halt_operations": true,
+        "create_audit_entry": true
+      },
+
+      "safety_violation": {
+        "action": "immediate_revoke_and_rollback",
+        "notification": "emergency",
+        "create_incident": true,
+        "escalate_to": "security_team",
+        "severity": "critical"
+      },
+
+      "scope_expansion": {
+        "action": "immediate_revoke",
+        "notification": "approvers",
+        "escalation": "security_team",
+        "create_audit_entry": true,
+        "severity": "high"
+      },
+
+      "constraint_breach": {
+        "action": "immediate_revoke",
+        "notification": "monitoring_team",
+        "trigger_rollback": true,
+        "create_audit_entry": true,
+        "severity": "high"
+      },
+
+      "worker_certification_revoked": {
+        "action": "immediate_revoke_all_permits",
+        "notification": "security_team",
+        "halt_all_operations": true,
+        "severity": "critical"
+      }
+    },
+
+    "manual_triggers": {
+      "approver_request": {
+        "authorized_by": ["original_approvers", "security_lead", "incident_commander"],
+        "action": "revoke_after_confirmation",
+        "notification": "permit_holder",
+        "reason_required": true
+      },
+
+      "security_incident": {
+        "authorized_by": ["security_lead", "ciso", "incident_commander"],
+        "action": "immediate_revoke",
+        "notification": "all_stakeholders",
+        "create_incident": true,
+        "severity": "critical"
+      },
+
+      "emergency_halt": {
+        "authorized_by": ["incident_commander", "cto", "coo"],
+        "action": "immediate_revoke_all_related",
+        "notification": "emergency",
+        "halt_all_operations": true,
+        "severity": "critical"
+      },
+
+      "policy_violation": {
+        "authorized_by": ["security_lead", "compliance_officer"],
+        "action": "immediate_revoke",
+        "notification": "permit_holder_and_approvers",
+        "create_audit_entry": true,
+        "severity": "high"
+      }
+    }
+  },
+
+  "audit_requirements": {
+    "by_permit_level": {
+      "level_1_read_only": {
+        "audit_level": "basic",
+        "required_logs": [
+          "operation_timestamp",
+          "worker_id",
+          "operation_type",
+          "resources_accessed",
+          "duration",
+          "outcome"
+        ],
+        "retention_days": 90,
+        "real_time_monitoring": false,
+        "log_destinations": ["audit_log", "metrics"]
+      },
+
+      "level_2_standard": {
+        "audit_level": "standard",
+        "required_logs": [
+          "operation_timestamp",
+          "worker_id",
+          "operation_type",
+          "input_parameters",
+          "output_results",
+          "resources_accessed",
+          "resources_modified",
+          "approver_id",
+          "approval_timestamp",
+          "duration",
+          "outcome",
+          "error_conditions"
+        ],
+        "retention_days": 365,
+        "real_time_monitoring": true,
+        "alerting": true,
+        "log_destinations": ["audit_log", "metrics", "dashboard", "compliance_log"]
+      },
+
+      "level_3_advanced": {
+        "audit_level": "comprehensive",
+        "required_logs": [
+          "operation_timestamp",
+          "worker_id",
+          "certification_level",
+          "operation_type",
+          "input_parameters",
+          "output_results",
+          "data_accessed",
+          "data_modified",
+          "resources_accessed",
+          "resources_modified",
+          "approver_ids",
+          "approval_timestamps",
+          "security_context",
+          "compliance_tags",
+          "rollback_capability",
+          "duration",
+          "outcome",
+          "error_conditions",
+          "constraint_validations"
+        ],
+        "retention_days": 2555,
+        "real_time_monitoring": true,
+        "alerting": true,
+        "security_monitoring": true,
+        "compliance_reporting": true,
+        "log_destinations": ["audit_log", "security_log", "compliance_log", "metrics", "dashboard"]
+      },
+
+      "level_4_master": {
+        "audit_level": "exhaustive",
+        "required_logs": [
+          "operation_timestamp",
+          "worker_id",
+          "certification_level",
+          "operation_type",
+          "input_parameters",
+          "output_results",
+          "data_accessed",
+          "data_modified",
+          "systems_affected",
+          "resources_accessed",
+          "resources_modified",
+          "approver_ids",
+          "approval_timestamps",
+          "approval_reasoning",
+          "security_context",
+          "compliance_tags",
+          "change_justification",
+          "risk_assessment",
+          "impact_analysis",
+          "rollback_capability",
+          "rollback_tested",
+          "duration",
+          "outcome",
+          "error_conditions",
+          "constraint_validations",
+          "stakeholder_notifications"
+        ],
+        "retention_days": 2555,
+        "real_time_monitoring": true,
+        "alerting": true,
+        "security_monitoring": true,
+        "compliance_reporting": true,
+        "executive_visibility": true,
+        "external_audit_ready": true,
+        "log_destinations": [
+          "audit_log",
+          "security_log",
+          "compliance_log",
+          "executive_dashboard",
+          "metrics",
+          "dashboard",
+          "external_audit_system"
+        ]
+      },
+
+      "emergency": {
+        "audit_level": "enhanced",
+        "required_logs": [
+          "All level_3_advanced logs",
+          "emergency_justification",
+          "incident_id",
+          "authorized_by",
+          "real_time_oversight_log",
+          "continuous_action_log",
+          "post_incident_review_id"
+        ],
+        "retention_days": 2555,
+        "real_time_monitoring": true,
+        "real_time_oversight": "mandatory",
+        "screen_recording": "if_available",
+        "continuous_logging": true,
+        "alert_on_any_action": true,
+        "log_destinations": [
+          "audit_log",
+          "security_log",
+          "incident_log",
+          "compliance_log",
+          "dashboard"
+        ]
+      }
+    },
+
+    "compliance_mappings": {
+      "SOC2": {
+        "minimum_certification_level": 2,
+        "required_controls": [
+          "access_logging",
+          "change_management",
+          "approval_workflows",
+          "audit_trails"
+        ],
+        "audit_retention_days": 365
+      },
+      "HIPAA": {
+        "minimum_certification_level": 3,
+        "required_controls": [
+          "access_logging",
+          "encryption",
+          "audit_trails",
+          "incident_response",
+          "phi_protection"
+        ],
+        "audit_retention_days": 2555
+      },
+      "PCI_DSS": {
+        "minimum_certification_level": 3,
+        "required_controls": [
+          "access_logging",
+          "encryption",
+          "network_segmentation",
+          "audit_trails",
+          "change_management"
+        ],
+        "audit_retention_days": 365
+      },
+      "GDPR": {
+        "minimum_certification_level": 3,
+        "required_controls": [
+          "data_protection",
+          "access_logging",
+          "audit_trails",
+          "data_deletion",
+          "consent_management"
+        ],
+        "audit_retention_days": 2555
+      },
+      "SOX": {
+        "minimum_certification_level": 4,
+        "required_controls": [
+          "change_management",
+          "segregation_of_duties",
+          "audit_trails",
+          "approval_workflows",
+          "financial_controls"
+        ],
+        "audit_retention_days": 2555
+      }
+    }
+  },
+
+  "rollback_requirements": {
+    "strategies": {
+      "automated": {
+        "description": "Fully automated rollback triggered by monitoring",
+        "required_for": ["deployment", "configuration_update", "feature_flag"],
+        "max_rollback_time_minutes": 15,
+        "validation_required": "test_rollback_in_staging"
+      },
+
+      "blue_green": {
+        "description": "Zero-downtime deployment with instant rollback",
+        "required_for": ["critical_service_deployment", "database_cutover"],
+        "max_rollback_time_minutes": 5,
+        "validation_required": "both_versions_tested"
+      },
+
+      "canary": {
+        "description": "Gradual rollout with progressive rollback",
+        "required_for": ["high_risk_deployment", "performance_sensitive_change"],
+        "rollout_stages": [1, 10, 25, 50, 100],
+        "max_rollback_time_minutes": 20,
+        "validation_required": "metrics_per_stage"
+      },
+
+      "manual": {
+        "description": "Documented manual rollback procedure",
+        "required_for": ["database_migration", "infrastructure_change", "data_migration"],
+        "procedure_documentation_required": true,
+        "validation_required": "procedure_reviewed"
+      },
+
+      "backup_restore": {
+        "description": "Restore from backup if rollback not possible",
+        "required_for": ["data_migration", "destructive_operation"],
+        "backup_verification_required": true,
+        "validation_required": "restore_tested_within_30_days"
+      }
+    },
+
+    "by_permit_type": {
+      "read_only": {
+        "rollback_strategy": "none",
+        "reason": "No modifications made"
+      },
+      "standard_production": {
+        "rollback_strategy": "automated",
+        "fallback_strategy": "manual",
+        "rollback_tested": true,
+        "max_rollback_time_minutes": 30
+      },
+      "advanced_production": {
+        "rollback_strategy": "blue_green|canary",
+        "fallback_strategy": "manual",
+        "rollback_tested": true,
+        "rollback_rehearsed": true,
+        "max_rollback_time_minutes": 15
+      },
+      "master_production": {
+        "rollback_strategy": "blue_green",
+        "fallback_strategy": "manual",
+        "rollback_tested": true,
+        "rollback_rehearsed": true,
+        "rollback_documented": "comprehensive",
+        "max_rollback_time_minutes": 10
+      },
+      "emergency": {
+        "rollback_strategy": "automated|manual",
+        "rollback_available": "required",
+        "max_rollback_time_minutes": 20
+      },
+      "destructive": {
+        "rollback_strategy": "backup_restore",
+        "backup_verified": true,
+        "data_loss_acceptable": "documented",
+        "restore_tested": true
+      }
+    }
+  },
+
+  "pm_integration": {
+    "state_machine_hooks": {
+      "task_planning": {
+        "hook": "identify_permit_requirements",
+        "actions": [
+          "scan_task_definitions",
+          "flag_production_operations",
+          "estimate_permit_approval_time",
+          "include_in_timeline"
+        ]
+      },
+
+      "task_handoff": {
+        "hook": "validate_permit_before_handoff",
+        "actions": [
+          "evaluate_task_risk",
+          "determine_permit_type",
+          "create_permit_request_if_needed",
+          "block_handoff_until_permit_approved"
+        ]
+      },
+
+      "task_execution": {
+        "hook": "enforce_permit_constraints",
+        "actions": [
+          "check_permit_active",
+          "validate_worker_certification",
+          "verify_time_window",
+          "enforce_constraints",
+          "log_all_operations"
+        ]
+      },
+
+      "task_completion": {
+        "hook": "close_permit_and_audit",
+        "actions": [
+          "validate_deliverables",
+          "check_constraints_met",
+          "close_permit",
+          "generate_audit_report",
+          "update_pm_state"
+        ]
+      },
+
+      "task_failure": {
+        "hook": "handle_permit_failure",
+        "actions": [
+          "trigger_rollback_if_configured",
+          "revoke_permit_if_needed",
+          "create_incident_if_serious",
+          "notify_pm_and_approvers"
+        ]
+      }
+    },
+
+    "timeline_adjustments": {
+      "level_1": "0-4 hours",
+      "level_2": "4-24 hours",
+      "level_3": "24-48 hours",
+      "level_4": "7 days",
+      "emergency": "15 minutes"
+    }
+  },
+
+  "metrics_and_monitoring": {
+    "tracked_metrics": [
+      "permit_requests_total",
+      "permit_approvals_total",
+      "permit_rejections_total",
+      "permit_revocations_total",
+      "average_approval_time_by_level",
+      "permit_success_rate",
+      "permit_failure_rate",
+      "safety_violations_total",
+      "emergency_permits_total",
+      "permit_renewals_total",
+      "sla_compliance_rate"
+    ],
+
+    "alerting_rules": [
+      {
+        "metric": "safety_violations_total",
+        "threshold": 0,
+        "operator": ">",
+        "severity": "critical",
+        "notification": "security_team"
+      },
+      {
+        "metric": "permit_failure_rate",
+        "threshold": 0.1,
+        "operator": ">",
+        "severity": "high",
+        "notification": "engineering_team"
+      },
+      {
+        "metric": "average_approval_time_level_2",
+        "threshold": 24,
+        "operator": ">",
+        "severity": "medium",
+        "notification": "approvers"
+      },
+      {
+        "metric": "emergency_permits_total",
+        "threshold": 5,
+        "operator": ">",
+        "period": "daily",
+        "severity": "high",
+        "notification": "incident_commander"
+      }
+    ],
+
+    "dashboards": [
+      "permit_requests_overview",
+      "approval_queue_status",
+      "active_permits_monitoring",
+      "permit_audit_trail",
+      "compliance_reporting"
+    ]
+  }
+}

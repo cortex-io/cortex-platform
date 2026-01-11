@@ -1,0 +1,69 @@
+{
+  "worker_id": "worker-implementation-001",
+  "worker_type": "implementation-worker",
+  "created_by": "development-master",
+  "execution_manager": null,
+  "created_at": "2025-11-20T07:25:21-0600",
+  "task_id": "task-moe-learning-1763645105819",
+  "status": "zombie",
+  "scope": {},
+  "context": {
+    "targeted_deliverables": [
+      "task-patterns.json",
+      "routing-intelligence.json",
+      "agent-capabilities.json",
+      "security-patterns.json",
+      "development-standards.json",
+      "operational-insights.json",
+      "moe-learning-mastery-report.md"
+    ],
+    "instructions": "COMPREHENSIVE UPDATE: You MUST update ALL 7 deliverables with current system state. Analyze recent commits, current metrics, worker success rates, routing patterns, and system improvements from Nov 8-20. Each deliverable should reflect the latest fixes including: completion detector, heartbeat prompts, daemon supervisor, and expanded routing keywords."
+  },
+  "goal_based_planning": {
+    "enabled": true,
+    "strategy": "direct",
+    "goal_type": "general",
+    "complexity": "medium",
+    "strategy_plan_location": "coordination/knowledge-base/strategy-plans/worker-implementation-001-plan.json"
+  },
+  "resources": {
+    "token_budget": 10000,
+    "timeout_minutes": 45,
+    "max_retries": 1
+  },
+  "deliverables": [],
+  "prompt_template": "agents/prompts/workers/implementation-worker.md",
+  "execution": {
+    "started_at": "2025-11-20T07:25:45-0600",
+    "completed_at": null,
+    "tokens_used": 0,
+    "duration_minutes": 0,
+    "session_id": null
+  },
+  "results": {
+    "status": null,
+    "output_location": null,
+    "summary": null,
+    "artifacts": []
+  },
+  "heartbeat": {
+    "last_heartbeat": "2025-11-20T07:25:45-0600",
+    "heartbeat_sequence": 0,
+    "health": {
+      "status": "healthy",
+      "cpu_usage_percent": 0,
+      "memory_usage_mb": 0,
+      "tokens_used": 0,
+      "tokens_remaining": 0,
+      "active_for_seconds": 0,
+      "last_activity": "initialized"
+    },
+    "warnings": [],
+    "missed_count": 0
+  },
+  "cleanup": {
+    "cleaned_at": "2025-11-20T08:39:00-0600",
+    "reason": "No heartbeat for >300s",
+    "automated": true
+  }
+}

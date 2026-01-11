@@ -1,0 +1,36 @@
+{
+  "master_id": "coordinator",
+  "master_name": "Coordinator Master",
+  "initialized_at": "2025-12-05T08:23:53-0600",
+  "session_id": "3F5AACB0-9024-4A76-B089-641E1CC05095",
+  "status": "idle",
+  "capabilities": [
+    "task_routing",
+    "resource_allocation",
+    "cross_master_coordination",
+    "priority_management",
+    "results_aggregation"
+  ],
+  "specialist_masters": {
+    "security": {
+      "status": "available",
+      "workload": 0,
+      "last_contact": null
+    },
+    "development": {
+      "status": "available",
+      "workload": 0,
+      "last_contact": null
+    },
+    "inventory": {
+      "status": "available",
+      "workload": 0,
+      "last_contact": null
+    }
+  },
+  "active_workers": [],
+  "completed_tasks": 0,
+  "tokens_used": 0,
+  "last_run": "2025-12-05T08:28:02-0600",
+  "last_started": "2025-12-05T08:28:02-0600"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "proactive-security-scan-1765571677-00bfa8a2",
+  "title": "Proactive security scan: ry-ops/n8n-mcp-server",
+  "type": "security-scan",
+  "description": "Automated daily security scan for ry-ops/n8n-mcp-server",
+  "priority": "medium",
+  "status": "pending",
+  "created_at": "2025-12-12T14:34:37-0600",
+  "created_by": "proactive-scanner-daemon",
+  "context": {
+    "repository": "ry-ops/n8n-mcp-server",
+    "scan_types": [
+      "dependencies",
+      "vulnerabilities",
+      "secrets"
+    ],
+    "automated": true,
+    "scan_depth": "full"
+  },
+  "proactive": true
+}

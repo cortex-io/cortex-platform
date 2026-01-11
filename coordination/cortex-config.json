@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-11-27",
+  "description": "Consolidated Cortex configuration",
+  
+  "system": {
+    "project_name": "cortex",
+    "environment": "production",
+    "data_directory": "coordination"
+  },
+  
+  "auto_learning": {
+    "enabled": true,
+    "min_training_examples": 1000,
+    "collection_interval_hours": 1,
+    "training_check_interval_hours": 24,
+    "quality_threshold": 4.0,
+    "min_duration_seconds": 10,
+    "max_duration_seconds": 600
+  },
+  
+  "cleanup": {
+    "enabled": true,
+    "scan_interval_days": 7,
+    "auto_fix_safe_issues": true,
+    "confidence_threshold": 0.95
+  },
+  
+  "governance": {
+    "enabled": true,
+    "strict_mode": true,
+    "token_budget_limit_percent": 95,
+    "require_approval_for_critical_tasks": true
+  },
+  
+  "routing": {
+    "default_strategy": "hybrid",
+    "enable_rag": true,
+    "enable_semantic": false,
+    "enable_neural": false,
+    "clarification_threshold": 0.7
+  },
+  
+  "workers": {
+    "max_concurrent": 10,
+    "heartbeat_interval_seconds": 30,
+    "zombie_cleanup_interval_seconds": 300,
+    "restart_on_failure": true
+  },
+  
+  "medallion": {
+    "enabled": true,
+    "bronze_retention_days": 30,
+    "silver_retention_days": 90,
+    "gold_retention_days": 365
+  },
+  
+  "ab_testing": {
+    "enabled": true,
+    "default_traffic_split": 10,
+    "min_sample_size": 100,
+    "promotion_quality_threshold": 0.2,
+    "promotion_completion_threshold": 5
+  }
+}

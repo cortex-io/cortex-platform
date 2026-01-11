@@ -1,0 +1,11 @@
+{
+  "task_id": "task-dashboard-component",
+  "description": "Create dashboard/components/ObservabilityOverview.jsx with charts",
+  "phase": "phase1-observability",
+  "priority": "high",
+  "created_at": "2025-11-30T08:31:00-06:00",
+  "status": "pending",
+  "dependencies": [],
+  "assigned_workers": [],
+  "quality_score": null
+}

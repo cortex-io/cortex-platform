@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_20251201_165511_d27b177b424c",
+  "event_type": "system.health_alert",
+  "timestamp": "2025-12-01T22:55:11+0000",
+  "source": "on-worker-heartbeat-handler",
+  "correlation_id": "system",
+  "metadata": {
+    "priority": "high"
+  },
+  "payload": {
+    "alert_type": "stale_workers",
+    "workers": [
+      null,
+      "deploy-worker-002",
+      "worker-test-001"
+    ],
+    "threshold_minutes": 5
+  }
+}

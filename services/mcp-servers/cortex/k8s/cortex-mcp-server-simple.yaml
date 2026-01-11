@@ -1,0 +1,422 @@
+---
+# Simple deployment for Cortex MCP Server using ConfigMap source
+# This approach avoids the need for a custom Docker registry
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+    version: v1
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: cortex-mcp-server
+  template:
+    metadata:
+      labels:
+        app: cortex-mcp-server
+        component: mcp-gateway
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: cortex-mcp-server
+
+      initContainers:
+      # Copy source files from ConfigMap to workspace
+      - name: prepare-workspace
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Preparing Cortex MCP Server workspace..."
+
+          # Create directory structure
+          mkdir -p /app/src/clients
+          mkdir -p /app/src/worker-pool
+          mkdir -p /app/src/masters
+          mkdir -p /app/src/tools
+          mkdir -p /app/config
+          mkdir -p /app/coordination/masters
+          mkdir -p /app/coordination/workers
+          mkdir -p /app/coordination/tasks
+
+          # Copy root files
+          echo "Copying root files..."
+          cp /source/package.json /app/
+          cp /source/Dockerfile /app/
+
+          # Copy src files to correct locations
+          echo "Copying src files..."
+          cp /source/index.js /app/src/
+          cp /source/moe-router.js /app/src/
+
+          # Copy client files
+          echo "Copying client files..."
+          cp /source/k8s.js /app/src/clients/
+          cp /source/proxmox.js /app/src/clients/
+          cp /source/unifi.js /app/src/clients/
+          cp /source/wazuh.js /app/src/clients/
+
+          # Copy tool files
+          echo "Copying tool files..."
+          cp /source/query.js /app/src/tools/
+          cp /source/status.js /app/src/tools/
+
+          # Copy worker-pool files
+          echo "Copying worker-pool files..."
+          cp /source/coordinator.js /app/src/worker-pool/
+          cp /source/monitor.js /app/src/worker-pool/
+          cp /source/spawner.js /app/src/worker-pool/
+
+          # List what we have
+          echo "Workspace contents:"
+          ls -la /app/
+          echo ""
+          echo "Source structure:"
+          ls -laR /app/src/
+
+          echo "Workspace preparation complete!"
+        volumeMounts:
+        - name: workspace
+          mountPath: /app
+        - name: source
+          mountPath: /source
+
+      containers:
+      - name: cortex-mcp-server
+        image: node:18-alpine
+        imagePullPolicy: IfNotPresent
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Starting Cortex MCP Server..."
+
+          cd /app
+
+          # Install dependencies
+          echo "Installing dependencies..."
+          npm install --production
+
+          # Create required directories if they don't exist
+          mkdir -p /app/coordination/masters
+          mkdir -p /app/coordination/workers
+          mkdir -p /app/coordination/tasks
+
+          # Create a simple HTTP wrapper and health endpoint
+          cat > /app/http-server.cjs << 'EOF'
+          const http = require('http');
+          const { spawn } = require('child_process');
+
+          const PORT = parseInt(process.env.MCP_PORT || '3000');
+          const HEALTH_PORT = parseInt(process.env.HEALTH_PORT || '8080');
+
+          // Start MCP stdio server process
+          let mcpProcess = null;
+
+          function startMCPServer() {
+            mcpProcess = spawn('node', ['src/index.js'], {
+              cwd: '/app'
+            });
+
+            mcpProcess.stdout.on('data', (data) => {
+              console.log('[MCP stdout]', data.toString());
+            });
+
+            mcpProcess.stderr.on('data', (data) => {
+              console.error('[MCP stderr]', data.toString());
+            });
+
+            mcpProcess.on('exit', (code) => {
+              console.error(`[MCP] Process exited with code ${code}`);
+              // Restart if it crashes
+              setTimeout(startMCPServer, 1000);
+            });
+
+            // Keep stdin open
+            setInterval(() => {
+              try {
+                mcpProcess.stdin.write('\n');
+              } catch (err) {
+                // Ignore
+              }
+            }, 30000);
+          }
+
+          // Health check server
+          const healthServer = http.createServer((req, res) => {
+            if (req.url === '/health') {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({
+                status: 'healthy',
+                server: 'cortex-mcp-server',
+                mode: 'stdio-wrapper',
+                mcp_running: mcpProcess && !mcpProcess.killed
+              }));
+            } else if (req.url === '/metrics') {
+              res.writeHead(200, { 'Content-Type': 'text/plain' });
+              res.end('# Cortex MCP Server Metrics\ncortex_mcp_up 1\n');
+            } else {
+              res.writeHead(404);
+              res.end();
+            }
+          });
+
+          healthServer.listen(HEALTH_PORT, '0.0.0.0', () => {
+            console.log(`[Health] HTTP server listening on port ${HEALTH_PORT}`);
+          });
+
+          // MCP query server (simple passthrough for now)
+          const mcpServer = http.createServer((req, res) => {
+            if (req.url === '/query' && req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => { body += chunk; });
+              req.on('end', () => {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                  message: 'Cortex MCP Server - stdio mode',
+                  note: 'Use stdio protocol to interact with MCP server'
+                }));
+              });
+            } else {
+              res.writeHead(404);
+              res.end();
+            }
+          });
+
+          mcpServer.listen(PORT, '0.0.0.0', () => {
+            console.log(`[MCP] HTTP wrapper listening on port ${PORT}`);
+            startMCPServer();
+          });
+
+          process.on('SIGTERM', () => {
+            console.log('[Wrapper] Received SIGTERM, shutting down...');
+            if (mcpProcess) mcpProcess.kill();
+            process.exit(0);
+          });
+          EOF
+
+          # Start the HTTP wrapper
+          echo "Starting HTTP wrapper..."
+          exec node /app/http-server.cjs
+
+        workingDir: /app
+
+        ports:
+        - name: mcp
+          containerPort: 3000
+          protocol: TCP
+        - name: health
+          containerPort: 8080
+          protocol: TCP
+
+        env:
+        # ConfigMap environment variables
+        - name: UNIFI_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: UNIFI_MCP_URL
+        - name: PROXMOX_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: PROXMOX_MCP_URL
+        - name: WAZUH_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WAZUH_MCP_URL
+        - name: WORKER_POOL_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WORKER_POOL_SIZE
+        - name: MAX_CONCURRENT_WORKERS
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MAX_CONCURRENT_WORKERS
+        - name: WORKER_TIMEOUT_MINUTES
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WORKER_TIMEOUT_MINUTES
+        - name: MOE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MOE_ENABLED
+        - name: MOE_STRATEGY
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MOE_STRATEGY
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: LOG_LEVEL
+        - name: LOG_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: LOG_FORMAT
+        - name: MCP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MCP_PORT
+        - name: HEALTH_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: HEALTH_PORT
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: NODE_ENV
+
+        # Secret environment variables (optional for future use)
+        # - name: ANTHROPIC_API_KEY
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: cortex-secrets
+        #       key: anthropic-api-key
+        #       optional: true
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+        volumeMounts:
+        - name: workspace
+          mountPath: /app
+        - name: coordination
+          mountPath: /app/coordination
+        - name: tmp
+          mountPath: /tmp
+
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      - name: source
+        configMap:
+          name: cortex-mcp-src
+      - name: coordination
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+
+---
+# Service for Cortex MCP Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  type: ClusterIP
+  selector:
+    app: cortex-mcp-server
+  ports:
+  - name: mcp
+    port: 3000
+    targetPort: mcp
+    protocol: TCP
+  - name: health
+    port: 8080
+    targetPort: health
+    protocol: TCP
+
+---
+# ServiceAccount for Cortex MCP Server
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+
+---
+# Role for Cortex MCP Server (namespace-scoped permissions)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+
+---
+# RoleBinding for Cortex MCP Server
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+subjects:
+- kind: ServiceAccount
+  name: cortex-mcp-server
+  namespace: cortex-system
+roleRef:
+  kind: Role
+  name: cortex-mcp-server
+  apiGroup: rbac.authorization.k8s.io

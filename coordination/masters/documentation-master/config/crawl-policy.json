@@ -1,0 +1,62 @@
+{
+  "scheduled_updates": {
+    "high_priority": "daily",
+    "medium_priority": "weekly",
+    "low_priority": "monthly"
+  },
+  "triggered_updates": {
+    "knowledge_gap_detected": true,
+    "api_version_change": true,
+    "task_failure_threshold": 3,
+    "manual_trigger": true
+  },
+  "version_tracking": {
+    "detect_new_releases": true,
+    "changelog_monitoring": true,
+    "semantic_versioning": true,
+    "alert_on_major_version": true
+  },
+  "crawl_windows": {
+    "preferred_hours": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "avoid_peak_hours": true,
+    "timezone": "UTC"
+  },
+  "scope_boundaries": {
+    "allowed_domains": [
+      "docs.sandflysecurity.com",
+      "sandflysecurity.com",
+      "pve.proxmox.com",
+      "docs.k3s.io",
+      "kubernetes.io"
+    ],
+    "blocked_patterns": [
+      "/login",
+      "/admin",
+      "/auth",
+      "/logout",
+      "/download",
+      "/signup"
+    ],
+    "content_types": [
+      "text/html",
+      "application/xhtml+xml",
+      "text/plain",
+      "application/json"
+    ],
+    "max_domain_depth": 10,
+    "follow_external_links": false
+  },
+  "error_handling": {
+    "retry_on_timeout": true,
+    "retry_on_5xx": true,
+    "skip_on_404": true,
+    "skip_on_403": true,
+    "backoff_strategy": "exponential",
+    "max_consecutive_errors": 10
+  }
+}

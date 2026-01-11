@@ -1,0 +1,20 @@
+# Dependency-Track Runtime Files
+# Do not commit generated data or logs
+
+# Runtime logs and data
+upload-log.json
+webhook-log.jsonl
+reports/
+*.log
+
+# Environment configuration (contains secrets)
+.env
+
+# API Reference (auto-generated)
+API-REFERENCE.md
+
+# Docker volumes
+postgres-data/
+dtrack-data/
+prometheus-data/
+grafana-data/

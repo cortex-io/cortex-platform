@@ -1,0 +1,12 @@
+{
+  "task_id": "achievement-kibana-dashboard-export-1764104211",
+  "created_at": "2025-11-25T20:56:51Z",
+  "source": "achievement-master",
+  "priority": "high",
+  "description": "Create Kibana dashboard JSON export file",
+  "assigned_master": "development-master",
+  "automation": {
+    "workflow": "pr-automation",
+    "feature_type": "config"
+  }
+}

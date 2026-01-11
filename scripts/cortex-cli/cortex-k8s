@@ -1,0 +1,710 @@
+#!/usr/bin/env bash
+#
+# Cortex K8s CLI - Developer-friendly deployment and management tool
+#
+# A comprehensive CLI for managing Cortex services on Kubernetes/K3s
+#
+
+set -euo pipefail
+
+# Version
+VERSION="1.0.0"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m' # No Color
+
+# Default configuration
+DEFAULT_NAMESPACE="cortex"
+DEFAULT_CONTEXT=""
+CORTEX_ROOT="${CORTEX_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+K8S_DIR="${CORTEX_ROOT}/k8s"
+DEPLOY_DIR="${K8S_DIR}/deployments"
+
+# Global flags
+NAMESPACE="${DEFAULT_NAMESPACE}"
+CONTEXT="${DEFAULT_CONTEXT}"
+VERBOSE=false
+
+#############################
+# Utility Functions
+#############################
+
+log_info() {
+    echo -e "${BLUE}ℹ${NC} $*"
+}
+
+log_success() {
+    echo -e "${GREEN}✓${NC} $*"
+}
+
+log_warning() {
+    echo -e "${YELLOW}⚠${NC} $*"
+}
+
+log_error() {
+    echo -e "${RED}✗${NC} $*" >&2
+}
+
+log_verbose() {
+    if [[ "${VERBOSE}" == "true" ]]; then
+        echo -e "${DIM}  → $*${NC}"
+    fi
+}
+
+banner() {
+    cat << 'EOF'
+   ____           _               _  ___
+  / ___|___  _ __| |_ _____  __  | |/ ( )___
+ | |   / _ \| '__| __/ _ \ \/ /  | ' /|// __|
+ | |__| (_) | |  | ||  __/>  <   | . \  \__ \
+  \____\___/|_|   \__\___/_/\_\  |_|\_\ |___/
+
+  Kubernetes Deployment & Management CLI
+EOF
+}
+
+get_kubectl_cmd() {
+    local cmd="kubectl"
+    if [[ -n "${CONTEXT}" ]]; then
+        cmd="${cmd} --context=${CONTEXT}"
+    fi
+    cmd="${cmd} --namespace=${NAMESPACE}"
+    echo "${cmd}"
+}
+
+check_prerequisites() {
+    local missing=()
+
+    if ! command -v kubectl &> /dev/null; then
+        missing+=("kubectl")
+    fi
+
+    if ! command -v jq &> /dev/null; then
+        missing+=("jq")
+    fi
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required tools: ${missing[*]}"
+        log_info "Install with: brew install kubectl jq"
+        return 1
+    fi
+
+    return 0
+}
+
+get_service_manifest() {
+    local service="$1"
+    local manifest_path=""
+
+    # Check common locations
+    if [[ -f "${DEPLOY_DIR}/${service}.yaml" ]]; then
+        manifest_path="${DEPLOY_DIR}/${service}.yaml"
+    elif [[ -f "${DEPLOY_DIR}/${service}-deployment.yaml" ]]; then
+        manifest_path="${DEPLOY_DIR}/${service}-deployment.yaml"
+    elif [[ -f "${K8S_DIR}/${service}.yaml" ]]; then
+        manifest_path="${K8S_DIR}/${service}.yaml"
+    fi
+
+    echo "${manifest_path}"
+}
+
+list_services() {
+    local services=()
+
+    # Find all deployment yamls
+    for file in "${DEPLOY_DIR}"/*.yaml "${K8S_DIR}"/*.yaml; do
+        if [[ -f "$file" ]] && grep -q "kind: Deployment" "$file" 2>/dev/null; then
+            local basename=$(basename "$file" .yaml)
+            basename="${basename%-deployment}"
+            services+=("$basename")
+        fi
+    done
+
+    # Also check running deployments
+    local kubectl_cmd=$(get_kubectl_cmd)
+    local running_deployments=$(${kubectl_cmd} get deployments -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || echo "")
+
+    for dep in ${running_deployments}; do
+        if [[ ! " ${services[@]} " =~ " ${dep} " ]]; then
+            services+=("$dep")
+        fi
+    done
+
+    printf '%s\n' "${services[@]}" | sort -u
+}
+
+#############################
+# Command: deploy
+#############################
+
+cmd_deploy() {
+    local service="$1"
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s deploy <service> [--namespace=<ns>]"
+        echo ""
+        echo "Available services:"
+        list_services | sed 's/^/  - /'
+        return 1
+    fi
+
+    log_info "Deploying service: ${BOLD}${service}${NC}"
+
+    local manifest=$(get_service_manifest "${service}")
+
+    if [[ -z "${manifest}" ]]; then
+        log_error "Could not find manifest for service: ${service}"
+        log_info "Checked locations:"
+        log_verbose "  - ${DEPLOY_DIR}/${service}.yaml"
+        log_verbose "  - ${DEPLOY_DIR}/${service}-deployment.yaml"
+        log_verbose "  - ${K8S_DIR}/${service}.yaml"
+        return 1
+    fi
+
+    log_verbose "Using manifest: ${manifest}"
+
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    # Create namespace if it doesn't exist
+    if ! ${kubectl_cmd} get namespace "${NAMESPACE}" &>/dev/null; then
+        log_info "Creating namespace: ${NAMESPACE}"
+        kubectl create namespace "${NAMESPACE}"
+    fi
+
+    # Apply the manifest
+    log_info "Applying manifest..."
+    if ${kubectl_cmd} apply -f "${manifest}"; then
+        log_success "Deployment applied successfully"
+
+        # Wait for rollout
+        local deployment_name=$(kubectl get -f "${manifest}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "${service}")
+        log_info "Waiting for rollout to complete..."
+
+        if ${kubectl_cmd} rollout status deployment/"${deployment_name}" --timeout=300s; then
+            log_success "Service ${BOLD}${service}${NC} deployed successfully!"
+
+            # Show service info
+            echo ""
+            ${kubectl_cmd} get deployment "${deployment_name}"
+            echo ""
+            ${kubectl_cmd} get pods -l app="${service}" 2>/dev/null || true
+        else
+            log_warning "Rollout did not complete in time, check status with:"
+            echo "  cortex-k8s status ${service}"
+        fi
+    else
+        log_error "Failed to apply manifest"
+        return 1
+    fi
+}
+
+#############################
+# Command: build
+#############################
+
+cmd_build() {
+    local service="$1"
+    local tag="${2:-latest}"
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s build <service> [tag] [--push]"
+        return 1
+    fi
+
+    log_info "Building Docker image for: ${BOLD}${service}${NC}"
+
+    # Find Dockerfile
+    local dockerfile=""
+    for dir in "${CORTEX_ROOT}/${service}" "${CORTEX_ROOT}/services/${service}" "${CORTEX_ROOT}"; do
+        if [[ -f "${dir}/Dockerfile" ]]; then
+            dockerfile="${dir}/Dockerfile"
+            break
+        fi
+    done
+
+    if [[ -z "${dockerfile}" ]]; then
+        log_error "Could not find Dockerfile for service: ${service}"
+        return 1
+    fi
+
+    local context_dir=$(dirname "${dockerfile}")
+    local image_name="cortex/${service}:${tag}"
+
+    log_verbose "Dockerfile: ${dockerfile}"
+    log_verbose "Context: ${context_dir}"
+    log_verbose "Image: ${image_name}"
+
+    log_info "Building with Docker..."
+
+    if docker build -t "${image_name}" -f "${dockerfile}" "${context_dir}"; then
+        log_success "Image built successfully: ${image_name}"
+
+        # Check if we should push
+        if [[ " $* " =~ " --push " ]]; then
+            log_info "Pushing image to registry..."
+            if docker push "${image_name}"; then
+                log_success "Image pushed successfully"
+            else
+                log_error "Failed to push image"
+                return 1
+            fi
+        fi
+    else
+        log_error "Build failed"
+        return 1
+    fi
+}
+
+#############################
+# Command: logs
+#############################
+
+cmd_logs() {
+    local service="$1"
+    shift || true
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s logs <service> [-f] [--tail=N]"
+        return 1
+    fi
+
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    # Find pods for this service
+    local pods=$(${kubectl_cmd} get pods -l app="${service}" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null)
+
+    if [[ -z "${pods}" ]]; then
+        log_error "No pods found for service: ${service}"
+        return 1
+    fi
+
+    local pod_count=$(echo "${pods}" | wc -w | tr -d ' ')
+
+    if [[ ${pod_count} -eq 1 ]]; then
+        log_info "Showing logs for: ${pods}"
+        ${kubectl_cmd} logs ${pods} "$@"
+    else
+        log_info "Found ${pod_count} pods for ${service}"
+        log_info "Showing logs for all pods..."
+        ${kubectl_cmd} logs -l app="${service}" "$@"
+    fi
+}
+
+#############################
+# Command: status
+#############################
+
+cmd_status() {
+    local service="${1:-}"
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    if [[ -z "${service}" ]]; then
+        # Show all services
+        log_info "Cortex Services Status (namespace: ${BOLD}${NAMESPACE}${NC})"
+        echo ""
+
+        echo -e "${BOLD}Deployments:${NC}"
+        ${kubectl_cmd} get deployments -o wide 2>/dev/null || log_warning "No deployments found"
+
+        echo ""
+        echo -e "${BOLD}Pods:${NC}"
+        ${kubectl_cmd} get pods -o wide 2>/dev/null || log_warning "No pods found"
+
+        echo ""
+        echo -e "${BOLD}Services:${NC}"
+        ${kubectl_cmd} get services 2>/dev/null || log_warning "No services found"
+
+    else
+        # Show specific service
+        log_info "Status for service: ${BOLD}${service}${NC}"
+        echo ""
+
+        echo -e "${BOLD}Deployment:${NC}"
+        ${kubectl_cmd} get deployment -l app="${service}" -o wide 2>/dev/null || \
+            ${kubectl_cmd} get deployment "${service}" -o wide 2>/dev/null || \
+            log_warning "No deployment found"
+
+        echo ""
+        echo -e "${BOLD}Pods:${NC}"
+        ${kubectl_cmd} get pods -l app="${service}" -o wide 2>/dev/null || \
+            log_warning "No pods found"
+
+        echo ""
+        echo -e "${BOLD}Events (last 10):${NC}"
+        ${kubectl_cmd} get events --field-selector involvedObject.name="${service}" \
+            --sort-by='.lastTimestamp' 2>/dev/null | tail -11 || true
+    fi
+}
+
+#############################
+# Command: test
+#############################
+
+cmd_test() {
+    local service="$1"
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s test <service>"
+        return 1
+    fi
+
+    log_info "Running tests for: ${BOLD}${service}${NC}"
+
+    # Find test script or package.json
+    local test_cmd=""
+
+    for dir in "${CORTEX_ROOT}/${service}" "${CORTEX_ROOT}/services/${service}"; do
+        if [[ -f "${dir}/package.json" ]] && grep -q '"test"' "${dir}/package.json"; then
+            test_cmd="cd ${dir} && npm test"
+            break
+        elif [[ -f "${dir}/test.sh" ]]; then
+            test_cmd="${dir}/test.sh"
+            break
+        fi
+    done
+
+    if [[ -z "${test_cmd}" ]]; then
+        log_warning "No test script found for ${service}"
+        log_info "Checking if service is healthy instead..."
+
+        local kubectl_cmd=$(get_kubectl_cmd)
+        local pods=$(${kubectl_cmd} get pods -l app="${service}" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null)
+
+        if [[ -z "${pods}" ]]; then
+            log_error "Service is not running"
+            return 1
+        fi
+
+        for pod in ${pods}; do
+            local ready=$(${kubectl_cmd} get pod "${pod}" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+            if [[ "${ready}" == "True" ]]; then
+                log_success "Pod ${pod} is ready"
+            else
+                log_error "Pod ${pod} is not ready"
+                return 1
+            fi
+        done
+
+        log_success "All pods are healthy"
+        return 0
+    fi
+
+    log_verbose "Running: ${test_cmd}"
+
+    if eval "${test_cmd}"; then
+        log_success "Tests passed"
+    else
+        log_error "Tests failed"
+        return 1
+    fi
+}
+
+#############################
+# Command: restart
+#############################
+
+cmd_restart() {
+    local service="$1"
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s restart <service>"
+        return 1
+    fi
+
+    log_info "Restarting service: ${BOLD}${service}${NC}"
+
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    # Try to find deployment
+    local deployment=""
+    if ${kubectl_cmd} get deployment "${service}" &>/dev/null; then
+        deployment="${service}"
+    else
+        deployment=$(${kubectl_cmd} get deployments -l app="${service}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+    fi
+
+    if [[ -z "${deployment}" ]]; then
+        log_error "Could not find deployment for service: ${service}"
+        return 1
+    fi
+
+    log_verbose "Deployment: ${deployment}"
+
+    if ${kubectl_cmd} rollout restart deployment/"${deployment}"; then
+        log_success "Restart initiated"
+
+        log_info "Waiting for rollout..."
+        ${kubectl_cmd} rollout status deployment/"${deployment}" --timeout=300s
+
+        log_success "Service restarted successfully"
+    else
+        log_error "Failed to restart service"
+        return 1
+    fi
+}
+
+#############################
+# Command: scale
+#############################
+
+cmd_scale() {
+    local service="$1"
+    local replicas="$2"
+
+    if [[ -z "${service}" ]] || [[ -z "${replicas}" ]]; then
+        log_error "Service name and replica count required"
+        echo "Usage: cortex-k8s scale <service> <replicas>"
+        return 1
+    fi
+
+    if ! [[ "${replicas}" =~ ^[0-9]+$ ]]; then
+        log_error "Replicas must be a number"
+        return 1
+    fi
+
+    log_info "Scaling service ${BOLD}${service}${NC} to ${BOLD}${replicas}${NC} replicas"
+
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    # Find deployment
+    local deployment=""
+    if ${kubectl_cmd} get deployment "${service}" &>/dev/null; then
+        deployment="${service}"
+    else
+        deployment=$(${kubectl_cmd} get deployments -l app="${service}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+    fi
+
+    if [[ -z "${deployment}" ]]; then
+        log_error "Could not find deployment for service: ${service}"
+        return 1
+    fi
+
+    if ${kubectl_cmd} scale deployment/"${deployment}" --replicas="${replicas}"; then
+        log_success "Scaling initiated"
+
+        # Wait a bit and show status
+        sleep 2
+        ${kubectl_cmd} get deployment "${deployment}"
+        echo ""
+        ${kubectl_cmd} get pods -l app="${service}"
+
+        log_success "Service scaled to ${replicas} replicas"
+    else
+        log_error "Failed to scale service"
+        return 1
+    fi
+}
+
+#############################
+# Command: exec
+#############################
+
+cmd_exec() {
+    local service="$1"
+    shift || true
+
+    if [[ -z "${service}" ]]; then
+        log_error "Service name required"
+        echo "Usage: cortex-k8s exec <service> [command]"
+        echo "       cortex-k8s exec <service>  # Opens interactive shell"
+        return 1
+    fi
+
+    local kubectl_cmd=$(get_kubectl_cmd)
+
+    # Find first running pod
+    local pod=$(${kubectl_cmd} get pods -l app="${service}" \
+        -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' \
+        2>/dev/null | awk '{print $1}')
+
+    if [[ -z "${pod}" ]]; then
+        log_error "No running pods found for service: ${service}"
+        return 1
+    fi
+
+    log_info "Executing in pod: ${pod}"
+
+    if [[ $# -eq 0 ]]; then
+        # Interactive shell
+        ${kubectl_cmd} exec -it "${pod}" -- /bin/bash 2>/dev/null || \
+            ${kubectl_cmd} exec -it "${pod}" -- /bin/sh
+    else
+        # Run specific command
+        ${kubectl_cmd} exec -it "${pod}" -- "$@"
+    fi
+}
+
+#############################
+# Command: list
+#############################
+
+cmd_list() {
+    log_info "Available Cortex services:"
+    echo ""
+    list_services | sed 's/^/  • /'
+    echo ""
+    log_info "Use ${BOLD}cortex-k8s status${NC} to see running services"
+}
+
+#############################
+# Command: help
+#############################
+
+cmd_help() {
+    banner
+    cat << EOF
+
+${BOLD}USAGE:${NC}
+  cortex-k8s <command> [options]
+
+${BOLD}COMMANDS:${NC}
+  ${GREEN}deploy${NC} <service>           Deploy a service to K3s
+  ${GREEN}build${NC} <service> [tag]      Build Docker image via Docker/Kaniko
+  ${GREEN}logs${NC} <service> [-f]        Tail logs from service pods
+  ${GREEN}status${NC} [service]           Show status of services
+  ${GREEN}test${NC} <service>             Run tests for a service
+  ${GREEN}restart${NC} <service>          Restart a service (rolling restart)
+  ${GREEN}scale${NC} <service> <N>        Scale service to N replicas
+  ${GREEN}exec${NC} <service> [cmd]       Execute command in service pod
+  ${GREEN}list${NC}                       List all available services
+  ${GREEN}help${NC}                       Show this help message
+
+${BOLD}GLOBAL FLAGS:${NC}
+  --namespace=<ns>            Kubernetes namespace (default: cortex)
+  --context=<ctx>             Kubectl context to use
+  --verbose, -v               Verbose output
+
+${BOLD}EXAMPLES:${NC}
+  ${DIM}# Deploy a service${NC}
+  cortex-k8s deploy cortex-mcp-server
+
+  ${DIM}# Build and push image${NC}
+  cortex-k8s build cortex-chat v1.2.0 --push
+
+  ${DIM}# Follow logs${NC}
+  cortex-k8s logs cortex-api -f --tail=100
+
+  ${DIM}# Scale service${NC}
+  cortex-k8s scale cortex-worker 5
+
+  ${DIM}# Open shell in pod${NC}
+  cortex-k8s exec cortex-api
+
+  ${DIM}# Run command in pod${NC}
+  cortex-k8s exec cortex-api -- npm run migrate
+
+  ${DIM}# Check status with different namespace${NC}
+  cortex-k8s status --namespace=production
+
+${BOLD}ENVIRONMENT VARIABLES:${NC}
+  CORTEX_ROOT                 Path to Cortex repository
+  KUBECONFIG                  Path to kubeconfig file
+
+${BOLD}VERSION:${NC}
+  ${VERSION}
+
+EOF
+}
+
+#############################
+# Command: version
+#############################
+
+cmd_version() {
+    echo "cortex-k8s version ${VERSION}"
+}
+
+#############################
+# Main
+#############################
+
+main() {
+    # Parse global flags
+    local args=()
+    for arg in "$@"; do
+        case "$arg" in
+            --namespace=*)
+                NAMESPACE="${arg#*=}"
+                ;;
+            --context=*)
+                CONTEXT="${arg#*=}"
+                ;;
+            --verbose|-v)
+                VERBOSE=true
+                ;;
+            *)
+                args+=("$arg")
+                ;;
+        esac
+    done
+
+    set -- "${args[@]}"
+
+    # Get command
+    local command="${1:-help}"
+    shift || true
+
+    # Check prerequisites for most commands
+    if [[ "${command}" != "help" ]] && [[ "${command}" != "version" ]]; then
+        check_prerequisites || exit 1
+    fi
+
+    # Route to command
+    case "${command}" in
+        deploy)
+            cmd_deploy "$@"
+            ;;
+        build)
+            cmd_build "$@"
+            ;;
+        logs)
+            cmd_logs "$@"
+            ;;
+        status)
+            cmd_status "$@"
+            ;;
+        test)
+            cmd_test "$@"
+            ;;
+        restart)
+            cmd_restart "$@"
+            ;;
+        scale)
+            cmd_scale "$@"
+            ;;
+        exec)
+            cmd_exec "$@"
+            ;;
+        list|ls)
+            cmd_list
+            ;;
+        help|-h|--help)
+            cmd_help
+            ;;
+        version|-v|--version)
+            cmd_version
+            ;;
+        *)
+            log_error "Unknown command: ${command}"
+            echo ""
+            echo "Run 'cortex-k8s help' for usage information"
+            exit 1
+            ;;
+    esac
+}
+
+# Run main
+main "$@"

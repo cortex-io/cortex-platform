@@ -1,0 +1,41 @@
+{
+  "workflow_run_id": "wf-run-20251130-065033-90164",
+  "workflow_name": "test-simple-workflow",
+  "status": "completed",
+  "started_at": "2025-11-30T12:50:33Z",
+  "updated_at": "2025-11-30T12:50:34Z",
+  "current_execution_group": 2,
+  "total_execution_groups": 0,
+  "inputs": {
+    "message": "Test"
+  },
+  "steps": {
+    "hello": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:50:33Z",
+      "completed_at": "2025-11-30T12:50:33Z",
+      "outputs": {
+        "stdout": "Hello Test"
+      }
+    },
+    "world": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:50:34Z",
+      "completed_at": "2025-11-30T12:50:34Z",
+      "outputs": {
+        "stdout": "World!\nSun Nov 30 06:50:34 CST 2025"
+      }
+    }
+  },
+  "outputs": {
+    "hello": {
+      "stdout": "Hello Test"
+    },
+    "world": {
+      "stdout": "World!\nSun Nov 30 06:50:34 CST 2025"
+    }
+  },
+  "completed_at": "2025-11-30T12:50:34Z"
+}

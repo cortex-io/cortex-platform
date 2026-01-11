@@ -1,0 +1,468 @@
+{
+  "workflow_id": "app-deployment-template",
+  "workflow_name": "Application Deployment",
+  "description": "Deploy application from code commit to production with automated testing and rollback capability",
+  "version": "1.0.0",
+  "contractors": ["n8n-contractor", "talos-contractor", "infrastructure-contractor"],
+  "estimated_duration": "20m",
+  "parameters": {
+    "repository": {
+      "type": "string",
+      "required": true,
+      "description": "GitHub repository in format org/repo"
+    },
+    "branch": {
+      "type": "string",
+      "required": true,
+      "default": "main",
+      "description": "Branch to deploy"
+    },
+    "environment": {
+      "type": "string",
+      "required": true,
+      "enum": ["development", "staging", "production"],
+      "description": "Target environment"
+    },
+    "cluster": {
+      "type": "string",
+      "required": true,
+      "description": "Target Kubernetes cluster"
+    },
+    "namespace": {
+      "type": "string",
+      "required": true,
+      "description": "Target namespace"
+    },
+    "image_tag": {
+      "type": "string",
+      "required": false,
+      "default": "${GIT_SHA}",
+      "description": "Docker image tag to deploy"
+    },
+    "replicas": {
+      "type": "integer",
+      "required": false,
+      "default": 3,
+      "description": "Number of replicas"
+    },
+    "require_approval": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "description": "Require manual approval before production deployment"
+    }
+  },
+  "phases": [
+    {
+      "phase_id": "build",
+      "phase_name": "Build and Test",
+      "contractor": "n8n-contractor",
+      "actions": [
+        {
+          "action_id": "clone-repo",
+          "action": "clone_repository",
+          "parameters": {
+            "repository": "${parameters.repository}",
+            "branch": "${parameters.branch}"
+          },
+          "timeout": 300,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "run-tests",
+          "action": "execute_command",
+          "parameters": {
+            "command": "npm test",
+            "working_directory": "${clone-repo.output.path}",
+            "environment": {
+              "CI": "true"
+            }
+          },
+          "timeout": 600,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "build-image",
+          "action": "build_docker_image",
+          "parameters": {
+            "dockerfile": "Dockerfile",
+            "context": "${clone-repo.output.path}",
+            "tags": [
+              "harbor.cortex.local/${parameters.repository}:${parameters.image_tag}",
+              "harbor.cortex.local/${parameters.repository}:latest"
+            ],
+            "build_args": {
+              "NODE_ENV": "${parameters.environment}"
+            }
+          },
+          "timeout": 900,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "scan-image",
+          "action": "security_scan",
+          "parameters": {
+            "image": "harbor.cortex.local/${parameters.repository}:${parameters.image_tag}",
+            "scanner": "trivy",
+            "severity_threshold": ["HIGH", "CRITICAL"],
+            "fail_on_vulnerabilities": true
+          },
+          "timeout": 300,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "push-image",
+          "action": "push_docker_image",
+          "parameters": {
+            "image": "harbor.cortex.local/${parameters.repository}:${parameters.image_tag}",
+            "registry": "harbor.cortex.local"
+          },
+          "timeout": 600,
+          "on_error": "fail_workflow"
+        }
+      ],
+      "handoff_to": "talos-contractor",
+      "handoff_data": {
+        "image": "${build-image.output.image}",
+        "image_digest": "${build-image.output.digest}",
+        "git_sha": "${parameters.image_tag}",
+        "scan_results": "${scan-image.output.results}"
+      }
+    },
+    {
+      "phase_id": "deploy",
+      "phase_name": "Deploy to Kubernetes",
+      "contractor": "talos-contractor",
+      "requires_approval": "${parameters.require_approval}",
+      "approval_timeout": 3600,
+      "actions": [
+        {
+          "action_id": "verify-namespace",
+          "action": "verify_namespace_exists",
+          "parameters": {
+            "cluster": "${parameters.cluster}",
+            "namespace": "${parameters.namespace}",
+            "create_if_missing": true
+          },
+          "timeout": 60,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "apply-secrets",
+          "action": "verify_secrets",
+          "parameters": {
+            "cluster": "${parameters.cluster}",
+            "namespace": "${parameters.namespace}",
+            "required_secrets": ["db-credentials", "api-keys"]
+          },
+          "timeout": 60,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "deploy-app",
+          "action": "apply_kubernetes_manifest",
+          "parameters": {
+            "cluster": "${parameters.cluster}",
+            "namespace": "${parameters.namespace}",
+            "manifest": {
+              "apiVersion": "apps/v1",
+              "kind": "Deployment",
+              "metadata": {
+                "name": "${parameters.repository}",
+                "namespace": "${parameters.namespace}",
+                "labels": {
+                  "app": "${parameters.repository}",
+                  "version": "${parameters.image_tag}",
+                  "environment": "${parameters.environment}"
+                }
+              },
+              "spec": {
+                "replicas": "${parameters.replicas}",
+                "strategy": {
+                  "type": "RollingUpdate",
+                  "rollingUpdate": {
+                    "maxSurge": 1,
+                    "maxUnavailable": 0
+                  }
+                },
+                "selector": {
+                  "matchLabels": {
+                    "app": "${parameters.repository}"
+                  }
+                },
+                "template": {
+                  "metadata": {
+                    "labels": {
+                      "app": "${parameters.repository}",
+                      "version": "${parameters.image_tag}"
+                    }
+                  },
+                  "spec": {
+                    "containers": [
+                      {
+                        "name": "${parameters.repository}",
+                        "image": "harbor.cortex.local/${parameters.repository}:${parameters.image_tag}",
+                        "imagePullPolicy": "Always",
+                        "ports": [
+                          {
+                            "containerPort": 3000,
+                            "name": "http"
+                          }
+                        ],
+                        "env": [
+                          {
+                            "name": "NODE_ENV",
+                            "value": "${parameters.environment}"
+                          }
+                        ],
+                        "resources": {
+                          "requests": {
+                            "cpu": "100m",
+                            "memory": "128Mi"
+                          },
+                          "limits": {
+                            "cpu": "500m",
+                            "memory": "512Mi"
+                          }
+                        },
+                        "livenessProbe": {
+                          "httpGet": {
+                            "path": "/health",
+                            "port": 3000
+                          },
+                          "initialDelaySeconds": 30,
+                          "periodSeconds": 10
+                        },
+                        "readinessProbe": {
+                          "httpGet": {
+                            "path": "/ready",
+                            "port": 3000
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 5
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "timeout": 300,
+          "on_error": "rollback_deployment"
+        },
+        {
+          "action_id": "wait-rollout",
+          "action": "wait_for_rollout",
+          "parameters": {
+            "cluster": "${parameters.cluster}",
+            "namespace": "${parameters.namespace}",
+            "deployment": "${parameters.repository}",
+            "timeout": 600
+          },
+          "timeout": 660,
+          "on_error": "rollback_deployment"
+        },
+        {
+          "action_id": "verify-health",
+          "action": "verify_pod_health",
+          "parameters": {
+            "cluster": "${parameters.cluster}",
+            "namespace": "${parameters.namespace}",
+            "deployment": "${parameters.repository}",
+            "expected_replicas": "${parameters.replicas}",
+            "all_ready_required": true
+          },
+          "timeout": 120,
+          "on_error": "rollback_deployment"
+        }
+      ],
+      "handoff_to": "infrastructure-contractor",
+      "handoff_data": {
+        "deployment_name": "${parameters.repository}",
+        "namespace": "${parameters.namespace}",
+        "cluster": "${parameters.cluster}",
+        "replicas": "${verify-health.output.ready_replicas}",
+        "pod_ips": "${verify-health.output.pod_ips}",
+        "node_ports": "${verify-health.output.node_ports}"
+      }
+    },
+    {
+      "phase_id": "configure-lb",
+      "phase_name": "Configure Load Balancer",
+      "contractor": "infrastructure-contractor",
+      "actions": [
+        {
+          "action_id": "update-lb",
+          "action": "update_load_balancer",
+          "parameters": {
+            "load_balancer": "prod-lb-01",
+            "backend_pool": "${parameters.repository}",
+            "action": "add_backend",
+            "backend_config": {
+              "version": "${parameters.image_tag}",
+              "servers": "${deploy.handoff_data.pod_ips}",
+              "port": "${deploy.handoff_data.node_ports[0]}",
+              "health_check": {
+                "path": "/health",
+                "interval": 5,
+                "timeout": 3
+              }
+            }
+          },
+          "timeout": 180,
+          "on_error": "skip_phase"
+        },
+        {
+          "action_id": "verify-lb",
+          "action": "verify_load_balancer_health",
+          "parameters": {
+            "load_balancer": "prod-lb-01",
+            "backend_pool": "${parameters.repository}",
+            "expected_healthy_backends": "${parameters.replicas}"
+          },
+          "timeout": 120,
+          "on_error": "alert_only"
+        }
+      ],
+      "handoff_to": "n8n-contractor",
+      "handoff_data": {
+        "lb_status": "${verify-lb.output.status}",
+        "healthy_backends": "${verify-lb.output.healthy_count}",
+        "lb_endpoint": "${verify-lb.output.endpoint}"
+      }
+    },
+    {
+      "phase_id": "verify",
+      "phase_name": "Post-Deployment Verification",
+      "contractor": "n8n-contractor",
+      "actions": [
+        {
+          "action_id": "smoke-tests",
+          "action": "run_smoke_tests",
+          "parameters": {
+            "endpoint": "${configure-lb.handoff_data.lb_endpoint}",
+            "tests": [
+              {
+                "name": "health_check",
+                "path": "/health",
+                "expected_status": 200
+              },
+              {
+                "name": "version_check",
+                "path": "/version",
+                "expected_body_contains": "${parameters.image_tag}"
+              }
+            ]
+          },
+          "timeout": 300,
+          "on_error": "rollback_workflow"
+        },
+        {
+          "action_id": "performance-check",
+          "action": "run_performance_test",
+          "parameters": {
+            "endpoint": "${configure-lb.handoff_data.lb_endpoint}",
+            "duration": 60,
+            "requests_per_second": 100,
+            "max_p95_latency": 200,
+            "max_error_rate": 0.01
+          },
+          "timeout": 120,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "notify-success",
+          "action": "send_notification",
+          "parameters": {
+            "channels": ["slack", "github"],
+            "slack_config": {
+              "channel": "#deployments",
+              "message": "Successfully deployed ${parameters.repository}:${parameters.image_tag} to ${parameters.environment}"
+            },
+            "github_config": {
+              "repository": "${parameters.repository}",
+              "action": "create_deployment_status",
+              "state": "success",
+              "description": "Deployed to ${parameters.environment}"
+            }
+          },
+          "timeout": 60,
+          "on_error": "skip_action"
+        }
+      ]
+    }
+  ],
+  "rollback_procedure": {
+    "description": "Rollback to previous deployment version",
+    "phases": [
+      {
+        "phase_id": "rollback-lb",
+        "contractor": "infrastructure-contractor",
+        "action": "rollback_load_balancer",
+        "parameters": {
+          "load_balancer": "prod-lb-01",
+          "backend_pool": "${parameters.repository}",
+          "action": "remove_backend",
+          "version": "${parameters.image_tag}"
+        }
+      },
+      {
+        "phase_id": "rollback-deployment",
+        "contractor": "talos-contractor",
+        "action": "rollback_kubernetes_deployment",
+        "parameters": {
+          "cluster": "${parameters.cluster}",
+          "namespace": "${parameters.namespace}",
+          "deployment": "${parameters.repository}",
+          "revision": "previous"
+        }
+      },
+      {
+        "phase_id": "notify-rollback",
+        "contractor": "n8n-contractor",
+        "action": "send_notification",
+        "parameters": {
+          "channels": ["slack", "pagerduty"],
+          "severity": "high",
+          "message": "Rolled back ${parameters.repository} deployment due to failure"
+        }
+      }
+    ]
+  },
+  "success_criteria": [
+    "All tests passed",
+    "Docker image built and scanned",
+    "Deployment rolled out successfully",
+    "All pods healthy",
+    "Load balancer updated",
+    "Smoke tests passed",
+    "Notifications sent"
+  ],
+  "monitoring": {
+    "metrics": [
+      "deployment_duration",
+      "rollout_duration",
+      "pod_ready_time",
+      "smoke_test_duration"
+    ],
+    "alerts": [
+      {
+        "condition": "deployment_duration > 1800",
+        "severity": "warning",
+        "message": "Deployment taking longer than expected"
+      },
+      {
+        "condition": "smoke_tests.failed > 0",
+        "severity": "critical",
+        "message": "Smoke tests failed after deployment"
+      }
+    ]
+  },
+  "metadata": {
+    "created_by": "development-master",
+    "created_at": "2025-12-09T00:00:00Z",
+    "last_updated": "2025-12-09T00:00:00Z",
+    "tags": ["deployment", "ci-cd", "kubernetes", "automation"]
+  }
+}

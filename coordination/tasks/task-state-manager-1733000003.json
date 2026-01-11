@@ -1,0 +1,50 @@
+{
+  "task_id": "task-state-manager-1733000003",
+  "description": "Implement workflow state management with durable filesystem-based storage for crash recovery",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:03Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/state-manager.sh",
+    "dependencies": [],
+    "estimated_duration_minutes": 90
+  },
+  "requirements": {
+    "inputs": [
+      "Workflow run ID, step states, outputs"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/state-manager.sh",
+      "coordination/workflow-state/ directory structure"
+    ],
+    "validation": [
+      "Persist workflow state to filesystem",
+      "Enable crash recovery and resume",
+      "Track step-level progress",
+      "Store outputs for variable resolution"
+    ],
+    "features": [
+      "Initialize workflow state directory (coordination/workflow-state/active/{run_id}/)",
+      "Create state.json with workflow metadata and step states",
+      "Update step state (pending → running → completed/failed)",
+      "Store step outputs in outputs/ subdirectory",
+      "Track timestamps (started_at, completed_at, updated_at)",
+      "Move completed workflows to completed/ directory",
+      "Move failed workflows to failed/ directory",
+      "Query workflow state by run ID",
+      "List active/completed/failed workflows",
+      "Resume interrupted workflows from last completed step",
+      "Atomic state updates (write to temp file, then mv)"
+    ]
+  },
+  "acceptance_criteria": [
+    "State persists across script invocations",
+    "Can resume workflow after simulated crash",
+    "Correctly tracks 10+ steps with various states",
+    "Atomic writes prevent corrupted state files",
+    "Includes tests for state transitions",
+    "Cleanup old completed/failed runs (retention policy)"
+  ]
+}

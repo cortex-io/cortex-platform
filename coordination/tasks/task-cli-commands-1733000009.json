@@ -1,0 +1,57 @@
+{
+  "task_id": "task-cli-commands-1733000009",
+  "description": "Add workflow commands to cortex-cli.sh: workflow run, status, cancel, list, validate, visualize",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:09Z",
+  "status": "pending",
+  "metadata": {
+    "component": "cli",
+    "output_file": "scripts/cortex-cli.sh",
+    "dependencies": ["task-main-executor-1733000007"],
+    "estimated_duration_minutes": 90
+  },
+  "requirements": {
+    "inputs": [
+      "Existing cortex-cli.sh",
+      "Workflow engine components"
+    ],
+    "outputs": [
+      "Updated scripts/cortex-cli.sh with workflow commands"
+    ],
+    "validation": [
+      "Add workflow subcommands to CLI",
+      "Integrate with workflow executor",
+      "Provide user-friendly output"
+    ],
+    "features": [
+      "cortex workflow run <workflow-name> --inputs <file> - Execute workflow",
+      "cortex workflow run <workflow-name> --inputs <file> --dry-run - Validate without executing",
+      "cortex workflow status <run-id> - Show workflow execution status",
+      "cortex workflow status <run-id> --follow - Stream live progress",
+      "cortex workflow cancel <run-id> - Cancel running workflow",
+      "cortex workflow list - List all workflow runs (active, completed, failed)",
+      "cortex workflow list --active - List only active runs",
+      "cortex workflow list --failed - List only failed runs",
+      "cortex workflow validate <workflow-file> - Validate workflow YAML",
+      "cortex workflow visualize <workflow-name> - Show ASCII diagram",
+      "cortex workflow outputs <run-id> - Show workflow outputs",
+      "cortex workflow logs <run-id> [step-id] - Show workflow/step logs",
+      "cortex workflow resume <run-id> - Resume failed/interrupted workflow",
+      "Interactive workflow status with live updates",
+      "Color-coded output (green=success, red=failed, yellow=running)",
+      "Progress bars for long-running workflows",
+      "Estimated time remaining based on step durations"
+    ]
+  },
+  "acceptance_criteria": [
+    "cortex workflow run successfully executes security-audit.yaml",
+    "cortex workflow status shows live progress during execution",
+    "cortex workflow cancel successfully stops running workflow",
+    "cortex workflow list shows all runs with correct states",
+    "cortex workflow validate catches YAML errors",
+    "cortex workflow visualize displays correct DAG",
+    "Help text documents all commands and options",
+    "Tab completion support for workflow names"
+  ]
+}

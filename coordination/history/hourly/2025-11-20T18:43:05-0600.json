@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-11-20T18:43:05-0600",
+  "workers": {
+    "active": 48,
+    "completed": 3,
+    "failed": 0,
+    "zombies_killed": 0,
+    "success_rate": 100.00,
+    "avg_duration_minutes": 0,
+    "avg_tokens_used": 0
+  },
+  "tokens": {
+    "total_budget": 500000,
+    "total_used": 0,
+    "available": 500000,
+    "masters_used": 0,
+    "workers_used": 0,
+    "usage_percentage": 0,
+    "efficiency_score": 0
+  },
+  "tasks": {
+    "pending": 0,
+    "in_progress": 0,
+    "completed": 1,
+    "total": 16
+  },
+  "orchestrator": {
+    "active": 0,
+    "total": 1,
+    "completed": 0,
+    "failed": 0
+  },
+  "execution_managers": {
+    "active": 2,
+    "completed": 0,
+    "failed": 0,
+    "total": 2,
+    "success_rate": 0
+  }
+}

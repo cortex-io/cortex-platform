@@ -1,0 +1,273 @@
+{"timestamp":"2025-11-25T12:10:48-0600","type":"coordinator_stopped","data":{"pid":55479}}
+{"timestamp":"2025-11-25T12:11:19-0600","type":"routing_alert_created","data":{"alert_id":"routing-1764094279-coordinator_not_running","type":"coordinator_not_running","severity":"critical"}}
+{"timestamp":"2025-11-25T12:11:19-0600","type":"integration_validator_stopped","data":{"pid":56324}}
+{"timestamp":"2025-11-25T12:11:21-0600","type":"coordinator_started","data":{"pid":17652}}
+{"timestamp":"2025-11-25T12:11:21-0600","type":"coordinator_stopped","data":{"pid":17652}}
+{"timestamp":"2025-11-25T12:12:24-0600","type":"coordinator_started","data":{"pid":19837}}
+{"timestamp":"2025-11-25T12:12:24-0600","type":"coordinator_stopped","data":{"pid":19837}}
+{"timestamp":"2025-11-25T12:13:30-0600","type":"coordinator_started","data":{"pid":25107}}
+{"id":"evt-1764094526-52199","timestamp":"2025-11-25T12:15:26-06:00","type":"worker_presumed_dead","data":"{\"event_type\":\"worker_presumed_dead\",\"worker_id\":\"worker-implementation-039\",\"task_id\":\"task-elastic-apm-integration\",\"time_since_heartbeat_seconds\":9999,\"health_status\":\"unresponsive\",\"timestamp\":\"2025-11-25T12:15:26-0600\",\"detected_by\":\"heartbeat-monitor\"}","source":"automation"}
+{"id":"evt-1764094528-52199","timestamp":"2025-11-25T12:15:28-06:00","type":"zombie_detected","data":"","source":"automation"}
+{"id":"evt-1764094528-52199","timestamp":"2025-11-25T12:15:28-06:00","type":"zombie_process_terminated","data":"{\"event_type\":\"zombie_process_terminated\",\"worker_id\":\"worker-implementation-039\",\"timestamp\":\"2025-11-25T12:15:28-0600\",\"data\":{}}","source":"automation"}
+{"id":"evt-1764094528-52199","timestamp":"2025-11-25T12:15:28-06:00","type":"zombie_cleanup_completed","data":"{\"event_type\":\"zombie_cleanup_completed\",\"worker_id\":\"worker-implementation-039\",\"timestamp\":\"2025-11-25T12:15:28-0600\",\"data\":{}}","source":"automation"}
+{
+  "timestamp": "2025-11-25T13:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T14:00:00-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T15:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T16:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T17:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T18:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T19:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{"id":"evt-1764119383-52199","timestamp":"2025-11-25T19:09:43-06:00","type":"worker_presumed_dead","data":"{\"event_type\":\"worker_presumed_dead\",\"worker_id\":\"worker-scan-040\",\"task_id\":\"multi-repo-cve-scan-1764119375\",\"time_since_heartbeat_seconds\":9999,\"health_status\":\"unresponsive\",\"timestamp\":\"2025-11-25T19:09:43-0600\",\"detected_by\":\"heartbeat-monitor\"}","source":"automation"}
+{"id":"evt-1764119385-52199","timestamp":"2025-11-25T19:09:45-06:00","type":"zombie_detected","data":"","source":"automation"}
+{"id":"evt-1764119385-52199","timestamp":"2025-11-25T19:09:45-06:00","type":"zombie_process_terminated","data":"{\"event_type\":\"zombie_process_terminated\",\"worker_id\":\"worker-scan-040\",\"timestamp\":\"2025-11-25T19:09:45-0600\",\"data\":{}}","source":"automation"}
+{"id":"evt-1764119385-52199","timestamp":"2025-11-25T19:09:45-06:00","type":"zombie_cleanup_completed","data":"{\"event_type\":\"zombie_cleanup_completed\",\"worker_id\":\"worker-scan-040\",\"timestamp\":\"2025-11-25T19:09:45-0600\",\"data\":{}}","source":"automation"}
+{"id":"evt-1764120291-52199","timestamp":"2025-11-25T19:24:51-06:00","type":"worker_presumed_dead","data":"{\"event_type\":\"worker_presumed_dead\",\"worker_id\":\"worker-implementation-041\",\"task_id\":\"security-fixes-1764120272\",\"time_since_heartbeat_seconds\":9999,\"health_status\":\"unresponsive\",\"timestamp\":\"2025-11-25T19:24:51-0600\",\"detected_by\":\"heartbeat-monitor\"}","source":"automation"}
+{"id":"evt-1764120293-52199","timestamp":"2025-11-25T19:24:53-06:00","type":"zombie_detected","data":"","source":"automation"}
+{"id":"evt-1764120293-52199","timestamp":"2025-11-25T19:24:53-06:00","type":"zombie_process_terminated","data":"{\"event_type\":\"zombie_process_terminated\",\"worker_id\":\"worker-implementation-041\",\"timestamp\":\"2025-11-25T19:24:53-0600\",\"data\":{}}","source":"automation"}
+{"id":"evt-1764120293-52199","timestamp":"2025-11-25T19:24:53-06:00","type":"zombie_cleanup_completed","data":"{\"event_type\":\"zombie_cleanup_completed\",\"worker_id\":\"worker-implementation-041\",\"timestamp\":\"2025-11-25T19:24:53-0600\",\"data\":{}}","source":"automation"}
+{
+  "timestamp": "2025-11-25T20:00:02-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T21:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T22:00:00-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-25T23:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T00:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T01:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T02:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T03:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T04:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T05:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T06:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T07:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{"id":"evt-1764162096-52199","timestamp":"2025-11-26T07:01:36-06:00","type":"worker_presumed_dead","data":"{\"event_type\":\"worker_presumed_dead\",\"worker_id\":\"worker-implementation-042\",\"task_id\":\"phase2-agent-identity-1764162080\",\"time_since_heartbeat_seconds\":9999,\"health_status\":\"unresponsive\",\"timestamp\":\"2025-11-26T07:01:36-0600\",\"detected_by\":\"heartbeat-monitor\"}","source":"automation"}
+{"id":"evt-1764162098-52199","timestamp":"2025-11-26T07:01:38-06:00","type":"zombie_detected","data":"","source":"automation"}
+{"id":"evt-1764162098-52199","timestamp":"2025-11-26T07:01:38-06:00","type":"zombie_process_terminated","data":"{\"event_type\":\"zombie_process_terminated\",\"worker_id\":\"worker-implementation-042\",\"timestamp\":\"2025-11-26T07:01:38-0600\",\"data\":{}}","source":"automation"}
+{"id":"evt-1764162098-52199","timestamp":"2025-11-26T07:01:38-06:00","type":"zombie_cleanup_completed","data":"{\"event_type\":\"zombie_cleanup_completed\",\"worker_id\":\"worker-implementation-042\",\"timestamp\":\"2025-11-26T07:01:38-0600\",\"data\":{}}","source":"automation"}
+{
+  "timestamp": "2025-11-26T08:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T09:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{
+  "timestamp": "2025-11-26T10:00:01-0600",
+  "type": "pool_size_alert",
+  "data": {
+    "pool_size": 14,
+    "threshold": 10,
+    "severity": "warning"
+  }
+}
+{"id":"evt-1764280413-16167","timestamp":"2025-11-27T15:53:33-06:00","type":"system_ERROR","data":"❌ FAIL: Run coordinator master with version validation","source":"automation"}
+{"id":"evt-1764280413-16167","timestamp":"2025-11-27T15:53:33-06:00","type":"system_ERROR","data":"Some tests failed ❌","source":"automation"}
+{"id":"evt-1764449549-91327","timestamp":"2025-11-29T14:52:29-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764449549-91307","timestamp":"2025-11-29T14:52:29-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764449549-91331","timestamp":"2025-11-29T14:52:29-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764449549-91323","timestamp":"2025-11-29T14:52:29-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764513114-22310","timestamp":"2025-11-30T08:31:54-06:00","type":"system_ERROR","data":"Permission denied: null\ndevelopment-master cannot spawn workers","source":"automation"}
+{"id":"evt-1764513116-24612","timestamp":"2025-11-30T08:31:56-06:00","type":"system_ERROR","data":"Permission denied: null\ninventory-master cannot spawn workers","source":"automation"}
+{"id":"evt-1764513117-25655","timestamp":"2025-11-30T08:31:57-06:00","type":"system_ERROR","data":"Permission denied: null\ndevelopment-master cannot spawn workers","source":"automation"}
+{"id":"evt-1764513120-27950","timestamp":"2025-11-30T08:32:00-06:00","type":"system_ERROR","data":"Permission denied: null\ninventory-master cannot spawn workers","source":"automation"}
+{"id":"evt-1764529531-40939","timestamp":"2025-11-30T13:05:31-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529531-41307","timestamp":"2025-11-30T13:05:31-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529533-43859","timestamp":"2025-11-30T13:05:33-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529533-43555","timestamp":"2025-11-30T13:05:33-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529537-48906","timestamp":"2025-11-30T13:05:37-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529548-69280","timestamp":"2025-11-30T13:05:48-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529548-68430","timestamp":"2025-11-30T13:05:48-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529549-74110","timestamp":"2025-11-30T13:05:49-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764529549-75159","timestamp":"2025-11-30T13:05:49-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15204","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15199","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15196","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15198","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15203","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15202","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15207","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15205","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15206","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15201","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885542-15197","timestamp":"2025-12-04T15:59:02-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885588-20434","timestamp":"2025-12-04T15:59:48-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885637-21562","timestamp":"2025-12-04T16:00:37-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885640-21898","timestamp":"2025-12-04T16:00:40-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885642-22245","timestamp":"2025-12-04T16:00:42-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885644-22589","timestamp":"2025-12-04T16:00:44-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885646-22944","timestamp":"2025-12-04T16:00:46-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885648-23288","timestamp":"2025-12-04T16:00:48-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885651-23633","timestamp":"2025-12-04T16:00:51-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885653-23977","timestamp":"2025-12-04T16:00:53-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"id":"evt-1764885655-24331","timestamp":"2025-12-04T16:00:55-06:00","type":"system_ERROR","data":"Generated invalid JSON in worker specification","source":"automation"}
+{"timestamp":"2025-12-05T08:26:29-0600","type":"coordinator_started","data":{"pid":44567}}
+{"timestamp":"2025-12-05T08:26:31-0600","type":"coordinator_stopped","data":{"pid":45645}}
+{"timestamp":"2025-12-05T08:26:31-0600","type":"task_assigned","data":{"task_id":"self-opt-timeout-001","assigned_to":"
+development","task_title":"Create timeout learning infrastructure"}}
+{"timestamp":"2025-12-05T08:26:32-0600","type":"coordinator_started","data":{"pid":46651}}
+{"timestamp":"2025-12-05T08:26:32-0600","type":"task_assigned","data":{"task_id":"self-opt-timeout-002","assigned_to":"
+development","task_title":"Integrate timeout learning with worker spawning"}}
+{"timestamp":"2025-12-05T08:26:35-0600","type":"coordinator_stopped","data":{"pid":44567}}
+{"timestamp":"2025-12-05T08:26:35-0600","type":"coordinator_stopped","data":{"pid":46651}}
+{"timestamp":"2025-12-05T08:27:26-0600","type":"coordinator_started","data":{"pid":52867}}
+{"timestamp":"2025-12-05T08:27:30-0600","type":"coordinator_stopped","data":{"pid":52867}}
