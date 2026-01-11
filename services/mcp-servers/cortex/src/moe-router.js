@@ -28,13 +28,30 @@ const MOE_ROUTES = {
     system: 'sandfly',
     priority: 100
   },
+  checkmk: {
+    keywords: [
+      'checkmk', 'monitoring', 'host', 'service', 'alert', 'problem',
+      'status', 'health', 'metric', 'check', 'cmk', 'up', 'down'
+    ],
+    system: 'checkmk',
+    priority: 100
+  },
   kubernetes: {
     keywords: [
       'k8s', 'kubernetes', 'pod', 'deployment', 'service', 'namespace',
-      'kubectl', 'container', 'cluster', 'helm', 'ingress', 'configmap'
+      'kubectl', 'container', 'cluster', 'helm', 'ingress', 'configmap',
+      'node', 'replica', 'logs'
     ],
     system: 'k8s',
     priority: 50
+  },
+  n8n: {
+    keywords: [
+      'n8n', 'workflow', 'automation', 'trigger', 'execute', 'integration',
+      'automate', 'orchestration', 'webhook', 'flow'
+    ],
+    system: 'n8n',
+    priority: 100
   }
 };
 
