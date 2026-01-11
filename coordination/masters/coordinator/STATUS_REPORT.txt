@@ -75,7 +75,7 @@ KEY FINDINGS
 ================================================================================
 
 CHAT BACKEND ARCHITECTURE:
-- Tool routing via prefix (wazuh_, unifi_, proxmox_, cortex_)
+- Tool routing via prefix (sandfly_, unifi_, proxmox_, cortex_)
 - Will add: sandfly_ prefix routing to new MCP server
 - Proper agentic loop with tool execution
 - Issue: No conversation persistence (stateless)
@@ -135,7 +135,7 @@ Deep Testing:
 [ ] Sandfly: 20+ message conversation completed
 [ ] Proxmox: 20+ message conversation completed
 [ ] UniFi: 20+ message conversation completed
-[ ] Wazuh: 20+ message conversation completed
+[ ] Sandfly: 20+ message conversation completed
 [ ] Test report generated
 
 ================================================================================

@@ -10,7 +10,7 @@
 ## Executive Summary
 
 Building a complete Cortex MCP (Model Context Protocol) Server that exposes the entire Cortex construction company as a unified MCP interface. This will enable AI agents to:
-- Query infrastructure (UniFi, Proxmox, Wazuh, k8s) - Tier 1
+- Query infrastructure (UniFi, Proxmox, Sandfly, k8s) - Tier 1
 - Manage infrastructure (VMs, containers, pods) - Tier 2
 - Spawn worker swarms (1-10,000 workers) - Tier 3
 - Coordinate master agents - Tier 4
@@ -29,7 +29,7 @@ Building a complete Cortex MCP (Model Context Protocol) Server that exposes the 
    - `manifests/`: Master agent capability manifests (coordinator, security, dev, inventory, cicd)
 
 2. **MoE Router** (/tmp/cortex-moe-router.js)
-   - Keyword-based routing for UniFi, Proxmox, Wazuh, k8s
+   - Keyword-based routing for UniFi, Proxmox, Sandfly, k8s
    - Confidence scoring (0-1.0)
    - Priority-based expert selection
 
@@ -54,7 +54,7 @@ Building a complete Cortex MCP (Model Context Protocol) Server that exposes the 
 ### Gaps to Fill
 1. **Missing MCP clients** for existing MCP servers:
    - UniFi MCP server: http://unifi-mcp-server.cortex-system.svc.cluster.local:3000
-   - Wazuh MCP server: http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080
+   - Sandfly MCP server: http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080
    - Proxmox MCP server: http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000
 
 2. **Worker pool management layer**:
@@ -91,7 +91,7 @@ Building a complete Cortex MCP (Model Context Protocol) Server that exposes the 
 **Deliverables**:
 1. `src/clients/unifi.js` - UniFi MCP client (calls http://unifi-mcp-server...)
 2. `src/clients/proxmox.js` - Proxmox MCP client
-3. `src/clients/wazuh.js` - Wazuh MCP client
+3. `src/clients/sandfly.js` - Sandfly MCP client
 4. `src/clients/k8s.js` - kubectl wrapper client
 5. `src/moe-router.js` - Enhanced MoE router (integrate /tmp/cortex-moe-router.js)
 6. `src/tools/query.js` - cortex_query tool (Tier 1) - routes to infrastructure clients
@@ -182,7 +182,7 @@ Building a complete Cortex MCP (Model Context Protocol) Server that exposes the 
 ┌───────────┴────────┐    ┌────┴──────────────────┐
 │ UniFi MCP Client   │    │  Worker Pool Manager  │
 │ Proxmox MCP Client │    │  - Spawner            │
-│ Wazuh MCP Client   │    │  - Coordinator        │
+│ Sandfly MCP Client   │    │  - Coordinator        │
 │ kubectl Client     │    │  - Monitor            │
 └────────────────────┘    └───────────────────────┘
                                     │
@@ -231,7 +231,7 @@ cortex-mcp-server/
 │   ├── clients/                 # Daryl-1
 │   │   ├── unifi.js
 │   │   ├── proxmox.js
-│   │   ├── wazuh.js
+│   │   ├── sandfly.js
 │   │   └── k8s.js
 │   ├── tools/                   # Daryl-1, Daryl-2, Daryl-3
 │   │   ├── query.js             # Tier 1 (Daryl-1)
@@ -321,7 +321,7 @@ cortex-mcp-server/
 ### Tier 1: Simple Queries
 - [ ] cortex_query can query UniFi (devices, networks, clients)
 - [ ] cortex_query can query Proxmox (VMs, nodes, storage)
-- [ ] cortex_query can query Wazuh (alerts, agents, vulnerabilities)
+- [ ] cortex_query can query Sandfly (alerts, agents, vulnerabilities)
 - [ ] cortex_query can query k8s (pods, deployments, services)
 - [ ] MoE router correctly routes queries with >90% confidence
 

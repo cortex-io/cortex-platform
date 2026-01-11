@@ -15,7 +15,7 @@ Traefik Ingress Controller
     ↓
 MetalLB Load Balancer
     ↓
-MCP Servers (UniFi, Wazuh, Proxmox, Cloudflare)
+MCP Servers (UniFi, Sandfly, Proxmox, Cloudflare)
     ↓
 Cortex Orchestrator
     ↓
@@ -122,7 +122,7 @@ kubectl get pods -n cortex-system | grep mcp
 
 ```
 unifi-mcp-server-*     1/1  Running
-wazuh-mcp-server-*     1/1  Running
+sandfly-mcp-server-*     1/1  Running
 proxmox-mcp-server-*   1/1  Running
 cloudflare-mcp-server-* 1/1 Running
 ```
@@ -134,13 +134,13 @@ kubectl get svc -n cortex-system | grep mcp
 **Expected:**
 ```
 unifi-mcp-server      ClusterIP  *  3000/TCP
-wazuh-mcp-server      ClusterIP  *  8080/TCP
+sandfly-mcp-server      ClusterIP  *  8080/TCP
 proxmox-mcp-server    ClusterIP  *  3000/TCP
 cloudflare-mcp-server ClusterIP  *  3000/TCP
 
 # Alias services for backward compatibility
 unifi-mcp             ClusterIP  *  3000/TCP
-wazuh-mcp             ClusterIP  *  3000/TCP (→8080)
+sandfly-mcp             ClusterIP  *  3000/TCP (→8080)
 proxmox-mcp           ClusterIP  *  3000/TCP
 ```
 
@@ -148,7 +148,7 @@ proxmox-mcp           ClusterIP  *  3000/TCP
 ```bash
 kubectl run test-mcp --rm -i --restart=Never --image=curlimages/curl -- sh -c "
 echo 'UniFi:' && curl -s http://unifi-mcp-server.cortex-system.svc.cluster.local:3000/health
-echo 'Wazuh:' && curl -s http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080/health
+echo 'Sandfly:' && curl -s http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080/health
 echo 'Proxmox:' && curl -s http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000/health
 "
 ```
@@ -157,7 +157,7 @@ echo 'Proxmox:' && curl -s http://proxmox-mcp-server.cortex-system.svc.cluster.l
 **Test MCP external access (Traefik):**
 ```bash
 curl -k --resolve unifi-mcp.ry-ops.dev:443:10.88.145.200 https://unifi-mcp.ry-ops.dev/health
-curl -k --resolve wazuh-mcp.ry-ops.dev:443:10.88.145.200 https://wazuh-mcp.ry-ops.dev/health
+curl -k --resolve sandfly-mcp.ry-ops.dev:443:10.88.145.200 https://sandfly-mcp.ry-ops.dev/health
 curl -k --resolve proxmox-mcp.ry-ops.dev:443:10.88.145.200 https://proxmox-mcp.ry-ops.dev/health
 ```
 **Expected:** All return `{"status": "healthy"}`
@@ -166,12 +166,12 @@ curl -k --resolve proxmox-mcp.ry-ops.dev:443:10.88.145.200 https://proxmox-mcp.r
 ```bash
 # Check logs for specific MCP server
 kubectl logs -n cortex-system deployment/unifi-mcp-server --tail=50
-kubectl logs -n cortex-system deployment/wazuh-mcp-server --tail=50
+kubectl logs -n cortex-system deployment/sandfly-mcp-server --tail=50
 kubectl logs -n cortex-system deployment/proxmox-mcp-server --tail=50
 
 # Restart MCP servers
 kubectl rollout restart deployment -n cortex-system unifi-mcp-server
-kubectl rollout restart deployment -n cortex-system wazuh-mcp-server
+kubectl rollout restart deployment -n cortex-system sandfly-mcp-server
 kubectl rollout restart deployment -n cortex-system proxmox-mcp-server
 
 # If pods stuck in Pending (CPU issues), check node resources
@@ -205,8 +205,8 @@ kubectl get deployment cortex-orchestrator -n cortex -o jsonpath='{.spec.templat
   "value": "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000"
 }
 {
-  "name": "WAZUH_MCP_URL",
-  "value": "http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080"
+  "name": "SANDFLY_MCP_URL",
+  "value": "http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080"
 }
 {
   "name": "PROXMOX_MCP_URL",
@@ -384,7 +384,7 @@ fi
 
 echo ""
 echo "4. Checking MCP Servers..."
-for MCP in unifi-mcp-server wazuh-mcp-server proxmox-mcp-server; do
+for MCP in unifi-mcp-server sandfly-mcp-server proxmox-mcp-server; do
     POD_STATUS=$(kubectl get pod -n cortex-system -l app=$MCP -o jsonpath='{.items[0].status.phase}' 2>/dev/null)
     if [ "$POD_STATUS" == "Running" ]; then
         check_pass "$MCP is Running"
@@ -396,7 +396,7 @@ done
 echo ""
 echo "5. Checking MCP Health Endpoints..."
 for MCP_URL in "unifi-mcp-server.cortex-system.svc.cluster.local:3000" \
-               "wazuh-mcp-server.cortex-system.svc.cluster.local:8080" \
+               "sandfly-mcp-server.cortex-system.svc.cluster.local:8080" \
                "proxmox-mcp-server.cortex-system.svc.cluster.local:3000"; do
     HEALTH=$(kubectl run test-mcp-health-$RANDOM --rm -i --restart=Never --image=curlimages/curl -- \
         curl -s -m 5 http://$MCP_URL/health 2>/dev/null | grep -o '"status":"healthy"' || echo "")
@@ -467,7 +467,7 @@ kubectl describe nodes | grep -A 5 "Allocated resources"
 **Fix:**
 ```bash
 # Ensure alias services exist
-kubectl get svc -n cortex-system | grep -E "unifi-mcp|wazuh-mcp|proxmox-mcp"
+kubectl get svc -n cortex-system | grep -E "unifi-mcp|sandfly-mcp|proxmox-mcp"
 
 # If missing, create them:
 kubectl apply -f /Users/ryandahlberg/Projects/cortex/k8s/mcp-service-aliases.yaml

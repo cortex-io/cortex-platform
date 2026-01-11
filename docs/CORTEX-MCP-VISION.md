@@ -21,7 +21,7 @@ User: "show me k8s pod status"
 Cortex MCP → kubectl → Pod info
 
 User: "any security alerts?"
-Cortex MCP → Wazuh MCP → Security alerts
+Cortex MCP → Sandfly MCP → Security alerts
 ```
 
 ### 3. **Massive Coordinated Builds** (Advanced)
@@ -41,7 +41,7 @@ Cortex MCP:
   2. Coordinate master agents (development, security, infrastructure, cicd)
   3. Use Proxmox to provision VMs
   4. Use k8s to deploy services
-  5. Use Wazuh to scan for vulnerabilities
+  5. Use Sandfly to scan for vulnerabilities
   6. Use UniFi to configure network routing
   7. Orchestrate everything through MoE routing
   8. Return: "Microservices platform ready at https://platform.ry-ops.dev"
@@ -57,7 +57,7 @@ Cortex MCP:
     • 200 workers → k8s cluster analysis
     • 200 workers → Proxmox resource optimization
     • 200 workers → UniFi network performance
-    • 200 workers → Wazuh security posture
+    • 200 workers → Sandfly security posture
     • 200 workers → Code quality across repos
   - Coordinator master aggregates findings
   - Returns: Comprehensive optimization report
@@ -88,7 +88,7 @@ Cortex MCP:
      - Documentation workers (50 workers)
   3. Coordinates via masters:
      - Development master orchestrates coding
-     - Security master runs scans (Wazuh integration)
+     - Security master runs scans (Sandfly integration)
      - Infrastructure master provisions (Proxmox + k8s)
      - Network master configures routing (UniFi)
      - CICD master sets up pipelines
@@ -115,7 +115,7 @@ Cortex MCP:
       │       │      │      │      │      │
       ↓       ↓      ↓      ↓      ↓      ↓
    ┌────┐  ┌────┐ ┌────┐ ┌────┐ ┌─────────────────┐
-   │UniFi│ │Prox│ │Wazuh│ │k8s │ │  Worker Pool    │
+   │UniFi│ │Prox│ │Sandfly│ │k8s │ │  Worker Pool    │
    │MCP │ │MCP │ │MCP │ │    │ │  (1-10k workers)│
    └────┘  └────┘ └────┘ └────┘ └─────────────────┘
                                           │
@@ -136,10 +136,10 @@ Cortex MCP:
 ```javascript
 {
   name: 'cortex_query',
-  description: 'Query any Cortex subsystem (unifi, proxmox, wazuh, k8s)',
+  description: 'Query any Cortex subsystem (unifi, proxmox, sandfly, k8s)',
   input_schema: {
     query: 'string',        // "how is my network?"
-    system: 'auto|unifi|proxmox|wazuh|k8s'
+    system: 'auto|unifi|proxmox|sandfly|k8s'
   }
 }
 ```
@@ -199,7 +199,7 @@ Cortex MCP:
     features: ['array of features'],
     integrations: {
       infrastructure: ['proxmox', 'k8s'],
-      security: ['wazuh'],
+      security: ['sandfly'],
       networking: ['unifi']
     },
     constraints: {
@@ -262,7 +262,7 @@ Cortex MCP:
   • 100 → Proxmox VMs
   • 100 → k8s pods
   • 100 → Network devices (UniFi)
-  • 100 → Security scan (Wazuh)
+  • 100 → Security scan (Sandfly)
   • 100 → Code repos
 - Security master aggregates findings
 - Returns comprehensive report
@@ -286,7 +286,7 @@ Cortex MCP:
   • 500 integration workers
 - Coordinates with masters:
   • Development master oversees coding
-  • Security master integrates with Wazuh
+  • Security master integrates with Sandfly
   • Infrastructure master provisions on Proxmox + k8s
   • CICD master sets up pipelines
 - Deploys to production
@@ -307,7 +307,7 @@ Cortex MCP:
   • Proxmox resource usage
   • k8s pod efficiency
   • UniFi network performance
-  • Wazuh security alerts
+  • Sandfly security alerts
 - Auto-applies optimizations:
   • Scales k8s deployments
   • Migrates VMs on Proxmox
@@ -322,7 +322,7 @@ Workers: 100 (persistent)
 ## Implementation Roadmap
 
 ### Phase 1: Foundation (Week 1)
-- [x] MCP servers deployed (UniFi, Wazuh, Proxmox) ✓
+- [x] MCP servers deployed (UniFi, Sandfly, Proxmox) ✓
 - [x] Cortex orchestrator running ✓
 - [ ] Cortex MCP Server scaffolding
 - [ ] MoE router integrated
@@ -339,7 +339,7 @@ Workers: 100 (persistent)
 - [ ] Connect existing masters to MCP
 - [ ] Master coordination protocol
 - [ ] Development master integration
-- [ ] Security master integration (Wazuh)
+- [ ] Security master integration (Sandfly)
 - [ ] Infrastructure master integration (Proxmox + k8s)
 - [ ] Tools: cortex_coordinate_masters
 
@@ -375,7 +375,7 @@ cortex-mcp-server/
 │   ├── clients/
 │   │   ├── unifi.js          # UniFi MCP client
 │   │   ├── proxmox.js        # Proxmox MCP client
-│   │   ├── wazuh.js          # Wazuh MCP client
+│   │   ├── sandfly.js          # Sandfly MCP client
 │   │   └── k8s.js            # kubectl client
 │   ├── worker-pool/
 │   │   ├── spawner.js        # Worker spawning
@@ -412,8 +412,8 @@ spec:
           value: http://unifi-mcp-server:3000
         - name: PROXMOX_MCP_URL
           value: http://proxmox-mcp-server:3000
-        - name: WAZUH_MCP_URL
-          value: http://wazuh-mcp-server:8080
+        - name: SANDFLY_MCP_URL
+          value: http://sandfly-mcp-server:8080
         - name: WORKER_POOL_SIZE
           value: "10000"
         - name: ANTHROPIC_API_KEY
@@ -426,7 +426,7 @@ spec:
 ## Success Metrics
 
 ### Tier 1: Basic (Week 1)
-- ✅ Simple queries route correctly (UniFi, Proxmox, Wazuh, k8s)
+- ✅ Simple queries route correctly (UniFi, Proxmox, Sandfly, k8s)
 - ✅ 100% success rate on basic operations
 - ✅ <2 second response time
 

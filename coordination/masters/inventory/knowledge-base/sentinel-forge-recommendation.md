@@ -40,7 +40,7 @@ Sentinel Forge is a production-ready Red vs Blue Team security testing environme
    - No comparable open-source solution available
 
 2. **Perfect Cortex Integration**
-   - Leverages existing Wazuh SIEM
+   - Leverages existing Sandfly SIEM
    - Integrates with Proxmox (proxmox-mcp-server)
    - Works with n8n (n8n-mcp-server)
    - Direct pipeline to Cortex Security Master
@@ -90,7 +90,7 @@ Sentinel Forge is a production-ready Red vs Blue Team security testing environme
 
 1. **Deployment Prerequisites**
    - Manual VM template creation required
-   - Wazuh rules need manual installation
+   - Sandfly rules need manual installation
    - n8n workflows require manual import
    - **Impact**: Adds 1-2 days to deployment timeline
 
@@ -112,7 +112,7 @@ Sentinel Forge is a production-ready Red vs Blue Team security testing environme
 - Create Proxmox VM templates (Kali, Ubuntu, Windows)
 - Configure 5 VLANs on Proxmox
 - Deploy Terraform infrastructure (15 VMs)
-- Install Wazuh custom rules
+- Install Sandfly custom rules
 - Import n8n workflows
 - Test basic Red Team → Blue Team flow
 
@@ -185,10 +185,10 @@ Cortex Security Master
 Sentinel Forge n8n Orchestrator
     ↓
     Deploys VMs (Terraform)
-    Activates detection (Wazuh)
+    Activates detection (Sandfly)
     Executes attacks (Red Team)
     ↓
-Wazuh SIEM
+Sandfly SIEM
     ↓
     Detects attacks
     Differentiates Red Team vs Black Hat
@@ -224,7 +224,7 @@ Cortex Dashboard:
 ```
 Unauthorized Attack Detected
     ↓
-Wazuh CRITICAL Alert (Level 12-14)
+Sandfly CRITICAL Alert (Level 12-14)
     ↓
 Sentinel Forge n8n Workflow
     ↓
@@ -246,7 +246,7 @@ Cortex Security Master
 
 - [ ] All 15+ VMs deployed and operational
 - [ ] Network segmentation validated
-- [ ] Wazuh rules active and triggering correctly
+- [ ] Sandfly rules active and triggering correctly
 - [ ] n8n workflows executing successfully
 - [ ] First complete exercise end-to-end
 - [ ] Blue Team detection confirmed
@@ -263,7 +263,7 @@ Cortex Security Master
 
 **System Health**:
 - VM Uptime: > 99%
-- Wazuh Agent Status: 100% active
+- Sandfly Agent Status: 100% active
 - n8n Workflow Success Rate: > 95%
 
 **Security Outcomes**:
@@ -343,7 +343,7 @@ Cortex Security Master
 **Isolation Measures**:
 1. VLAN segmentation (5 separate networks)
 2. Firewall rules (drop by default)
-3. Wazuh monitoring (all VMs including Red Team)
+3. Sandfly monitoring (all VMs including Red Team)
 4. SSH key-based authentication only
 5. Audit logging (immutable)
 6. No internet access for vulnerable VMs
@@ -433,7 +433,7 @@ Cortex Security Master
 - VM template creation
 - VLAN configuration
 - Terraform deployment
-- Wazuh rule installation
+- Sandfly rule installation
 - n8n workflow import
 - Initial testing
 
@@ -467,7 +467,7 @@ Cortex Security Master
 **Key Points**:
 - Terraform IaC for reproducible deployments
 - n8n automation reduces manual effort
-- Wazuh integration with existing SIEM
+- Sandfly integration with existing SIEM
 - Clear 11-phase deployment process
 
 ### Security Team
@@ -516,7 +516,7 @@ Cortex Security Master
 1. **Prerequisites**:
    - Download VM templates (Kali, Ubuntu, Windows)
    - Configure Proxmox VLANs
-   - Verify Wazuh API access
+   - Verify Sandfly API access
    - Install n8n (if not already deployed)
 
 2. **Documentation**:
@@ -584,7 +584,7 @@ See: `/Users/ryandahlberg/Projects/cortex/coordination/repository-inventory.json
 ### Appendix D: Integration Points
 - n8n-mcp-server: Already integrated with Cortex
 - proxmox-mcp-server: Already integrated with Cortex
-- Wazuh SIEM: Existing deployment
+- Sandfly SIEM: Existing deployment
 - Cortex Security Master: Integration target
 
 ---

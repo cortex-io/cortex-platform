@@ -33,7 +33,7 @@ cortex-mcp-server/
 │   ├── clients/
 │   │   ├── unifi.js                ✓ Complete (UniFi MCP client)
 │   │   ├── proxmox.js              ✓ Complete (Proxmox MCP client)
-│   │   ├── wazuh.js                ✓ Complete (Wazuh MCP client)
+│   │   ├── sandfly.js                ✓ Complete (Sandfly MCP client)
 │   │   └── k8s.js                  ✓ Complete (kubectl wrapper)
 │   ├── tools/
 │   │   └── index.js                ✓ Complete (All 8 tools, 6 tiers)
@@ -62,7 +62,7 @@ cortex-mcp-server/
 **Deliverables**:
 - ✓ `src/clients/unifi.js` - UniFi MCP client (HTTP/JSON-RPC)
 - ✓ `src/clients/proxmox.js` - Proxmox MCP client (HTTP/JSON-RPC)
-- ✓ `src/clients/wazuh.js` - Wazuh MCP client (HTTP/JSON-RPC)
+- ✓ `src/clients/sandfly.js` - Sandfly MCP client (HTTP/JSON-RPC)
 - ✓ `src/clients/k8s.js` - kubectl wrapper client (child_process)
 - ✓ `src/moe-router.js` - Enhanced MoE router (6 tiers, confidence scoring)
 - ✓ `src/index.js` - Enhanced MCP server with status HTTP endpoint
@@ -120,7 +120,7 @@ cortex-mcp-server/
 
 ### Tier 1: Simple Queries
 **Tool**: `cortex_query`
-- Queries UniFi, Proxmox, Wazuh, k8s
+- Queries UniFi, Proxmox, Sandfly, k8s
 - Uses MoE router for intelligent routing
 - Confidence-based target selection
 
@@ -159,7 +159,7 @@ cortex-mcp-server/
 ## MoE Router Integration
 
 **Routes Defined**: 11
-- 4 Infrastructure routes (UniFi, Proxmox, Wazuh, k8s)
+- 4 Infrastructure routes (UniFi, Proxmox, Sandfly, k8s)
 - 1 Infrastructure management route
 - 1 Worker spawn route
 - 1 Master coordination route
@@ -239,7 +239,7 @@ kubectl get pods -n cortex-system
 ### Tier 1: Simple Queries
 - ✓ cortex_query can query UniFi (via UniFi MCP client)
 - ✓ cortex_query can query Proxmox (via Proxmox MCP client)
-- ✓ cortex_query can query Wazuh (via Wazuh MCP client)
+- ✓ cortex_query can query Sandfly (via Sandfly MCP client)
 - ✓ cortex_query can query k8s (via kubectl client)
 - ✓ MoE router correctly routes queries with >90% confidence
 
@@ -298,7 +298,7 @@ kubectl get pods -n cortex-system
    - 6-tier categorization
 
 3. **Infrastructure Clients Layer**
-   - UniFi, Proxmox, Wazuh (HTTP/JSON-RPC)
+   - UniFi, Proxmox, Sandfly (HTTP/JSON-RPC)
    - Kubernetes (kubectl wrapper)
 
 4. **Orchestration Layer**

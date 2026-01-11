@@ -63,7 +63,7 @@ Resource Utilization:
   ✓ Assessment: Significant capacity available
 
 Existing Monitoring Services:
-  ✓ Wazuh (VMID 101): Security SIEM - 4 vCPU, 4 GB RAM
+  ✓ Sandfly (VMID 101): Security SIEM - 4 vCPU, 4 GB RAM
   ✓ CheckMK (VMID 103): Infrastructure monitoring - 2 vCPU, 2 GB RAM
   ✓ UptimeKuma (VMID 106): Uptime monitoring - 1 vCPU, 1 GB RAM
   ✓ Integration: All services will integrate with new stack
@@ -121,7 +121,7 @@ Metrics Collection:
   - All 9 existing VMs (node_exporter)
   - All 4 monitoring VMs (node_exporter)
   - CheckMK (federation or dual collection)
-  - Wazuh (API exporter for security metrics)
+  - Sandfly (API exporter for security metrics)
   - UptimeKuma (blackbox_exporter enhancement)
 
 Log Aggregation:
@@ -136,7 +136,7 @@ Required Exporters:
   ✓ node_exporter: Install on all 13 VMs (9 existing + 4 new)
   ✓ pve_exporter: Proxmox cluster metrics
   ✓ blackbox_exporter: Endpoint availability checks
-  ✓ wazuh_exporter: Security metrics (custom)
+  ✓ sandfly_exporter: Security metrics (custom)
 
 --------------------------------------------------------------------------------
 DEPLOYMENT TIMELINE
@@ -297,7 +297,7 @@ Integration Complexity: MODERATE
   - 3 existing monitoring services to integrate
   - Multiple exporters required (13 VMs)
   - Federation or dual collection needed for CheckMK
-  - Custom exporter may be needed for Wazuh
+  - Custom exporter may be needed for Sandfly
 
 Timeline Confidence: HIGH
   - 6-8 hours realistic for LXC approach
@@ -344,7 +344,7 @@ foundation for Phase 2 deployment.
 
 The recommended LXC container approach aligns with the existing infrastructure,
 provides optimal resource efficiency, and supports rapid deployment. Integration
-with existing monitoring services (Wazuh, CheckMK, UptimeKuma) will create a
+with existing monitoring services (Sandfly, CheckMK, UptimeKuma) will create a
 comprehensive observability platform.
 
 No blockers identified. Infrastructure is ready. Proceed to Phase 2.

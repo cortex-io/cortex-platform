@@ -38,7 +38,7 @@ describe('MoE Router', () => {
       }
     });
 
-    it('should route Wazuh queries correctly', () => {
+    it('should route Sandfly queries correctly', () => {
       const queries = [
         'Show me security alerts',
         'What vulnerability was detected?',
@@ -48,7 +48,7 @@ describe('MoE Router', () => {
 
       for (const query of queries) {
         const result = routeQuery(query);
-        assert.strictEqual(result.system, 'wazuh', `Query "${query}" should route to wazuh`);
+        assert.strictEqual(result.system, 'sandfly', `Query "${query}" should route to sandfly`);
         assert.ok(result.confidence > 0, 'Confidence should be > 0');
       }
     });
@@ -121,7 +121,7 @@ describe('MoE Router', () => {
 
   describe('MOE_ROUTES configuration', () => {
     it('should have all required systems', () => {
-      const requiredSystems = ['unifi', 'proxmox', 'wazuh', 'kubernetes'];
+      const requiredSystems = ['unifi', 'proxmox', 'sandfly', 'kubernetes'];
       for (const system of requiredSystems) {
         assert.ok(MOE_ROUTES[system], `Should have ${system} route`);
       }

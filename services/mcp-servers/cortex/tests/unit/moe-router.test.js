@@ -11,7 +11,7 @@ class MoERouter {
     this.keywords = {
       unifi: ['unifi', 'wifi', 'network', 'access point', 'switch', 'client', 'ssid'],
       proxmox: ['proxmox', 'vm', 'virtual machine', 'container', 'lxc', 'node', 'storage'],
-      wazuh: ['wazuh', 'security', 'alert', 'siem', 'vulnerability', 'compliance', 'agent']
+      sandfly: ['sandfly', 'security', 'alert', 'siem', 'vulnerability', 'compliance', 'agent']
     };
   }
 
@@ -35,7 +35,7 @@ class MoERouter {
     const urls = {
       unifi: process.env.UNIFI_MCP_URL || 'http://unifi-mcp-server:3000',
       proxmox: process.env.PROXMOX_MCP_URL || 'http://proxmox-mcp-server:3000',
-      wazuh: process.env.WAZUH_MCP_URL || 'http://wazuh-mcp-server:8080',
+      sandfly: process.env.SANDFLY_MCP_URL || 'http://sandfly-mcp-server:8080',
       coordinator: 'internal'
     };
 
@@ -66,11 +66,11 @@ describe('MoE Router', () => {
       assert.strictEqual(router.route('Check node storage'), 'proxmox');
     });
 
-    it('should route Wazuh queries correctly', () => {
-      assert.strictEqual(router.route('Show Wazuh security alerts'), 'wazuh');
-      assert.strictEqual(router.route('List compliance violations'), 'wazuh');
-      assert.strictEqual(router.route('What are the recent SIEM events?'), 'wazuh');
-      assert.strictEqual(router.route('Show vulnerability scan results'), 'wazuh');
+    it('should route Sandfly queries correctly', () => {
+      assert.strictEqual(router.route('Show Sandfly security alerts'), 'sandfly');
+      assert.strictEqual(router.route('List compliance violations'), 'sandfly');
+      assert.strictEqual(router.route('What are the recent SIEM events?'), 'sandfly');
+      assert.strictEqual(router.route('Show vulnerability scan results'), 'sandfly');
     });
 
     it('should route to coordinator for general queries', () => {
@@ -82,13 +82,13 @@ describe('MoE Router', () => {
     it('should handle case-insensitive matching', () => {
       assert.strictEqual(router.route('UNIFI STATUS'), 'unifi');
       assert.strictEqual(router.route('ProxMox VMs'), 'proxmox');
-      assert.strictEqual(router.route('WaZuH aLeRtS'), 'wazuh');
+      assert.strictEqual(router.route('WaZuH aLeRtS'), 'sandfly');
     });
 
     it('should match partial keywords', () => {
       assert.strictEqual(router.route('The UniFi controller is down'), 'unifi');
       assert.strictEqual(router.route('My Proxmox cluster needs help'), 'proxmox');
-      assert.strictEqual(router.route('Check the Wazuh dashboard'), 'wazuh');
+      assert.strictEqual(router.route('Check the Sandfly dashboard'), 'sandfly');
     });
   });
 
@@ -103,9 +103,9 @@ describe('MoE Router', () => {
       assert.ok(url.includes('proxmox-mcp-server'));
     });
 
-    it('should return correct Wazuh URL', () => {
-      const url = router.getServerUrl('wazuh');
-      assert.ok(url.includes('wazuh-mcp-server'));
+    it('should return correct Sandfly URL', () => {
+      const url = router.getServerUrl('sandfly');
+      assert.ok(url.includes('sandfly-mcp-server'));
     });
 
     it('should return internal for coordinator', () => {
@@ -187,9 +187,9 @@ if (require.main === module) {
         assert.strictEqual(router.route('Show virtual machine status'), 'proxmox');
       });
 
-      it('should route Wazuh queries correctly', () => {
-        assert.strictEqual(router.route('Show Wazuh security alerts'), 'wazuh');
-        assert.strictEqual(router.route('List compliance violations'), 'wazuh');
+      it('should route Sandfly queries correctly', () => {
+        assert.strictEqual(router.route('Show Sandfly security alerts'), 'sandfly');
+        assert.strictEqual(router.route('List compliance violations'), 'sandfly');
       });
     });
   });

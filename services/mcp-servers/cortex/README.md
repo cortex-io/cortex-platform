@@ -1,12 +1,12 @@
 # Cortex MCP Server
 
-Intelligent MCP (Model Context Protocol) server that routes queries to UniFi, Proxmox, Wazuh, and Kubernetes subsystems using Mixture of Experts (MoE) routing.
+Intelligent MCP (Model Context Protocol) server that routes queries to UniFi, Proxmox, Sandfly, and Kubernetes subsystems using Mixture of Experts (MoE) routing.
 
 ## Features
 
 - **MCP Protocol Compliance**: Implements MCP specification (stdio mode)
 - **Intelligent Routing**: MoE-based keyword routing with confidence scoring
-- **Multi-System Support**: UniFi, Proxmox, Wazuh, Kubernetes
+- **Multi-System Support**: UniFi, Proxmox, Sandfly, Kubernetes
 - **Two Core Tools**:
   - `cortex_query`: Route queries to appropriate subsystem
   - `cortex_get_status`: Get real-time Cortex operational status
@@ -27,7 +27,7 @@ Intelligent MCP (Model Context Protocol) server that routes queries to UniFi, Pr
     ┌───────────┼───────────┬──────────┐
     │           │           │          │
 ┌───▼───┐  ┌───▼───┐  ┌───▼───┐  ┌──▼──┐
-│ UniFi │  │Proxmox│  │ Wazuh │  │ K8s │
+│ UniFi │  │Proxmox│  │ Sandfly │  │ K8s │
 │  MCP  │  │  MCP  │  │  MCP  │  │ CLI │
 └───────┘  └───────┘  └───────┘  └─────┘
 ```
@@ -65,7 +65,7 @@ Query any Cortex subsystem with automatic or manual routing.
 ```json
 {
   "query": "Show me all WiFi networks",
-  "system": "auto"  // or: unifi, proxmox, wazuh, k8s
+  "system": "auto"  // or: unifi, proxmox, sandfly, k8s
 }
 ```
 
@@ -106,7 +106,7 @@ Get real-time status of all Cortex operations.
   "mcp_servers": {
     "unifi": "healthy",
     "proxmox": "healthy",
-    "wazuh": "healthy",
+    "sandfly": "healthy",
     "k8s": "healthy"
   },
   "cortex_operations": {
@@ -130,8 +130,8 @@ The MoE router uses keyword-based routing with confidence scoring:
 **Proxmox:**
 - proxmox, vm, virtual machine, container, lxc, pve, hypervisor, node resource, vcpu, memory, disk, snapshot
 
-**Wazuh:**
-- wazuh, security, alert, vulnerability, threat, compliance, cve, intrusion, siem, log, agent, malware
+**Sandfly:**
+- sandfly, security, alert, vulnerability, threat, compliance, cve, intrusion, siem, log, agent, malware
 
 **Kubernetes:**
 - k8s, kubernetes, pod, deployment, service, namespace, kubectl, container, cluster, helm, ingress, configmap
@@ -152,7 +152,7 @@ The MoE router uses keyword-based routing with confidence scoring:
 # MCP Server URLs (default: Kubernetes service URLs)
 UNIFI_MCP_URL=http://unifi-mcp-server.cortex-system.svc.cluster.local:3000
 PROXMOX_MCP_URL=http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000
-WAZUH_MCP_URL=http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080
+SANDFLY_MCP_URL=http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080
 ```
 
 ## File Structure
@@ -168,7 +168,7 @@ cortex-mcp-server/
 │   ├── clients/
 │   │   ├── unifi.js          # UniFi MCP HTTP client
 │   │   ├── proxmox.js        # Proxmox MCP HTTP client
-│   │   ├── wazuh.js          # Wazuh MCP HTTP client
+│   │   ├── sandfly.js          # Sandfly MCP HTTP client
 │   │   └── k8s.js            # Kubernetes kubectl wrapper
 │   └── tests/
 │       └── moe-router.test.js # Router unit tests

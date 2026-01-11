@@ -14,7 +14,7 @@ Infrastructure assessment for the Deploy Monitoring Stack workflow has been comp
 
 **Key Findings**:
 - 9 running LXC containers with 23% memory and 38% disk utilization
-- 3 existing monitoring services (Wazuh, CheckMK, UptimeKuma) to integrate
+- 3 existing monitoring services (Sandfly, CheckMK, UptimeKuma) to integrate
 - Available capacity sufficient for full Prometheus/Grafana/Loki/Alertmanager stack
 - Network topology supports dedicated monitoring VLAN (VLAN 70)
 - Recommended deployment: LXC containers for optimal resource efficiency
@@ -44,7 +44,7 @@ Infrastructure assessment for the Deploy Monitoring Stack workflow has been comp
 
 ## Existing Monitoring Services
 
-### 1. Wazuh (VMID 101)
+### 1. Sandfly (VMID 101)
 - **Purpose**: Security Information and Event Management (SIEM)
 - **Resources**: 4 vCPU, 4GB RAM (58% used), 24GB disk (48% used)
 - **Status**: Running, healthy
@@ -162,7 +162,7 @@ Infrastructure assessment for the Deploy Monitoring Stack workflow has been comp
 Proxmox Host (pve_exporter) ──┐
 All VMs (node_exporter)      ──┤
 CheckMK (federation)         ──┼──> Prometheus ──> Grafana (visualization)
-Wazuh (API exporter)         ──┤                └──> Alertmanager (alerts)
+Sandfly (API exporter)         ──┤                └──> Alertmanager (alerts)
 UptimeKuma (blackbox_exporter)─┘
 ```
 
@@ -177,7 +177,7 @@ Proxmox host logs          ──┘
 1. **node_exporter**: Install on all 9 existing VMs + monitoring VMs (host metrics)
 2. **pve_exporter**: Install on monitoring VM (Proxmox cluster metrics)
 3. **blackbox_exporter**: Install on Prometheus VM (endpoint availability)
-4. **wazuh_exporter**: Custom exporter or API scraping (security metrics)
+4. **sandfly_exporter**: Custom exporter or API scraping (security metrics)
 
 ---
 

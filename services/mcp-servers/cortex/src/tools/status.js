@@ -5,7 +5,7 @@
 
 import { checkUniFiHealth } from '../clients/unifi.js';
 import { checkProxmoxHealth } from '../clients/proxmox.js';
-import { checkWazuhHealth } from '../clients/wazuh.js';
+import { checkSandflyHealth } from '../clients/sandfly.js';
 import { checkK8sHealth } from '../clients/k8s.js';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
@@ -103,10 +103,10 @@ export async function executeCortexGetStatus() {
   console.log('[Cortex Status] Checking all subsystems...');
 
   // Check all MCP servers in parallel
-  const [unifiHealth, proxmoxHealth, wazuhHealth, k8sHealth, activeWorkers, activeMasters, runningTasks] = await Promise.all([
+  const [unifiHealth, proxmoxHealth, sandflyHealth, k8sHealth, activeWorkers, activeMasters, runningTasks] = await Promise.all([
     checkUniFiHealth(),
     checkProxmoxHealth(),
-    checkWazuhHealth(),
+    checkSandflyHealth(),
     checkK8sHealth(),
     getActiveWorkers(),
     getActiveMasters(),
@@ -118,13 +118,13 @@ export async function executeCortexGetStatus() {
     mcp_servers: {
       unifi: unifiHealth.healthy ? 'healthy' : 'unhealthy',
       proxmox: proxmoxHealth.healthy ? 'healthy' : 'unhealthy',
-      wazuh: wazuhHealth.healthy ? 'healthy' : 'unhealthy',
+      sandfly: sandflyHealth.healthy ? 'healthy' : 'unhealthy',
       k8s: k8sHealth.healthy ? 'healthy' : 'unhealthy'
     },
     mcp_server_details: {
       unifi: unifiHealth,
       proxmox: proxmoxHealth,
-      wazuh: wazuhHealth,
+      sandfly: sandflyHealth,
       k8s: k8sHealth
     },
     cortex_operations: {
@@ -140,13 +140,13 @@ export async function executeCortexGetStatus() {
     overall_health: determineOverallHealth({
       unifiHealth,
       proxmoxHealth,
-      wazuhHealth,
+      sandflyHealth,
       k8sHealth
     })
   };
 
   console.log('[Cortex Status] Status check complete');
-  console.log(`  - MCP Servers: UniFi=${status.mcp_servers.unifi}, Proxmox=${status.mcp_servers.proxmox}, Wazuh=${status.mcp_servers.wazuh}, K8s=${status.mcp_servers.k8s}`);
+  console.log(`  - MCP Servers: UniFi=${status.mcp_servers.unifi}, Proxmox=${status.mcp_servers.proxmox}, Sandfly=${status.mcp_servers.sandfly}, K8s=${status.mcp_servers.k8s}`);
   console.log(`  - Operations: ${activeWorkers.length} workers, ${activeMasters.length} masters, ${runningTasks.length} tasks`);
 
   return {
@@ -161,9 +161,9 @@ export async function executeCortexGetStatus() {
  * @returns {string} Overall health status
  */
 function determineOverallHealth(healthChecks) {
-  const { unifiHealth, proxmoxHealth, wazuhHealth, k8sHealth } = healthChecks;
+  const { unifiHealth, proxmoxHealth, sandflyHealth, k8sHealth } = healthChecks;
 
-  const healthyCount = [unifiHealth, proxmoxHealth, wazuhHealth, k8sHealth]
+  const healthyCount = [unifiHealth, proxmoxHealth, sandflyHealth, k8sHealth]
     .filter(h => h.healthy).length;
 
   if (healthyCount === 4) return 'healthy';
