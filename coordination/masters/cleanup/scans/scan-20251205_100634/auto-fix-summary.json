@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-12-05T16:11:12Z",
+  "mode": "live",
+  "fixes": [
+    {
+      "type": "empty_directories",
+      "count": 1
+    },
+    {
+      "type": "file_permissions",
+      "count": 29
+    },
+    {
+      "type": "gitignore_violations",
+      "count": 0
+    },
+    {
+      "type": "unreferenced_files",
+      "count": 502
+    }
+  ],
+  "total_fixes": 532
+}

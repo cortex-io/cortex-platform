@@ -1,0 +1,48 @@
+{
+  "task_id": "task-parallel-executor-1733000002",
+  "description": "Implement parallel step executor with background job management and wait-for-completion logic",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:02Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/parallel-executor.sh",
+    "dependencies": [],
+    "estimated_duration_minutes": 75
+  },
+  "requirements": {
+    "inputs": [
+      "Array of steps to execute in parallel"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/parallel-executor.sh"
+    ],
+    "validation": [
+      "Spawn multiple background jobs simultaneously",
+      "Track PIDs of all running jobs",
+      "Wait for all jobs to complete",
+      "Collect exit codes and outputs",
+      "Handle job failures gracefully"
+    ],
+    "features": [
+      "Execute N steps in parallel as background jobs",
+      "Assign unique temp files for stdout/stderr per job",
+      "Track PIDs in associative array",
+      "Monitor job completion with 'wait' or polling",
+      "Collect outputs from each job",
+      "Aggregate results (success/failure counts)",
+      "Kill all jobs if one fails critically",
+      "Timeout handling (kill jobs after max duration)",
+      "Progress reporting (X/N jobs completed)"
+    ]
+  },
+  "acceptance_criteria": [
+    "Successfully runs 3+ bash commands in parallel",
+    "Correctly waits for all jobs to complete",
+    "Captures stdout/stderr from each job separately",
+    "Handles job failures without hanging",
+    "Includes test with intentional job failure",
+    "Respects timeout limits and kills long-running jobs"
+  ]
+}

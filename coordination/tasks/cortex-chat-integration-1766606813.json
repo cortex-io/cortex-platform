@@ -1,0 +1,36 @@
+{
+  "task_id": "cortex-chat-integration-001",
+  "type": "development",
+  "priority": "CRITICAL",
+  "assigned_to": "development-master",
+  "title": "Make Cortex Orchestrator Intelligent for Chat Queries",
+  "description": "Implement natural language query processing in Cortex orchestrator to handle chat app requests intelligently",
+  "requirements": [
+    "Add Claude/AI capability to Cortex orchestrator",
+    "Parse user natural language queries",
+    "Route to appropriate systems (kubectl, UniFi MCP, Wazuh MCP, Proxmox MCP)",
+    "Return user-friendly answers instead of raw kubectl output",
+    "Implement tool execution for kubectl, MCP servers, masters"
+  ],
+  "implementation_spec": {
+    "location": "kubectl get cm -n cortex cortex-chat-integration-spec -o yaml",
+    "desktop_copy": "/Users/ryandahlberg/Desktop/CORTEX-CHAT-INTEGRATION-PROMPT.md"
+  },
+  "test_queries": [
+    "how is my unifi network today?",
+    "what pods are running in cortex-system?",
+    "are there any security alerts?",
+    "show me failing pods",
+    "what VMs are running on proxmox?"
+  ],
+  "success_criteria": [
+    "User asks 'how is my unifi network today?' → Cortex routes to UniFi MCP",
+    "User asks 'what pods are running?' → Cortex executes kubectl",
+    "User asks 'any security alerts?' → Cortex routes to Wazuh MCP",
+    "Responses are natural language, not raw JSON/kubectl dumps",
+    "No token loops - one query, one answer"
+  ],
+  "deadline": "ASAP - blocking chat app usability",
+  "created_at": "2025-12-24T20:00:00Z",
+  "created_by": "ryan"
+}

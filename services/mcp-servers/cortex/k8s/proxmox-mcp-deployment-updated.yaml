@@ -1,0 +1,351 @@
+---
+# Updated Proxmox MCP Server Deployment
+# Uses pre-built container image from in-cluster registry
+# Replaces git-clone init container approach with proper image-based deployment
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cortex-system
+  labels:
+    name: cortex-system
+    cortex.ai/managed: "true"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxmox-mcp-config
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    cortex.ai/component: "infrastructure-management"
+data:
+  PROXMOX_HOST: "10.88.145.100"
+  MCP_COMMAND: "python -m proxmox_mcp_server.server"
+  LOG_LEVEL: "info"
+  # Port configuration
+  MCP_PORT: "3000"
+  HEALTH_PORT: "8080"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: proxmox-mcp-secrets
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    cortex.ai/component: "infrastructure-management"
+type: Opaque
+stringData:
+  PROXMOX_TOKEN_ID: "root@pam!automation"
+  PROXMOX_TOKEN_SECRET: "9c7c90e1-5d8c-4e32-afe9-8c27f0651f9e"
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxmox-mcp-server
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxmox-mcp-server
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    cortex.ai/component: "infrastructure-management"
+    cortex.ai/mcp-server: "proxmox"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: proxmox-mcp-server
+  template:
+    metadata:
+      labels:
+        app: proxmox-mcp-server
+        cortex.ai/component: "infrastructure-management"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: proxmox-mcp-server
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+      - name: app
+        # Use image from in-cluster registry
+        image: docker-registry.cortex-system.svc.cluster.local:5000/cortex-mcp-server:latest
+        imagePullPolicy: Always
+
+        ports:
+        - name: mcp
+          containerPort: 3000
+          protocol: TCP
+        - name: health
+          containerPort: 8080
+          protocol: TCP
+
+        env:
+        # Load config from ConfigMap
+        - name: PROXMOX_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: proxmox-mcp-config
+              key: PROXMOX_HOST
+        - name: MCP_COMMAND
+          valueFrom:
+            configMapKeyRef:
+              name: proxmox-mcp-config
+              key: MCP_COMMAND
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: proxmox-mcp-config
+              key: LOG_LEVEL
+
+        # Load secrets
+        - name: PROXMOX_TOKEN_ID
+          valueFrom:
+            secretKeyRef:
+              name: proxmox-mcp-secrets
+              key: PROXMOX_TOKEN_ID
+        - name: PROXMOX_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: proxmox-mcp-secrets
+              key: PROXMOX_TOKEN_SECRET
+
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        startupProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 30
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false  # MCP server may need temp files
+
+      # DNS configuration for Proxmox host resolution
+      dnsPolicy: ClusterFirst
+
+      # Lifecycle hooks for graceful shutdown
+      terminationGracePeriodSeconds: 30
+
+      # Node affinity (prefer infrastructure nodes)
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - proxmox-mcp-server
+              topologyKey: kubernetes.io/hostname
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxmox-mcp-server
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    cortex.ai/component: "infrastructure-management"
+spec:
+  type: ClusterIP
+  ports:
+  - name: mcp
+    port: 3000
+    targetPort: mcp
+    protocol: TCP
+  - name: health
+    port: 8080
+    targetPort: health
+    protocol: TCP
+  selector:
+    app: proxmox-mcp-server
+
+---
+# Alternative service name for compatibility
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxmox-mcp
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    cortex.ai/component: "infrastructure-management"
+spec:
+  type: ClusterIP
+  ports:
+  - name: mcp
+    port: 3000
+    targetPort: mcp
+    protocol: TCP
+  selector:
+    app: proxmox-mcp-server
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: proxmox-mcp-server-hpa
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: proxmox-mcp-server
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: proxmox-mcp-server-pdb
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: proxmox-mcp-server
+
+---
+# ServiceMonitor for Prometheus (optional)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: proxmox-mcp-server
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: proxmox-mcp-server
+  endpoints:
+  - port: health
+    interval: 30s
+    scrapeTimeout: 10s
+    path: /metrics
+
+---
+# NetworkPolicy to allow access to Proxmox API
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: proxmox-mcp-server-netpol
+  namespace: cortex-system
+  labels:
+    app: proxmox-mcp-server
+spec:
+  podSelector:
+    matchLabels:
+      app: proxmox-mcp-server
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from other cortex-system pods
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: cortex-system
+    ports:
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow DNS
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  # Allow Proxmox API (10.88.145.100:8006)
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 8006
+  # Allow HTTPS
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443

@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mock-api-responses
+  namespace: cortex-test
+data:
+  responses.json: |
+    {
+      "github": {
+        "/repos/:owner/:repo": {
+          "id": 123456789,
+          "name": "test-repo",
+          "full_name": "test-owner/test-repo",
+          "private": false,
+          "description": "Test repository for Cortex testing",
+          "language": "JavaScript"
+        },
+        "/repos/:owner/:repo/issues": [
+          {
+            "id": 1,
+            "number": 42,
+            "title": "Test Issue",
+            "state": "open",
+            "body": "This is a test issue"
+          }
+        ]
+      },
+      "llm": {
+        "/v1/completions": {
+          "id": "test-completion-123",
+          "object": "text_completion",
+          "created": 1234567890,
+          "choices": [{
+            "text": "Generated code output",
+            "index": 0,
+            "finish_reason": "stop"
+          }]
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-github-api
+  namespace: cortex-test
+  labels:
+    app: mock-github-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: mock-github-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-github-api
+  namespace: cortex-test
+  labels:
+    app: mock-github-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-github-api
+  template:
+    metadata:
+      labels:
+        app: mock-github-api
+    spec:
+      containers:
+        - name: mock-server
+          image: mockserver/mockserver:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MOCKSERVER_PROPERTY_FILE
+              value: /config/mockserver.properties
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: config
+          configMap:
+            name: mock-api-responses
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-llm-api
+  namespace: cortex-test
+  labels:
+    app: mock-llm-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: mock-llm-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-llm-api
+  namespace: cortex-test
+  labels:
+    app: mock-llm-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-llm-api
+  template:
+    metadata:
+      labels:
+        app: mock-llm-api
+    spec:
+      containers:
+        - name: mock-server
+          image: mockserver/mockserver:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"

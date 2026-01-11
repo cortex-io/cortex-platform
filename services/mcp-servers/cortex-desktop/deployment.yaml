@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cortex-desktop-mcp-secret
+  namespace: cortex
+type: Opaque
+stringData:
+  anthropic-api-key: "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"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cortex-desktop-mcp
+  namespace: cortex
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cortex-desktop-mcp-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: cortex-desktop-mcp
+  namespace: cortex
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-desktop-mcp
+  namespace: cortex
+  labels:
+    app: cortex-desktop-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-desktop-mcp
+  template:
+    metadata:
+      labels:
+        app: cortex-desktop-mcp
+    spec:
+      serviceAccountName: cortex-desktop-mcp
+      containers:
+      - name: mcp-server
+        image: 10.43.170.72:5000/cortex-desktop-mcp:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8765
+          name: http
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "8765"
+        - name: CORTEX_URL
+          value: "http://cortex-orchestrator.cortex.svc.cluster.local:8000"
+        - name: REDIS_HOST
+          value: "redis.cortex-system.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-desktop-mcp-secret
+              key: anthropic-api-key
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8765
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8765
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cortex-desktop-mcp
+  namespace: cortex
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 10.88.145.216
+spec:
+  type: LoadBalancer
+  selector:
+    app: cortex-desktop-mcp
+  ports:
+  - name: http
+    port: 8765
+    targetPort: 8765
+    protocol: TCP
+  sessionAffinity: None

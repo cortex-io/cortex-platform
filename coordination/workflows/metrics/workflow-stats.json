@@ -1,0 +1,250 @@
+{
+  "last_updated": "2025-12-09T00:00:00Z",
+  "workflows": [
+    {
+      "workflow_id": "deploy-monitoring-stack",
+      "workflow_name": "Deploy Monitoring Stack",
+      "executions": {
+        "total": 42,
+        "successful": 40,
+        "failed": 2,
+        "success_rate": 0.952
+      },
+      "performance": {
+        "avg_duration_seconds": 2845,
+        "min_duration_seconds": 2312,
+        "max_duration_seconds": 3621,
+        "p50_duration_seconds": 2734,
+        "p95_duration_seconds": 3200,
+        "p99_duration_seconds": 3500
+      },
+      "last_execution": {
+        "timestamp": "2025-12-08T12:00:00Z",
+        "status": "completed",
+        "duration_seconds": 2734
+      },
+      "contractor_performance": {
+        "infrastructure-contractor": {
+          "avg_duration_seconds": 845,
+          "error_count": 1
+        },
+        "talos-contractor": {
+          "avg_duration_seconds": 1520,
+          "error_count": 0
+        },
+        "n8n-contractor": {
+          "avg_duration_seconds": 480,
+          "error_count": 1
+        }
+      },
+      "common_errors": [
+        {
+          "error": "storage_quota_exceeded",
+          "count": 1,
+          "contractor": "infrastructure-contractor"
+        },
+        {
+          "error": "webhook_creation_failed",
+          "count": 1,
+          "contractor": "n8n-contractor"
+        }
+      ]
+    },
+    {
+      "workflow_id": "build-k8s-cluster",
+      "workflow_name": "Build New K8s Cluster",
+      "executions": {
+        "total": 8,
+        "successful": 8,
+        "failed": 0,
+        "success_rate": 1.0
+      },
+      "performance": {
+        "avg_duration_seconds": 3420,
+        "min_duration_seconds": 3180,
+        "max_duration_seconds": 3890,
+        "p50_duration_seconds": 3350,
+        "p95_duration_seconds": 3800,
+        "p99_duration_seconds": 3890
+      },
+      "last_execution": {
+        "timestamp": "2025-12-05T09:30:00Z",
+        "status": "completed",
+        "duration_seconds": 3456
+      },
+      "contractor_performance": {
+        "infrastructure-contractor": {
+          "avg_duration_seconds": 1020,
+          "error_count": 0
+        },
+        "talos-contractor": {
+          "avg_duration_seconds": 2100,
+          "error_count": 0
+        },
+        "n8n-contractor": {
+          "avg_duration_seconds": 300,
+          "error_count": 0
+        }
+      },
+      "common_errors": []
+    },
+    {
+      "workflow_id": "app-deployment",
+      "workflow_name": "Application Deployment Pipeline",
+      "executions": {
+        "total": 156,
+        "successful": 148,
+        "failed": 8,
+        "success_rate": 0.949
+      },
+      "performance": {
+        "avg_duration_seconds": 1245,
+        "min_duration_seconds": 980,
+        "max_duration_seconds": 1820,
+        "p50_duration_seconds": 1210,
+        "p95_duration_seconds": 1560,
+        "p99_duration_seconds": 1750
+      },
+      "last_execution": {
+        "timestamp": "2025-12-09T08:45:00Z",
+        "status": "completed",
+        "duration_seconds": 1189
+      },
+      "contractor_performance": {
+        "n8n-contractor": {
+          "avg_duration_seconds": 520,
+          "error_count": 3
+        },
+        "talos-contractor": {
+          "avg_duration_seconds": 580,
+          "error_count": 4
+        },
+        "infrastructure-contractor": {
+          "avg_duration_seconds": 145,
+          "error_count": 1
+        }
+      },
+      "common_errors": [
+        {
+          "error": "docker_build_timeout",
+          "count": 2,
+          "contractor": "n8n-contractor"
+        },
+        {
+          "error": "deployment_rollout_timeout",
+          "count": 3,
+          "contractor": "talos-contractor"
+        },
+        {
+          "error": "health_check_failed",
+          "count": 2,
+          "contractor": "n8n-contractor"
+        },
+        {
+          "error": "lb_backend_unhealthy",
+          "count": 1,
+          "contractor": "infrastructure-contractor"
+        }
+      ]
+    },
+    {
+      "workflow_id": "dr-failover",
+      "workflow_name": "Disaster Recovery Failover",
+      "executions": {
+        "total": 3,
+        "successful": 3,
+        "failed": 0,
+        "success_rate": 1.0
+      },
+      "performance": {
+        "avg_duration_seconds": 875,
+        "min_duration_seconds": 812,
+        "max_duration_seconds": 923,
+        "p50_duration_seconds": 890,
+        "p95_duration_seconds": 920,
+        "p99_duration_seconds": 923
+      },
+      "last_execution": {
+        "timestamp": "2025-11-15T03:20:00Z",
+        "status": "completed",
+        "duration_seconds": 812,
+        "notes": "Planned DR test"
+      },
+      "contractor_performance": {
+        "infrastructure-contractor": {
+          "avg_duration_seconds": 180,
+          "error_count": 0
+        },
+        "talos-contractor": {
+          "avg_duration_seconds": 520,
+          "error_count": 0
+        },
+        "n8n-contractor": {
+          "avg_duration_seconds": 175,
+          "error_count": 0
+        }
+      },
+      "common_errors": [],
+      "notes": "All executions were planned DR tests, not actual disasters"
+    },
+    {
+      "workflow_id": "security-incident-response",
+      "workflow_name": "Security Incident Response",
+      "executions": {
+        "total": 5,
+        "successful": 5,
+        "failed": 0,
+        "success_rate": 1.0
+      },
+      "performance": {
+        "avg_duration_seconds": 6420,
+        "min_duration_seconds": 4830,
+        "max_duration_seconds": 8910,
+        "p50_duration_seconds": 6120,
+        "p95_duration_seconds": 8800,
+        "p99_duration_seconds": 8910
+      },
+      "last_execution": {
+        "timestamp": "2025-12-01T14:30:00Z",
+        "status": "completed",
+        "duration_seconds": 5234,
+        "incident_type": "node_compromise",
+        "severity": "high"
+      },
+      "contractor_performance": {
+        "n8n-contractor": {
+          "avg_duration_seconds": 2100,
+          "error_count": 0
+        },
+        "talos-contractor": {
+          "avg_duration_seconds": 1840,
+          "error_count": 0
+        },
+        "infrastructure-contractor": {
+          "avg_duration_seconds": 1280,
+          "error_count": 0
+        },
+        "security-master": {
+          "avg_duration_seconds": 1200,
+          "error_count": 0
+        }
+      },
+      "common_errors": [],
+      "incident_breakdown": {
+        "node_compromise": 2,
+        "unauthorized_access": 2,
+        "malware_detection": 1
+      }
+    }
+  ],
+  "summary": {
+    "total_workflow_executions": 214,
+    "total_successful": 204,
+    "total_failed": 10,
+    "overall_success_rate": 0.953,
+    "avg_workflow_duration_seconds": 2961,
+    "most_executed_workflow": "app-deployment",
+    "most_reliable_workflow": "build-k8s-cluster",
+    "most_common_error": "deployment_rollout_timeout"
+  }
+}

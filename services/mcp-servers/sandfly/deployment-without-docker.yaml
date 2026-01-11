@@ -1,0 +1,145 @@
+---
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mcp-servers
+  labels:
+    app.kubernetes.io/name: mcp-sandfly
+---
+# Secret for Sandfly credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sandfly-credentials
+  namespace: mcp-servers
+type: Opaque
+stringData:
+  SANDFLY_HOST: "10.88.140.176"
+  SANDFLY_USERNAME: "admin"
+  SANDFLY_PASSWORD: "emphasize-art-nibble-arguable-paradox-flick-unpack"
+---
+# ConfigMap for non-sensitive config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sandfly-config
+  namespace: mcp-servers
+data:
+  SANDFLY_VERIFY_SSL: "false"
+---
+# ConfigMap for Python source code
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sandfly-source
+  namespace: mcp-servers
+data:
+  server.py: |
+    # This will be populated from the actual server.py file
+  __init__.py: ""
+---
+#Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-sandfly
+  namespace: mcp-servers
+  labels:
+    app.kubernetes.io/name: mcp-sandfly
+    app.kubernetes.io/component: mcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mcp-sandfly
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mcp-sandfly
+      annotations:
+        prometheus.io/scrape: "false"
+    spec:
+      serviceAccountName: mcp-sandfly
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: install-deps
+          image: python:3.12-slim
+          command:
+            - sh
+            - -c
+            - |
+              pip install --target=/opt/deps mcp>=1.0.0 httpx>=0.27.0 pydantic>=2.0.0
+          volumeMounts:
+            - name: deps
+              mountPath: /opt/deps
+      containers:
+        - name: mcp-sandfly
+          image: python:3.12-slim
+          command:
+            - python
+            - -m
+            - mcp_sandfly.server
+          env:
+            - name: PYTHONPATH
+              value: "/opt/deps:/app/src"
+          envFrom:
+            - secretRef:
+                name: sandfly-credentials
+            - configMapRef:
+                name: sandfly-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: deps
+              mountPath: /opt/deps
+            - name: source
+              mountPath: /app/src/mcp_sandfly
+      volumes:
+        - name: deps
+          emptyDir: {}
+        - name: source
+          hostPath:
+            path: /Users/ryandahlberg/Projects/cortex/mcp-servers/sandfly/src/mcp_sandfly
+            type: Directory
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mcp-sandfly
+  namespace: mcp-servers
+---
+# NetworkPolicy - restrict egress to Sandfly server only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mcp-sandfly-egress
+  namespace: mcp-servers
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mcp-sandfly
+  policyTypes:
+    - Egress
+  egress:
+    # Allow DNS
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+    # Allow HTTPS to Sandfly server
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 443

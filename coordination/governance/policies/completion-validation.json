@@ -1,0 +1,138 @@
+{
+  "policy_id": "completion-validation",
+  "version": "1.0.0",
+  "description": "Enforces test validation before task completion",
+  "effective_date": "2025-12-04T00:00:00Z",
+  "rules": [
+    {
+      "rule_id": "test-required",
+      "description": "Workers must run tests before completing features",
+      "enforcement": "strict",
+      "applies_to": ["all-workers"],
+      "validation": {
+        "check": "test_results_present",
+        "parameters": {
+          "min_tests": 1,
+          "require_passing": true,
+          "allowed_exit_codes": [0]
+        }
+      },
+      "actions_on_violation": [
+        "reject_completion",
+        "log_governance_event",
+        "notify_master"
+      ],
+      "exemptions": {
+        "reason_required": true,
+        "approved_by": ["coordinator-master"]
+      }
+    },
+    {
+      "rule_id": "progress-file-required",
+      "description": "Workers must write progress files for session continuity",
+      "enforcement": "strict",
+      "applies_to": ["all-workers"],
+      "validation": {
+        "check": "progress_file_exists",
+        "parameters": {
+          "path_pattern": "coordination/workers/{worker_id}/progress/session-*-progress.txt",
+          "min_lines": 10
+        }
+      },
+      "actions_on_violation": [
+        "reject_completion",
+        "log_governance_event"
+      ],
+      "exemptions": {
+        "reason_required": true,
+        "approved_by": ["coordinator-master"]
+      }
+    },
+    {
+      "rule_id": "git-commit-required",
+      "description": "Workers must commit changes before completion",
+      "enforcement": "strict",
+      "applies_to": ["implementation-worker", "fix-worker", "security-fix-worker"],
+      "validation": {
+        "check": "git_commits_present",
+        "parameters": {
+          "min_commits": 1,
+          "lookback_minutes": 60,
+          "author_pattern": "cortex|worker"
+        }
+      },
+      "actions_on_violation": [
+        "reject_completion",
+        "log_governance_event"
+      ],
+      "exemptions": {
+        "reason_required": true,
+        "approved_by": ["development-master", "security-master"]
+      }
+    },
+    {
+      "rule_id": "feature-status-valid",
+      "description": "Feature must be marked passing with valid test results",
+      "enforcement": "strict",
+      "applies_to": ["all-workers"],
+      "validation": {
+        "check": "feature_status_valid",
+        "parameters": {
+          "required_status": "passing",
+          "test_results_required": true,
+          "test_exit_code": 0
+        }
+      },
+      "actions_on_violation": [
+        "reject_completion",
+        "reset_feature_status",
+        "log_governance_event"
+      ],
+      "exemptions": {
+        "reason_required": true,
+        "approved_by": ["coordinator-master"]
+      }
+    },
+    {
+      "rule_id": "dependency-resolution",
+      "description": "Feature dependencies must be completed before marking feature complete",
+      "enforcement": "strict",
+      "applies_to": ["all-workers"],
+      "validation": {
+        "check": "dependencies_satisfied",
+        "parameters": {
+          "check_transitive": true,
+          "allow_blocked_dependencies": false
+        }
+      },
+      "actions_on_violation": [
+        "reject_completion",
+        "mark_feature_blocked",
+        "log_governance_event"
+      ],
+      "exemptions": {
+        "reason_required": true,
+        "approved_by": ["coordinator-master"]
+      }
+    }
+  ],
+  "enforcement_levels": {
+    "strict": {
+      "description": "Violations block completion immediately",
+      "allow_override": false
+    },
+    "warning": {
+      "description": "Violations generate warnings but allow completion",
+      "allow_override": true
+    },
+    "advisory": {
+      "description": "Violations are logged for review",
+      "allow_override": true
+    }
+  },
+  "metrics": {
+    "track_violations": true,
+    "track_exemptions": true,
+    "report_frequency": "daily"
+  }
+}

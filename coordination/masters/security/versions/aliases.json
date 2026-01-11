@@ -1,0 +1,32 @@
+{
+  "master_id": "security",
+  "aliases": {
+    "champion": {
+      "version": "v1.0.0",
+      "description": "Production version (primary active)",
+      "promoted_at": "2025-11-27T00:00:00Z",
+      "status": "active"
+    },
+    "challenger": {
+      "version": null,
+      "description": "Canary version (testing in shadow mode)",
+      "promoted_at": null,
+      "status": "inactive"
+    },
+    "shadow": {
+      "version": null,
+      "description": "Shadow version (receives traffic but responses discarded)",
+      "promoted_at": null,
+      "status": "inactive"
+    }
+  },
+  "version_history": [
+    {
+      "version": "v1.0.0",
+      "created_at": "2025-11-27T00:00:00Z",
+      "description": "Initial version",
+      "status": "champion"
+    }
+  ],
+  "last_updated": "2025-11-27T00:00:00Z"
+}

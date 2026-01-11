@@ -1,0 +1,25 @@
+{
+  "worker_id": "daryl-sandfly-k8s-001",
+  "worker_type": "implementation-worker",
+  "task_id": "task-sandfly-integration-001",
+  "parent_master": "development",
+  "status": "pending",
+  "created_at": "2025-12-25T22:56:20Z",
+  "context": {
+    "handoff_file": "/Users/ryandahlberg/Projects/cortex/coordination/masters/coordinator/handoffs/task-sandfly-integration-001.json",
+    "priority": "critical",
+    "governance_bypass": true,
+    "reason": "Development work for critical Sandfly MCP deployment"
+  },
+  "resources": {
+    "token_budget": 50000,
+    "timeout_minutes": 120
+  },
+  "task_data": {
+    "title": "Deploy Sandfly MCP Server to K8s Cluster",
+    "description": "Deploy the Sandfly MCP server as a Kubernetes service in the cortex-system namespace",
+    "source_location": "/Users/ryandahlberg/Desktop/sandfly/",
+    "target_namespace": "cortex-system",
+    "service_name": "sandfly-mcp"
+  }
+}

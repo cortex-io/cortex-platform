@@ -1,0 +1,260 @@
+name: Cortex Test Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  NODE_VERSION: '20.x'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  unit-tests-js:
+    name: JavaScript Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [issue-parser, code-generator]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd testing/unit/js
+          npm ci
+
+      - name: Run unit tests
+        run: |
+          cd testing/unit/js
+          npm test -- --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./testing/coverage/unit/js/lcov.info
+          flags: unit-js
+          name: unit-js-coverage
+
+  unit-tests-python:
+    name: Python Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [repo-context]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd testing/unit/python
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          cd testing/unit/python
+          pytest --cov --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./testing/coverage/unit/python/coverage.xml
+          flags: unit-python
+          name: unit-python-coverage
+
+  integration-tests-js:
+    name: JavaScript Integration Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests-js]
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      postgres:
+        image: postgres:16-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: cortex_test
+          POSTGRES_USER: cortex_test
+          POSTGRES_PASSWORD: cortex_test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd testing/integration/js
+          npm ci
+
+      - name: Run integration tests
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: cortex_test
+          POSTGRES_USER: cortex_test
+          POSTGRES_PASSWORD: cortex_test_password
+        run: |
+          cd testing/integration/js
+          npm test -- --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./testing/coverage/integration/js/lcov.info
+          flags: integration-js
+          name: integration-js-coverage
+
+  integration-tests-python:
+    name: Python Integration Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests-python]
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:16-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: cortex_test
+          POSTGRES_USER: cortex_test
+          POSTGRES_PASSWORD: cortex_test_password
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd testing/integration/python
+          pip install -r requirements.txt
+
+      - name: Run integration tests
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: cortex_test
+          POSTGRES_USER: cortex_test
+          POSTGRES_PASSWORD: cortex_test_password
+        run: |
+          cd testing/integration/python
+          pytest --cov
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./testing/coverage/integration/python/coverage.xml
+          flags: integration-python
+          name: integration-python-coverage
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [integration-tests-js, integration-tests-python]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup K3s
+        uses: debianmaster/actions-k3s@master
+        with:
+          version: 'v1.28.5-k3s1'
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Create test namespace
+        run: |
+          kubectl create namespace cortex-test
+          kubectl apply -f testing/k8s/test-resources/
+
+      - name: Wait for test resources
+        run: |
+          kubectl wait --for=condition=ready pod -l app=test-redis -n cortex-test --timeout=120s
+          kubectl wait --for=condition=ready pod -l app=test-postgres -n cortex-test --timeout=120s
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Run E2E tests
+        run: |
+          cd testing/e2e/js
+          npm ci
+          npm test
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          kubectl logs -n cortex-test -l app=test-redis
+          kubectl logs -n cortex-test -l app=test-postgres
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests-js, unit-tests-python, integration-tests-js, integration-tests-python, e2e-tests]
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          echo "All test jobs completed"
+          echo "Unit Tests JS: ${{ needs.unit-tests-js.result }}"
+          echo "Unit Tests Python: ${{ needs.unit-tests-python.result }}"
+          echo "Integration Tests JS: ${{ needs.integration-tests-js.result }}"
+          echo "Integration Tests Python: ${{ needs.integration-tests-python.result }}"
+          echo "E2E Tests: ${{ needs.e2e-tests.result }}"

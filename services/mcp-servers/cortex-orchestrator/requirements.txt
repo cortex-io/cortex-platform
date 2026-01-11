@@ -1,0 +1,40 @@
+# Core MCP dependencies
+mcp>=0.9.0
+
+# HTTP Server
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Kubernetes client
+kubernetes>=28.1.0
+
+# Async support
+asyncio>=3.4.3
+aiohttp>=3.9.0
+
+# Data validation
+pydantic>=2.5.0
+
+# Configuration
+pyyaml>=6.0.1
+
+# Logging
+structlog>=24.1.0
+python-json-logger>=2.0.7
+
+# Metrics
+prometheus-client>=0.19.0
+
+# HTTP client
+httpx>=0.25.2
+
+# Date/time utilities
+python-dateutil>=2.8.2
+
+# Development dependencies (optional)
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+black>=23.12.0
+ruff>=0.1.8
+mypy>=1.7.1

@@ -1,0 +1,182 @@
+{
+  "scan_type": "permission_issues",
+  "timestamp": "2025-11-30T18:40:00Z",
+  "count": 35,
+  "issues": [
+    {
+      "file": "coordination/observability/otel-worker.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "coordination/observability/otel-master.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/security/adversary-simulation.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/security/supply-chain-monitor.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/init-common.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/access-check.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/environment.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/correlation.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/learning/meta-learning.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/few-shot-injector.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/goal-planner.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/validation-service.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/planning/hierarchical-goals.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/planning/multi-step-planner.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/worker-restart.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/rag/strategy-selector.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/task-spec-builder.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/read-alias.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/metrics.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/worker-spec-builder.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/worker-heartbeat.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/prompt-versioning.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/governance/policy-validator.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/goal-decomposition.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/traced-logging.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/utility-optimizer.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/resource-allocation.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "scripts/lib/remediation/playbook-executor.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "evaluation/demo-evaluation.sh",
+      "issue": "not_executable",
+      "expected": "755"
+    },
+    {
+      "file": "node_modules/cjs-module-lexer/README.md",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    },
+    {
+      "file": "node_modules/cjs-module-lexer/package.json",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    },
+    {
+      "file": "node_modules/sisteransi/readme.md",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    },
+    {
+      "file": "node_modules/sisteransi/package.json",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    },
+    {
+      "file": "node_modules/prompts/readme.md",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    },
+    {
+      "file": "node_modules/pretty-format/README.md",
+      "issue": "should_not_be_executable",
+      "expected": "644"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "template_id": "documentation",
+  "description": "Create or update documentation",
+  "master": "inventory-master",
+  "required_fields": [
+    "documentation_type",
+    "target_component"
+  ],
+  "optional_fields": [
+    "output_format",
+    "include_examples",
+    "audience",
+    "languages"
+  ],
+  "field_descriptions": {
+    "documentation_type": "Type: api, user-guide, developer-guide, architecture, changelog",
+    "target_component": "Component or module to document",
+    "output_format": "Output format: markdown, html, pdf, confluence",
+    "include_examples": "Include code examples (true/false)",
+    "audience": "Target audience: developers, end-users, operators",
+    "languages": "Programming languages to include in examples"
+  },
+  "default_priority": "medium",
+  "estimated_duration_minutes": 90,
+  "tags": ["documentation", "knowledge-base", "inventory"],
+  "examples": [
+    {
+      "description": "Document REST API endpoints",
+      "fields": {
+        "documentation_type": "api",
+        "target_component": "user-service",
+        "output_format": "markdown",
+        "include_examples": "true",
+        "audience": "developers"
+      }
+    },
+    {
+      "description": "Create user guide",
+      "fields": {
+        "documentation_type": "user-guide",
+        "target_component": "cortex-cli",
+        "output_format": "markdown",
+        "include_examples": "true",
+        "audience": "end-users"
+      }
+    }
+  ]
+}

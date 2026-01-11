@@ -1,0 +1,276 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Lineage Schema",
+  "description": "Schema for tracking complete task lifecycle from creation to completion with full observability",
+  "type": "object",
+  "required": [
+    "lineage_id",
+    "task_id",
+    "event_type",
+    "timestamp",
+    "actor"
+  ],
+  "properties": {
+    "lineage_id": {
+      "type": "string",
+      "pattern": "^lineage-[0-9]+$",
+      "description": "Unique lineage event identifier"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^task-",
+      "description": "The task being tracked"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "task_created",
+        "task_assigned",
+        "task_started",
+        "worker_spawned",
+        "worker_started",
+        "worker_progress",
+        "worker_completed",
+        "worker_failed",
+        "task_reassigned",
+        "task_blocked",
+        "task_unblocked",
+        "task_escalated",
+        "task_completed",
+        "task_failed",
+        "task_cancelled",
+        "handoff_created",
+        "handoff_accepted",
+        "handoff_completed"
+      ],
+      "description": "Type of lifecycle event"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this event occurred (ISO-8601)"
+    },
+    "actor": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["user", "coordinator", "master", "worker", "daemon", "system"],
+          "description": "Type of actor that triggered this event"
+        },
+        "id": {
+          "type": "string",
+          "description": "Identifier of the actor (e.g., coordinator-master, worker-scan-001)"
+        },
+        "principal": {
+          "type": "string",
+          "description": "CORTEX_PRINCIPAL who authorized this action"
+        }
+      },
+      "description": "Who or what triggered this event"
+    },
+    "event_data": {
+      "type": "object",
+      "description": "Event-specific data (varies by event_type)",
+      "properties": {
+        "master_id": {
+          "type": "string",
+          "description": "Master agent ID (for task_assigned)"
+        },
+        "worker_id": {
+          "type": "string",
+          "description": "Worker ID (for worker_* events)"
+        },
+        "worker_type": {
+          "type": "string",
+          "description": "Type of worker spawned"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"],
+          "description": "Task priority"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for state change (blocking, failure, escalation, etc.)"
+        },
+        "handoff_id": {
+          "type": "string",
+          "description": "Handoff identifier"
+        },
+        "from_master": {
+          "type": "string",
+          "description": "Source master (for handoffs)"
+        },
+        "to_master": {
+          "type": "string",
+          "description": "Destination master (for handoffs)"
+        },
+        "completion_status": {
+          "type": "string",
+          "enum": ["success", "partial", "failed"],
+          "description": "How task/worker completed"
+        },
+        "token_usage": {
+          "type": "object",
+          "properties": {
+            "input_tokens": {"type": "integer"},
+            "output_tokens": {"type": "integer"},
+            "total_tokens": {"type": "integer"}
+          },
+          "description": "Token consumption metrics"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How long the operation took (milliseconds)"
+        },
+        "progress_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Worker progress percentage"
+        },
+        "error_details": {
+          "type": "object",
+          "properties": {
+            "error_type": {"type": "string"},
+            "error_message": {"type": "string"},
+            "stack_trace": {"type": "string"}
+          },
+          "description": "Error information for failures"
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Files or artifacts produced"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional event-specific metadata"
+        }
+      }
+    },
+    "parent_lineage_id": {
+      "type": ["string", "null"],
+      "pattern": "^lineage-[0-9]+$",
+      "description": "Reference to parent lineage event (for hierarchical tracking)"
+    },
+    "related_task_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^task-"
+      },
+      "description": "Related or dependent task IDs"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "description": "Session identifier for grouping related events"
+        },
+        "trace_id": {
+          "type": "string",
+          "description": "Distributed trace ID for correlation"
+        },
+        "master_type": {
+          "type": "string",
+          "description": "Type of master (development, security, etc.)"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Repository being worked on"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Git branch"
+        },
+        "execution_environment": {
+          "type": "string",
+          "enum": ["local", "ci", "production"],
+          "description": "Where this is executing"
+        }
+      },
+      "description": "Contextual information for correlation and analysis"
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Searchable tags for categorization"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Schema version (semantic versioning)",
+      "default": "1.0.0"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "lineage_id": "lineage-1732731600001",
+      "task_id": "task-security-scan-001",
+      "event_type": "task_created",
+      "timestamp": "2025-11-27T12:00:00Z",
+      "actor": {
+        "type": "user",
+        "id": "user-ryan",
+        "principal": "system"
+      },
+      "event_data": {
+        "priority": "high",
+        "metadata": {
+          "source": "manual_request"
+        }
+      },
+      "context": {
+        "session_id": "session-001",
+        "repository": "cortex"
+      },
+      "tags": ["security", "scan"],
+      "version": "1.0.0"
+    },
+    {
+      "lineage_id": "lineage-1732731600002",
+      "task_id": "task-security-scan-001",
+      "event_type": "task_assigned",
+      "timestamp": "2025-11-27T12:00:05Z",
+      "actor": {
+        "type": "coordinator",
+        "id": "coordinator-master"
+      },
+      "event_data": {
+        "master_id": "security-master",
+        "priority": "high"
+      },
+      "parent_lineage_id": "lineage-1732731600001",
+      "context": {
+        "session_id": "session-001"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "lineage_id": "lineage-1732731600003",
+      "task_id": "task-security-scan-001",
+      "event_type": "worker_spawned",
+      "timestamp": "2025-11-27T12:00:10Z",
+      "actor": {
+        "type": "master",
+        "id": "security-master"
+      },
+      "event_data": {
+        "worker_id": "worker-scan-001",
+        "worker_type": "scan-worker"
+      },
+      "parent_lineage_id": "lineage-1732731600002",
+      "context": {
+        "session_id": "session-001",
+        "repository": "cortex"
+      },
+      "version": "1.0.0"
+    }
+  ]
+}

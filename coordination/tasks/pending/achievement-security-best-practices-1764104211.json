@@ -1,0 +1,12 @@
+{
+  "task_id": "achievement-security-best-practices-1764104211",
+  "created_at": "2025-11-25T20:56:51Z",
+  "source": "achievement-master",
+  "priority": "high",
+  "description": "Document security best practices for token management",
+  "assigned_master": "security-master",
+  "automation": {
+    "workflow": "pr-automation",
+    "feature_type": "docs"
+  }
+}

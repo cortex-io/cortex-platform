@@ -1,0 +1,12 @@
+{
+  "task_id": "achievement-workflow-automation-scripts-1764104211",
+  "created_at": "2025-11-25T20:56:51Z",
+  "source": "achievement-master",
+  "priority": "high",
+  "description": "Create GitHub Actions workflow for automated tracking",
+  "assigned_master": "cicd-master",
+  "automation": {
+    "workflow": "pr-automation",
+    "feature_type": "workflow"
+  }
+}

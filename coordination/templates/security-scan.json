@@ -1,0 +1,42 @@
+{
+  "template_id": "security-scan",
+  "description": "Run security vulnerability scan",
+  "master": "security-master",
+  "required_fields": [
+    "target_repository",
+    "scan_type"
+  ],
+  "optional_fields": [
+    "severity_threshold",
+    "exclude_paths",
+    "output_format"
+  ],
+  "field_descriptions": {
+    "target_repository": "Repository path or URL to scan",
+    "scan_type": "Type of scan: full, quick, dependencies, or code",
+    "severity_threshold": "Minimum severity to report (low, medium, high, critical)",
+    "exclude_paths": "Comma-separated paths to exclude from scan",
+    "output_format": "Output format: json, sarif, or markdown"
+  },
+  "default_priority": "high",
+  "estimated_duration_minutes": 30,
+  "tags": ["security", "scanning", "vulnerabilities"],
+  "examples": [
+    {
+      "description": "Full security scan of main repository",
+      "fields": {
+        "target_repository": "/Users/ryandahlberg/Projects/cortex",
+        "scan_type": "full",
+        "severity_threshold": "medium"
+      }
+    },
+    {
+      "description": "Quick dependency scan",
+      "fields": {
+        "target_repository": "/Users/ryandahlberg/Projects/myapp",
+        "scan_type": "dependencies",
+        "output_format": "json"
+      }
+    }
+  ]
+}

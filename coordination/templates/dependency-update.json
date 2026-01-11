@@ -1,0 +1,46 @@
+{
+  "template_id": "dependency-update",
+  "description": "Update dependencies or packages",
+  "master": "inventory-master",
+  "required_fields": [
+    "package_manager",
+    "update_type"
+  ],
+  "optional_fields": [
+    "specific_packages",
+    "target_version",
+    "include_dev_dependencies",
+    "run_tests_after"
+  ],
+  "field_descriptions": {
+    "package_manager": "Package manager: npm, yarn, pip, cargo, go, maven",
+    "update_type": "Update type: patch, minor, major, security-only",
+    "specific_packages": "Comma-separated list of specific packages to update",
+    "target_version": "Target version for specific package",
+    "include_dev_dependencies": "Update dev dependencies too (true/false)",
+    "run_tests_after": "Run tests after updates (true/false)"
+  },
+  "default_priority": "medium",
+  "estimated_duration_minutes": 60,
+  "tags": ["dependencies", "maintenance", "inventory"],
+  "examples": [
+    {
+      "description": "Security updates for npm packages",
+      "fields": {
+        "package_manager": "npm",
+        "update_type": "security-only",
+        "run_tests_after": "true"
+      }
+    },
+    {
+      "description": "Update specific package",
+      "fields": {
+        "package_manager": "npm",
+        "update_type": "minor",
+        "specific_packages": "express,lodash",
+        "include_dev_dependencies": "false",
+        "run_tests_after": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1192 @@
+{
+  "$schema": "https://cortex.internal/schemas/multi-region-config.json",
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "regions": [
+    {
+      "region_id": "us-east-1",
+      "display_name": "US East (Virginia)",
+      "provider": "aws",
+      "tier": "primary",
+      "status": "healthy",
+      "geographic_location": {
+        "continent": "north-america",
+        "country": "us",
+        "state": "virginia",
+        "coordinates": {
+          "lat": 39.0438,
+          "lon": -77.4874
+        }
+      },
+      "capabilities": [
+        "masters",
+        "workers",
+        "mcp-servers",
+        "data-storage",
+        "coordination"
+      ],
+      "compliance": [
+        "soc2",
+        "hipaa",
+        "pci-dss"
+      ],
+      "data_residency": [
+        "us",
+        "ca",
+        "mx"
+      ],
+      "network": {
+        "vpc_cidr": "10.1.0.0/16",
+        "vpn_endpoint": "vpn-us-east-1.cortex.internal",
+        "api_endpoint": "api-us-east-1.cortex.internal",
+        "mcp_registry": "mcp-us-east-1.cortex.internal"
+      },
+      "capacity": {
+        "workers_max": 25,
+        "workers_current": 18,
+        "tokens_per_hour": 500000,
+        "tokens_used": 320000,
+        "compute_units_max": 500,
+        "compute_units_used": 380,
+        "storage_gb_max": 10000,
+        "storage_gb_used": 4500
+      },
+      "health_endpoints": [
+        "https://api-us-east-1.cortex.internal/health",
+        "https://api-us-east-1.cortex.internal/api/v1/ping"
+      ],
+      "failover_priority": 0,
+      "tier_priority": 1
+    },
+    {
+      "region_id": "eu-west-1",
+      "display_name": "EU West (Ireland)",
+      "provider": "aws",
+      "tier": "secondary",
+      "status": "healthy",
+      "geographic_location": {
+        "continent": "europe",
+        "country": "ie",
+        "region": "dublin",
+        "coordinates": {
+          "lat": 53.3498,
+          "lon": -6.2603
+        }
+      },
+      "capabilities": [
+        "masters",
+        "workers",
+        "mcp-servers",
+        "data-storage",
+        "coordination"
+      ],
+      "compliance": [
+        "soc2",
+        "gdpr",
+        "iso-27001"
+      ],
+      "data_residency": [
+        "eu",
+        "uk",
+        "eea"
+      ],
+      "network": {
+        "vpc_cidr": "10.2.0.0/16",
+        "vpn_endpoint": "vpn-eu-west-1.cortex.internal",
+        "api_endpoint": "api-eu-west-1.cortex.internal",
+        "mcp_registry": "mcp-eu-west-1.cortex.internal"
+      },
+      "capacity": {
+        "workers_max": 15,
+        "workers_current": 10,
+        "tokens_per_hour": 300000,
+        "tokens_used": 180000,
+        "compute_units_max": 300,
+        "compute_units_used": 220,
+        "storage_gb_max": 5000,
+        "storage_gb_used": 2200
+      },
+      "health_endpoints": [
+        "https://api-eu-west-1.cortex.internal/health",
+        "https://api-eu-west-1.cortex.internal/api/v1/ping"
+      ],
+      "failover_priority": 1,
+      "tier_priority": 2
+    },
+    {
+      "region_id": "ap-south-1",
+      "display_name": "AP South (Mumbai)",
+      "provider": "aws",
+      "tier": "tertiary",
+      "status": "healthy",
+      "geographic_location": {
+        "continent": "asia",
+        "country": "in",
+        "region": "mumbai",
+        "coordinates": {
+          "lat": 19.0760,
+          "lon": 72.8777
+        }
+      },
+      "capabilities": [
+        "masters",
+        "workers",
+        "mcp-servers",
+        "data-storage"
+      ],
+      "compliance": [
+        "soc2"
+      ],
+      "data_residency": [
+        "in"
+      ],
+      "network": {
+        "vpc_cidr": "10.3.0.0/16",
+        "vpn_endpoint": "vpn-ap-south-1.cortex.internal",
+        "api_endpoint": "api-ap-south-1.cortex.internal",
+        "mcp_registry": "mcp-ap-south-1.cortex.internal"
+      },
+      "capacity": {
+        "workers_max": 10,
+        "workers_current": 5,
+        "tokens_per_hour": 200000,
+        "tokens_used": 80000,
+        "compute_units_max": 200,
+        "compute_units_used": 120,
+        "storage_gb_max": 2000,
+        "storage_gb_used": 800
+      },
+      "health_endpoints": [
+        "https://api-ap-south-1.cortex.internal/health",
+        "https://api-ap-south-1.cortex.internal/api/v1/ping"
+      ],
+      "failover_priority": 2,
+      "tier_priority": 3
+    }
+  ],
+  "latency_matrix": {
+    "us-east-1": {
+      "us-east-1": 1,
+      "eu-west-1": 80,
+      "ap-south-1": 200
+    },
+    "eu-west-1": {
+      "us-east-1": 80,
+      "eu-west-1": 1,
+      "ap-south-1": 150
+    },
+    "ap-south-1": {
+      "us-east-1": 200,
+      "eu-west-1": 150,
+      "ap-south-1": 1
+    }
+  },
+  "latency_sla": {
+    "us-east-1-to-eu-west-1": 100,
+    "us-east-1-to-ap-south-1": 250,
+    "eu-west-1-to-ap-south-1": 200
+  },
+  "global_resource_pool": {
+    "total_capacity": {
+      "workers": 50,
+      "tokens_per_hour": 1000000,
+      "compute_units": 1000,
+      "storage_gb": 17000
+    },
+    "regional_allocation": {
+      "us-east-1": {
+        "workers": 25,
+        "tokens_per_hour": 500000,
+        "compute_units": 500,
+        "storage_gb": 10000,
+        "current_usage": {
+          "workers": 18,
+          "tokens_used": 320000,
+          "compute_units": 380,
+          "storage_gb": 4500
+        },
+        "utilization_percent": {
+          "workers": 72,
+          "tokens": 64,
+          "compute": 76,
+          "storage": 45
+        }
+      },
+      "eu-west-1": {
+        "workers": 15,
+        "tokens_per_hour": 300000,
+        "compute_units": 300,
+        "storage_gb": 5000,
+        "current_usage": {
+          "workers": 10,
+          "tokens_used": 180000,
+          "compute_units": 220,
+          "storage_gb": 2200
+        },
+        "utilization_percent": {
+          "workers": 67,
+          "tokens": 60,
+          "compute": 73,
+          "storage": 44
+        }
+      },
+      "ap-south-1": {
+        "workers": 10,
+        "tokens_per_hour": 200000,
+        "compute_units": 200,
+        "storage_gb": 2000,
+        "current_usage": {
+          "workers": 5,
+          "tokens_used": 80000,
+          "compute_units": 120,
+          "storage_gb": 800
+        },
+        "utilization_percent": {
+          "workers": 50,
+          "tokens": 40,
+          "compute": 60,
+          "storage": 40
+        }
+      }
+    },
+    "dynamic_rebalancing": {
+      "enabled": true,
+      "interval_seconds": 300,
+      "thresholds": {
+        "overload": 0.85,
+        "underutilized": 0.30,
+        "rebalance_trigger": 0.20
+      },
+      "algorithm": "weighted_load_balancing",
+      "respect_compliance": true
+    }
+  },
+  "failover_policies": {
+    "health_check": {
+      "interval_seconds": 30,
+      "timeout_seconds": 10,
+      "failure_threshold": 3,
+      "success_threshold": 2,
+      "endpoints": [
+        "/health",
+        "/api/v1/ping",
+        "/coordination/status"
+      ],
+      "method": "GET",
+      "expected_status_codes": [200, 204]
+    },
+    "automatic_failover": {
+      "enabled": true,
+      "decision_timeout_seconds": 60,
+      "require_manual_approval": false,
+      "approval_roles": ["operations_lead", "sre_oncall"],
+      "conditions": {
+        "health_check_failures": 3,
+        "error_rate_threshold": 0.10,
+        "latency_p99_threshold_ms": 5000,
+        "available_capacity_threshold": 0.20,
+        "consecutive_failures_required": true
+      }
+    },
+    "failover_sequence": [
+      {
+        "step": "detection",
+        "order": 1,
+        "timeout_seconds": 30,
+        "actions": [
+          "verify_failure",
+          "assess_impact",
+          "notify_operators",
+          "create_incident"
+        ],
+        "parallel_execution": true
+      },
+      {
+        "step": "preparation",
+        "order": 2,
+        "timeout_seconds": 60,
+        "actions": [
+          "identify_target_region",
+          "verify_target_capacity",
+          "prepare_data_sync",
+          "update_monitoring"
+        ],
+        "dependencies": ["detection"]
+      },
+      {
+        "step": "execution",
+        "order": 3,
+        "timeout_seconds": 300,
+        "actions": [
+          "drain_connections",
+          "sync_critical_state",
+          "update_dns_routing",
+          "redirect_traffic",
+          "migrate_workloads"
+        ],
+        "dependencies": ["preparation"]
+      },
+      {
+        "step": "validation",
+        "order": 4,
+        "timeout_seconds": 120,
+        "actions": [
+          "verify_health",
+          "validate_functionality",
+          "monitor_metrics",
+          "test_critical_paths"
+        ],
+        "dependencies": ["execution"]
+      },
+      {
+        "step": "stabilization",
+        "order": 5,
+        "timeout_seconds": 300,
+        "actions": [
+          "monitor_performance",
+          "adjust_resources",
+          "update_dashboards",
+          "notify_completion"
+        ],
+        "dependencies": ["validation"]
+      }
+    ],
+    "rollback_criteria": {
+      "target_region_failure": true,
+      "data_sync_failure": true,
+      "validation_failure": true,
+      "operator_intervention": true,
+      "error_rate_spike": true,
+      "customer_impact_threshold": 0.05
+    },
+    "rollback_timeout_seconds": 600
+  },
+  "replication_strategies": {
+    "synchronous": {
+      "description": "Real-time replication with strong consistency",
+      "enabled": true,
+      "target_latency_ms": 100,
+      "consistency": "strong",
+      "data_types": [
+        "master_state",
+        "active_tasks",
+        "worker_assignments",
+        "routing_tables",
+        "critical_configuration"
+      ],
+      "replication_flow": {
+        "write_to_primary": true,
+        "wait_for_replicas": "majority",
+        "min_replicas_ack": 2,
+        "timeout_ms": 500,
+        "on_timeout": "fail_write",
+        "retry_policy": {
+          "enabled": false
+        }
+      },
+      "conflict_resolution": "primary_wins",
+      "monitoring": {
+        "lag_alert_threshold_ms": 200,
+        "failure_alert_enabled": true
+      }
+    },
+    "asynchronous": {
+      "description": "Background replication with eventual consistency",
+      "enabled": true,
+      "target_latency_ms": 5000,
+      "consistency": "eventual",
+      "data_types": [
+        "logs",
+        "metrics",
+        "analytics",
+        "audit_trails",
+        "historical_data"
+      ],
+      "replication_flow": {
+        "write_to_primary": true,
+        "wait_for_replicas": "none",
+        "batch_size": 1000,
+        "batch_interval_seconds": 10,
+        "compression": true,
+        "retry_policy": {
+          "enabled": true,
+          "max_retries": 3,
+          "backoff": "exponential",
+          "initial_backoff_seconds": 5,
+          "max_backoff_seconds": 300,
+          "backoff_multiplier": 2
+        }
+      },
+      "conflict_resolution": "last_write_wins",
+      "monitoring": {
+        "lag_alert_threshold_seconds": 60,
+        "backlog_alert_threshold": 10000
+      }
+    },
+    "selective": {
+      "description": "Policy-based replication for specific data",
+      "enabled": true,
+      "consistency": "custom",
+      "policies": [
+        {
+          "policy_id": "knowledge_base_replication",
+          "description": "Replicate knowledge bases across all regions",
+          "data_pattern": "coordination/*/knowledge-base/*",
+          "replication_trigger": "on_update",
+          "target_regions": ["all"],
+          "compression": true,
+          "encryption": true,
+          "priority": "high",
+          "max_latency_seconds": 60
+        },
+        {
+          "policy_id": "compliance_data_replication",
+          "description": "Replicate compliance data with strict retention",
+          "data_pattern": "coordination/compliance/*",
+          "replication_trigger": "on_create",
+          "target_regions": ["same_jurisdiction"],
+          "retention_days": 2555,
+          "immutable": true,
+          "encryption": "aes-256-gcm",
+          "audit_logging": true
+        },
+        {
+          "policy_id": "worker_state_replication",
+          "description": "Replicate worker state for recovery",
+          "data_pattern": "coordination/workers/*/state.json",
+          "replication_trigger": "on_update",
+          "target_regions": ["primary", "secondary"],
+          "compression": true,
+          "max_latency_seconds": 30
+        },
+        {
+          "policy_id": "archive_replication",
+          "description": "Replicate archives to cold storage regions",
+          "data_pattern": "coordination/archives/*",
+          "replication_trigger": "scheduled",
+          "schedule": "0 3 * * *",
+          "target_regions": ["tertiary"],
+          "compression": true,
+          "storage_class": "glacier"
+        }
+      ]
+    }
+  },
+  "deployment_patterns": {
+    "active": {
+      "pattern": "active-active",
+      "description": "All regions actively serve traffic",
+      "enabled": true,
+      "traffic_distribution": {
+        "algorithm": "geographic_proximity",
+        "weights": {
+          "us-east-1": 40,
+          "eu-west-1": 35,
+          "ap-south-1": 25
+        },
+        "dynamic_adjustment": true,
+        "failover": "automatic",
+        "health_check_interval_seconds": 30
+      },
+      "data_consistency": {
+        "model": "eventual",
+        "sync_interval_seconds": 5,
+        "conflict_resolution": "vector_clock",
+        "reconciliation_strategy": "merge"
+      },
+      "write_strategy": {
+        "primary_region": "nearest",
+        "replicate_writes": true,
+        "write_concern": "majority"
+      }
+    },
+    "standby": {
+      "pattern": "active-passive",
+      "description": "Active region with passive standby",
+      "enabled": false,
+      "active_region": "us-east-1",
+      "passive_regions": {
+        "eu-west-1": {
+          "mode": "warm",
+          "capabilities": ["read"],
+          "promotion_time_seconds": 120,
+          "cost_optimization": true
+        },
+        "ap-south-1": {
+          "mode": "cold",
+          "capabilities": [],
+          "promotion_time_seconds": 600,
+          "cost_optimization": true
+        }
+      },
+      "replication": {
+        "type": "unidirectional",
+        "source": "us-east-1",
+        "targets": ["eu-west-1", "ap-south-1"],
+        "lag_tolerance_seconds": 60
+      },
+      "failover": {
+        "automatic": true,
+        "priority_order": ["eu-west-1", "ap-south-1"],
+        "validation_required": true
+      }
+    }
+  },
+  "cross_region_networking": {
+    "vpn_mesh": {
+      "provider": "wireguard",
+      "encryption": "chacha20-poly1305",
+      "key_rotation_days": 90,
+      "mtu": 1420,
+      "persistent_keepalive_seconds": 25,
+      "tunnels": [
+        {
+          "tunnel_id": "us-east-1-to-eu-west-1",
+          "source": {
+            "region": "us-east-1",
+            "endpoint": "vpn-us-east-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.1.0.0/16"],
+            "listen_port": 51820
+          },
+          "destination": {
+            "region": "eu-west-1",
+            "endpoint": "vpn-eu-west-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.2.0.0/16"],
+            "listen_port": 51820
+          },
+          "status": "active",
+          "bandwidth_mbps": 10000,
+          "latency_ms": 80,
+          "packet_loss_percent": 0.01,
+          "last_handshake": "2025-12-09T00:00:00Z"
+        },
+        {
+          "tunnel_id": "us-east-1-to-ap-south-1",
+          "source": {
+            "region": "us-east-1",
+            "endpoint": "vpn-us-east-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.1.0.0/16"],
+            "listen_port": 51821
+          },
+          "destination": {
+            "region": "ap-south-1",
+            "endpoint": "vpn-ap-south-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.3.0.0/16"],
+            "listen_port": 51821
+          },
+          "status": "active",
+          "bandwidth_mbps": 5000,
+          "latency_ms": 200,
+          "packet_loss_percent": 0.02,
+          "last_handshake": "2025-12-09T00:00:00Z"
+        },
+        {
+          "tunnel_id": "eu-west-1-to-ap-south-1",
+          "source": {
+            "region": "eu-west-1",
+            "endpoint": "vpn-eu-west-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.2.0.0/16"],
+            "listen_port": 51821
+          },
+          "destination": {
+            "region": "ap-south-1",
+            "endpoint": "vpn-ap-south-1.cortex.internal",
+            "public_key": "REDACTED",
+            "allowed_ips": ["10.3.0.0/16"],
+            "listen_port": 51822
+          },
+          "status": "active",
+          "bandwidth_mbps": 5000,
+          "latency_ms": 150,
+          "packet_loss_percent": 0.015,
+          "last_handshake": "2025-12-09T00:00:00Z"
+        }
+      ]
+    },
+    "routing": {
+      "protocol": "bgp",
+      "autonomous_system": 65000,
+      "route_priorities": {
+        "direct_tunnel": 100,
+        "indirect_tunnel": 50,
+        "internet_failover": 10
+      },
+      "route_propagation": "automatic",
+      "convergence_time_seconds": 30
+    },
+    "qos": {
+      "enabled": true,
+      "traffic_classes": [
+        {
+          "name": "critical",
+          "priority": 1,
+          "dscp": 46,
+          "patterns": ["coordination/*", "failover/*", "health/*"],
+          "guaranteed_bandwidth_percent": 40,
+          "max_latency_ms": 100,
+          "max_jitter_ms": 10
+        },
+        {
+          "name": "data_sync",
+          "priority": 2,
+          "dscp": 34,
+          "patterns": ["replication/*", "backup/*"],
+          "guaranteed_bandwidth_percent": 30,
+          "max_latency_ms": 500,
+          "burst_allowed": true
+        },
+        {
+          "name": "standard",
+          "priority": 3,
+          "dscp": 0,
+          "patterns": ["*"],
+          "guaranteed_bandwidth_percent": 20,
+          "max_latency_ms": 2000
+        },
+        {
+          "name": "bulk",
+          "priority": 4,
+          "dscp": 8,
+          "patterns": ["archives/*", "analytics/*"],
+          "guaranteed_bandwidth_percent": 10,
+          "best_effort": true
+        }
+      ]
+    },
+    "security": {
+      "firewall_rules": [
+        {
+          "name": "allow_vpn",
+          "source": "any",
+          "destination": "vpn_gateways",
+          "ports": [51820, 51821, 51822],
+          "protocol": "udp",
+          "action": "allow"
+        },
+        {
+          "name": "allow_cross_region_api",
+          "source": "vpn_networks",
+          "destination": "api_endpoints",
+          "ports": [443],
+          "protocol": "tcp",
+          "action": "allow"
+        },
+        {
+          "name": "deny_default",
+          "source": "any",
+          "destination": "any",
+          "action": "deny",
+          "log": true
+        }
+      ],
+      "intrusion_detection": {
+        "enabled": true,
+        "mode": "monitor",
+        "alert_threshold": "medium"
+      }
+    }
+  },
+  "disaster_recovery": {
+    "objectives": {
+      "rto": {
+        "description": "Recovery Time Objective - Maximum acceptable downtime",
+        "targets": {
+          "tier_1_services": {
+            "max_downtime_minutes": 15,
+            "services": [
+              "global_coordinator",
+              "authentication",
+              "critical_masters",
+              "routing"
+            ]
+          },
+          "tier_2_services": {
+            "max_downtime_minutes": 60,
+            "services": [
+              "worker_execution",
+              "mcp_servers",
+              "data_services",
+              "monitoring"
+            ]
+          },
+          "tier_3_services": {
+            "max_downtime_minutes": 240,
+            "services": [
+              "analytics",
+              "reporting",
+              "archival",
+              "non_critical_integrations"
+            ]
+          }
+        }
+      },
+      "rpo": {
+        "description": "Recovery Point Objective - Maximum acceptable data loss",
+        "targets": {
+          "critical_data": {
+            "max_data_loss_seconds": 60,
+            "data_types": [
+              "master_state",
+              "active_tasks",
+              "transaction_logs",
+              "user_sessions"
+            ],
+            "replication": "synchronous"
+          },
+          "important_data": {
+            "max_data_loss_seconds": 300,
+            "data_types": [
+              "worker_state",
+              "metrics",
+              "audit_logs",
+              "configuration"
+            ],
+            "replication": "asynchronous"
+          },
+          "standard_data": {
+            "max_data_loss_seconds": 3600,
+            "data_types": [
+              "analytics",
+              "historical_logs",
+              "archives",
+              "temporary_data"
+            ],
+            "replication": "scheduled"
+          }
+        }
+      }
+    },
+    "backup_strategy": {
+      "continuous": {
+        "enabled": true,
+        "data_types": ["master_state", "active_tasks", "critical_configuration"],
+        "replication": "synchronous",
+        "retention_days": 7,
+        "storage_locations": ["all_regions"]
+      },
+      "incremental": {
+        "enabled": true,
+        "interval_minutes": 15,
+        "data_types": ["worker_state", "metrics", "logs"],
+        "retention_days": 30,
+        "compression": true,
+        "encryption": true
+      },
+      "full": {
+        "enabled": true,
+        "schedule": "0 2 * * *",
+        "data_types": ["all"],
+        "retention_days": 90,
+        "storage_class": "glacier",
+        "verification": true
+      }
+    },
+    "testing": {
+      "schedule": "quarterly",
+      "scenarios": [
+        {
+          "name": "complete_regional_failure",
+          "description": "Simulate entire region going offline",
+          "frequency": "quarterly",
+          "last_test": "2025-09-15",
+          "next_test": "2025-12-15",
+          "success_criteria": {
+            "rto_met": true,
+            "rpo_met": true,
+            "data_integrity": 1.0
+          }
+        },
+        {
+          "name": "network_partition",
+          "description": "Simulate network split between regions",
+          "frequency": "quarterly",
+          "last_test": "2025-10-01",
+          "next_test": "2026-01-01"
+        },
+        {
+          "name": "data_corruption",
+          "description": "Test recovery from corrupted data",
+          "frequency": "semi-annually",
+          "last_test": "2025-06-01",
+          "next_test": "2025-12-01"
+        },
+        {
+          "name": "cascading_failure",
+          "description": "Test multi-region failure cascade",
+          "frequency": "annually",
+          "last_test": "2025-03-01",
+          "next_test": "2026-03-01"
+        }
+      ],
+      "success_criteria": {
+        "rto_achievement": 0.95,
+        "rpo_achievement": 0.99,
+        "data_integrity": 1.0,
+        "automation_success": 0.90
+      }
+    },
+    "runbooks": {
+      "regional_failure": {
+        "path": "/Users/ryandahlberg/Projects/cortex/runbooks/regional-failure-dr.sh",
+        "estimated_duration_minutes": 30,
+        "automation_level": "full",
+        "manual_approval_required": false
+      },
+      "network_partition": {
+        "path": "/Users/ryandahlberg/Projects/cortex/runbooks/network-partition-dr.sh",
+        "estimated_duration_minutes": 45,
+        "automation_level": "partial",
+        "manual_approval_required": true
+      },
+      "data_recovery": {
+        "path": "/Users/ryandahlberg/Projects/cortex/runbooks/data-recovery-dr.sh",
+        "estimated_duration_minutes": 60,
+        "automation_level": "semi-automated",
+        "manual_approval_required": true
+      }
+    }
+  },
+  "regional_compliance": {
+    "us-east-1": {
+      "jurisdiction": "united_states",
+      "frameworks": {
+        "soc2": {
+          "enabled": true,
+          "type": "type_2",
+          "audit_frequency": "annual",
+          "next_audit": "2026-03-01",
+          "auditor": "independent_auditor_inc",
+          "requirements": {
+            "encryption_at_rest": true,
+            "encryption_in_transit": true,
+            "access_logging": true,
+            "change_management": true,
+            "incident_response": true,
+            "vulnerability_scanning": true,
+            "penetration_testing": "annual"
+          }
+        },
+        "hipaa": {
+          "enabled": true,
+          "requirements": {
+            "phi_encryption": true,
+            "access_controls": "rbac",
+            "audit_trails": true,
+            "breach_notification": true,
+            "baa_required": true,
+            "minimum_necessary": true,
+            "workforce_training": "annual"
+          },
+          "covered_entities": ["healthcare_division"]
+        },
+        "pci_dss": {
+          "enabled": true,
+          "level": "level_1",
+          "requirements": {
+            "network_segmentation": true,
+            "encryption": "aes_256",
+            "access_control": "mfa_required",
+            "monitoring": "real_time",
+            "vulnerability_scanning": "quarterly",
+            "penetration_testing": "annual",
+            "security_policies": true
+          }
+        }
+      },
+      "data_residency": {
+        "allowed_countries": ["US", "CA", "MX"],
+        "cross_border_transfer": "restricted",
+        "encryption_required": true,
+        "government_access": "warrant_required"
+      }
+    },
+    "eu-west-1": {
+      "jurisdiction": "european_union",
+      "frameworks": {
+        "gdpr": {
+          "enabled": true,
+          "dpo_assigned": true,
+          "dpo_contact": "dpo@cortex.internal",
+          "requirements": {
+            "data_minimization": true,
+            "purpose_limitation": true,
+            "storage_limitation": true,
+            "accuracy": true,
+            "integrity_confidentiality": true,
+            "accountability": true,
+            "right_to_erasure": true,
+            "right_to_portability": true,
+            "right_to_rectification": true,
+            "right_to_restriction": true,
+            "data_protection_officer": true,
+            "privacy_by_design": true,
+            "privacy_by_default": true,
+            "breach_notification_hours": 72,
+            "dpia_required": true
+          },
+          "legal_basis": [
+            "consent",
+            "contract",
+            "legitimate_interest",
+            "legal_obligation"
+          ],
+          "consent_management": {
+            "granular": true,
+            "withdrawable": true,
+            "documented": true
+          }
+        },
+        "iso_27001": {
+          "enabled": true,
+          "certification_status": "certified",
+          "certificate_number": "ISO27001-2023-CORTEX",
+          "next_audit": "2026-06-01",
+          "scope": "all_operations"
+        },
+        "soc2": {
+          "enabled": true,
+          "type": "type_2",
+          "audit_frequency": "annual"
+        }
+      },
+      "data_residency": {
+        "allowed_countries": ["EU", "UK", "EEA", "CH"],
+        "data_localization": true,
+        "cross_border_transfer": {
+          "mechanism": "standard_contractual_clauses",
+          "adequacy_decisions": ["UK", "Switzerland", "Canada"],
+          "bcr_approved": true,
+          "tia_completed": true
+        },
+        "third_country_transfers": {
+          "allowed": false,
+          "exceptions": ["adequacy_decision", "scc"]
+        }
+      },
+      "individual_rights": {
+        "access": {
+          "max_response_days": 30,
+          "format": "structured",
+          "cost": "free",
+          "identity_verification": true
+        },
+        "erasure": {
+          "max_response_days": 30,
+          "exceptions": ["legal_obligation", "public_interest", "defense_of_claims"],
+          "verification_required": true
+        },
+        "portability": {
+          "max_response_days": 30,
+          "format": "machine_readable",
+          "formats_supported": ["json", "csv", "xml"]
+        },
+        "rectification": {
+          "max_response_days": 30,
+          "notification_to_recipients": true
+        },
+        "restriction": {
+          "max_response_days": 30,
+          "conditions": ["accuracy_contested", "unlawful_processing"]
+        },
+        "objection": {
+          "max_response_days": 30,
+          "grounds": ["legitimate_interests", "direct_marketing"]
+        }
+      }
+    },
+    "ap-south-1": {
+      "jurisdiction": "india",
+      "frameworks": {
+        "soc2": {
+          "enabled": true,
+          "type": "type_2",
+          "audit_frequency": "annual"
+        },
+        "local_regulations": {
+          "enabled": true,
+          "compliance_areas": [
+            "data_localization",
+            "payment_data",
+            "sensitive_personal_data"
+          ]
+        }
+      },
+      "data_residency": {
+        "allowed_countries": ["IN"],
+        "critical_data_localization": true,
+        "sensitive_data_localization": true,
+        "cross_border_transfer": "approval_required",
+        "government_approval_required": true,
+        "local_storage_required": [
+          "payment_data",
+          "financial_data",
+          "health_data",
+          "biometric_data"
+        ]
+      }
+    }
+  },
+  "monitoring": {
+    "health_metrics": {
+      "region_availability": {
+        "metric": "percentage",
+        "sla": 99.99,
+        "measurement_interval_seconds": 60,
+        "alert_threshold": 99.9
+      },
+      "service_health": {
+        "metric": "boolean",
+        "critical_services": [
+          "coordinator",
+          "masters",
+          "mcp_servers",
+          "data_services"
+        ],
+        "check_interval_seconds": 30
+      }
+    },
+    "performance_metrics": {
+      "cross_region_latency": {
+        "metric": "milliseconds",
+        "p50_target": 100,
+        "p95_target": 250,
+        "p99_target": 500,
+        "measurement_interval_seconds": 60
+      },
+      "replication_lag": {
+        "metric": "seconds",
+        "synchronous_target": 1,
+        "asynchronous_target": 30,
+        "alert_threshold_seconds": 60
+      },
+      "failover_time": {
+        "metric": "seconds",
+        "rto_target": 900,
+        "measurement": "actual",
+        "tracking": "per_incident"
+      },
+      "throughput": {
+        "metric": "requests_per_second",
+        "target": 10000,
+        "per_region": true
+      }
+    },
+    "capacity_metrics": {
+      "regional_utilization": {
+        "metric": "percentage",
+        "warning_threshold": 70,
+        "critical_threshold": 85,
+        "auto_scale_threshold": 80
+      },
+      "cross_region_bandwidth": {
+        "metric": "mbps",
+        "monitoring_interval_seconds": 300,
+        "alert_threshold_mbps": 8000
+      }
+    },
+    "compliance_metrics": {
+      "data_residency_violations": {
+        "metric": "count",
+        "target": 0,
+        "alert_on_any": true
+      },
+      "audit_success_rate": {
+        "metric": "percentage",
+        "target": 100,
+        "measurement_interval": "daily"
+      },
+      "encryption_compliance": {
+        "metric": "percentage",
+        "target": 100,
+        "check_interval_seconds": 3600
+      }
+    },
+    "alerting": {
+      "channels": [
+        {
+          "name": "pagerduty",
+          "severity": ["critical", "high"],
+          "enabled": true
+        },
+        {
+          "name": "slack",
+          "severity": ["all"],
+          "enabled": true,
+          "channel": "#cortex-multi-region"
+        },
+        {
+          "name": "email",
+          "severity": ["critical", "high", "medium"],
+          "enabled": true,
+          "recipients": ["ops-team@cortex.internal"]
+        }
+      ],
+      "escalation": {
+        "enabled": true,
+        "levels": [
+          {
+            "level": 1,
+            "delay_minutes": 0,
+            "contacts": ["oncall_engineer"]
+          },
+          {
+            "level": 2,
+            "delay_minutes": 15,
+            "contacts": ["oncall_engineer", "team_lead"]
+          },
+          {
+            "level": 3,
+            "delay_minutes": 30,
+            "contacts": ["oncall_engineer", "team_lead", "director"]
+          }
+        ]
+      }
+    }
+  },
+  "cost_optimization": {
+    "strategies": [
+      {
+        "name": "right_sizing",
+        "enabled": true,
+        "review_interval_days": 30,
+        "auto_apply": false
+      },
+      {
+        "name": "data_lifecycle",
+        "enabled": true,
+        "policies": [
+          {
+            "data_age_days": 90,
+            "action": "move_to_cold_storage"
+          },
+          {
+            "data_age_days": 365,
+            "action": "archive"
+          },
+          {
+            "data_age_days": 2555,
+            "action": "delete_if_allowed"
+          }
+        ]
+      },
+      {
+        "name": "bandwidth_optimization",
+        "enabled": true,
+        "compression": true,
+        "deduplication": true,
+        "smart_routing": true
+      }
+    ],
+    "budget_alerts": {
+      "enabled": true,
+      "monthly_budget_usd": 50000,
+      "alert_thresholds": [0.50, 0.75, 0.90, 1.00],
+      "by_region": true
+    }
+  }
+}

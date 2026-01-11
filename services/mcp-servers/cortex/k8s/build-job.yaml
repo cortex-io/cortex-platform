@@ -1,0 +1,146 @@
+---
+# Kaniko Build Job for Cortex MCP Server
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-cortex-mcp-build
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+    build-type: kaniko
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app: cortex-mcp-server
+        component: builder
+    spec:
+      restartPolicy: Never
+      serviceAccountName: kaniko-builder
+
+      initContainers:
+      # Clone the cortex repository
+      - name: git-clone
+        image: alpine/git:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Cloning cortex repository..."
+          git clone https://github.com/ryandahlberg/cortex.git /workspace/cortex
+          cd /workspace/cortex
+          echo "Repository cloned successfully"
+          ls -la
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+        - "--dockerfile=/workspace/cortex/mcp-servers/cortex/Dockerfile"
+        - "--context=/workspace/cortex/mcp-servers/cortex"
+        - "--destination=docker-registry.cortex-system.svc.cluster.local:5000/cortex-mcp-server:latest"
+        - "--destination=docker-registry.cortex-system.svc.cluster.local:5000/cortex-mcp-server:$(date +%Y%m%d-%H%M%S)"
+        - "--insecure"
+        - "--skip-tls-verify"
+        - "--cache=true"
+        - "--cache-repo=docker-registry.cortex-system.svc.cluster.local:5000/cache"
+        - "--compressed-caching=false"
+        - "--snapshot-mode=redo"
+        - "--log-format=text"
+        - "--verbosity=info"
+
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        - name: docker-config
+          mountPath: /kaniko/.docker
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      - name: docker-config
+        configMap:
+          name: docker-config
+
+---
+# ServiceAccount for Kaniko builder
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kaniko-builder
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+
+---
+# Role for Kaniko builder
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kaniko-builder
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+
+---
+# RoleBinding for Kaniko builder
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kaniko-builder
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+subjects:
+- kind: ServiceAccount
+  name: kaniko-builder
+  namespace: cortex-system
+roleRef:
+  kind: Role
+  name: kaniko-builder
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ConfigMap for Docker registry config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-config
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+data:
+  config.json: |
+    {
+      "auths": {
+        "docker-registry.cortex-system.svc.cluster.local:5000": {
+          "auth": ""
+        }
+      },
+      "insecure-registries": [
+        "docker-registry.cortex-system.svc.cluster.local:5000"
+      ]
+    }

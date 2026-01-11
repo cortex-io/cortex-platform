@@ -1,0 +1,46 @@
+{
+  "task_id": "",
+  "worker_type": "implementation-worker",
+  "goal_type": "feature-development",
+  "complexity": "low",
+  "selected_strategy": "direct",
+  "strategy_description": "Direct implementation with minimal planning",
+  "time_multiplier": 0.8,
+  "expected_quality": 0.75,
+  "risk_level": "medium",
+  "execution_plan": {
+  "approach": "direct-implementation",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Setup",
+      "activities": ["Understand requirements", "Identify files to modify", "Set up workspace"],
+      "estimated_time_percent": 15
+    },
+    {
+      "phase": 2,
+      "name": "Implementation",
+      "activities": ["Write code", "Basic testing", "Fix obvious issues"],
+      "estimated_time_percent": 60
+    },
+    {
+      "phase": 3,
+      "name": "Finalization",
+      "activities": ["Code review", "Documentation", "Submit work"],
+      "estimated_time_percent": 25
+    }
+  ]
+},
+  "success_criteria": {
+                "primary": "Feature implemented and working as specified",
+                "quality_gates": ["All tests passing", "Code coverage > 80%", "No new security vulnerabilities"],
+                "deliverables": ["Working code", "Unit tests", "Integration tests", "Documentation"],
+                "validation": "Automated test suite must pass"
+            },
+  "planned_at": "2025-12-04T22:01:48Z",
+  "planning_metadata": {
+    "planner_version": "1.0.0",
+    "strategy_profiles_count": 4,
+    "decision_factors": ["goal_type", "complexity", "priority"]
+  }
+}

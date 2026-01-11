@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-postgres-secret
+  namespace: cortex-test
+type: Opaque
+stringData:
+  POSTGRES_DB: cortex_test
+  POSTGRES_USER: cortex_test
+  POSTGRES_PASSWORD: cortex_test_password
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-postgres-init
+  namespace: cortex-test
+data:
+  01-init.sql: |
+    -- Create test schemas
+    CREATE SCHEMA IF NOT EXISTS cortex_test;
+
+    -- Create test tables (examples)
+    CREATE TABLE IF NOT EXISTS cortex_test.test_items (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Grant permissions
+    GRANT ALL PRIVILEGES ON SCHEMA cortex_test TO cortex_test;
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA cortex_test TO cortex_test;
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-postgres
+  namespace: cortex-test
+  labels:
+    app: test-postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres
+  selector:
+    app: test-postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-postgres-pvc
+  namespace: cortex-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-postgres
+  namespace: cortex-test
+  labels:
+    app: test-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-postgres
+  template:
+    metadata:
+      labels:
+        app: test-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - cortex_test
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - cortex_test
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: test-postgres-pvc
+        - name: init-scripts
+          configMap:
+            name: test-postgres-init

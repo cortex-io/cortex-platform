@@ -1,0 +1,212 @@
+================================================================================
+COORDINATOR MASTER - STATUS REPORT
+================================================================================
+
+Mission ID: SANDFLY-INTEGRATION-2025-12-25
+Coordinator: Larry (Coordinator Master)
+Date: 2025-12-25T16:30:00Z
+Status: HANDOFFS CREATED - READY FOR EXECUTION
+
+================================================================================
+MISSION OBJECTIVES
+================================================================================
+
+1. Deploy Sandfly MCP server to Kubernetes cluster
+2. Integrate 45+ Sandfly security tools into chat backend
+3. Fix conversational context dropping issues  
+4. Test deep multi-turn conversations (20+ messages) across all vendor APIs
+5. Validate end-to-end security monitoring via natural language
+
+================================================================================
+WORK COMPLETED
+================================================================================
+
+✅ Analyzed chat backend architecture (/tmp/cortex-chat/backend/)
+✅ Analyzed Sandfly MCP server (/Users/ryandahlberg/Desktop/sandfly/)
+✅ Identified root cause of context dropping (no server-side persistence)
+✅ Created comprehensive handoff documents (4 tasks)
+✅ Updated coordinator state (23 tasks routed)
+✅ Logged routing decisions to knowledge base
+✅ Created mission documentation
+
+================================================================================
+HANDOFFS CREATED
+================================================================================
+
+1. task-sandfly-integration-001.json
+   - Deploy Sandfly MCP to K8s cluster
+   - Priority: CRITICAL
+   - Estimated: 2-4 hours
+   - Status: PENDING PICKUP
+
+2. task-sandfly-integration-002.json
+   - Integrate 45+ Sandfly tools into chat backend
+   - Priority: CRITICAL
+   - Estimated: 3-5 hours
+   - Depends: task-001
+   - Status: PENDING PICKUP
+
+3. task-context-persistence-003.json
+   - Fix conversation context dropping with Redis
+   - Priority: CRITICAL
+   - Estimated: 4-6 hours
+   - Status: PENDING PICKUP
+
+4. task-deep-conversation-testing-004.json
+   - Test deep conversations across all vendor APIs
+   - Priority: HIGH
+   - Estimated: 4-8 hours
+   - Depends: tasks 001, 002, 003
+   - Status: PENDING PICKUP
+
+================================================================================
+ROUTING DECISIONS
+================================================================================
+
+All tasks routed to: Development Master
+Routing pattern: "implement|develop|code|feature|test"
+Confidence: 0.90+
+Governance bypass: TRUE (development work)
+
+Development Master workload: 22 tasks (increased from 18)
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+CHAT BACKEND ARCHITECTURE:
+- Tool routing via prefix (wazuh_, unifi_, proxmox_, cortex_)
+- Will add: sandfly_ prefix routing to new MCP server
+- Proper agentic loop with tool execution
+- Issue: No conversation persistence (stateless)
+
+SANDFLY MCP SERVER:
+- 45+ tools fully implemented
+- Comprehensive API coverage
+- Ready for deployment
+- Deployment manifest exists
+
+CONTEXT DROPPING ROOT CAUSE:
+- Backend expects client to send full history
+- No server-side session storage
+- No conversation summarization
+- Solution: Redis + session management + auto-summarization
+
+================================================================================
+TECHNICAL SPECIFICATIONS
+================================================================================
+
+Sandfly MCP:
+- Location: /Users/ryandahlberg/Desktop/sandfly/
+- Server: 10.88.140.176
+- Tools: 45+ (lines 144-846 in server.py)
+- Deployment: cortex-system namespace
+- Service: sandfly-mcp.cortex-system.svc.cluster.local:3000
+
+Chat Backend:
+- Location: /tmp/cortex-chat/backend/
+- Framework: Express + TypeScript
+- Files to modify: tools/index.ts, tool-executor.ts, claude.ts
+- New service: ConversationStore with Redis
+
+Redis:
+- Namespace: cortex-system  
+- Service: redis.cortex-system.svc.cluster.local:6379
+- TTL: 24 hours
+- Purpose: Session-based conversation persistence
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+Integration:
+[ ] Sandfly MCP deployed and healthy
+[ ] 45+ tools integrated into chat backend
+[ ] Tools accessible via /api/tools
+[ ] Test tool execution succeeds
+
+Context Persistence:
+[ ] Redis deployed and accessible
+[ ] Conversations persist across requests
+[ ] Context maintained for 20+ messages
+[ ] Summarization works at 15+ messages
+
+Deep Testing:
+[ ] Sandfly: 20+ message conversation completed
+[ ] Proxmox: 20+ message conversation completed
+[ ] UniFi: 20+ message conversation completed
+[ ] Wazuh: 20+ message conversation completed
+[ ] Test report generated
+
+================================================================================
+ESTIMATED TIMELINE
+================================================================================
+
+Phase 1 (Sandfly Deploy):     2-4 hours
+Phase 2 (Tool Integration):    3-5 hours  
+Phase 3 (Context Fix):         4-6 hours
+Phase 4 (Deep Testing):        4-8 hours
+                              -----------
+TOTAL:                        13-23 hours
+
+Note: Phases 1 & 3 can run in parallel
+
+================================================================================
+DOCUMENTATION CREATED
+================================================================================
+
+/Users/ryandahlberg/Projects/cortex/
+├── coordination/masters/coordinator/
+│   ├── handoffs/
+│   │   ├── task-sandfly-integration-001.json
+│   │   ├── task-sandfly-integration-002.json
+│   │   ├── task-context-persistence-003.json
+│   │   └── task-deep-conversation-testing-004.json
+│   ├── SANDFLY_INTEGRATION_MISSION.md (Master plan)
+│   ├── MISSION_SUMMARY.md (Detailed summary)
+│   └── STATUS_REPORT.txt (This file)
+└── SANDFLY_INTEGRATION_QUICK_START.md (Quick reference)
+
+================================================================================
+NEXT ACTIONS
+================================================================================
+
+FOR DEVELOPMENT MASTER:
+1. Pick up handoffs from coordination/masters/coordinator/handoffs/
+2. Review task specifications in JSON files
+3. Spawn Daryl agents with GOVERNANCE_BYPASS=true
+4. Execute Phases 1 & 3 in parallel
+5. Execute Phase 2 after Phase 1 completes
+6. Execute Phase 4 after all previous complete
+7. Report results via coordination files
+
+FOR USER:
+- Review documentation in /Users/ryandahlberg/Projects/cortex/
+- Monitor progress via coordinator state
+- Expect completion in 13-23 hours
+- Deep conversation testing will validate "anything and everything"
+  available through each vendor API
+
+================================================================================
+CONTACT & ESCALATION
+================================================================================
+
+Coordinator: Larry (Coordinator Master)
+Development: Development Master (will spawn Daryl agents)
+Escalation: Cortex Meta-Agent (for critical blockers)
+
+State file: coordination/masters/coordinator/context/master-state.json
+Routing log: coordination/masters/coordinator/knowledge-base/routing-decisions.jsonl
+
+================================================================================
+MISSION STATUS: HANDOFFS CREATED - AWAITING PICKUP
+================================================================================
+
+Last updated: 2025-12-25T16:30:00Z
+Coordinator signature: Larry (Coordinator Master)
+
+All systems ready for execution.
+Mission documentation complete.
+Waiting for Development Master to begin work.
+
+================================================================================

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-11-27T14:30:49Z",
+  "event": "governance_override",
+  "task_id": "test-critical-001",
+  "reason": "Critical task manually approved",
+  "approved_by": "test-user"
+}
+{
+  "timestamp": "2025-11-27T14:30:49Z",
+  "event": "task_blocked",
+  "task_id": "test-dangerous-001",
+  "description": "Run rm -rf / to clean system",
+  "violations": [
+    "Dangerous operations detected: rm -rf"
+  ]
+}

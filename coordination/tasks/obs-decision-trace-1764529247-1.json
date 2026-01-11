@@ -1,0 +1,15 @@
+{
+  "task_id": "obs-decision-trace-1764529247-1",
+  "type": "development",
+  "priority": "high",
+  "title": "Implement Decision Tracing - Component 1",
+  "description": "Enhance MoE router with decision tracing capability - logging decision rationale, confidence scores, and alternatives considered. Component 1 of 40.",
+  "acceptance_criteria": [
+    "Log full decision chain for each routing decision",
+    "Include confidence scores for all master candidates",
+    "Record alternatives considered",
+    "Create structured decision events"
+  ],
+  "parallel": true,
+  "auto_execute": true
+}

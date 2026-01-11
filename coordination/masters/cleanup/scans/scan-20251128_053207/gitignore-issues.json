@@ -1,0 +1,123 @@
+{
+  "scan_type": "gitignore_issues",
+  "timestamp": "2025-11-28T11:44:44Z",
+  "count": 29,
+  "issues": [
+    {
+      "file": ".claude/settings.local.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-142314.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-152314.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-162315.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-172316.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-182316.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-192317.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-202317.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-212318.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-222319.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251125-232320.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-002320.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-012321.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-022322.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-032323.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-042324.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-052324.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-062325.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-072325.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-082325.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-092325.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/knowledge-base/learned-patterns/patterns-20251126-102326.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/masters/cleanup/knowledge-base/.gitkeep",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/masters/development/knowledge-base/rag-integration.md",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/masters/security/knowledge-base/rag-integration.md",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "llm-mesh/models/routing-head.pt",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "llm-mesh/training-data/generate_samples.py",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "llm-mesh/training-data/routing-training-embeddings.jsonl",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "llm-mesh/training-data/routing-validation-embeddings.jsonl",
+      "issue": "ignored_but_not_in_gitignore"
+    }
+  ]
+}

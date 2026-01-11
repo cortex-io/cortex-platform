@@ -1,0 +1,928 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "description": "Rollback plan schema, trigger definitions, and verification checklists for cortex union operations",
+
+  "rollback_plan_schema": {
+    "description": "Required structure for all rollback plans",
+    "required_fields": {
+      "metadata": {
+        "operation_id": "string (required)",
+        "permit_id": "string (required)",
+        "created_at": "ISO-8601 timestamp (required)",
+        "last_updated": "ISO-8601 timestamp (required)",
+        "owner": "string (required)",
+        "certification_level": "integer 2-4 (required)",
+        "version": "string (required)"
+      },
+      "operation_summary": {
+        "description": "string (required)",
+        "services_affected": "array of strings (required)",
+        "risk_level": "enum: low, medium, high, critical (required)",
+        "estimated_duration_minutes": "integer (required)"
+      },
+      "pre_rollback_state": {
+        "state_items": "array of state items (required)",
+        "capture_commands": "array of commands (required)",
+        "backup_locations": "array of backup paths (required)"
+      },
+      "rollback_decision_criteria": {
+        "automatic_triggers": "array of trigger configs (required)",
+        "manual_triggers": "array of trigger descriptions (required)",
+        "point_of_no_return": "string description (required)",
+        "alternative_if_past_ponr": "string description (required)"
+      },
+      "rollback_procedure": {
+        "phases": "array of phase objects (required)",
+        "total_time_estimate_minutes": "integer (required)",
+        "sla_minutes": "integer (required)",
+        "automation_level": "enum: fully_automated, semi_automated, manual (required)"
+      },
+      "verification_procedure": {
+        "automated_checks": "array of check scripts (required)",
+        "manual_checks": "array of check descriptions (required)",
+        "success_criteria": "array of criteria (required)"
+      },
+      "testing_evidence": {
+        "staging_test_date": "ISO-8601 timestamp (required)",
+        "production_like_test_date": "ISO-8601 timestamp (required)",
+        "rehearsal_date": "ISO-8601 timestamp (required)",
+        "test_results": "object (required)"
+      }
+    },
+    "optional_fields": {
+      "partial_rollback_scenarios": "array of scenario objects",
+      "escalation_procedures": "array of escalation steps",
+      "communication_plan": "object",
+      "compliance_requirements": "array of requirements"
+    }
+  },
+
+  "rollback_trigger_definitions": {
+    "description": "Standard triggers for automatic rollback execution",
+
+    "metric_based_triggers": {
+      "error_rate_threshold": {
+        "metric_name": "error_rate",
+        "comparison": "greater_than",
+        "threshold": 0.01,
+        "duration_seconds": 120,
+        "consecutive_checks": 4,
+        "description": "Trigger rollback if error rate exceeds 1% for 2 consecutive minutes",
+        "severity": "critical",
+        "auto_execute": true
+      },
+      "latency_p99_threshold": {
+        "metric_name": "latency_p99",
+        "comparison": "greater_than",
+        "threshold": 500,
+        "duration_seconds": 300,
+        "consecutive_checks": 10,
+        "description": "Trigger rollback if P99 latency exceeds 500ms for 5 consecutive minutes",
+        "severity": "high",
+        "auto_execute": true
+      },
+      "latency_p50_threshold": {
+        "metric_name": "latency_p50",
+        "comparison": "greater_than",
+        "threshold": 200,
+        "duration_seconds": 300,
+        "consecutive_checks": 10,
+        "description": "Trigger rollback if P50 latency exceeds 200ms for 5 minutes",
+        "severity": "medium",
+        "auto_execute": false
+      },
+      "throughput_drop": {
+        "metric_name": "requests_per_second",
+        "comparison": "less_than",
+        "threshold_type": "percentage_of_baseline",
+        "threshold": 0.5,
+        "duration_seconds": 180,
+        "description": "Trigger rollback if throughput drops below 50% of baseline",
+        "severity": "high",
+        "auto_execute": true
+      },
+      "cpu_usage_spike": {
+        "metric_name": "cpu_usage",
+        "comparison": "greater_than",
+        "threshold": 0.90,
+        "duration_seconds": 180,
+        "description": "Trigger rollback if CPU usage exceeds 90% for 3 minutes",
+        "severity": "high",
+        "auto_execute": true
+      },
+      "memory_usage_spike": {
+        "metric_name": "memory_usage",
+        "comparison": "greater_than",
+        "threshold": 0.85,
+        "duration_seconds": 300,
+        "description": "Trigger rollback if memory usage exceeds 85% for 5 minutes",
+        "severity": "high",
+        "auto_execute": true
+      },
+      "auth_failure_rate": {
+        "metric_name": "auth_failure_rate",
+        "comparison": "greater_than",
+        "threshold": 0.05,
+        "duration_seconds": 60,
+        "description": "Trigger rollback if authentication failure rate exceeds 5%",
+        "severity": "critical",
+        "auto_execute": true
+      },
+      "database_connection_errors": {
+        "metric_name": "db_connection_errors",
+        "comparison": "greater_than",
+        "threshold": 10,
+        "window_seconds": 60,
+        "description": "Trigger rollback if database connection errors exceed 10 per minute",
+        "severity": "critical",
+        "auto_execute": true
+      }
+    },
+
+    "health_check_triggers": {
+      "consecutive_health_check_failures": {
+        "metric_name": "health_check_status",
+        "comparison": "equals",
+        "threshold": "failed",
+        "consecutive_failures": 3,
+        "description": "Trigger rollback after 3 consecutive health check failures",
+        "severity": "critical",
+        "auto_execute": true
+      },
+      "readiness_probe_failures": {
+        "metric_name": "readiness_probe_status",
+        "comparison": "equals",
+        "threshold": "failed",
+        "consecutive_failures": 5,
+        "description": "Trigger rollback after 5 consecutive readiness probe failures",
+        "severity": "high",
+        "auto_execute": true
+      },
+      "liveness_probe_failures": {
+        "metric_name": "liveness_probe_status",
+        "comparison": "equals",
+        "threshold": "failed",
+        "consecutive_failures": 2,
+        "description": "Trigger rollback after 2 consecutive liveness probe failures",
+        "severity": "critical",
+        "auto_execute": true
+      }
+    },
+
+    "business_metric_triggers": {
+      "conversion_rate_drop": {
+        "metric_name": "conversion_rate",
+        "comparison": "less_than",
+        "threshold_type": "percentage_of_baseline",
+        "threshold": 0.8,
+        "duration_seconds": 300,
+        "description": "Trigger rollback if conversion rate drops below 80% of baseline",
+        "severity": "high",
+        "auto_execute": false,
+        "requires_manual_approval": true
+      },
+      "transaction_failure_rate": {
+        "metric_name": "transaction_failure_rate",
+        "comparison": "greater_than",
+        "threshold": 0.02,
+        "duration_seconds": 120,
+        "description": "Trigger rollback if transaction failure rate exceeds 2%",
+        "severity": "critical",
+        "auto_execute": true
+      },
+      "revenue_impact": {
+        "metric_name": "revenue_per_minute",
+        "comparison": "less_than",
+        "threshold_type": "percentage_of_baseline",
+        "threshold": 0.7,
+        "duration_seconds": 300,
+        "description": "Trigger rollback if revenue drops below 70% of baseline",
+        "severity": "critical",
+        "auto_execute": false,
+        "requires_executive_approval": true
+      }
+    },
+
+    "data_quality_triggers": {
+      "data_inconsistency_detected": {
+        "metric_name": "data_consistency_check",
+        "comparison": "equals",
+        "threshold": "inconsistent",
+        "description": "Trigger rollback if data inconsistency is detected",
+        "severity": "critical",
+        "auto_execute": true
+      },
+      "record_count_mismatch": {
+        "metric_name": "record_count_delta",
+        "comparison": "greater_than",
+        "threshold_type": "percentage_difference",
+        "threshold": 0.01,
+        "description": "Trigger rollback if record count differs by more than 1%",
+        "severity": "high",
+        "auto_execute": false,
+        "requires_manual_review": true
+      }
+    },
+
+    "security_triggers": {
+      "unauthorized_access_attempts": {
+        "metric_name": "unauthorized_access_count",
+        "comparison": "greater_than",
+        "threshold": 100,
+        "window_seconds": 60,
+        "description": "Trigger rollback if unauthorized access attempts exceed 100 per minute",
+        "severity": "critical",
+        "auto_execute": true,
+        "create_security_incident": true
+      },
+      "suspicious_activity_detected": {
+        "metric_name": "security_alert_level",
+        "comparison": "equals",
+        "threshold": "critical",
+        "description": "Trigger rollback if critical security alert is raised",
+        "severity": "critical",
+        "auto_execute": true,
+        "create_security_incident": true
+      }
+    },
+
+    "customer_impact_triggers": {
+      "support_ticket_spike": {
+        "metric_name": "support_tickets_per_hour",
+        "comparison": "greater_than",
+        "threshold_type": "percentage_of_baseline",
+        "threshold": 3.0,
+        "description": "Trigger rollback if support tickets increase by 300%",
+        "severity": "high",
+        "auto_execute": false,
+        "requires_manual_approval": true
+      },
+      "user_complaints_threshold": {
+        "metric_name": "user_complaints_count",
+        "comparison": "greater_than",
+        "threshold": 10,
+        "window_seconds": 3600,
+        "description": "Trigger rollback if user complaints exceed 10 per hour",
+        "severity": "medium",
+        "auto_execute": false
+      }
+    }
+  },
+
+  "verification_checklist": {
+    "description": "Standard verification steps after rollback execution",
+
+    "automated_verification": {
+      "version_verification": {
+        "check_name": "verify_deployed_version",
+        "description": "Verify correct version is deployed",
+        "command": "kubectl get deployment -o jsonpath='{.spec.template.spec.containers[0].image}'",
+        "expected_pattern": "regex or exact match",
+        "failure_action": "halt_and_escalate",
+        "timeout_seconds": 30
+      },
+      "health_check_verification": {
+        "check_name": "verify_service_health",
+        "description": "Verify all services are healthy",
+        "command": "curl -s service/health | jq -r '.status'",
+        "expected_value": "healthy",
+        "failure_action": "retry_3_times",
+        "timeout_seconds": 60
+      },
+      "database_schema_verification": {
+        "check_name": "verify_schema_version",
+        "description": "Verify database schema version",
+        "command": "psql -t -c 'SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1;'",
+        "expected_value": "exact_match",
+        "failure_action": "halt_and_escalate",
+        "timeout_seconds": 10
+      },
+      "metrics_verification": {
+        "check_name": "verify_metrics_baseline",
+        "description": "Verify metrics are within acceptable ranges",
+        "checks": [
+          {
+            "metric": "error_rate",
+            "comparison": "less_than",
+            "threshold": 0.001
+          },
+          {
+            "metric": "latency_p99",
+            "comparison": "less_than",
+            "threshold": 200
+          },
+          {
+            "metric": "throughput",
+            "comparison": "greater_than",
+            "threshold_type": "percentage_of_baseline",
+            "threshold": 0.95
+          }
+        ],
+        "failure_action": "warn_and_monitor",
+        "timeout_seconds": 120
+      },
+      "functional_tests": {
+        "check_name": "run_smoke_tests",
+        "description": "Run critical path smoke tests",
+        "command": "./tests/smoke-test.sh --suite=critical",
+        "expected_exit_code": 0,
+        "failure_action": "halt_and_escalate",
+        "timeout_seconds": 300
+      },
+      "data_consistency_check": {
+        "check_name": "verify_data_consistency",
+        "description": "Verify data integrity and consistency",
+        "command": "./scripts/verify-data-consistency.sh",
+        "expected_exit_code": 0,
+        "failure_action": "warn_and_document",
+        "timeout_seconds": 60
+      }
+    },
+
+    "manual_verification": {
+      "user_flow_verification": {
+        "check_name": "verify_critical_user_flows",
+        "description": "Manually verify critical user flows work correctly",
+        "flows": [
+          "User login and authentication",
+          "Primary business transaction (checkout, signup, etc.)",
+          "Data retrieval and display",
+          "API integrations"
+        ],
+        "time_estimate_minutes": 5,
+        "responsible_role": "engineer_on_call"
+      },
+      "dashboard_review": {
+        "check_name": "review_monitoring_dashboards",
+        "description": "Review all monitoring dashboards for anomalies",
+        "dashboards": [
+          "Application metrics dashboard",
+          "Infrastructure metrics dashboard",
+          "Business metrics dashboard",
+          "Error tracking dashboard"
+        ],
+        "time_estimate_minutes": 3,
+        "responsible_role": "sre"
+      },
+      "customer_impact_assessment": {
+        "check_name": "assess_customer_impact",
+        "description": "Check for customer complaints or issues",
+        "checks": [
+          "Review support ticket queue",
+          "Check customer communication channels",
+          "Monitor social media mentions",
+          "Review error tracking for user-reported issues"
+        ],
+        "time_estimate_minutes": 5,
+        "responsible_role": "customer_success"
+      },
+      "security_verification": {
+        "check_name": "verify_security_posture",
+        "description": "Verify no security issues introduced",
+        "checks": [
+          "SSL certificates valid",
+          "Authentication working correctly",
+          "Authorization policies enforced",
+          "No security alerts triggered"
+        ],
+        "time_estimate_minutes": 3,
+        "responsible_role": "security_engineer"
+      }
+    },
+
+    "post_verification_actions": {
+      "notification": {
+        "notify_stakeholders": {
+          "channels": ["slack", "email", "pagerduty"],
+          "message_template": "Rollback completed successfully. All verification checks passed.",
+          "include_metrics": true,
+          "include_timeline": true
+        }
+      },
+      "documentation": {
+        "update_incident_ticket": {
+          "required": true,
+          "include_rollback_details": true,
+          "include_root_cause": true,
+          "include_prevention_measures": true
+        },
+        "create_rollback_report": {
+          "required": true,
+          "template": "rollback-report-template.md",
+          "include_metrics": true,
+          "include_lessons_learned": true
+        }
+      },
+      "monitoring": {
+        "enable_enhanced_monitoring": {
+          "duration_hours": 24,
+          "alert_sensitivity": "high",
+          "notification_channels": ["slack", "pagerduty"]
+        }
+      }
+    },
+
+    "verification_failure_procedures": {
+      "automated_check_failure": {
+        "immediate_actions": [
+          "Halt further operations",
+          "Notify incident commander",
+          "Capture current state",
+          "Review failure logs"
+        ],
+        "escalation_path": [
+          {
+            "level": 1,
+            "role": "engineer_on_call",
+            "timeout_minutes": 5,
+            "action": "Investigate and resolve or escalate"
+          },
+          {
+            "level": 2,
+            "role": "senior_sre",
+            "timeout_minutes": 10,
+            "action": "Determine if re-rollback needed or forward-fix"
+          },
+          {
+            "level": 3,
+            "role": "engineering_director",
+            "timeout_minutes": 15,
+            "action": "Make strategic decision on recovery approach"
+          }
+        ]
+      },
+      "manual_check_failure": {
+        "immediate_actions": [
+          "Document specific issue observed",
+          "Determine severity and impact",
+          "Decide on immediate mitigation",
+          "Notify relevant stakeholders"
+        ],
+        "decision_matrix": {
+          "critical_issue": "Execute emergency procedures, escalate to level 3",
+          "high_severity": "Escalate to level 2, implement mitigation",
+          "medium_severity": "Document and monitor, create follow-up task",
+          "low_severity": "Document and schedule fix in next release"
+        }
+      }
+    }
+  },
+
+  "rollback_slas": {
+    "description": "Service level agreements for rollback execution time",
+
+    "by_certification_level": {
+      "level_2_standard": {
+        "target_minutes": 20,
+        "sla_minutes": 30,
+        "breach_consequences": [
+          "Warning issued",
+          "Rollback plan review required",
+          "Update rollback automation"
+        ],
+        "measurement": {
+          "start_event": "rollback_decision_made",
+          "end_event": "verification_complete_and_traffic_stable",
+          "exclude": ["decision_making_time", "approval_time"]
+        }
+      },
+      "level_3_advanced": {
+        "target_minutes": 10,
+        "sla_minutes": 15,
+        "breach_consequences": [
+          "Incident review required",
+          "Rollback plan must be revised",
+          "Additional automation required"
+        ],
+        "measurement": {
+          "start_event": "rollback_decision_made",
+          "end_event": "verification_complete_and_traffic_stable",
+          "exclude": ["decision_making_time"]
+        }
+      },
+      "level_4_master": {
+        "target_minutes_per_region": 5,
+        "sla_minutes_per_region": 10,
+        "parallel_region_rollback": true,
+        "breach_consequences": [
+          "Executive review required",
+          "Architecture review required",
+          "Enhanced automation mandatory"
+        ],
+        "measurement": {
+          "start_event": "rollback_decision_made",
+          "end_event": "all_regions_verified_and_stable",
+          "exclude": []
+        }
+      }
+    },
+
+    "by_operation_type": {
+      "application_deployment": {
+        "target_minutes": 5,
+        "sla_minutes": 10,
+        "typical_duration": "3-7 minutes",
+        "automation_requirement": "fully_automated"
+      },
+      "database_migration": {
+        "target_minutes": 10,
+        "sla_minutes": 20,
+        "typical_duration": "8-15 minutes",
+        "automation_requirement": "semi_automated",
+        "notes": "Includes data verification time"
+      },
+      "infrastructure_change": {
+        "target_minutes": 15,
+        "sla_minutes": 30,
+        "typical_duration": "12-25 minutes",
+        "automation_requirement": "semi_automated",
+        "notes": "Terraform apply time variable"
+      },
+      "configuration_change": {
+        "target_minutes": 3,
+        "sla_minutes": 5,
+        "typical_duration": "2-4 minutes",
+        "automation_requirement": "fully_automated"
+      },
+      "multi_service_deployment": {
+        "target_minutes": 15,
+        "sla_minutes": 25,
+        "typical_duration": "12-20 minutes",
+        "automation_requirement": "fully_automated",
+        "notes": "May require coordination across services"
+      }
+    },
+
+    "sla_tracking": {
+      "metrics": [
+        "rollback_time_seconds",
+        "sla_met_boolean",
+        "sla_buffer_seconds",
+        "phase_timings_array",
+        "delay_reasons_array"
+      ],
+      "reporting_frequency": "weekly",
+      "escalation_threshold": "2_sla_breaches_in_30_days"
+    }
+  },
+
+  "rollback_automation_levels": {
+    "description": "Categorization of rollback automation maturity",
+
+    "fully_automated": {
+      "description": "Complete rollback executed without human intervention",
+      "requirements": [
+        "Automated trigger detection",
+        "Automated rollback script execution",
+        "Automated verification",
+        "Automated notification",
+        "No manual steps required"
+      ],
+      "examples": [
+        "Kubernetes deployment rollback",
+        "Application configuration rollback",
+        "Feature flag toggle"
+      ],
+      "minimum_certification_level": 2,
+      "preferred_for": ["high_frequency_deployments", "non_critical_services"]
+    },
+
+    "semi_automated": {
+      "description": "Rollback script exists but requires manual approval or steps",
+      "requirements": [
+        "Automated trigger detection",
+        "Manual approval to execute rollback",
+        "Automated rollback script execution",
+        "Manual verification steps",
+        "Automated notification"
+      ],
+      "examples": [
+        "Database migration rollback",
+        "Infrastructure (Terraform) rollback",
+        "Multi-service coordinated rollback"
+      ],
+      "minimum_certification_level": 3,
+      "required_for": ["data_operations", "infrastructure_changes"]
+    },
+
+    "manual": {
+      "description": "Documented manual steps, no automation",
+      "requirements": [
+        "Detailed step-by-step documentation",
+        "Manual trigger identification",
+        "Manual rollback execution",
+        "Manual verification",
+        "Manual notification"
+      ],
+      "examples": [
+        "Complex multi-region rollback",
+        "Vendor-specific rollback",
+        "One-time architectural change rollback"
+      ],
+      "minimum_certification_level": 4,
+      "only_allowed_for": ["exceptional_circumstances", "one_time_operations"],
+      "requires_justification": true
+    },
+
+    "automation_requirements_by_level": {
+      "level_2": "semi_automated or better",
+      "level_3": "semi_automated or better (fully_automated preferred)",
+      "level_4": "semi_automated minimum (fully_automated strongly preferred)"
+    }
+  },
+
+  "partial_rollback_scenarios": {
+    "description": "Common scenarios requiring partial rollback",
+
+    "application_only_rollback": {
+      "scenario": "Database changes are fine, but application has bugs",
+      "rollback_scope": "application_only",
+      "excluded_components": ["database", "cache"],
+      "time_estimate_reduction": "40%",
+      "procedure": [
+        "Verify database schema is correct",
+        "Rollback application deployment only",
+        "Skip database restore",
+        "Verify application works with current schema"
+      ]
+    },
+
+    "database_only_rollback": {
+      "scenario": "Application works, but database has data issues",
+      "rollback_scope": "database_only",
+      "excluded_components": ["application", "configuration"],
+      "time_estimate_reduction": "30%",
+      "procedure": [
+        "Verify application is stable",
+        "Enable read-only mode",
+        "Restore database backup",
+        "Verify schema and data",
+        "Re-enable writes"
+      ]
+    },
+
+    "single_service_rollback": {
+      "scenario": "Only one service in multi-service deployment has issues",
+      "rollback_scope": "specific_service",
+      "time_estimate_reduction": "60%",
+      "procedure": [
+        "Identify problematic service",
+        "Route traffic away from problematic service",
+        "Rollback specific service only",
+        "Verify service health",
+        "Restore traffic to service"
+      ]
+    },
+
+    "configuration_only_rollback": {
+      "scenario": "Code is fine, but configuration causes issues",
+      "rollback_scope": "configuration_only",
+      "time_estimate_reduction": "70%",
+      "procedure": [
+        "Restore previous configuration",
+        "Restart affected pods/services",
+        "Verify configuration applied",
+        "Test functionality"
+      ]
+    },
+
+    "regional_rollback": {
+      "scenario": "Multi-region deployment, only one region has issues",
+      "rollback_scope": "single_region",
+      "time_estimate_reduction": "50%",
+      "procedure": [
+        "Identify problematic region",
+        "Route traffic away from region",
+        "Rollback region-specific resources",
+        "Verify region health",
+        "Gradually restore traffic"
+      ]
+    }
+  },
+
+  "example_rollback_plans": {
+    "kubernetes_deployment": {
+      "operation": "Deploy microservice v3.2 to production",
+      "certification_level": 2,
+      "rollback_time_sla": 10,
+      "automation_level": "fully_automated",
+      "rollback_script": "rollback-k8s-deployment.sh",
+      "triggers": [
+        "error_rate_threshold",
+        "latency_p99_threshold",
+        "consecutive_health_check_failures"
+      ],
+      "phases": [
+        {
+          "phase": "rollback_deployment",
+          "command": "kubectl rollout undo deployment/service-name",
+          "time_estimate_seconds": 120
+        },
+        {
+          "phase": "verify_rollout",
+          "command": "kubectl rollout status deployment/service-name",
+          "time_estimate_seconds": 60
+        },
+        {
+          "phase": "verify_health",
+          "command": "kubectl exec pod -- curl localhost:8080/health",
+          "time_estimate_seconds": 30
+        }
+      ],
+      "total_time_estimate": "3-5 minutes"
+    },
+
+    "terraform_infrastructure": {
+      "operation": "Update load balancer configuration",
+      "certification_level": 3,
+      "rollback_time_sla": 20,
+      "automation_level": "semi_automated",
+      "rollback_script": "rollback-terraform.sh",
+      "requires_approval": true,
+      "triggers": [
+        "health_check_failures",
+        "traffic_routing_errors"
+      ],
+      "phases": [
+        {
+          "phase": "restore_state",
+          "command": "cp terraform.tfstate.backup terraform.tfstate",
+          "time_estimate_seconds": 5
+        },
+        {
+          "phase": "plan_rollback",
+          "command": "terraform plan -out=rollback.plan",
+          "time_estimate_seconds": 60,
+          "requires_review": true
+        },
+        {
+          "phase": "apply_rollback",
+          "command": "terraform apply rollback.plan",
+          "time_estimate_seconds": 300
+        },
+        {
+          "phase": "verify_infrastructure",
+          "command": "curl https://api.example.com/health",
+          "time_estimate_seconds": 30
+        }
+      ],
+      "total_time_estimate": "8-12 minutes"
+    },
+
+    "database_migration": {
+      "operation": "Migrate customer schema to v2.1",
+      "certification_level": 3,
+      "rollback_time_sla": 15,
+      "automation_level": "semi_automated",
+      "rollback_script": "rollback-database-migration.sh",
+      "point_of_no_return": "After migration 008 (adds constraints)",
+      "triggers": [
+        "data_inconsistency_detected",
+        "transaction_failure_rate"
+      ],
+      "phases": [
+        {
+          "phase": "enable_readonly",
+          "command": "ALTER DATABASE SET default_transaction_read_only = on",
+          "time_estimate_seconds": 5
+        },
+        {
+          "phase": "restore_backup",
+          "command": "pg_restore backup.sql",
+          "time_estimate_seconds": 180
+        },
+        {
+          "phase": "verify_schema",
+          "command": "SELECT version FROM schema_migrations",
+          "time_estimate_seconds": 5
+        },
+        {
+          "phase": "verify_data_consistency",
+          "command": "./verify-data-consistency.sh",
+          "time_estimate_seconds": 60
+        },
+        {
+          "phase": "disable_readonly",
+          "command": "ALTER DATABASE SET default_transaction_read_only = off",
+          "time_estimate_seconds": 5
+        }
+      ],
+      "total_time_estimate": "4-6 minutes"
+    },
+
+    "n8n_workflow": {
+      "operation": "Update customer onboarding workflow",
+      "certification_level": 2,
+      "rollback_time_sla": 5,
+      "automation_level": "fully_automated",
+      "rollback_script": "rollback-n8n-workflow.sh",
+      "triggers": [
+        "workflow_execution_failure_rate"
+      ],
+      "phases": [
+        {
+          "phase": "deactivate_workflow",
+          "command": "curl -X POST n8n/api/workflows/ID/deactivate",
+          "time_estimate_seconds": 2
+        },
+        {
+          "phase": "restore_workflow",
+          "command": "curl -X PUT n8n/api/workflows/ID -d @backup.json",
+          "time_estimate_seconds": 5
+        },
+        {
+          "phase": "activate_workflow",
+          "command": "curl -X POST n8n/api/workflows/ID/activate",
+          "time_estimate_seconds": 2
+        },
+        {
+          "phase": "test_workflow",
+          "command": "curl -X POST n8n/webhook-test/onboarding",
+          "time_estimate_seconds": 10
+        }
+      ],
+      "total_time_estimate": "30-60 seconds"
+    }
+  },
+
+  "compliance_requirements": {
+    "audit_trail": {
+      "required_for_levels": [2, 3, 4],
+      "required_information": [
+        "rollback_trigger_reason",
+        "rollback_initiated_by",
+        "rollback_initiated_at",
+        "rollback_completed_at",
+        "rollback_duration_seconds",
+        "rollback_phases_executed",
+        "verification_results",
+        "stakeholders_notified",
+        "incident_ticket_reference"
+      ],
+      "retention_days": 365,
+      "immutable": true
+    },
+    "testing_requirements": {
+      "level_2": [
+        "staging_environment_test",
+        "rollback_time_measurement"
+      ],
+      "level_3": [
+        "staging_environment_test",
+        "production_like_environment_test",
+        "rollback_rehearsal",
+        "rollback_time_measurement"
+      ],
+      "level_4": [
+        "staging_environment_test",
+        "production_like_environment_test",
+        "rollback_rehearsal_with_stakeholders",
+        "multi_region_rollback_coordination_test",
+        "rollback_time_measurement"
+      ]
+    },
+    "documentation_requirements": {
+      "level_2": [
+        "rollback_procedure",
+        "verification_checklist",
+        "rollback_time_estimate"
+      ],
+      "level_3": [
+        "comprehensive_rollback_plan",
+        "partial_rollback_scenarios",
+        "point_of_no_return_definition",
+        "escalation_procedures"
+      ],
+      "level_4": [
+        "enterprise_rollback_plan",
+        "multi_region_coordination_plan",
+        "communication_plan",
+        "business_continuity_integration"
+      ]
+    }
+  },
+
+  "integration_points": {
+    "permit_system": {
+      "integration": "Rollback plan required for permit approval",
+      "validation": "Permit system validates rollback plan exists and is tested",
+      "enforcement": "Cannot issue permit without approved rollback plan"
+    },
+    "monitoring_system": {
+      "integration": "Automated triggers integrated with monitoring",
+      "data_flow": "Monitoring system sends metrics to rollback trigger evaluator",
+      "action": "Rollback system executes rollback based on trigger thresholds"
+    },
+    "incident_response": {
+      "integration": "Rollback procedures part of incident response playbook",
+      "workflow": "Incident commander can authorize emergency rollback",
+      "documentation": "All rollbacks create or update incident tickets"
+    },
+    "audit_system": {
+      "integration": "All rollback executions logged for compliance",
+      "data_collected": "Complete rollback timeline, metrics, and outcomes",
+      "retention": "Audit logs retained per compliance requirements"
+    }
+  }
+}

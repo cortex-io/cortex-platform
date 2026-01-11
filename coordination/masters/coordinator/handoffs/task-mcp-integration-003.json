@@ -1,0 +1,142 @@
+{
+  "handoff_id": "coord-to-dev-AAC555BA",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-mcp-integration-003",
+  "priority": "high",
+  "task_data": {
+    "title": "Task 3: Create Grafana MCP Server",
+    "description": "Create NEW MCP server for Grafana API integration",
+    "repository_path": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Create project structure",
+        "paths": [
+          "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/",
+          "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/src/",
+          "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/config/"
+        ],
+        "expected_result": "Directory structure created"
+      },
+      {
+        "step": 2,
+        "action": "Create package.json",
+        "file": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/package.json",
+        "dependencies": [
+          "express",
+          "axios",
+          "@modelcontextprotocol/sdk"
+        ],
+        "reference": "Follow pattern from existing MCP servers (sandfly, unifi, proxmox)"
+      },
+      {
+        "step": 3,
+        "action": "Implement Grafana API client",
+        "file": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/src/grafana-client.js",
+        "requirements": [
+          "Authenticate with Grafana API (API key or service account)",
+          "Implement methods: getDashboards(), createDashboard(), updateDashboard(), searchDashboards()",
+          "Implement methods: getDataSources(), createDataSource()",
+          "Implement methods: getFolders(), createFolder()",
+          "Error handling and logging"
+        ],
+        "grafana_api_docs": "https://grafana.com/docs/grafana/latest/developers/http_api/"
+      },
+      {
+        "step": 4,
+        "action": "Create MCP server implementation",
+        "file": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/src/index.js",
+        "requirements": [
+          "Express server on port 3000",
+          "Endpoints: /health, /query, /call-tool, /list-tools",
+          "MCP tools: grafana_list_dashboards, grafana_create_dashboard, grafana_update_dashboard, grafana_get_datasources, grafana_create_folder",
+          "Environment variables: GRAFANA_URL, GRAFANA_API_KEY",
+          "Follow MCP protocol format"
+        ]
+      },
+      {
+        "step": 5,
+        "action": "Create Dockerfile",
+        "file": "/Users/ryandahlberg/Projects/cortex/mcp-servers/grafana/Dockerfile",
+        "base_image": "node:20-alpine",
+        "expected_result": "Dockerfile for containerization"
+      },
+      {
+        "step": 6,
+        "action": "Build Docker image",
+        "command": "cd /Users/ryandahlberg/Projects/cortex/mcp-servers/grafana && docker build -t grafana-mcp-server:latest .",
+        "expected_result": "Docker image built successfully"
+      },
+      {
+        "step": 7,
+        "action": "Create Kubernetes deployment",
+        "file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-system/grafana-mcp-server.yaml",
+        "requirements": [
+          "Namespace: cortex-system",
+          "Service name: grafana-mcp-server",
+          "Port: 3000",
+          "Label: component=mcp-server",
+          "Environment: GRAFANA_URL from ConfigMap/Secret",
+          "Environment: GRAFANA_API_KEY from Secret"
+        ]
+      },
+      {
+        "step": 8,
+        "action": "Create Grafana dashboards for unrepresented services",
+        "dashboards_needed": [
+          "Cortex MCP Servers Overview (all MCP server health and metrics)",
+          "Cloudflare Analytics (if not present)",
+          "K3s Cluster Overview (if not present)",
+          "Security Master Dashboard"
+        ],
+        "note": "Use Grafana API to create/update dashboards programmatically"
+      },
+      {
+        "step": 9,
+        "action": "Deploy to cluster",
+        "command": "kubectl apply -f /Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-system/grafana-mcp-server.yaml",
+        "expected_result": "Pod and service running in cortex-system namespace"
+      },
+      {
+        "step": 10,
+        "action": "Integrate into Cortex server.js",
+        "subtask": "Add grafana-mcp-server to MCP_SERVERS config and create integration",
+        "reference": "Follow pattern from task-mcp-integration-001"
+      }
+    ],
+    "grafana_api_reference": {
+      "base_url": "http://grafana.monitoring.svc.cluster.local:3000/api",
+      "authentication": "Bearer token via API key",
+      "key_endpoints": [
+        "GET /api/dashboards/home",
+        "GET /api/search",
+        "POST /api/dashboards/db",
+        "GET /api/datasources",
+        "POST /api/datasources"
+      ]
+    },
+    "validation": [
+      "grafana-mcp-server pod is running",
+      "Service has ClusterIP assigned",
+      "Health endpoint responds",
+      "Can list existing Grafana dashboards",
+      "Can create new dashboard",
+      "Integrated into Cortex API server.js"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE: new feature development + API integration",
+    "priority": "high",
+    "expected_outcome": "New Grafana MCP server deployed and integrated into Cortex",
+    "dependencies": [
+      "Grafana instance running in cluster",
+      "Grafana API key or service account",
+      "Task 1 completion recommended for integration pattern"
+    ],
+    "routing_confidence": 0.90,
+    "estimated_complexity": "high"
+  },
+  "created_at": "2025-12-26T13:41:34Z",
+  "status": "pending_pickup"
+}

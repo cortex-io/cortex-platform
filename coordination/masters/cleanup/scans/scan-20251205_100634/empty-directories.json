@@ -1,0 +1,9 @@
+{
+  "scan_type": "empty_directories",
+  "timestamp": "2025-12-05T16:10:29Z",
+  "count": 2,
+  "directories": [
+    "coordination/worker-specs/active",
+    "projects/ResuMate"
+  ]
+}

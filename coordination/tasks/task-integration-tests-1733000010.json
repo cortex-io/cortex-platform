@@ -1,0 +1,64 @@
+{
+  "task_id": "task-integration-tests-1733000010",
+  "description": "Create comprehensive integration tests for workflow executor using existing YAML workflows",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:10Z",
+  "status": "pending",
+  "metadata": {
+    "component": "testing",
+    "output_file": "testing/integration/workflow-executor-e2e.test.sh",
+    "dependencies": [
+      "task-main-executor-1733000007",
+      "task-cli-commands-1733000009"
+    ],
+    "estimated_duration_minutes": 120
+  },
+  "requirements": {
+    "inputs": [
+      "All workflow engine components",
+      "Existing workflow YAMLs"
+    ],
+    "outputs": [
+      "testing/integration/workflow-executor-e2e.test.sh",
+      "testing/fixtures/workflows/ (test workflow fixtures)",
+      "testing/fixtures/workflow-inputs/ (test input data)"
+    ],
+    "validation": [
+      "End-to-end workflow execution tests",
+      "Error handling tests",
+      "Edge case tests"
+    ],
+    "features": [
+      "Test: Execute security-audit.yaml successfully",
+      "Test: Execute code-review.yaml successfully",
+      "Test: Execute conditional-deploy.yaml successfully",
+      "Test: Parallel execution (verify timing, all 3 scans run concurrently)",
+      "Test: Dependency resolution (steps execute in correct order)",
+      "Test: Output resolution ({{ }} templates work correctly)",
+      "Test: Conditional steps (skip when condition false)",
+      "Test: Retry logic (step retries on failure)",
+      "Test: continue_on_failure (workflow continues despite failures)",
+      "Test: Workflow cancellation (mid-execution cancel works)",
+      "Test: Resume after failure (continues from last completed step)",
+      "Test: Invalid YAML (parser errors correctly)",
+      "Test: Circular dependencies (detected and rejected)",
+      "Test: Missing inputs (validation fails)",
+      "Test: Step timeout (long-running steps killed)",
+      "Test: on_failure handlers (executed when workflow fails)",
+      "Test: State persistence (state survives script restart)",
+      "Test: Concurrent workflows (multiple workflows run simultaneously)",
+      "Test: Trigger types (manual, schedule, webhook, event)",
+      "Performance test: 100 step workflow completes",
+      "Stress test: 10 concurrent workflows"
+    ]
+  },
+  "acceptance_criteria": [
+    "All existing YAML workflows execute successfully",
+    "100% test coverage for critical paths",
+    "Tests run in CI/CD pipeline",
+    "Clear test output with pass/fail indicators",
+    "Performance benchmarks documented",
+    "Known limitations documented"
+  ]
+}

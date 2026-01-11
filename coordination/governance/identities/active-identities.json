@@ -1,0 +1,1213 @@
+{
+  "version": "1.0.0",
+  "created_at": "2025-11-26T13:04:03.218Z",
+  "identities": {
+    "coordinator-master": {
+      "spiffe_id": "spiffe://cortex/masters/coordinator-master",
+      "role": "master",
+      "trust_level": 100,
+      "capabilities": [
+        "*"
+      ],
+      "created_at": "2025-11-26T13:04:03.219Z",
+      "status": "active"
+    },
+    "development-master": {
+      "spiffe_id": "spiffe://cortex/masters/development-master",
+      "role": "master",
+      "trust_level": 100,
+      "capabilities": [
+        "development:*",
+        "workers:spawn",
+        "tasks:*"
+      ],
+      "created_at": "2025-11-26T13:04:03.219Z",
+      "status": "active"
+    },
+    "security-master": {
+      "spiffe_id": "spiffe://cortex/masters/security-master",
+      "role": "master",
+      "trust_level": 100,
+      "capabilities": [
+        "security:*",
+        "workers:spawn",
+        "tasks:*",
+        "audit:read"
+      ],
+      "created_at": "2025-11-26T13:04:03.219Z",
+      "status": "active"
+    },
+    "inventory-master": {
+      "spiffe_id": "spiffe://cortex/masters/inventory-master",
+      "role": "master",
+      "trust_level": 100,
+      "capabilities": [
+        "inventory:*",
+        "catalog:*",
+        "workers:spawn",
+        "tasks:*"
+      ],
+      "created_at": "2025-11-26T13:04:03.219Z",
+      "status": "active"
+    },
+    "cicd-master": {
+      "spiffe_id": "spiffe://cortex/masters/cicd-master",
+      "role": "master",
+      "trust_level": 100,
+      "capabilities": [
+        "cicd:*",
+        "workers:spawn",
+        "tasks:*",
+        "deployment:*"
+      ],
+      "created_at": "2025-11-26T13:04:03.219Z",
+      "status": "active"
+    },
+    "worker-implementation-043": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-043",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-29T20:52:29.032Z",
+      "last_seen": "2025-11-29T20:52:29.033Z",
+      "status": "active"
+    },
+    "worker-implementation-048": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-048",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:32:24.123Z",
+      "last_seen": "2025-11-30T14:32:24.124Z",
+      "status": "active"
+    },
+    "worker-implementation-049": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-049",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "inventory:catalog",
+        "inventory:document",
+        "inventory:analyze",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:32:25.990Z",
+      "last_seen": "2025-11-30T14:32:25.990Z",
+      "status": "active"
+    },
+    "worker-implementation-050": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-050",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:32:28.000Z",
+      "last_seen": "2025-11-30T14:32:28.001Z",
+      "status": "active"
+    },
+    "worker-implementation-051": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-051",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "inventory:catalog",
+        "inventory:document",
+        "inventory:analyze",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:32:30.046Z",
+      "last_seen": "2025-11-30T14:32:30.047Z",
+      "status": "active"
+    },
+    "worker-implementation-052": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-052",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:34:21.072Z",
+      "last_seen": "2025-11-30T14:34:21.072Z",
+      "status": "active"
+    },
+    "worker-implementation-054": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-054",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:34:22.384Z",
+      "last_seen": "2025-11-30T14:34:22.385Z",
+      "status": "active"
+    },
+    "worker-implementation-056": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-056",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T14:34:23.603Z",
+      "last_seen": "2025-11-30T14:34:23.604Z",
+      "status": "active"
+    },
+    "worker-implementation-057": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-057",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T15:10:47.298Z",
+      "last_seen": "2025-11-30T15:10:47.299Z",
+      "status": "active"
+    },
+    "worker-implementation-058": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-058",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T15:25:48.356Z",
+      "last_seen": "2025-11-30T15:25:48.357Z",
+      "status": "active"
+    },
+    "worker-implementation-060": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-060",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:26.777Z",
+      "last_seen": "2025-11-30T19:05:26.781Z",
+      "status": "active"
+    },
+    "worker-implementation-065": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-065",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:27.310Z",
+      "last_seen": "2025-11-30T19:05:27.342Z",
+      "status": "active"
+    },
+    "worker-implementation-069": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-069",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:28.395Z",
+      "last_seen": "2025-11-30T19:05:28.398Z",
+      "status": "active"
+    },
+    "worker-implementation-068": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-068",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:27.968Z",
+      "last_seen": "2025-11-30T19:05:27.972Z",
+      "status": "active"
+    },
+    "worker-implementation-066": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-066",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:28.182Z",
+      "last_seen": "2025-11-30T19:05:28.194Z",
+      "status": "active"
+    },
+    "worker-implementation-070": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-070",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:29.504Z",
+      "last_seen": "2025-11-30T19:05:29.507Z",
+      "status": "active"
+    },
+    "worker-implementation-071": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-071",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:29.274Z",
+      "last_seen": "2025-11-30T19:05:29.278Z",
+      "status": "active"
+    },
+    "worker-implementation-072": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-072",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:30.828Z",
+      "last_seen": "2025-11-30T19:05:30.831Z",
+      "status": "active"
+    },
+    "worker-implementation-073": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-073",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:33.050Z",
+      "last_seen": "2025-11-30T19:05:33.081Z",
+      "status": "active"
+    },
+    "worker-implementation-076": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-076",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:33.241Z",
+      "last_seen": "2025-11-30T19:05:33.244Z",
+      "status": "active"
+    },
+    "worker-implementation-078": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-078",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:33.835Z",
+      "last_seen": "2025-11-30T19:05:33.849Z",
+      "status": "active"
+    },
+    "worker-implementation-079": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-079",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:34.254Z",
+      "last_seen": "2025-11-30T19:05:34.265Z",
+      "status": "active"
+    },
+    "worker-implementation-081": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-081",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:35.195Z",
+      "last_seen": "2025-11-30T19:05:35.204Z",
+      "status": "active"
+    },
+    "worker-implementation-082": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-082",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:35.605Z",
+      "last_seen": "2025-11-30T19:05:35.606Z",
+      "status": "active"
+    },
+    "worker-implementation-083": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-083",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:36.117Z",
+      "last_seen": "2025-11-30T19:05:36.121Z",
+      "status": "active"
+    },
+    "worker-implementation-085": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-085",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:36.969Z",
+      "last_seen": "2025-11-30T19:05:36.971Z",
+      "status": "active"
+    },
+    "worker-implementation-090": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-090",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:37.963Z",
+      "last_seen": "2025-11-30T19:05:37.966Z",
+      "status": "active"
+    },
+    "worker-implementation-088": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-088",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:37.386Z",
+      "last_seen": "2025-11-30T19:05:37.389Z",
+      "status": "active"
+    },
+    "worker-implementation-089": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-089",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:37.483Z",
+      "last_seen": "2025-11-30T19:05:37.485Z",
+      "status": "active"
+    },
+    "worker-implementation-092": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-092",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:38.043Z",
+      "last_seen": "2025-11-30T19:05:38.045Z",
+      "status": "active"
+    },
+    "worker-implementation-095": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-095",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:39.395Z",
+      "last_seen": "2025-11-30T19:05:39.399Z",
+      "status": "active"
+    },
+    "worker-implementation-093": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-093",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:39.528Z",
+      "last_seen": "2025-11-30T19:05:39.540Z",
+      "status": "active"
+    },
+    "worker-implementation-096": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-096",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:40.122Z",
+      "last_seen": "2025-11-30T19:05:40.129Z",
+      "status": "active"
+    },
+    "worker-implementation-097": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-097",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:40.606Z",
+      "last_seen": "2025-11-30T19:05:40.609Z",
+      "status": "active"
+    },
+    "worker-implementation-098": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-098",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:41.322Z",
+      "last_seen": "2025-11-30T19:05:41.339Z",
+      "status": "active"
+    },
+    "worker-implementation-102": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-102",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:41.835Z",
+      "last_seen": "2025-11-30T19:05:41.840Z",
+      "status": "active"
+    },
+    "worker-implementation-101": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-101",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:41.530Z",
+      "last_seen": "2025-11-30T19:05:41.535Z",
+      "status": "active"
+    },
+    "worker-implementation-104": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-104",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:42.165Z",
+      "last_seen": "2025-11-30T19:05:42.175Z",
+      "status": "active"
+    },
+    "worker-implementation-106": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-106",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:43.384Z",
+      "last_seen": "2025-11-30T19:05:43.391Z",
+      "status": "active"
+    },
+    "worker-implementation-107": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-107",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:43.306Z",
+      "last_seen": "2025-11-30T19:05:43.310Z",
+      "status": "active"
+    },
+    "worker-implementation-110": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-110",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:43.644Z",
+      "last_seen": "2025-11-30T19:05:43.646Z",
+      "status": "active"
+    },
+    "worker-implementation-112": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-112",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:43.901Z",
+      "last_seen": "2025-11-30T19:05:43.902Z",
+      "status": "active"
+    },
+    "worker-implementation-113": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-113",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:44.617Z",
+      "last_seen": "2025-11-30T19:05:44.621Z",
+      "status": "active"
+    },
+    "worker-implementation-115": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-115",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:45.199Z",
+      "last_seen": "2025-11-30T19:05:45.232Z",
+      "status": "active"
+    },
+    "worker-implementation-119": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-119",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:46.753Z",
+      "last_seen": "2025-11-30T19:05:46.755Z",
+      "status": "active"
+    },
+    "worker-implementation-121": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-121",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:46.935Z",
+      "last_seen": "2025-11-30T19:05:46.952Z",
+      "status": "active"
+    },
+    "worker-implementation-122": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-122",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:47.110Z",
+      "last_seen": "2025-11-30T19:05:47.112Z",
+      "status": "active"
+    },
+    "worker-implementation-124": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-124",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:47.752Z",
+      "last_seen": "2025-11-30T19:05:47.776Z",
+      "status": "active"
+    },
+    "worker-implementation-126": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-126",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:48.153Z",
+      "last_seen": "2025-11-30T19:05:48.168Z",
+      "status": "active"
+    },
+    "worker-implementation-129": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-129",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:48.631Z",
+      "last_seen": "2025-11-30T19:05:48.645Z",
+      "status": "active"
+    },
+    "worker-implementation-130": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-130",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:49.055Z",
+      "last_seen": "2025-11-30T19:05:49.058Z",
+      "status": "active"
+    },
+    "worker-implementation-131": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-131",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:49.748Z",
+      "last_seen": "2025-11-30T19:05:49.768Z",
+      "status": "active"
+    },
+    "worker-implementation-133": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-133",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:49.875Z",
+      "last_seen": "2025-11-30T19:05:49.879Z",
+      "status": "active"
+    },
+    "worker-implementation-134": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-134",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:50.278Z",
+      "last_seen": "2025-11-30T19:05:50.279Z",
+      "status": "active"
+    },
+    "worker-implementation-136": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-136",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-11-30T19:05:50.327Z",
+      "last_seen": "2025-11-30T19:05:50.328Z",
+      "status": "active"
+    },
+    "worker-implementation-147": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-147",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-01T18:48:39.881Z",
+      "last_seen": "2025-12-01T18:48:39.882Z",
+      "status": "active"
+    },
+    "worker-scan-147": {
+      "spiffe_id": "spiffe://cortex/workers/worker-scan-147",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "security:scan",
+        "security:audit",
+        "tasks:read",
+        "coordination:read",
+        "governance:read",
+        "governance:audit"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-03T17:53:35.067Z",
+      "last_seen": "2025-12-03T17:53:35.067Z",
+      "status": "active"
+    },
+    "worker-implementation-148": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-148",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-03T18:34:36.203Z",
+      "last_seen": "2025-12-03T18:34:36.204Z",
+      "status": "active"
+    },
+    "worker-documentation-148": {
+      "spiffe_id": "spiffe://cortex/workers/worker-documentation-148",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "inventory:catalog",
+        "inventory:document",
+        "inventory:analyze",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-03T18:34:36.213Z",
+      "last_seen": "2025-12-03T18:34:36.214Z",
+      "status": "active"
+    },
+    "worker-implementation-001": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-001",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T21:59:01.890Z",
+      "last_seen": "2025-12-04T21:59:01.891Z",
+      "status": "active"
+    },
+    "worker-implementation-002": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-002",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:47.038Z",
+      "last_seen": "2025-12-04T22:01:47.039Z",
+      "status": "active"
+    },
+    "worker-implementation-003": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-003",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:49.473Z",
+      "last_seen": "2025-12-04T22:01:49.474Z",
+      "status": "active"
+    },
+    "worker-implementation-004": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-004",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:51.845Z",
+      "last_seen": "2025-12-04T22:01:51.847Z",
+      "status": "active"
+    },
+    "worker-implementation-005": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-005",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:54.165Z",
+      "last_seen": "2025-12-04T22:01:54.166Z",
+      "status": "active"
+    },
+    "worker-implementation-006": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-006",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:56.510Z",
+      "last_seen": "2025-12-04T22:01:56.511Z",
+      "status": "active"
+    },
+    "worker-implementation-007": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-007",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:01:58.879Z",
+      "last_seen": "2025-12-04T22:01:58.879Z",
+      "status": "active"
+    },
+    "worker-implementation-008": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-008",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:02:01.232Z",
+      "last_seen": "2025-12-04T22:02:01.233Z",
+      "status": "active"
+    },
+    "worker-implementation-009": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-009",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:02:03.599Z",
+      "last_seen": "2025-12-04T22:02:03.600Z",
+      "status": "active"
+    },
+    "worker-implementation-010": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-010",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:02:05.968Z",
+      "last_seen": "2025-12-04T22:02:05.969Z",
+      "status": "active"
+    },
+    "worker-implementation-011": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-011",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:02:08.376Z",
+      "last_seen": "2025-12-04T22:02:08.377Z",
+      "status": "active"
+    },
+    "worker-implementation-012": {
+      "spiffe_id": "spiffe://cortex/workers/worker-implementation-012",
+      "role": "worker",
+      "trust_level": 50,
+      "capabilities": [
+        "development:implement",
+        "development:test",
+        "tasks:read",
+        "coordination:read",
+        "governance:read"
+      ],
+      "metadata": {},
+      "created_at": "2025-12-04T22:02:30.201Z",
+      "last_seen": "2025-12-04T22:02:30.201Z",
+      "status": "active"
+    }
+  },
+  "revoked": [],
+  "statistics": {
+    "total_issued": 163,
+    "total_active": 163,
+    "total_revoked": 0
+  }
+}

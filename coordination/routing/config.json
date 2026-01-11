@@ -1,0 +1,69 @@
+{
+  "routing_layers": [
+    {
+      "layer_id": 1,
+      "layer_name": "keyword",
+      "description": "Fast keyword pattern matching",
+      "latency_target_ms": 5,
+      "accuracy_target": 0.80,
+      "confidence_threshold": 0.85,
+      "enabled": true
+    },
+    {
+      "layer_id": 2,
+      "layer_name": "semantic",
+      "description": "Semantic similarity with hierarchical clustering",
+      "latency_target_ms": 50,
+      "accuracy_target": 0.88,
+      "confidence_threshold": 0.70,
+      "enabled": true
+    },
+    {
+      "layer_id": 3,
+      "layer_name": "rag",
+      "description": "RAG-enhanced vector search",
+      "latency_target_ms": 150,
+      "accuracy_target": 0.92,
+      "confidence_threshold": 0.85,
+      "enabled": true
+    },
+    {
+      "layer_id": 4,
+      "layer_name": "pytorch",
+      "description": "PyTorch neural routing head",
+      "latency_target_ms": 300,
+      "accuracy_target": 0.96,
+      "confidence_threshold": 0.90,
+      "enabled": true
+    },
+    {
+      "layer_id": 5,
+      "layer_name": "clarification",
+      "description": "User clarification fallback",
+      "latency_target_ms": 0,
+      "accuracy_target": 1.00,
+      "confidence_threshold": 1.00,
+      "enabled": true
+    }
+  ],
+  "masters": [
+    "development-master",
+    "security-master",
+    "inventory-master",
+    "cicd-master",
+    "resource-manager",
+    "coordinator-master"
+  ],
+  "performance_tracking": {
+    "log_file": "coordination/routing/performance.jsonl",
+    "enable_auto_tuning": true,
+    "tuning_interval_hours": 24,
+    "min_samples_for_tuning": 100,
+    "confidence_adjustment_step": 0.05
+  },
+  "dashboard": {
+    "refresh_interval_seconds": 60,
+    "metrics_window_hours": 24,
+    "show_real_time": true
+  }
+}

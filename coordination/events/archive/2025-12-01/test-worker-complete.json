@@ -1,0 +1,14 @@
+{
+  "event_id": "evt_20251201_165511_testworker",
+  "event_type": "worker.completed",
+  "timestamp": "2025-12-01T22:55:11+0000",
+  "source": "test-worker-handler",
+  "correlation_id": "test-task-handler-001",
+  "payload": {
+    "worker_id": "test-worker-handler-001",
+    "task_id": "test-task-handler-001",
+    "status": "completed",
+    "duration_ms": 5000,
+    "tokens_used": 1500
+  }
+}

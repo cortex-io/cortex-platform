@@ -1,0 +1,392 @@
+{
+  "last_updated": "2025-12-09T00:00:00Z",
+  "contractors": [
+    {
+      "contractor_id": "infrastructure-contractor",
+      "contractor_name": "Infrastructure Contractor",
+      "specialization": "Physical/virtual infrastructure management",
+      "statistics": {
+        "workflows_participated": 127,
+        "total_actions_executed": 485,
+        "successful_actions": 468,
+        "failed_actions": 17,
+        "success_rate": 0.965,
+        "avg_action_duration_seconds": 145,
+        "avg_handoff_time_seconds": 45
+      },
+      "performance_by_action_type": {
+        "provision_vm": {
+          "executions": 89,
+          "avg_duration_seconds": 240,
+          "success_rate": 0.978,
+          "error_rate": 0.022
+        },
+        "configure_network": {
+          "executions": 76,
+          "avg_duration_seconds": 85,
+          "success_rate": 0.987,
+          "error_rate": 0.013
+        },
+        "provision_storage": {
+          "executions": 68,
+          "avg_duration_seconds": 120,
+          "success_rate": 0.956,
+          "error_rate": 0.044
+        },
+        "update_load_balancer": {
+          "executions": 156,
+          "avg_duration_seconds": 62,
+          "success_rate": 0.994,
+          "error_rate": 0.006
+        },
+        "apply_firewall_rules": {
+          "executions": 52,
+          "avg_duration_seconds": 48,
+          "success_rate": 0.981,
+          "error_rate": 0.019
+        },
+        "create_snapshot": {
+          "executions": 44,
+          "avg_duration_seconds": 180,
+          "success_rate": 1.0,
+          "error_rate": 0.0
+        }
+      },
+      "common_errors": [
+        {
+          "error_code": "vm_creation_timeout",
+          "count": 6,
+          "description": "VM creation exceeded timeout threshold",
+          "avg_resolution_time_seconds": 180,
+          "mitigation": "Retry on alternative Proxmox host"
+        },
+        {
+          "error_code": "storage_quota_exceeded",
+          "count": 5,
+          "description": "Storage pool capacity limit reached",
+          "avg_resolution_time_seconds": 300,
+          "mitigation": "Expand storage pool or use alternative pool"
+        },
+        {
+          "error_code": "network_vlan_conflict",
+          "count": 3,
+          "description": "VLAN already in use",
+          "avg_resolution_time_seconds": 120,
+          "mitigation": "Use next available VLAN ID"
+        },
+        {
+          "error_code": "lb_backend_unreachable",
+          "count": 2,
+          "description": "Load balancer cannot reach backend servers",
+          "avg_resolution_time_seconds": 240,
+          "mitigation": "Verify network connectivity and firewall rules"
+        },
+        {
+          "error_code": "ceph_cluster_degraded",
+          "count": 1,
+          "description": "Ceph cluster in degraded state",
+          "avg_resolution_time_seconds": 600,
+          "mitigation": "Wait for cluster recovery or use local storage"
+        }
+      ],
+      "performance_trends": {
+        "last_30_days": {
+          "success_rate": 0.968,
+          "avg_duration_seconds": 142,
+          "trend": "stable"
+        },
+        "last_7_days": {
+          "success_rate": 0.972,
+          "avg_duration_seconds": 138,
+          "trend": "improving"
+        }
+      },
+      "resource_utilization": {
+        "avg_cpu_percent": 15,
+        "avg_memory_mb": 256,
+        "peak_cpu_percent": 45,
+        "peak_memory_mb": 512
+      }
+    },
+    {
+      "contractor_id": "talos-contractor",
+      "contractor_name": "Talos Contractor",
+      "specialization": "Kubernetes and Talos Linux management",
+      "statistics": {
+        "workflows_participated": 172,
+        "total_actions_executed": 628,
+        "successful_actions": 608,
+        "failed_actions": 20,
+        "success_rate": 0.968,
+        "avg_action_duration_seconds": 185,
+        "avg_handoff_time_seconds": 38
+      },
+      "performance_by_action_type": {
+        "deploy_application": {
+          "executions": 156,
+          "avg_duration_seconds": 145,
+          "success_rate": 0.974,
+          "error_rate": 0.026
+        },
+        "initialize_cluster": {
+          "executions": 8,
+          "avg_duration_seconds": 1820,
+          "success_rate": 1.0,
+          "error_rate": 0.0
+        },
+        "join_node": {
+          "executions": 24,
+          "avg_duration_seconds": 420,
+          "success_rate": 0.958,
+          "error_rate": 0.042
+        },
+        "install_helm_chart": {
+          "executions": 89,
+          "avg_duration_seconds": 280,
+          "success_rate": 0.978,
+          "error_rate": 0.022
+        },
+        "cordon_node": {
+          "executions": 12,
+          "avg_duration_seconds": 15,
+          "success_rate": 1.0,
+          "error_rate": 0.0
+        },
+        "drain_node": {
+          "executions": 12,
+          "avg_duration_seconds": 240,
+          "success_rate": 0.917,
+          "error_rate": 0.083
+        },
+        "apply_network_policy": {
+          "executions": 45,
+          "avg_duration_seconds": 35,
+          "success_rate": 0.978,
+          "error_rate": 0.022
+        },
+        "rollback_deployment": {
+          "executions": 8,
+          "avg_duration_seconds": 120,
+          "success_rate": 1.0,
+          "error_rate": 0.0
+        }
+      },
+      "common_errors": [
+        {
+          "error_code": "deployment_rollout_timeout",
+          "count": 7,
+          "description": "Deployment did not complete within timeout",
+          "avg_resolution_time_seconds": 300,
+          "mitigation": "Increase timeout or investigate pod startup issues"
+        },
+        {
+          "error_code": "node_join_failed",
+          "count": 4,
+          "description": "Node failed to join cluster",
+          "avg_resolution_time_seconds": 420,
+          "mitigation": "Verify network connectivity and regenerate join config"
+        },
+        {
+          "error_code": "helm_install_failed",
+          "count": 3,
+          "description": "Helm chart installation failed",
+          "avg_resolution_time_seconds": 180,
+          "mitigation": "Verify values and dependencies"
+        },
+        {
+          "error_code": "pod_eviction_timeout",
+          "count": 2,
+          "description": "Pods failed to evict during node drain",
+          "avg_resolution_time_seconds": 240,
+          "mitigation": "Force drain or delete problematic pods"
+        },
+        {
+          "error_code": "cni_network_error",
+          "count": 2,
+          "description": "CNI network plugin error",
+          "avg_resolution_time_seconds": 360,
+          "mitigation": "Restart CNI pods or reconfigure network"
+        },
+        {
+          "error_code": "pvc_binding_failed",
+          "count": 2,
+          "description": "PersistentVolumeClaim failed to bind",
+          "avg_resolution_time_seconds": 180,
+          "mitigation": "Verify storage class and CSI driver"
+        }
+      ],
+      "performance_trends": {
+        "last_30_days": {
+          "success_rate": 0.965,
+          "avg_duration_seconds": 188,
+          "trend": "stable"
+        },
+        "last_7_days": {
+          "success_rate": 0.978,
+          "avg_duration_seconds": 175,
+          "trend": "improving"
+        }
+      },
+      "resource_utilization": {
+        "avg_cpu_percent": 22,
+        "avg_memory_mb": 384,
+        "peak_cpu_percent": 68,
+        "peak_memory_mb": 896
+      },
+      "cluster_statistics": {
+        "clusters_managed": 4,
+        "total_nodes": 24,
+        "total_pods_deployed": 342,
+        "total_helm_releases": 67
+      }
+    },
+    {
+      "contractor_id": "n8n-contractor",
+      "contractor_name": "n8n Contractor",
+      "specialization": "Workflow orchestration and automation",
+      "statistics": {
+        "workflows_participated": 214,
+        "total_actions_executed": 892,
+        "successful_actions": 878,
+        "failed_actions": 14,
+        "success_rate": 0.984,
+        "avg_action_duration_seconds": 95,
+        "avg_handoff_time_seconds": 28
+      },
+      "performance_by_action_type": {
+        "orchestrate_workflow": {
+          "executions": 214,
+          "avg_duration_seconds": 45,
+          "success_rate": 0.991,
+          "error_rate": 0.009
+        },
+        "send_notification": {
+          "executions": 198,
+          "avg_duration_seconds": 15,
+          "success_rate": 0.995,
+          "error_rate": 0.005
+        },
+        "run_tests": {
+          "executions": 156,
+          "avg_duration_seconds": 245,
+          "success_rate": 0.987,
+          "error_rate": 0.013
+        },
+        "build_docker_image": {
+          "executions": 156,
+          "avg_duration_seconds": 320,
+          "success_rate": 0.994,
+          "error_rate": 0.006
+        },
+        "security_scan": {
+          "executions": 156,
+          "avg_duration_seconds": 85,
+          "success_rate": 0.981,
+          "error_rate": 0.019
+        },
+        "health_check": {
+          "executions": 245,
+          "avg_duration_seconds": 12,
+          "success_rate": 0.996,
+          "error_rate": 0.004
+        },
+        "aggregate_logs": {
+          "executions": 42,
+          "avg_duration_seconds": 180,
+          "success_rate": 0.976,
+          "error_rate": 0.024
+        },
+        "create_incident_record": {
+          "executions": 5,
+          "avg_duration_seconds": 8,
+          "success_rate": 1.0,
+          "error_rate": 0.0
+        }
+      },
+      "common_errors": [
+        {
+          "error_code": "docker_build_timeout",
+          "count": 3,
+          "description": "Docker build exceeded timeout",
+          "avg_resolution_time_seconds": 120,
+          "mitigation": "Increase timeout or optimize Dockerfile"
+        },
+        {
+          "error_code": "test_suite_failed",
+          "count": 3,
+          "description": "Test suite execution failed",
+          "avg_resolution_time_seconds": 0,
+          "mitigation": "Workflow correctly failed, no mitigation needed"
+        },
+        {
+          "error_code": "webhook_delivery_failed",
+          "count": 2,
+          "description": "Webhook notification delivery failed",
+          "avg_resolution_time_seconds": 60,
+          "mitigation": "Retry with exponential backoff"
+        },
+        {
+          "error_code": "log_aggregation_timeout",
+          "count": 2,
+          "description": "Log aggregation exceeded timeout",
+          "avg_resolution_time_seconds": 180,
+          "mitigation": "Reduce time range or increase timeout"
+        },
+        {
+          "error_code": "api_rate_limit",
+          "count": 2,
+          "description": "External API rate limit exceeded",
+          "avg_resolution_time_seconds": 300,
+          "mitigation": "Implement rate limiting and retry logic"
+        },
+        {
+          "error_code": "health_check_failed",
+          "count": 2,
+          "description": "Health check returned non-200 status",
+          "avg_resolution_time_seconds": 0,
+          "mitigation": "Workflow correctly failed, triggers rollback"
+        }
+      ],
+      "performance_trends": {
+        "last_30_days": {
+          "success_rate": 0.982,
+          "avg_duration_seconds": 98,
+          "trend": "stable"
+        },
+        "last_7_days": {
+          "success_rate": 0.989,
+          "avg_duration_seconds": 92,
+          "trend": "improving"
+        }
+      },
+      "resource_utilization": {
+        "avg_cpu_percent": 18,
+        "avg_memory_mb": 312,
+        "peak_cpu_percent": 52,
+        "peak_memory_mb": 768
+      },
+      "integration_statistics": {
+        "active_workflows": 47,
+        "webhook_endpoints": 23,
+        "scheduled_workflows": 12,
+        "external_integrations": 15
+      }
+    }
+  ],
+  "cross_contractor_metrics": {
+    "avg_handoff_latency_seconds": 37,
+    "handoff_success_rate": 0.995,
+    "total_handoffs": 513,
+    "failed_handoffs": 3,
+    "avg_contractor_coordination_time_seconds": 125
+  },
+  "summary": {
+    "total_workflow_executions": 214,
+    "total_actions_executed": 2005,
+    "overall_success_rate": 0.974,
+    "most_reliable_contractor": "n8n-contractor",
+    "fastest_contractor": "n8n-contractor",
+    "most_active_contractor": "n8n-contractor",
+    "coordination_efficiency": 0.995
+  }
+}

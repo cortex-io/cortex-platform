@@ -1,0 +1,884 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "description": "Kubernetes API Integration Configuration for Cortex Resource-Manager",
+
+  "connection_config": {
+    "clusters": {
+      "prod": {
+        "cluster_name": "prod-k8s",
+        "kubeconfig_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/kubeconfig/prod-cluster.yaml",
+        "api_server_endpoint": "https://192.168.1.10:6443",
+        "talos_endpoints": [
+          "https://192.168.1.10:50000",
+          "https://192.168.1.11:50000",
+          "https://192.168.1.12:50000"
+        ],
+        "environment": "production",
+        "region": "primary-dc",
+        "control_plane_nodes": ["192.168.1.10", "192.168.1.11", "192.168.1.12"],
+        "worker_node_count": 5,
+        "connection_timeout_seconds": 30,
+        "retry_attempts": 3,
+        "retry_backoff_ms": 1000,
+        "verify_tls": true,
+        "ca_cert_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/certs/prod-ca.crt"
+      },
+      "staging": {
+        "cluster_name": "staging-k8s",
+        "kubeconfig_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/kubeconfig/staging-cluster.yaml",
+        "api_server_endpoint": "https://192.168.2.10:6443",
+        "talos_endpoints": [
+          "https://192.168.2.10:50000",
+          "https://192.168.2.11:50000",
+          "https://192.168.2.12:50000"
+        ],
+        "environment": "staging",
+        "region": "primary-dc",
+        "control_plane_nodes": ["192.168.2.10", "192.168.2.11", "192.168.2.12"],
+        "worker_node_count": 3,
+        "connection_timeout_seconds": 20,
+        "retry_attempts": 3,
+        "retry_backoff_ms": 500,
+        "verify_tls": true,
+        "ca_cert_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/certs/staging-ca.crt"
+      },
+      "dev": {
+        "cluster_name": "dev-k8s",
+        "kubeconfig_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/kubeconfig/dev-cluster.yaml",
+        "api_server_endpoint": "https://192.168.3.10:6443",
+        "talos_endpoints": [
+          "https://192.168.3.10:50000"
+        ],
+        "environment": "development",
+        "region": "primary-dc",
+        "control_plane_nodes": ["192.168.3.10"],
+        "worker_node_count": 0,
+        "allow_workloads_on_control_plane": true,
+        "connection_timeout_seconds": 15,
+        "retry_attempts": 2,
+        "retry_backoff_ms": 300,
+        "verify_tls": false
+      },
+      "edge-01": {
+        "cluster_name": "edge-k8s-01",
+        "kubeconfig_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/kubeconfig/edge-cluster-01.yaml",
+        "api_server_endpoint": "https://10.50.1.10:6443",
+        "talos_endpoints": [
+          "https://10.50.1.10:50000"
+        ],
+        "environment": "edge",
+        "region": "edge-location-01",
+        "control_plane_nodes": ["10.50.1.10"],
+        "worker_node_count": 2,
+        "connection_timeout_seconds": 45,
+        "retry_attempts": 5,
+        "retry_backoff_ms": 2000,
+        "verify_tls": true,
+        "network_latency_high": true
+      }
+    },
+
+    "service_account": {
+      "name": "cortex-resource-manager",
+      "namespace": "cortex-system",
+      "token_rotation_days": 90,
+      "token_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/sa-tokens",
+      "permissions_summary": [
+        "Full namespace management",
+        "Full pod lifecycle management",
+        "Service and endpoint management",
+        "ConfigMap and Secret read access",
+        "Deployment, StatefulSet, DaemonSet management",
+        "Job and CronJob management",
+        "Metrics read access"
+      ]
+    },
+
+    "authentication": {
+      "method": "service_account",
+      "fallback_method": "kubeconfig",
+      "token_refresh_threshold_hours": 24,
+      "mutual_tls_enabled": true
+    }
+  },
+
+  "service_discovery": {
+    "enabled": true,
+    "discovery_interval_seconds": 60,
+    "namespaces": ["cortex-mcp", "cortex-system", "cortex-workers"],
+
+    "mcp_server_labels": {
+      "required": {
+        "app": "mcp-server",
+        "cortex.dev/component": "mcp-server"
+      },
+      "optional": {
+        "mcp.cortex.dev/type": "Server type (talos, proxmox, unifi, etc.)",
+        "mcp.cortex.dev/version": "Server version",
+        "mcp.cortex.dev/protocol": "Communication protocol (stdio, http)"
+      }
+    },
+
+    "mcp_server_annotations": {
+      "mcp.cortex.dev/capabilities": "Comma-separated list of capabilities",
+      "mcp.cortex.dev/endpoint": "HTTP endpoint for REST API",
+      "mcp.cortex.dev/health-check-path": "Health check endpoint path",
+      "mcp.cortex.dev/documentation-url": "Documentation URL"
+    },
+
+    "discovery_rules": [
+      {
+        "rule_id": "mcp-server-basic",
+        "description": "Discover all MCP servers in cortex-mcp namespace",
+        "namespace": "cortex-mcp",
+        "label_selector": "app=mcp-server",
+        "min_ready_pods": 1,
+        "service_required": true
+      },
+      {
+        "rule_id": "talos-mcp-server",
+        "description": "Discover Talos MCP servers",
+        "namespace": "cortex-mcp",
+        "label_selector": "app=mcp-server,mcp.cortex.dev/type=talos",
+        "min_ready_pods": 1,
+        "service_name": "talos-mcp-server",
+        "service_port": 8080
+      },
+      {
+        "rule_id": "infrastructure-mcp-servers",
+        "description": "Discover infrastructure MCP servers (Proxmox, UniFi, Cloudflare)",
+        "namespace": "cortex-mcp",
+        "label_selector": "app=mcp-server,mcp.cortex.dev/category=infrastructure",
+        "min_ready_pods": 1
+      }
+    ],
+
+    "dns_discovery": {
+      "enabled": true,
+      "cluster_domain": "cluster.local",
+      "service_dns_pattern": "{service-name}.{namespace}.svc.{cluster-domain}",
+      "default_port": 8080,
+      "dns_cache_ttl_seconds": 300
+    },
+
+    "registry": {
+      "path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/mcp-server-registry.json",
+      "auto_refresh_enabled": true,
+      "refresh_interval_seconds": 60,
+      "persist_to_disk": true,
+      "backup_count": 5
+    }
+  },
+
+  "health_checks": {
+    "probe_definitions": {
+      "liveness_probe": {
+        "description": "Detects if container is healthy or needs restart",
+        "initial_delay_seconds": 30,
+        "period_seconds": 10,
+        "timeout_seconds": 5,
+        "failure_threshold": 3,
+        "success_threshold": 1,
+        "default_type": "httpGet",
+        "http_path": "/health",
+        "http_port": 8080
+      },
+      "readiness_probe": {
+        "description": "Determines if container can accept traffic",
+        "initial_delay_seconds": 10,
+        "period_seconds": 5,
+        "timeout_seconds": 3,
+        "failure_threshold": 3,
+        "success_threshold": 1,
+        "default_type": "httpGet",
+        "http_path": "/ready",
+        "http_port": 8080
+      },
+      "startup_probe": {
+        "description": "Allows slow-starting containers time to initialize",
+        "initial_delay_seconds": 0,
+        "period_seconds": 5,
+        "timeout_seconds": 3,
+        "failure_threshold": 30,
+        "success_threshold": 1,
+        "default_type": "httpGet",
+        "http_path": "/startup",
+        "http_port": 8080
+      }
+    },
+
+    "monitoring_intervals": {
+      "pod_health_check_seconds": 30,
+      "node_health_check_seconds": 60,
+      "service_health_check_seconds": 60,
+      "cluster_health_check_seconds": 300
+    },
+
+    "health_thresholds": {
+      "pod_restart_alert_threshold": 5,
+      "pod_restart_window_minutes": 10,
+      "node_not_ready_alert_minutes": 5,
+      "api_server_latency_alert_ms": 500,
+      "unhealthy_pod_percentage_alert": 10
+    },
+
+    "health_endpoints": {
+      "mcp_servers": {
+        "health_path": "/health",
+        "ready_path": "/ready",
+        "metrics_path": "/metrics",
+        "expected_status_code": 200,
+        "timeout_seconds": 5
+      },
+      "kubernetes_api": {
+        "health_path": "/healthz",
+        "ready_path": "/readyz",
+        "livez_path": "/livez",
+        "version_path": "/version"
+      }
+    }
+  },
+
+  "namespace_management": {
+    "namespace_templates": {
+      "cortex-mcp": {
+        "description": "MCP server deployments",
+        "labels": {
+          "cortex.dev/component": "mcp-servers",
+          "environment": "production"
+        },
+        "resource_quota": {
+          "requests.cpu": "10",
+          "requests.memory": "20Gi",
+          "limits.cpu": "20",
+          "limits.memory": "40Gi",
+          "persistentvolumeclaims": "10",
+          "pods": "50"
+        },
+        "limit_range": {
+          "container": {
+            "max_cpu": "2",
+            "max_memory": "4Gi",
+            "min_cpu": "50m",
+            "min_memory": "64Mi",
+            "default_cpu": "200m",
+            "default_memory": "256Mi",
+            "default_request_cpu": "100m",
+            "default_request_memory": "128Mi"
+          }
+        }
+      },
+      "cortex-system": {
+        "description": "Core Cortex infrastructure",
+        "labels": {
+          "cortex.dev/component": "system",
+          "criticality": "high"
+        },
+        "resource_quota": {
+          "requests.cpu": "5",
+          "requests.memory": "10Gi",
+          "limits.cpu": "10",
+          "limits.memory": "20Gi",
+          "pods": "30"
+        },
+        "limit_range": {
+          "container": {
+            "max_cpu": "1",
+            "max_memory": "2Gi",
+            "min_cpu": "25m",
+            "min_memory": "32Mi",
+            "default_cpu": "100m",
+            "default_memory": "128Mi",
+            "default_request_cpu": "50m",
+            "default_request_memory": "64Mi"
+          }
+        }
+      },
+      "cortex-monitoring": {
+        "description": "Monitoring and observability stack",
+        "labels": {
+          "cortex.dev/component": "monitoring"
+        },
+        "resource_quota": {
+          "requests.cpu": "8",
+          "requests.memory": "16Gi",
+          "limits.cpu": "16",
+          "limits.memory": "32Gi",
+          "persistentvolumeclaims": "20",
+          "pods": "40"
+        }
+      },
+      "cortex-workers": {
+        "description": "Worker pods and batch jobs",
+        "labels": {
+          "cortex.dev/component": "workers"
+        },
+        "resource_quota": {
+          "requests.cpu": "20",
+          "requests.memory": "40Gi",
+          "limits.cpu": "40",
+          "limits.memory": "80Gi",
+          "pods": "100"
+        },
+        "limit_range": {
+          "container": {
+            "max_cpu": "4",
+            "max_memory": "8Gi",
+            "min_cpu": "100m",
+            "min_memory": "128Mi",
+            "default_cpu": "500m",
+            "default_memory": "512Mi",
+            "default_request_cpu": "250m",
+            "default_request_memory": "256Mi"
+          }
+        }
+      }
+    },
+
+    "namespace_lifecycle": {
+      "auto_create_missing": true,
+      "apply_resource_quotas": true,
+      "apply_limit_ranges": true,
+      "apply_network_policies": true,
+      "cleanup_policy": "manual"
+    }
+  },
+
+  "rbac_config": {
+    "service_accounts": {
+      "cortex-resource-manager": {
+        "namespace": "cortex-system",
+        "cluster_role": "cortex-resource-manager-role",
+        "cluster_role_binding": "cortex-resource-manager-binding",
+        "description": "Primary service account for resource-manager",
+        "permissions": {
+          "cluster_scoped": [
+            "nodes:get,list,watch",
+            "namespaces:get,list,watch,create,update,patch,delete",
+            "persistentvolumes:get,list,watch,create,update,patch,delete",
+            "customresourcedefinitions:get,list,watch"
+          ],
+          "namespace_scoped": [
+            "pods:get,list,watch,create,update,patch,delete",
+            "services:get,list,watch,create,update,patch,delete",
+            "configmaps:get,list,watch,create,update,patch,delete",
+            "secrets:get,list,watch",
+            "deployments:get,list,watch,create,update,patch,delete",
+            "statefulsets:get,list,watch,create,update,patch,delete",
+            "daemonsets:get,list,watch,create,update,patch,delete",
+            "jobs:get,list,watch,create,update,patch,delete",
+            "cronjobs:get,list,watch,create,update,patch,delete",
+            "resourcequotas:get,list,watch,create,update,patch",
+            "limitranges:get,list,watch,create,update,patch",
+            "events:get,list,watch"
+          ]
+        }
+      },
+      "cortex-mcp-reader": {
+        "namespace": "cortex-mcp",
+        "role": "mcp-reader",
+        "role_binding": "mcp-reader-binding",
+        "description": "Read-only access to MCP resources",
+        "permissions": {
+          "namespace_scoped": [
+            "pods:get,list,watch",
+            "services:get,list,watch",
+            "configmaps:get,list,watch",
+            "deployments:get,list,watch"
+          ]
+        }
+      }
+    },
+
+    "security_policies": {
+      "pod_security_standard": "restricted",
+      "enforce_read_only_root_filesystem": true,
+      "allow_privilege_escalation": false,
+      "run_as_non_root": true,
+      "seccomp_profile": "RuntimeDefault"
+    }
+  },
+
+  "secret_management": {
+    "storage": {
+      "backend": "kubernetes",
+      "namespace": "cortex-system",
+      "encryption_at_rest": true,
+      "rotation_enabled": true,
+      "rotation_interval_days": 90
+    },
+
+    "secret_types": {
+      "talos_config": {
+        "name_pattern": "{cluster}-talos-config",
+        "type": "Opaque",
+        "required_keys": ["talosconfig"],
+        "mount_path": "/etc/talos",
+        "rotation_interval_days": 90
+      },
+      "mcp_credentials": {
+        "name_pattern": "{mcp-type}-mcp-credentials",
+        "type": "Opaque",
+        "required_keys": ["url", "token_id", "token_secret"],
+        "mount_path": "/etc/mcp/credentials",
+        "rotation_interval_days": 60,
+        "auto_rotation": false
+      },
+      "kubeconfig": {
+        "name_pattern": "{cluster}-kubeconfig",
+        "type": "Opaque",
+        "required_keys": ["config"],
+        "mount_path": "/etc/kubernetes",
+        "rotation_interval_days": 180
+      },
+      "tls_certificates": {
+        "name_pattern": "{service}-tls",
+        "type": "kubernetes.io/tls",
+        "required_keys": ["tls.crt", "tls.key"],
+        "mount_path": "/etc/tls",
+        "rotation_interval_days": 365,
+        "auto_renew": true
+      }
+    },
+
+    "access_control": {
+      "secret_read_roles": ["cortex-resource-manager"],
+      "secret_write_roles": ["cortex-admin"],
+      "audit_logging": true,
+      "access_log_retention_days": 90
+    }
+  },
+
+  "configmap_management": {
+    "templates": {
+      "mcp_server_config": {
+        "name_pattern": "{mcp-type}-mcp-config",
+        "namespace": "cortex-mcp",
+        "mount_path": "/etc/mcp/config",
+        "auto_reload": true,
+        "reload_signal": "SIGHUP"
+      },
+      "feature_flags": {
+        "name_pattern": "{component}-features",
+        "namespace": "cortex-system",
+        "mount_path": "/etc/features",
+        "format": "json"
+      },
+      "logging_config": {
+        "name_pattern": "{component}-logging",
+        "namespace": "cortex-system",
+        "mount_path": "/etc/logging",
+        "format": "yaml"
+      }
+    },
+
+    "change_detection": {
+      "enabled": true,
+      "watch_namespaces": ["cortex-mcp", "cortex-system"],
+      "trigger_pod_restart": false,
+      "notification_enabled": true
+    }
+  },
+
+  "event_watching": {
+    "enabled": true,
+    "watch_namespaces": ["cortex-mcp", "cortex-system", "cortex-workers", "cortex-monitoring"],
+
+    "event_filters": {
+      "critical_events": [
+        "FailedScheduling",
+        "BackOff",
+        "Failed",
+        "Killing",
+        "NodeNotReady",
+        "ResourceExhausted",
+        "Unhealthy",
+        "ProbeFailure",
+        "FailedMount",
+        "FailedAttachVolume"
+      ],
+      "warning_events": [
+        "NodeNotSchedulable",
+        "HighCPUUsage",
+        "HighMemoryUsage",
+        "SlowStart",
+        "ExceededQuota"
+      ],
+      "informational_events": [
+        "Created",
+        "Started",
+        "Pulled",
+        "Scheduled",
+        "SuccessfulCreate"
+      ]
+    },
+
+    "event_reactions": {
+      "FailedScheduling": {
+        "action": "analyze_node_resources",
+        "alert": true,
+        "severity": "warning",
+        "auto_remediate": false
+      },
+      "BackOff": {
+        "action": "collect_logs_and_analyze",
+        "alert": true,
+        "severity": "critical",
+        "restart_threshold": 5,
+        "auto_remediate": false
+      },
+      "NodeNotReady": {
+        "action": "cordon_and_alert",
+        "alert": true,
+        "severity": "critical",
+        "auto_remediate": true
+      },
+      "ResourceExhausted": {
+        "action": "analyze_quota_and_alert",
+        "alert": true,
+        "severity": "warning",
+        "auto_remediate": false
+      },
+      "Unhealthy": {
+        "action": "collect_health_metrics",
+        "alert": true,
+        "severity": "warning",
+        "auto_remediate": false
+      }
+    },
+
+    "event_logging": {
+      "enabled": true,
+      "log_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/logs/events",
+      "format": "jsonl",
+      "rotation": "daily",
+      "retention_days": 30,
+      "include_normal_events": false
+    }
+  },
+
+  "metrics_scraping": {
+    "kube_state_metrics": {
+      "enabled": true,
+      "namespace": "cortex-monitoring",
+      "service_name": "kube-state-metrics",
+      "service_port": 8080,
+      "metrics_path": "/metrics",
+      "scrape_interval_seconds": 30,
+      "scrape_timeout_seconds": 10
+    },
+
+    "node_exporter": {
+      "enabled": true,
+      "namespace": "cortex-monitoring",
+      "daemonset_name": "node-exporter",
+      "service_port": 9100,
+      "metrics_path": "/metrics",
+      "scrape_interval_seconds": 30
+    },
+
+    "metrics_server": {
+      "enabled": true,
+      "namespace": "kube-system",
+      "service_name": "metrics-server",
+      "api_path": "/apis/metrics.k8s.io/v1beta1",
+      "scrape_interval_seconds": 60
+    },
+
+    "collected_metrics": [
+      "kube_node_info",
+      "kube_node_status_condition",
+      "kube_node_status_allocatable",
+      "kube_pod_info",
+      "kube_pod_status_phase",
+      "kube_pod_status_ready",
+      "kube_pod_container_status_restarts_total",
+      "kube_deployment_status_replicas",
+      "kube_deployment_status_replicas_available",
+      "kube_statefulset_status_replicas",
+      "kube_statefulset_status_replicas_ready",
+      "kube_job_status_succeeded",
+      "kube_job_status_failed",
+      "kube_namespace_status_phase",
+      "kube_resourcequota",
+      "node_cpu_seconds_total",
+      "node_memory_MemTotal_bytes",
+      "node_memory_MemAvailable_bytes",
+      "node_filesystem_avail_bytes"
+    ],
+
+    "metric_aggregation": {
+      "enabled": true,
+      "aggregation_interval_seconds": 300,
+      "retention_hours": 168,
+      "storage_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/metrics"
+    },
+
+    "alerts": {
+      "node_cpu_high": {
+        "threshold": 80,
+        "duration_minutes": 5,
+        "severity": "warning"
+      },
+      "node_memory_high": {
+        "threshold": 85,
+        "duration_minutes": 5,
+        "severity": "warning"
+      },
+      "pod_restarts_high": {
+        "threshold": 5,
+        "duration_minutes": 10,
+        "severity": "critical"
+      },
+      "deployment_replicas_unavailable": {
+        "threshold": 50,
+        "duration_minutes": 3,
+        "severity": "critical"
+      }
+    }
+  },
+
+  "talos_mcp_integration": {
+    "enabled": true,
+    "discovery": {
+      "namespace": "cortex-mcp",
+      "label_selector": "app=mcp-server,mcp.cortex.dev/type=talos",
+      "service_name": "talos-mcp-server",
+      "service_port": 8080,
+      "health_check_interval_seconds": 30
+    },
+
+    "capabilities": [
+      "cluster_management",
+      "node_operations",
+      "etcd_management",
+      "health_monitoring",
+      "configuration_management",
+      "upgrade_operations"
+    ],
+
+    "operations": {
+      "health_check": {
+        "tool_name": "talos_health",
+        "interval_seconds": 60,
+        "timeout_seconds": 30,
+        "retry_attempts": 3
+      },
+      "service_status": {
+        "tool_name": "talos_get_services",
+        "interval_seconds": 120,
+        "services_to_monitor": [
+          "kubelet",
+          "etcd",
+          "kube-apiserver",
+          "kube-controller-manager",
+          "kube-scheduler"
+        ]
+      },
+      "cluster_bootstrap": {
+        "tool_name": "talos_bootstrap",
+        "timeout_seconds": 300
+      },
+      "config_apply": {
+        "tool_name": "talos_apply_config",
+        "timeout_seconds": 120,
+        "validate_before_apply": true
+      },
+      "kubeconfig_generate": {
+        "tool_name": "talos_kubeconfig",
+        "output_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/kubeconfig",
+        "force_overwrite": false,
+        "merge_config": false
+      }
+    },
+
+    "monitoring": {
+      "combined_k8s_talos": true,
+      "health_check_sources": ["kubernetes_api", "talos_api", "etcd"],
+      "metric_correlation": true,
+      "unified_alerting": true
+    },
+
+    "failover": {
+      "enabled": true,
+      "backup_mcp_servers": true,
+      "min_healthy_servers": 1,
+      "automatic_failover": true,
+      "failover_timeout_seconds": 30
+    }
+  },
+
+  "operational_workflows": {
+    "cluster_bootstrap": {
+      "workflow_id": "bootstrap-talos-cluster",
+      "steps": [
+        {
+          "step": 1,
+          "name": "provision_vms",
+          "contractor": "infrastructure-contractor",
+          "timeout_minutes": 30
+        },
+        {
+          "step": 2,
+          "name": "generate_talos_configs",
+          "tool": "talos_generate_config",
+          "timeout_minutes": 5
+        },
+        {
+          "step": 3,
+          "name": "apply_configs",
+          "tool": "talos_apply_config",
+          "timeout_minutes": 15
+        },
+        {
+          "step": 4,
+          "name": "bootstrap_cluster",
+          "tool": "talos_bootstrap",
+          "timeout_minutes": 10
+        },
+        {
+          "step": 5,
+          "name": "wait_for_ready",
+          "action": "wait_for_cluster_ready",
+          "timeout_minutes": 10
+        },
+        {
+          "step": 6,
+          "name": "get_kubeconfig",
+          "tool": "talos_kubeconfig",
+          "timeout_minutes": 5
+        },
+        {
+          "step": 7,
+          "name": "deploy_mcp_servers",
+          "action": "deploy_mcp_infrastructure",
+          "timeout_minutes": 15
+        },
+        {
+          "step": 8,
+          "name": "register_cluster",
+          "action": "register_in_resource_manager",
+          "timeout_minutes": 5
+        }
+      ],
+      "rollback_enabled": true,
+      "validation_enabled": true
+    },
+
+    "mcp_server_deployment": {
+      "workflow_id": "deploy-mcp-servers",
+      "target_namespaces": ["cortex-mcp"],
+      "mcp_servers": [
+        {
+          "name": "talos-mcp-server",
+          "replicas": 2,
+          "image": "ghcr.io/ry-ops/talos-mcp-server:latest",
+          "resources": {
+            "requests": {"cpu": "100m", "memory": "128Mi"},
+            "limits": {"cpu": "500m", "memory": "512Mi"}
+          }
+        },
+        {
+          "name": "proxmox-mcp-server",
+          "replicas": 2,
+          "image": "ghcr.io/ry-ops/proxmox-mcp-server:latest",
+          "resources": {
+            "requests": {"cpu": "100m", "memory": "128Mi"},
+            "limits": {"cpu": "500m", "memory": "512Mi"}
+          }
+        }
+      ]
+    },
+
+    "health_monitoring": {
+      "workflow_id": "continuous-health-monitoring",
+      "interval_seconds": 60,
+      "checks": [
+        "kubernetes_api_health",
+        "talos_node_health",
+        "etcd_cluster_health",
+        "mcp_server_health",
+        "pod_health",
+        "resource_utilization"
+      ],
+      "reporting_interval_minutes": 15,
+      "alert_on_failure": true
+    }
+  },
+
+  "logging": {
+    "log_level": "info",
+    "log_format": "json",
+    "log_output": [
+      "stdout",
+      "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/logs/resource-manager.log"
+    ],
+    "log_rotation": {
+      "enabled": true,
+      "max_size_mb": 100,
+      "max_files": 10,
+      "compress": true
+    },
+    "audit_logging": {
+      "enabled": true,
+      "log_path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/logs/audit.log",
+      "include_operations": [
+        "create_namespace",
+        "delete_namespace",
+        "create_secret",
+        "delete_secret",
+        "update_rbac",
+        "create_deployment",
+        "delete_deployment"
+      ]
+    }
+  },
+
+  "performance": {
+    "api_client_config": {
+      "max_concurrent_requests": 50,
+      "request_timeout_seconds": 30,
+      "connection_pool_size": 20,
+      "keep_alive_enabled": true
+    },
+    "caching": {
+      "enabled": true,
+      "cache_ttl_seconds": 300,
+      "cache_size_mb": 100,
+      "cached_resources": [
+        "nodes",
+        "namespaces",
+        "services",
+        "configmaps"
+      ]
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "max_requests_per_second": 100,
+      "burst_size": 150
+    }
+  },
+
+  "error_handling": {
+    "retry_policy": {
+      "max_retries": 3,
+      "initial_backoff_ms": 100,
+      "max_backoff_ms": 30000,
+      "backoff_multiplier": 2.0,
+      "retry_on_status_codes": [429, 500, 502, 503, 504]
+    },
+    "circuit_breaker": {
+      "enabled": true,
+      "failure_threshold": 5,
+      "timeout_seconds": 60,
+      "half_open_requests": 3
+    },
+    "dead_letter_queue": {
+      "enabled": true,
+      "path": "/Users/ryandahlberg/Projects/cortex/coordination/resource-manager/dlq",
+      "max_retries": 5,
+      "retention_hours": 72
+    }
+  }
+}

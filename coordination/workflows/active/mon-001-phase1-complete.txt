@@ -1,0 +1,361 @@
+================================================================================
+WORKFLOW: mon-001 - Deploy Monitoring Stack
+PHASE 1: Infrastructure Preparation
+STATUS: COMPLETE
+================================================================================
+
+Completion Date: 2025-12-10T11:27:00Z
+Contractor: infrastructure-contractor
+Task ID: mon-001-infra
+
+--------------------------------------------------------------------------------
+DELIVERABLES CREATED
+--------------------------------------------------------------------------------
+
+1. mon-001-infra-handoff.json (16K, 433 lines)
+   - Comprehensive infrastructure assessment in JSON format
+   - Proxmox cluster state and resource utilization
+   - Existing monitoring services analysis
+   - Recommended monitoring stack specifications
+   - Network topology and IP allocation plan
+   - Integration architecture and data flows
+   - Deployment recommendations and timeline
+
+2. mon-001-infra-assessment-report.md (10K, 312 lines)
+   - Executive summary and key findings
+   - Current infrastructure state analysis
+   - Existing monitoring services integration plan
+   - Recommended stack configuration with LXC vs K8s comparison
+   - Network architecture and security considerations
+   - Deployment timeline and next steps
+   - Documentation references
+
+3. mon-001-technical-specs.yaml (13K, 350+ lines)
+   - Quick reference technical specifications
+   - VM sizing and resource allocations
+   - Network configuration (VLAN 70)
+   - Exporter requirements
+   - Firewall rules
+   - Backup strategy
+   - Monitoring targets
+   - Deployment checklist
+
+4. mon-001-k8s-handoff.json (13K)
+   - Alternative Kubernetes deployment option
+   - Available for future consideration
+
+All files located at:
+/Users/ryandahlberg/Projects/cortex/coordination/workflows/active/
+
+--------------------------------------------------------------------------------
+INFRASTRUCTURE ASSESSMENT RESULTS
+--------------------------------------------------------------------------------
+
+Proxmox Cluster: https://10.88.140.151:8006 (pve01)
+  ✓ Status: Healthy and stable
+  ✓ Total VMs: 9 LXC containers (all running)
+  ✓ Uptime: ~15 hours (recent maintenance)
+
+Resource Utilization:
+  ✓ vCPU: 18 cores allocated (low utilization)
+  ✓ Memory: 17.5 GB allocated, 4.1 GB used (23%)
+  ✓ Disk: 71 GB allocated, 26.8 GB used (38%)
+  ✓ Assessment: Significant capacity available
+
+Existing Monitoring Services:
+  ✓ Wazuh (VMID 101): Security SIEM - 4 vCPU, 4 GB RAM
+  ✓ CheckMK (VMID 103): Infrastructure monitoring - 2 vCPU, 2 GB RAM
+  ✓ UptimeKuma (VMID 106): Uptime monitoring - 1 vCPU, 1 GB RAM
+  ✓ Integration: All services will integrate with new stack
+
+--------------------------------------------------------------------------------
+RECOMMENDED MONITORING STACK
+--------------------------------------------------------------------------------
+
+Deployment Approach: LXC Containers (RECOMMENDED)
+Rationale: Consistent with existing infrastructure, lower overhead, faster
+           deployment, easier management
+
+Network Configuration:
+  VLAN: 70 (monitoring)
+  Subnet: 10.70.0.0/24
+  Gateway: 10.70.0.1
+
+Components (Total: 12 vCPU, 24 GB RAM, 300 GB disk):
+
+  1. Prometheus - 10.70.0.10
+     - 4 vCPU, 8 GB RAM, 100 GB SSD
+     - Metrics collection and time-series storage
+     - 15-day retention, ~500 MB/day growth
+
+  2. Grafana - 10.70.0.11
+     - 2 vCPU, 4 GB RAM, 50 GB SSD
+     - Metrics visualization and dashboards
+     - External URL: monitoring.yourdomain.com
+
+  3. Loki - 10.70.0.12
+     - 4 vCPU, 8 GB RAM, 100 GB SSD
+     - Log aggregation and search
+     - 7-14 day retention, ~1-5 GB/day growth
+
+  4. Alertmanager - 10.70.0.13
+     - 2 vCPU, 4 GB RAM, 50 GB SSD
+     - Alert routing and notifications
+     - 30-day alert history
+
+Capacity Validation:
+  ✓ Current: 18 vCPU, 17.5 GB RAM, 71 GB disk
+  ✓ After deployment: 30 vCPU, 41.5 GB RAM, 371 GB disk
+  ✓ Assessment: Well within Proxmox capacity
+
+--------------------------------------------------------------------------------
+INTEGRATION ARCHITECTURE
+--------------------------------------------------------------------------------
+
+Metrics Collection:
+  Sources → Prometheus → Grafana (visualization)
+                      └→ Alertmanager (alerts)
+
+  Sources:
+  - Proxmox host (pve_exporter)
+  - All 9 existing VMs (node_exporter)
+  - All 4 monitoring VMs (node_exporter)
+  - CheckMK (federation or dual collection)
+  - Wazuh (API exporter for security metrics)
+  - UptimeKuma (blackbox_exporter enhancement)
+
+Log Aggregation:
+  Sources → Loki → Grafana (log viewing)
+
+  Sources:
+  - All VMs (rsyslog/promtail)
+  - Docker containers
+  - Proxmox host logs
+
+Required Exporters:
+  ✓ node_exporter: Install on all 13 VMs (9 existing + 4 new)
+  ✓ pve_exporter: Proxmox cluster metrics
+  ✓ blackbox_exporter: Endpoint availability checks
+  ✓ wazuh_exporter: Security metrics (custom)
+
+--------------------------------------------------------------------------------
+DEPLOYMENT TIMELINE
+--------------------------------------------------------------------------------
+
+Phase 1: Infrastructure Preparation - COMPLETE (1 hour)
+  ✓ Assess Proxmox infrastructure
+  ✓ Document existing monitoring services
+  ✓ Calculate available capacity
+  ✓ Design network topology
+  ✓ Create deployment recommendations
+  ✓ Generate handoff documentation
+
+Phase 2: VM Deployment - PENDING (2-3 hours)
+  Contractor: talos-contractor
+  Tasks:
+  - Verify/create VLAN 70 in UniFi
+  - Provision 4 LXC containers (Ubuntu 24.04)
+  - Configure static IPs (10.70.0.10-13)
+  - Install base OS packages
+  - Install monitoring services
+
+Phase 3: Service Configuration - PENDING (2-3 hours)
+  Contractor: monitoring-operations
+  Tasks:
+  - Configure Prometheus (scrape targets, retention)
+  - Configure Grafana (data sources, dashboards)
+  - Configure Loki (log ingestion, retention)
+  - Configure Alertmanager (routing, notifications)
+  - Create initial alert rules
+
+Phase 4: Integration & Testing - PENDING (1-2 hours)
+  Contractor: monitoring-operations
+  Tasks:
+  - Install node_exporter on all VMs
+  - Verify metrics collection from all targets
+  - Test log aggregation from all sources
+  - Validate alert routing
+  - Create integration dashboards
+
+Total Estimated Time: 6-8 hours for complete stack
+
+--------------------------------------------------------------------------------
+SECURITY CONFIGURATION
+--------------------------------------------------------------------------------
+
+Authentication:
+  - Grafana: OAuth/LDAP or strong built-in auth
+  - Prometheus: Basic auth or authenticated reverse proxy
+  - Alertmanager: Basic auth for API access
+
+Network Security:
+  - Restrict Grafana external access to authenticated users
+  - Block direct internet to Prometheus and Alertmanager
+  - Allow monitoring VLAN to reach all VLANs (metrics collection)
+  - Allow all VLANs to send logs to monitoring VLAN
+
+SSL Certificates:
+  - Method: Let's Encrypt via Nginx Proxy Manager
+  - Alternative: Cloudflare Origin Certificates
+
+External Access:
+  - Grafana: Via Nginx Proxy Manager or Cloudflare Tunnel
+  - Prometheus/Alertmanager: Internal only (no external exposure)
+
+--------------------------------------------------------------------------------
+NEXT CONTRACTOR: talos-contractor
+--------------------------------------------------------------------------------
+
+Handoff Status: READY FOR PICKUP
+
+Required Actions:
+  1. Review infrastructure assessment and validate recommendations
+  2. Confirm LXC container deployment approach
+  3. Verify VLAN 70 exists or coordinate creation with network team
+  4. Provision 4 LXC containers with specified resources:
+     - Prometheus: 4 vCPU, 8 GB RAM, 100 GB disk @ 10.70.0.10
+     - Grafana: 2 vCPU, 4 GB RAM, 50 GB disk @ 10.70.0.11
+     - Loki: 4 vCPU, 8 GB RAM, 100 GB disk @ 10.70.0.12
+     - Alertmanager: 2 vCPU, 4 GB RAM, 50 GB disk @ 10.70.0.13
+  5. Install Ubuntu 24.04 LTS on all containers
+  6. Configure static IPs in VLAN 70
+  7. Install monitoring services (Prometheus, Grafana, Loki, Alertmanager)
+  8. Create base configuration files
+  9. Verify services start and are accessible
+  10. Hand off to monitoring-operations for configuration
+
+Blockers: NONE
+
+Dependencies:
+  - VLAN 70 must exist or be created in UniFi
+  - Proxmox API access (can use UI as fallback)
+
+Success Criteria:
+  ✓ 4 LXC containers provisioned and running
+  ✓ Static IPs configured in VLAN 70
+  ✓ Monitoring services installed and starting
+  ✓ Network connectivity verified
+  ✓ Ready for service configuration
+
+--------------------------------------------------------------------------------
+KNOWN ISSUES & WORKAROUNDS
+--------------------------------------------------------------------------------
+
+Issue: Proxmox API timeout from this environment
+  Status: Non-blocking
+  Workaround: Use Proxmox web UI for VM provisioning
+  Alternative: Use Proxmox CLI tools (pvesh, pct)
+  Impact: Minimal - provisioning can proceed via UI
+
+Issue: None others identified
+
+--------------------------------------------------------------------------------
+VALIDATION CHECKLIST
+--------------------------------------------------------------------------------
+
+Phase 1 Completion:
+  ✓ Infrastructure assessed
+  ✓ Capacity validated
+  ✓ Existing services documented
+  ✓ Network topology designed
+  ✓ Integration architecture defined
+  ✓ Security considerations documented
+  ✓ Deployment timeline created
+  ✓ Handoff documentation generated
+
+Infrastructure Readiness:
+  ✓ Proxmox cluster healthy and stable
+  ✓ Sufficient vCPU capacity (12+ cores available)
+  ✓ Sufficient memory capacity (24+ GB available)
+  ✓ Sufficient disk capacity (300+ GB available)
+  ✓ Network topology supports monitoring VLAN
+  ✓ No blockers identified
+
+Handoff Quality:
+  ✓ Comprehensive JSON data (mon-001-infra-handoff.json)
+  ✓ Human-readable report (mon-001-infra-assessment-report.md)
+  ✓ Technical specifications (mon-001-technical-specs.yaml)
+  ✓ Phase completion summary (this file)
+  ✓ All files in workflow active directory
+
+--------------------------------------------------------------------------------
+CONTRACTOR CONFIDENCE ASSESSMENT
+--------------------------------------------------------------------------------
+
+Infrastructure Health: EXCELLENT
+  - All VMs running stable
+  - Low resource utilization (room for growth)
+  - No hardware or capacity constraints
+
+Deployment Feasibility: HIGH
+  - LXC approach proven in existing environment
+  - Clear resource requirements within capacity
+  - Network topology well-defined
+  - No technical blockers
+
+Integration Complexity: MODERATE
+  - 3 existing monitoring services to integrate
+  - Multiple exporters required (13 VMs)
+  - Federation or dual collection needed for CheckMK
+  - Custom exporter may be needed for Wazuh
+
+Timeline Confidence: HIGH
+  - 6-8 hours realistic for LXC approach
+  - Phases well-defined with clear tasks
+  - Minimal dependencies
+  - Proven technology stack
+
+Overall Assessment: READY TO PROCEED
+  - Infrastructure preparation complete
+  - All documentation delivered
+  - Clear path to deployment
+  - High confidence in success
+
+--------------------------------------------------------------------------------
+DOCUMENTATION REFERENCES
+--------------------------------------------------------------------------------
+
+Local Documentation:
+  - Proxmox Infrastructure: coordination/masters/inventory/knowledge-base/proxmox-infrastructure.md
+  - VM Inventory: coordination/masters/inventory/proxmox-vm-inventory.json
+  - Infrastructure Knowledge: coordination/contractors/infrastructure-contractor-knowledge.json
+
+External Documentation:
+  - Prometheus: https://prometheus.io/docs/prometheus/latest/installation/
+  - Grafana: https://grafana.com/docs/grafana/latest/setup-grafana/installation/
+  - Loki: https://grafana.com/docs/loki/latest/setup/install/
+  - Alertmanager: https://prometheus.io/docs/alerting/latest/alertmanager/
+
+Cortex Documentation:
+  - Infrastructure Contractor: coordination/contractors/infrastructure-contractor.md
+  - Talos Contractor: coordination/contractors/talos-contractor.md
+  - Monitoring Operations: coordination/contractors/monitoring-operations.md
+
+--------------------------------------------------------------------------------
+FINAL RECOMMENDATION
+--------------------------------------------------------------------------------
+
+Assessment Verdict: INFRASTRUCTURE READY - PROCEED TO PHASE 2
+
+The Proxmox infrastructure is in excellent condition for deploying a
+comprehensive monitoring stack. With low resource utilization (23% memory,
+38% disk), stable services, and clear network topology, we have a solid
+foundation for Phase 2 deployment.
+
+The recommended LXC container approach aligns with the existing infrastructure,
+provides optimal resource efficiency, and supports rapid deployment. Integration
+with existing monitoring services (Wazuh, CheckMK, UptimeKuma) will create a
+comprehensive observability platform.
+
+No blockers identified. Infrastructure is ready. Proceed to Phase 2.
+
+================================================================================
+PHASE 1 COMPLETE - HANDOFF TO talos-contractor
+================================================================================
+
+Generated by: infrastructure-contractor
+Completion: 2025-12-10T11:27:00Z
+Workflow: mon-001
+Next Phase: 2 (VM Deployment)
+Next Contractor: talos-contractor
+

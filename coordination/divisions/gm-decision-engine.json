@@ -1,0 +1,780 @@
+{
+  "version": "1.0.0",
+  "created": "2025-12-09T00:00:00Z",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "description": "Machine-readable decision rules, scoring weights, and thresholds for GM decision engine",
+
+  "complexity_scoring": {
+    "dimensions": {
+      "technical_complexity": {
+        "weight": 0.30,
+        "scale": "1-10",
+        "levels": {
+          "low": {
+            "score_range": [1, 3],
+            "characteristics": [
+              "Well-understood problem",
+              "Standard patterns apply",
+              "Previous examples exist",
+              "Minimal edge cases",
+              "Single technology"
+            ]
+          },
+          "medium": {
+            "score_range": [4, 6],
+            "characteristics": [
+              "Some unknowns present",
+              "Multiple components involved",
+              "Moderate edge cases",
+              "2-3 technologies",
+              "Some custom logic needed"
+            ]
+          },
+          "high": {
+            "score_range": [7, 10],
+            "characteristics": [
+              "Novel problem or approach",
+              "Complex algorithms required",
+              "Many edge cases",
+              "4+ technologies integrated",
+              "Significant custom development"
+            ]
+          }
+        }
+      },
+      "integration_points": {
+        "weight": 0.20,
+        "scale": "1-10",
+        "mapping": {
+          "1": {"systems": 1, "score": 1.5},
+          "2": {"systems": 2, "score": 3.5},
+          "3": {"systems": 3, "score": 5.5},
+          "4": {"systems": 4, "score": 7.5},
+          "5+": {"systems": 5, "score": 9.5}
+        }
+      },
+      "unknowns_ambiguity": {
+        "weight": 0.20,
+        "scale": "1-10",
+        "levels": {
+          "well_defined": {
+            "score_range": [1, 3],
+            "characteristics": [
+              "Clear requirements",
+              "Explicit acceptance criteria",
+              "Known approach",
+              "Documented patterns",
+              "Previous similar work"
+            ]
+          },
+          "moderate_ambiguity": {
+            "score_range": [4, 6],
+            "characteristics": [
+              "General requirements clear",
+              "Some acceptance criteria missing",
+              "Approach generally known",
+              "Some patterns available",
+              "Research needed"
+            ]
+          },
+          "high_ambiguity": {
+            "score_range": [7, 10],
+            "characteristics": [
+              "Vague requirements",
+              "Unclear acceptance criteria",
+              "Approach unknown",
+              "No existing patterns",
+              "Significant research/experimentation"
+            ]
+          }
+        }
+      },
+      "risk_level": {
+        "weight": 0.15,
+        "scale": "1-10",
+        "levels": {
+          "low": {
+            "score_range": [1, 3],
+            "characteristics": [
+              "Development/test environment",
+              "No production impact",
+              "Easy rollback",
+              "Non-critical system",
+              "Minimal user impact"
+            ]
+          },
+          "medium": {
+            "score_range": [4, 6],
+            "characteristics": [
+              "Staging environment",
+              "Limited production impact",
+              "Moderate rollback complexity",
+              "Important but not critical",
+              "Some user impact possible"
+            ]
+          },
+          "high": {
+            "score_range": [7, 10],
+            "characteristics": [
+              "Production environment",
+              "Critical system",
+              "Difficult/impossible rollback",
+              "Business-critical function",
+              "High user impact"
+            ]
+          }
+        }
+      },
+      "dependencies": {
+        "weight": 0.15,
+        "scale": "1-10",
+        "mapping": {
+          "0": {"count": 0, "score": 1},
+          "1-2": {"count_range": [1, 2], "score": 3},
+          "3-4": {"count_range": [3, 4], "score": 6},
+          "5+": {"count_min": 5, "score": 9}
+        }
+      }
+    },
+    "classification": {
+      "simple": {
+        "score_range": [1.0, 3.0],
+        "contractor_count": 1,
+        "estimated_time_hours": "<1",
+        "estimated_tokens": [500, 3000],
+        "requires_escalation": false
+      },
+      "moderate": {
+        "score_range": [3.1, 5.0],
+        "contractor_count": 1,
+        "estimated_time_hours": "1-2",
+        "estimated_tokens": [3000, 6000],
+        "requires_escalation": false
+      },
+      "complex": {
+        "score_range": [5.1, 7.0],
+        "contractor_count": "1-2",
+        "estimated_time_hours": "2-4",
+        "estimated_tokens": [6000, 12000],
+        "requires_escalation": "if_score_>_6.5"
+      },
+      "very_complex": {
+        "score_range": [7.1, 8.5],
+        "contractor_count": "2+",
+        "estimated_time_hours": "4-8",
+        "estimated_tokens": [12000, 20000],
+        "requires_escalation": true
+      },
+      "extremely_complex": {
+        "score_range": [8.6, 10.0],
+        "contractor_count": "multiple",
+        "estimated_time_hours": "8+",
+        "estimated_tokens": [20000, 50000],
+        "requires_escalation": true
+      }
+    }
+  },
+
+  "contractor_selection": {
+    "domains": {
+      "vm_provisioning": {
+        "primary": "infrastructure-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "network_configuration": {
+        "primary": "infrastructure-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "dns_management": {
+        "primary": "infrastructure-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "kubernetes_cluster": {
+        "primary": "talos-contractor",
+        "backup": "infrastructure-contractor",
+        "escalation_target": "coo"
+      },
+      "k8s_workloads": {
+        "primary": "talos-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "workflow_automation": {
+        "primary": "n8n-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "integration_design": {
+        "primary": "n8n-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      },
+      "multi_system_orchestration": {
+        "primary": "infrastructure-contractor",
+        "backup": null,
+        "escalation_target": "coo"
+      }
+    },
+    "selection_criteria": {
+      "primary_weight": 0.50,
+      "load_weight": 0.30,
+      "success_rate_weight": 0.20
+    },
+    "availability_thresholds": {
+      "available": {"utilization_max": 0.80},
+      "busy": {"utilization_range": [0.80, 0.90]},
+      "overloaded": {"utilization_min": 0.90}
+    }
+  },
+
+  "resource_estimation": {
+    "token_estimation": {
+      "base_tokens_by_type": {
+        "simple_api_call": {"min": 500, "max": 1000},
+        "configuration_task": {"min": 1500, "max": 3000},
+        "single_resource": {"min": 2000, "max": 4000},
+        "multi_step_workflow": {"min": 3000, "max": 6000},
+        "complex_orchestration": {"min": 8000, "max": 15000},
+        "architecture_design": {"min": 5000, "max": 10000}
+      },
+      "complexity_multipliers": {
+        "simple": 1.0,
+        "moderate": 1.3,
+        "complex": 1.6,
+        "very_complex": 2.0,
+        "extremely_complex": 2.5
+      },
+      "integration_factors": {
+        "1_system": 1.0,
+        "2_systems": 1.25,
+        "3_systems": 1.5,
+        "4_systems": 1.75,
+        "5_plus_systems": 2.0
+      },
+      "contingency_buffers": {
+        "well_defined": 0.15,
+        "moderate_unknowns": 0.30,
+        "high_unknowns": 0.50
+      }
+    },
+    "time_estimation": {
+      "base_formula": {
+        "description": "Estimated Time (hours) = (Complexity_Score × 0.5) + Overhead + Contingency",
+        "complexity_coefficient": 0.5
+      },
+      "overhead_hours": {
+        "research_planning": 0.5,
+        "coordination_per_contractor": 0.25,
+        "validation": 0.25,
+        "documentation": 0.25
+      },
+      "contingency_multipliers": {
+        "simple": 1.15,
+        "moderate": 1.25,
+        "complex": 1.35,
+        "very_complex": 1.50
+      }
+    }
+  },
+
+  "priority_management": {
+    "priority_levels": {
+      "p0_critical": {
+        "level": 0,
+        "name": "Critical",
+        "response_sla_minutes": 15,
+        "characteristics": [
+          "Production outage",
+          "Security incident",
+          "Data loss risk",
+          "Business-critical down"
+        ],
+        "preemption": "all_priorities",
+        "escalation_required": true
+      },
+      "p1_high": {
+        "level": 1,
+        "name": "High",
+        "response_sla_minutes": 60,
+        "characteristics": [
+          "Production degradation",
+          "Urgent feature",
+          "Important deadline",
+          "Multiple teams blocked"
+        ],
+        "preemption": "p2_p3_only",
+        "escalation_required": false
+      },
+      "p2_medium": {
+        "level": 2,
+        "name": "Medium",
+        "response_sla_minutes": 240,
+        "characteristics": [
+          "Standard operations",
+          "Scheduled work",
+          "Planned improvements",
+          "Normal requests"
+        ],
+        "preemption": "none",
+        "escalation_required": false
+      },
+      "p3_low": {
+        "level": 3,
+        "name": "Low",
+        "response_sla_minutes": 1440,
+        "characteristics": [
+          "Optimizations",
+          "Nice-to-haves",
+          "Deferred work",
+          "Low-impact improvements"
+        ],
+        "preemption": "none",
+        "escalation_required": false
+      }
+    },
+    "priority_scoring": {
+      "weights": {
+        "impact": 0.40,
+        "urgency": 0.30,
+        "business_value": 0.20,
+        "risk": 0.10
+      },
+      "score_to_priority_mapping": {
+        "8.0-10.0": "p0_critical",
+        "6.0-7.9": "p1_high",
+        "4.0-5.9": "p2_medium",
+        "1.0-3.9": "p3_low"
+      }
+    },
+    "queue_rules": {
+      "preemption": {
+        "p0_preempts": ["p1", "p2", "p3"],
+        "p1_preempts": ["p2", "p3"],
+        "p2_preempts": [],
+        "p3_preempts": []
+      },
+      "starvation_prevention": {
+        "p2_promotion_hours": 8,
+        "p3_promotion_hours": 48,
+        "alert_on_promotion": true
+      },
+      "ordering": {
+        "within_priority": "fifo",
+        "exception": "batch_related_tasks"
+      }
+    }
+  },
+
+  "load_balancing": {
+    "capacity_model": {
+      "default_limits": {
+        "max_concurrent_tasks": 5,
+        "max_token_budget": 25000,
+        "max_session_hours": 8
+      }
+    },
+    "utilization_thresholds": {
+      "healthy": {"max": 0.75},
+      "warning": {"range": [0.75, 0.85]},
+      "high": {"range": [0.85, 0.90]},
+      "critical": {"range": [0.90, 0.95]},
+      "emergency": {"min": 0.95}
+    },
+    "assignment_algorithm": {
+      "scoring_weights": {
+        "available_capacity": 0.50,
+        "success_rate": 0.30,
+        "sla_compliance": 0.20
+      },
+      "assignment_rules": {
+        "utilization_<_80": "assign_immediately",
+        "utilization_80-90": "queue_low_priority_or_assign_high",
+        "utilization_>_90": "queue_all_escalate_if_high_priority"
+      }
+    },
+    "patterns": {
+      "round_robin": {
+        "use_when": "contractors_interchangeable",
+        "strategy": "assign_to_lowest_utilization"
+      },
+      "specialization": {
+        "use_when": "different_expertise",
+        "strategy": "assign_to_best_match_accept_higher_utilization"
+      },
+      "least_loaded": {
+        "use_when": "optimizing_throughput",
+        "strategy": "always_assign_to_most_capacity"
+      }
+    }
+  },
+
+  "escalation_criteria": {
+    "automatic_triggers": {
+      "resource_exhaustion": {
+        "conditions": [
+          "division_token_utilization > 0.90",
+          "all_contractors_utilization > 0.90",
+          "queue_depth > 20"
+        ],
+        "severity": "high",
+        "response_sla_minutes": 15
+      },
+      "sla_breach": {
+        "conditions": [
+          "p0_not_started_within_15_minutes",
+          "p1_not_started_within_60_minutes",
+          "3_plus_sla_breaches_same_day"
+        ],
+        "severity": "high",
+        "response_sla_minutes": 15
+      },
+      "task_complexity": {
+        "conditions": [
+          "complexity_score > 8.5",
+          "token_estimate > 20000",
+          "time_estimate > 8 hours"
+        ],
+        "severity": "medium",
+        "response_sla_minutes": 60
+      },
+      "cross_division_coordination": {
+        "conditions": [
+          "requires_3_plus_divisions",
+          "division_handoff_blocked > 60 minutes",
+          "circular_dependency_detected"
+        ],
+        "severity": "high",
+        "response_sla_minutes": 30
+      },
+      "contractor_issues": {
+        "conditions": [
+          "success_rate < 0.85 (last_10_tasks)",
+          "contractor_unavailable > 120 minutes",
+          "3_plus_consecutive_failures"
+        ],
+        "severity": "high",
+        "response_sla_minutes": 30
+      },
+      "project_risk": {
+        "conditions": [
+          "critical_project_blocked",
+          "timeline_slippage > 0.50",
+          "budget_overrun > 0.20"
+        ],
+        "severity": "critical",
+        "response_sla_minutes": 15
+      }
+    },
+    "escalation_response_sla": {
+      "p0_critical": {"response_minutes": 5, "resolution_minutes": 30},
+      "high": {"response_minutes": 15, "resolution_minutes": 120},
+      "medium": {"response_minutes": 60, "resolution_minutes": 240},
+      "low": {"response_minutes": 240, "resolution_minutes": 1440}
+    }
+  },
+
+  "cross_division_coordination": {
+    "handoff_protocol": {
+      "file_location_pattern": "/Users/ryandahlberg/Projects/cortex/coordination/divisions/[from-division]/handoffs/[to-division]/[handoff-id].json",
+      "required_fields": [
+        "handoff_id",
+        "from_division",
+        "to_division",
+        "handoff_type",
+        "priority",
+        "created_at",
+        "context",
+        "status"
+      ],
+      "handoff_types": [
+        "resource_request",
+        "task_delegation",
+        "status_update",
+        "escalation"
+      ]
+    },
+    "response_sla": {
+      "acknowledgment": {
+        "p0": 5,
+        "p1": 30,
+        "p2": 120,
+        "p3": 480
+      },
+      "completion": "as_negotiated"
+    },
+    "status_update_cadence": {
+      "p0_minutes": 15,
+      "p1_minutes": 30,
+      "p2_hours": 2,
+      "p3_hours": 24
+    },
+    "coordination_patterns": {
+      "sequential": {
+        "description": "Clear dependency chain, each division completes before next",
+        "use_when": "dependencies_exist",
+        "characteristics": ["simple_coordination", "longer_total_time"]
+      },
+      "parallel_with_sync": {
+        "description": "Independent work in parallel, synchronize before next phase",
+        "use_when": "work_independent",
+        "characteristics": ["complex_coordination", "shorter_total_time"]
+      },
+      "hub_and_spoke": {
+        "description": "Central division coordinates, spokes work independently",
+        "use_when": "distributed_work",
+        "characteristics": ["central_coordination", "good_for_many_divisions"]
+      }
+    }
+  },
+
+  "budget_allocation": {
+    "division_budgets": {
+      "infrastructure": {
+        "daily_tokens": 20000,
+        "percentage": 0.10,
+        "emergency_reserve_percentage": 0.15
+      },
+      "containers": {
+        "daily_tokens": 15000,
+        "percentage": 0.075,
+        "emergency_reserve_percentage": 0.15
+      },
+      "workflows": {
+        "daily_tokens": 12000,
+        "percentage": 0.06,
+        "emergency_reserve_percentage": 0.15
+      },
+      "configuration": {
+        "daily_tokens": 10000,
+        "percentage": 0.05,
+        "emergency_reserve_percentage": 0.15
+      },
+      "monitoring": {
+        "daily_tokens": 18000,
+        "percentage": 0.09,
+        "emergency_reserve_percentage": 0.15
+      },
+      "intelligence": {
+        "daily_tokens": 8000,
+        "percentage": 0.04,
+        "emergency_reserve_percentage": 0.15
+      }
+    },
+    "allocation_by_priority": {
+      "p0_critical": 0.40,
+      "p1_high": 0.35,
+      "p2_medium": 0.20,
+      "p3_low": 0.05
+    },
+    "reallocation_interval_hours": 2,
+    "budget_alerts": {
+      "warning": 0.75,
+      "high": 0.85,
+      "critical": 0.90,
+      "emergency": 0.95
+    },
+    "optimization_strategies": [
+      "task_batching",
+      "cached_results",
+      "efficient_contractor_selection",
+      "scope_optimization"
+    ],
+    "emergency_reserve_criteria": [
+      "p0_critical_task",
+      "security_incident",
+      "data_loss_prevention",
+      "legal_compliance_deadline",
+      "coo_approved"
+    ]
+  },
+
+  "sla_definitions": {
+    "infrastructure_tasks": {
+      "vm_provision_single": {
+        "complexity": 2.5,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1,
+        "token_budget": [2000, 3000]
+      },
+      "vm_provision_multiple": {
+        "complexity": 4.0,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 2,
+        "token_budget": [4000, 6000]
+      },
+      "network_vlan_config": {
+        "complexity": 3.5,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1.5,
+        "token_budget": [3000, 4000]
+      },
+      "dns_record_simple": {
+        "complexity": 1.5,
+        "response_sla_minutes": 15,
+        "completion_sla_hours": 0.5,
+        "token_budget": [1000, 2000]
+      },
+      "dns_cdn_config": {
+        "complexity": 4.5,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 2,
+        "token_budget": [5000, 7000]
+      },
+      "full_stack": {
+        "complexity": 6.0,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 3,
+        "token_budget": [8000, 12000]
+      },
+      "multi_region_setup": {
+        "complexity": 8.0,
+        "response_sla_minutes": 120,
+        "completion_sla_hours": 6,
+        "token_budget": [15000, 20000]
+      }
+    },
+    "kubernetes_tasks": {
+      "cluster_bootstrap_single": {
+        "complexity": 5.0,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 2,
+        "token_budget": [6000, 8000]
+      },
+      "cluster_bootstrap_ha": {
+        "complexity": 7.0,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 4,
+        "token_budget": [12000, 15000]
+      },
+      "node_addition": {
+        "complexity": 3.5,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1,
+        "token_budget": [3000, 5000]
+      },
+      "cluster_upgrade": {
+        "complexity": 6.5,
+        "response_sla_minutes": 120,
+        "completion_sla_hours": 4,
+        "token_budget": [10000, 14000]
+      },
+      "workload_deployment": {
+        "complexity": 3.0,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1,
+        "token_budget": [3000, 4000]
+      },
+      "storage_config_csi": {
+        "complexity": 5.5,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 3,
+        "token_budget": [8000, 10000]
+      },
+      "network_policy_setup": {
+        "complexity": 4.5,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 2,
+        "token_budget": [5000, 7000]
+      }
+    },
+    "workflow_automation_tasks": {
+      "simple_workflow": {
+        "complexity": 2.5,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1,
+        "token_budget": [2000, 3000],
+        "node_count": "<5"
+      },
+      "medium_workflow": {
+        "complexity": 4.5,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 2,
+        "token_budget": [5000, 7000],
+        "node_count": "5-10"
+      },
+      "complex_workflow": {
+        "complexity": 7.0,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 4,
+        "token_budget": [10000, 15000],
+        "node_count": ">10"
+      },
+      "workflow_modification": {
+        "complexity": 3.0,
+        "response_sla_minutes": 30,
+        "completion_sla_hours": 1,
+        "token_budget": [3000, 4000]
+      },
+      "integration_design": {
+        "complexity": 6.0,
+        "response_sla_minutes": 120,
+        "completion_sla_hours": 4,
+        "token_budget": [8000, 12000]
+      },
+      "error_handling_addition": {
+        "complexity": 4.0,
+        "response_sla_minutes": 60,
+        "completion_sla_hours": 2,
+        "token_budget": [4000, 6000]
+      }
+    },
+    "sla_multipliers_by_priority": {
+      "p0_critical": 0.5,
+      "p1_high": 1.0,
+      "p2_medium": 1.5,
+      "p3_low": 3.0
+    },
+    "sla_exception_threshold": 0.80
+  },
+
+  "metrics": {
+    "tracked_metrics": [
+      "sla_compliance_rate",
+      "estimation_accuracy",
+      "budget_utilization",
+      "contractor_performance",
+      "escalation_frequency",
+      "queue_depth",
+      "wait_times",
+      "task_throughput"
+    ],
+    "review_frequency": {
+      "daily": ["budget_utilization", "sla_compliance", "queue_depth"],
+      "weekly": ["estimation_accuracy", "contractor_performance", "wait_times"],
+      "monthly": ["all_metrics", "trend_analysis", "optimization_opportunities"]
+    },
+    "performance_targets": {
+      "sla_compliance_rate": 0.95,
+      "estimation_accuracy": 0.85,
+      "budget_utilization": {"min": 0.70, "max": 0.85},
+      "contractor_success_rate": 0.95,
+      "avg_queue_wait_time_minutes": 45
+    }
+  },
+
+  "continuous_improvement": {
+    "update_triggers": [
+      "monthly_review",
+      "significant_pattern_change",
+      "new_contractor_added",
+      "sla_compliance_below_target",
+      "estimation_accuracy_below_target"
+    ],
+    "refinement_areas": [
+      "complexity_scoring_weights",
+      "resource_estimation_formulas",
+      "sla_time_adjustments",
+      "priority_scoring_weights",
+      "budget_allocation_percentages"
+    ],
+    "knowledge_capture": {
+      "successful_patterns": true,
+      "failed_approaches": true,
+      "edge_cases": true,
+      "optimization_techniques": true
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "worker_id": "worker-analysis-148",
+  "worker_type": "analysis-worker",
+  "created_by": "coordinator-master",
+  "execution_manager": null,
+  "created_at": "2025-12-03T12:34:36-0600",
+  "task_id": "data-intelligence-integration",
+  "status": "pending",
+  "identity": {
+    "spiffe_id": "spiffe://cortex/workers/worker-analysis-148",
+    "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcGlmZmU6Ly9jb3J0ZXgvd29ya2Vycy93b3JrZXItYW5hbHlzaXMtMTQ4IiwiYWdlbnRfaWQiOiJ3b3JrZXItYW5hbHlzaXMtMTQ4Iiwicm9sZSI6IndvcmtlciIsInRydXN0X2xldmVsIjo1MCwiY2FwYWJpbGl0aWVzIjpbInRhc2tzOnJlYWQiLCJjb29yZGluYXRpb246cmVhZCIsImdvdmVybmFuY2U6cmVhZCJdLCJtZXRhZGF0YSI6e30sImlhdCI6MTc2NDc4Njg3NiwiZXhwIjoxNzY0NzkwNDc2LCJhdWQiOiJjb3J0ZXgtYWdlbnRzIiwiaXNzIjoiY29ydGV4LWlkZW50aXR5LXN5c3RlbSJ9.VKUu24iiIHIax93BzOloD-beXbdDAPU51WuB9eyWSWMFmaoZxdhugk2C1oy6yOewFA82QO1SpXWfQYc0IZ1O6apUCqwobK9rI8pxGFkahvpqdF1yKLz4ofYN8WfGvWYFuSHy5mVbAn8374df7cXTEVEkV4FT5s7DmCr5CZEjWAGjiJkrKn_15n19TI5s_Y6yJqVg_CnIP-QnGff366O8D-7Pt0BH9ikAUinDpsKbMReuKC_zXfAUHtTyWqWo48J2Q0KRK-jVWxvVsdfSEMwhAXQFjirNPBYC5HG9gnMw1FuMC3DDsWJPYg2Xi68CKzWhKcX9bZY5qsnll5kFFpoQuw",
+    "trust_level": 50
+  },
+  "scope": {},
+  "context": {
+  "parent_task": "data-intelligence-integration",
+  "priority": "high",
+  "deadline": null
+},
+  "goal_based_planning": {
+    "enabled": true,
+    "strategy": "direct",
+    "goal_type": "deep-analysis",
+    "complexity": "low",
+    "strategy_plan_location": "coordination/knowledge-base/strategy-plans/worker-analysis-148-plan.json"
+  },
+  "resources": {
+    "token_budget": 5000,
+    "timeout_minutes": 15,
+    "max_retries": 1
+  },
+  "tool_assignment": {"worker_type":"analysis-worker","essential_tools":["Grep","Glob","Read","Write","Edit","WebFetch","WebSearch"],"optional_tools":["Bash","Bash(git:*)"],"total_tools":9,"essential_clusters":["code_search","file_operations","web_access"],"optional_clusters":["code_execution","version_control"],"filtered":true,"rationale":"Research-focused. Needs search and web access more than execution."},
+  "deliverables": [],
+  "prompt_template": "coordination/prompts/workers/analysis-worker.md",
+  "execution": {
+    "started_at": null,
+    "completed_at": null,
+    "tokens_used": 0,
+    "duration_minutes": 0,
+    "session_id": null
+  },
+  "results": {
+    "status": null,
+    "output_location": null,
+    "summary": null,
+    "artifacts": []
+  },
+  "review": {
+    "enabled": true,
+    "min_cycles": 1,
+    "auto_approve_threshold": 0.95,
+    "history": []
+  }
+}

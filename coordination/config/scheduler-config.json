@@ -1,0 +1,209 @@
+{
+  "version": "1.0.0",
+  "description": "Intelligent Scheduler configuration with ML-powered resource prediction",
+  "last_updated": "2025-12-05T00:00:00Z",
+
+  "resourceLimits": {
+    "maxMemoryMB": 12288,
+    "maxConcurrentTasks": 20,
+    "tokenBudgetPerHour": 1000000,
+    "tokenBudgetPerDay": 10000000,
+    "memoryReservePercent": 20,
+    "cpuReservePercent": 20
+  },
+
+  "sla": {
+    "defaultDeadlineMinutes": 60,
+    "priorityWeights": {
+      "security": 1.5,
+      "critical-fix": 1.8,
+      "implementation": 1.0,
+      "fix": 1.2,
+      "review": 0.9,
+      "test": 0.9,
+      "documentation": 0.8,
+      "scan": 1.1,
+      "pr-creation": 0.7,
+      "unknown": 1.0
+    },
+    "priorityLevelMultipliers": {
+      "P0": 3.0,
+      "P1": 2.0,
+      "P2": 1.0,
+      "P3": 0.5,
+      "critical": 3.0,
+      "high": 2.0,
+      "medium": 1.0,
+      "low": 0.5
+    }
+  },
+
+  "prediction": {
+    "minSamplesForML": 50,
+    "fallbackToHeuristics": true,
+    "modelUpdateInterval": 100,
+    "conservativeMultiplier": 1.2,
+    "heuristicEstimates": {
+      "implementation": {
+        "memoryMB": 800,
+        "cpuSeconds": 180,
+        "tokens": 50000,
+        "durationMs": 300000
+      },
+      "security": {
+        "memoryMB": 600,
+        "cpuSeconds": 120,
+        "tokens": 25000,
+        "durationMs": 180000
+      },
+      "documentation": {
+        "memoryMB": 400,
+        "cpuSeconds": 60,
+        "tokens": 15000,
+        "durationMs": 120000
+      },
+      "review": {
+        "memoryMB": 500,
+        "cpuSeconds": 90,
+        "tokens": 30000,
+        "durationMs": 150000
+      },
+      "test": {
+        "memoryMB": 600,
+        "cpuSeconds": 120,
+        "tokens": 20000,
+        "durationMs": 180000
+      },
+      "fix": {
+        "memoryMB": 700,
+        "cpuSeconds": 150,
+        "tokens": 40000,
+        "durationMs": 240000
+      },
+      "scan": {
+        "memoryMB": 500,
+        "cpuSeconds": 100,
+        "tokens": 20000,
+        "durationMs": 160000
+      },
+      "pr-creation": {
+        "memoryMB": 400,
+        "cpuSeconds": 60,
+        "tokens": 15000,
+        "durationMs": 100000
+      },
+      "unknown": {
+        "memoryMB": 600,
+        "cpuSeconds": 120,
+        "tokens": 30000,
+        "durationMs": 180000
+      }
+    }
+  },
+
+  "admission": {
+    "enableBackpressure": true,
+    "maxQueueDepth": 100,
+    "rejectOnOverload": true
+  },
+
+  "machineLearning": {
+    "linearRegression": {
+      "learningRate": 0.01,
+      "learningRateDecay": 0.999,
+      "regularization": 0.001
+    },
+    "decisionTree": {
+      "maxDepth": 5,
+      "minSamplesPerLeaf": 2
+    },
+    "movingAverage": {
+      "windowSize": 20
+    }
+  },
+
+  "features": {
+    "taskTypeEncoding": [
+      "implementation",
+      "security",
+      "documentation",
+      "review",
+      "test",
+      "fix",
+      "scan",
+      "pr-creation",
+      "unknown"
+    ],
+    "featureCount": 18,
+    "featureNames": [
+      "task_type_0", "task_type_1", "task_type_2", "task_type_3",
+      "task_type_4", "task_type_5", "task_type_6", "task_type_7",
+      "task_type_8", "description_length_norm", "description_word_count_norm",
+      "description_complexity", "file_count_norm", "has_deadline",
+      "priority_norm", "historical_mean", "historical_std"
+    ]
+  },
+
+  "starvationPrevention": {
+    "maxWaitTimeMs": 3600000,
+    "starvationBoostFactor": 0.1
+  },
+
+  "monitoring": {
+    "rebalanceIntervalMs": 30000,
+    "healthCheckEnabled": true,
+    "emitHealthEvents": true
+  },
+
+  "storage": {
+    "dataDir": "coordination/scheduler-data",
+    "modelsDir": "coordination/scheduler-data/models",
+    "outcomesFile": "task-outcomes.jsonl",
+    "tokenUsageFile": "token-usage.json",
+    "maxRecords": 10000
+  },
+
+  "thresholds": {
+    "system": {
+      "maxMemoryPercent": 85,
+      "maxCpuPercent": 80,
+      "minFreeMemoryMB": 1024
+    },
+    "prediction": {
+      "memoryMin": 100,
+      "memoryMax": 8192,
+      "cpuMin": 10,
+      "cpuMax": 3600,
+      "tokensMin": 1000,
+      "tokensMax": 200000,
+      "durationMin": 30000,
+      "durationMax": 7200000
+    }
+  },
+
+  "scaling": {
+    "targetAgentCount": 100,
+    "targetSystemMemoryGB": 16,
+    "recommendedMaxConcurrentTasks": 20,
+    "recommendedMaxMemoryPerTaskMB": 600,
+    "notes": [
+      "Designed to support 100 agents on 16GB RAM",
+      "Conservative estimates with 20% safety margin",
+      "Automatic backpressure when system overloaded",
+      "ML improves predictions over time"
+    ]
+  },
+
+  "alerts": {
+    "enabled": true,
+    "channels": ["log", "event", "metrics"],
+    "conditions": {
+      "queueDepthWarning": 80,
+      "queueDepthCritical": 95,
+      "memoryWarning": 75,
+      "memoryCritical": 85,
+      "tokenBudgetWarning": 80,
+      "tokenBudgetCritical": 95
+    }
+  }
+}

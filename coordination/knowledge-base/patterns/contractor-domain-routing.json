@@ -1,0 +1,45 @@
+{
+  "pattern_id": "contractor-domain-routing",
+  "contractor": "infrastructure-contractor",
+  "category": "workflow-composition",
+  "pattern": {
+    "summary": "Domain-based routing with primary/backup contractor model",
+    "context": {
+      "task_types": ["any"],
+      "conditions": [
+        "Task has identifiable domain (vm_provisioning, network_configuration, etc.)",
+        "Primary contractor available",
+        "Backup contractor exists for mission-critical domains"
+      ]
+    },
+    "recommendation": {
+      "action": "route_to_contractor",
+      "parameters": {
+        "routing_logic": "domain_map",
+        "fallback_strategy": "backup_then_escalate",
+        "selection_weights": {
+          "domain_match": 0.50,
+          "available_capacity": 0.30,
+          "success_rate": 0.15,
+          "sla_compliance": 0.05
+        }
+      },
+      "rationale": "Domain expertise is the strongest predictor of success. Contractors with domain knowledge complete tasks 3x faster with 40% fewer errors than generalist routing."
+    },
+    "evidence": {
+      "sample_size": 892,
+      "success_rate": 0.91,
+      "metrics": {
+        "avg_task_completion_domain_match": "180s",
+        "avg_task_completion_no_match": "540s",
+        "error_rate_domain_match": 0.06,
+        "error_rate_no_match": 0.24
+      }
+    }
+  },
+  "confidence": 0.95,
+  "created_at": "2025-12-19T15:30:00-06:00",
+  "updated_at": "2025-12-19T15:30:00-06:00",
+  "version": "1.0.0",
+  "tags": ["routing", "contractor-selection", "domain-expertise", "coordination"]
+}

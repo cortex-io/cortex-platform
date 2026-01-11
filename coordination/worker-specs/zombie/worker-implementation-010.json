@@ -1,0 +1,47 @@
+{
+  "worker_id": "worker-implementation-010",
+  "worker_type": "implementation-worker",
+  "created_by": "development-master",
+  "execution_manager": null,
+  "created_at": "2025-11-16T10:33:13-0600",
+  "task_id": "moe-test-ddqd-v5-1763307968-bb0f7015",
+  "status": "zombie",
+  "scope": {},
+  "context": {
+    "parent_task": "moe-test-ddqd-v5-1763307968-bb0f7015",
+    "priority": "medium",
+    "deadline": null
+  },
+  "resources": {
+    "token_budget": 10000,
+    "timeout_minutes": 45,
+    "max_retries": 1
+  },
+  "deliverables": [],
+  "prompt_template": "agents/prompts/workers/implementation-worker.md",
+  "execution": {
+    "started_at": "2025-11-16T10:33:56-0600",
+    "completed_at": null,
+    "tokens_used": 0,
+    "duration_minutes": 0,
+    "session_id": null
+  },
+  "results": {
+    "status": null,
+    "output_location": null,
+    "summary": null,
+    "artifacts": []
+  },
+  "heartbeat": {
+    "health": {
+      "status": "unresponsive"
+    },
+    "missed_count": 333
+  },
+  "cleanup": {
+    "cleaned_at": "2025-11-19T09:28:06-0600",
+    "reason": "zombie_recovery_script",
+    "original_status": "zombie",
+    "tokens_reclaimed": 10000
+  }
+}

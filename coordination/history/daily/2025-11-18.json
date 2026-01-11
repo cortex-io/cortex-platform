@@ -1,0 +1,31 @@
+{
+  "date": "2025-11-18",
+  "snapshots_count": 101,
+  "first_snapshot": "2025-11-18T15:36:14-0600",
+  "last_snapshot": "2025-11-18T23:56:27-0600",
+  "workers": {
+    "avg_active": 33,
+    "total_completed": 3,
+    "total_failed": 0,
+    "total_zombies_killed": 0,
+    "avg_success_rate": 100,
+    "avg_duration_minutes": 0,
+    "avg_tokens_used": 0
+  },
+  "tokens": {
+    "total_budget": 500000,
+    "total_used": 0,
+    "avg_usage_percentage": 0,
+    "avg_efficiency_score": 0
+  },
+  "tasks": {
+    "total_completed": 1,
+    "avg_pending": 0,
+    "avg_in_progress": 0
+  },
+  "orchestrator": {
+    "total": 1,
+    "completed": 0,
+    "failed": 0
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "moe_integration": {
+    "enabled": true,
+    "router_endpoint": "http://llm-mesh-moe-router:8080",
+    "learner_endpoint": "http://llm-mesh-moe-learner:8080",
+    "outcome_tracking": true,
+    "confidence_threshold": 0.7
+  },
+  "learning_feedback_loop": {
+    "track_documentation_usage": true,
+    "track_success_rates": true,
+    "track_query_patterns": true,
+    "update_priorities": true
+  },
+  "priority_scoring": {
+    "formula": "usage_frequency * success_rate * recency",
+    "weights": {
+      "usage_frequency": 0.4,
+      "success_rate": 0.4,
+      "recency": 0.2
+    },
+    "min_score": 0.0,
+    "max_score": 1.0,
+    "re_index_threshold": 0.8
+  },
+  "pruning_policy": {
+    "enabled": true,
+    "min_value_score": 0.3,
+    "evaluation_window_days": 90,
+    "preserve_high_priority": true,
+    "archive_before_delete": true
+  },
+  "outcome_tracking": {
+    "record_all_queries": true,
+    "record_documentation_used": true,
+    "record_task_success": true,
+    "record_confidence_scores": true,
+    "aggregate_by_domain": true,
+    "aggregate_by_topic": true
+  },
+  "pattern_detection": {
+    "detect_common_queries": true,
+    "detect_knowledge_gaps": true,
+    "detect_outdated_content": true,
+    "suggest_new_sources": false,
+    "min_pattern_frequency": 5
+  },
+  "cross_domain_learning": {
+    "enabled": true,
+    "share_patterns": true,
+    "identify_common_concepts": true,
+    "build_knowledge_graph": true,
+    "link_related_topics": true
+  },
+  "continuous_improvement": {
+    "evaluate_crawl_quality": true,
+    "evaluate_index_quality": true,
+    "evaluate_query_relevance": true,
+    "auto_adjust_crawl_depth": true,
+    "auto_adjust_update_frequency": true
+  }
+}

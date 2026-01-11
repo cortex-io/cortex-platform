@@ -1,0 +1,33 @@
+{
+  "worker_types": [
+    {
+      "type_id": "feature-implementer",
+      "description": "Implements new features and functionality",
+      "specialization": "feature_development",
+      "typical_token_allocation": 15000,
+      "skills": ["design", "implementation", "testing"]
+    },
+    {
+      "type_id": "bug-fixer",
+      "description": "Diagnoses and fixes bugs",
+      "specialization": "bug_resolution",
+      "typical_token_allocation": 10000,
+      "skills": ["debugging", "root_cause_analysis", "testing"]
+    },
+    {
+      "type_id": "refactorer",
+      "description": "Refactors and improves code quality",
+      "specialization": "code_improvement",
+      "typical_token_allocation": 12000,
+      "skills": ["refactoring", "design_patterns", "best_practices"]
+    },
+    {
+      "type_id": "optimizer",
+      "description": "Optimizes performance and resource usage",
+      "specialization": "performance",
+      "typical_token_allocation": 13000,
+      "skills": ["profiling", "optimization", "benchmarking"]
+    }
+  ],
+  "last_updated": "2025-11-03T19:08:19Z"
+}

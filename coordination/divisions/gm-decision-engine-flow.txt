@@ -1,0 +1,315 @@
+GM DECISION ENGINE - TASK FLOW DIAGRAM
+=====================================
+
+                           ┌─────────────────────────┐
+                           │  NEW TASK RECEIVED      │
+                           │  (from COO, handoff,    │
+                           │   or internal)          │
+                           └────────────┬────────────┘
+                                        │
+                                        ▼
+                           ┌─────────────────────────┐
+                           │ COMPLEXITY SCORING      │
+                           │ • Technical (30%)       │
+                           │ • Integration (20%)     │
+                           │ • Unknowns (20%)        │
+                           │ • Risk (15%)            │
+                           │ • Dependencies (15%)    │
+                           └────────────┬────────────┘
+                                        │
+                        Score: 1.0-10.0 ▼
+                           ┌─────────────────────────┐
+                           │ TASK CLASSIFICATION     │
+                           ├─────────────────────────┤
+                           │ Simple:    1.0-3.0      │
+                           │ Moderate:  3.1-5.0      │
+                           │ Complex:   5.1-7.0      │
+                           │ V.Complex: 7.1-8.5      │
+                           │ Extreme:   8.6-10.0     │
+                           └────────────┬────────────┘
+                                        │
+                                        ▼
+              ┌─────────────────────────┴─────────────────────────┐
+              │         PARALLEL ASSESSMENT PROCESSES             │
+              │                                                   │
+    ┌─────────▼──────────┐    ┌──────────▼─────────┐    ┌──────▼────────┐
+    │ CONTRACTOR         │    │ RESOURCE           │    │ PRIORITY      │
+    │ SELECTION          │    │ ESTIMATION         │    │ SCORING       │
+    ├────────────────────┤    ├────────────────────┤    ├───────────────┤
+    │ Domain Mapping:    │    │ Tokens:            │    │ Weights:      │
+    │ • VM/Net → Infra   │    │  Base × Cmplx ×    │    │ Impact:  40%  │
+    │ • K8s → Talos      │    │  Integration ×     │    │ Urgency: 30%  │
+    │ • Workflow → n8n   │    │  (1+Contingency)   │    │ BizVal:  20%  │
+    │                    │    │                    │    │ Risk:    10%  │
+    │ Check Load:        │    │ Time:              │    │               │
+    │ • <80%: Available  │    │  (Score × 0.5) +   │    │ Result:       │
+    │ • 80-90%: Busy     │    │  Overhead +        │    │ P0: 8.0-10.0  │
+    │ • >90%: Overload   │    │  Contingency       │    │ P1: 6.0-7.9   │
+    │                    │    │                    │    │ P2: 4.0-5.9   │
+    │                    │    │                    │    │ P3: 1.0-3.9   │
+    └─────────┬──────────┘    └──────────┬─────────┘    └──────┬────────┘
+              │                          │                     │
+              └──────────────────────────┴─────────────────────┘
+                                         │
+                                         ▼
+                           ┌─────────────────────────┐
+                           │ DECISION EXECUTION      │
+                           │                         │
+                           │ IF complexity > 8.5 OR  │
+                           │    resources > limits   │
+                           │    → ESCALATE TO COO    │
+                           │                         │
+                           │ ELSE IF contractor      │
+                           │    available            │
+                           │    → ASSIGN TASK        │
+                           │                         │
+                           │ ELSE IF priority P0/P1  │
+                           │    → QUEUE + ALERT      │
+                           │                         │
+                           │ ELSE                    │
+                           │    → QUEUE (standard)   │
+                           └────────────┬────────────┘
+                                        │
+                ┌───────────────────────┼───────────────────────┐
+                │                       │                       │
+                ▼                       ▼                       ▼
+     ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐
+     │ ESCALATE TO COO  │   │ ASSIGN TO        │   │ ADD TO QUEUE     │
+     │                  │   │ CONTRACTOR       │   │                  │
+     │ • Task too       │   │                  │   │ Priority-based   │
+     │   complex        │   │ 1. Update load   │   │ ordering:        │
+     │ • Resources      │   │ 2. Create task   │   │                  │
+     │   unavailable    │   │ 3. Monitor SLA   │   │ P0 → P1 → P2 →P3 │
+     │ • Cross-division │   │ 4. Track budget  │   │                  │
+     │   coordination   │   │                  │   │ Starvation       │
+     │                  │   │ SUCCESS ✓        │   │ prevention:      │
+     │ Wait for COO     │   │                  │   │ • P2 → P1 @8h    │
+     │ decision         │   │                  │   │ • P3 → P2 @48h   │
+     └──────────────────┘   └──────────────────┘   └─────────┬────────┘
+                                                              │
+                                                              ▼
+                                                   ┌──────────────────┐
+                                                   │ WAIT FOR         │
+                                                   │ CONTRACTOR       │
+                                                   │ AVAILABILITY     │
+                                                   │                  │
+                                                   │ Monitor:         │
+                                                   │ • Queue position │
+                                                   │ • Wait time      │
+                                                   │ • SLA countdown  │
+                                                   └─────────┬────────┘
+                                                             │
+                                                             ▼
+                                              Contractor Available?
+                                                             │
+                                                            YES
+                                                             │
+                                                             ▼
+                                                   ┌──────────────────┐
+                                                   │ ASSIGN & EXECUTE │
+                                                   │ (see above)      │
+                                                   └──────────────────┘
+
+
+LOAD BALANCING FLOW
+====================
+
+    Contractor Utilization Check
+              │
+    ┌─────────┼─────────┬─────────┬─────────┐
+    │         │         │         │         │
+    ▼         ▼         ▼         ▼         ▼
+  0-75%    75-85%    85-90%    90-95%    95-100%
+ Healthy   Warning    High    Critical  Emergency
+    │         │         │         │         │
+    │         │         │         │         │
+    ▼         ▼         ▼         ▼         ▼
+  Normal   Monitor   Defer P3  Defer P2/P3  Stop
+   Ops      &       Optimize   Prepare      New
+          Optimize    All     Escalation   Work
+            │         │         │         │
+            └─────────┴─────────┴─────────┘
+                      │
+                      ▼
+              Reallocation Logic
+                      │
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+    Round-Robin  Specialization  Least-Loaded
+    (Equal load)  (Best match)   (Max speed)
+
+
+BUDGET MANAGEMENT FLOW
+=======================
+
+         Daily Budget Allocation
+                  │
+    ┌─────────────┼─────────────┐
+    │             │             │
+    ▼             ▼             ▼
+  15% Reserve   40% P0       35% P1
+    │           20% P2        5% P3
+    │             │
+    │             ▼
+    │    Track Utilization
+    │             │
+    ▼    ┌────────┼────────┐
+Emergency │        │        │
+ Only     ▼        ▼        ▼
+         75%      85%      90%
+       Warning   High   Critical
+          │        │        │
+          ▼        ▼        ▼
+       Monitor  Optimize  Escalate
+                  │
+                  ▼
+         Dynamic Reallocation
+           (every 2 hours)
+
+
+CROSS-DIVISION COORDINATION
+============================
+
+    Division A needs Division B
+              │
+              ▼
+    ┌──────────────────┐
+    │ Create Handoff   │
+    │ File in          │
+    │ handoffs/        │
+    │ directory        │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │ Division B       │
+    │ Monitors         │
+    │ Incoming         │
+    │ (every 15-30min) │
+    └────────┬─────────┘
+             │
+             ▼
+    Acknowledge within SLA
+    (P0: 5min, P1: 30min,
+     P2: 2h, P3: 8h)
+             │
+             ▼
+    Execute Work
+             │
+             ▼
+    Update Status
+    (P0: 15min, P1: 30min,
+     P2: 2h, P3: 24h)
+             │
+             ▼
+    Complete & Deliver
+             │
+             ▼
+    Update Handoff Status
+             │
+             ▼
+    Division A Continues
+
+
+ESCALATION DECISION FLOW
+=========================
+
+         Issue Detected
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+    ▼          ▼          ▼
+  Resource  Contractor  Complexity
+ Exhaustion  Overload   Too High
+    │          │          │
+    └──────────┴──────────┘
+               │
+               ▼
+    Check Escalation Criteria:
+    • Division >90% tokens?
+    • All contractors >90%?
+    • Queue depth >20?
+    • P0 not started 15min?
+    • Complexity >8.5?
+    • 3+ divisions needed?
+               │
+             YES │
+               ▼
+    ┌──────────────────┐
+    │ Create           │
+    │ Escalation       │
+    │ Handoff to COO   │
+    ├──────────────────┤
+    │ Include:         │
+    │ • Context        │
+    │ • Attempts made  │
+    │ • Recommendation │
+    │ • Impact         │
+    │ • Urgency        │
+    └────────┬─────────┘
+             │
+             ▼
+    COO Response (per SLA):
+    • P0: 5 min
+    • High: 15 min
+    • Medium: 60 min
+             │
+             ▼
+    Execute COO Decision
+             │
+             ▼
+    Document Outcome
+
+
+CONTINUOUS IMPROVEMENT CYCLE
+==============================
+
+    ┌─────────────────────────────────────┐
+    │                                     │
+    │  Daily: Track Metrics               │
+    │  • SLA compliance                   │
+    │  • Budget utilization               │
+    │  • Queue depths                     │
+    │                                     │
+    └────────────────┬────────────────────┘
+                     │
+                     ▼
+    ┌─────────────────────────────────────┐
+    │                                     │
+    │  Weekly: Analyze Patterns           │
+    │  • Estimation accuracy              │
+    │  • Contractor performance           │
+    │  • Wait times                       │
+    │                                     │
+    └────────────────┬────────────────────┘
+                     │
+                     ▼
+    ┌─────────────────────────────────────┐
+    │                                     │
+    │  Monthly: Optimize Engine           │
+    │  • Refine complexity weights        │
+    │  • Adjust SLA times                 │
+    │  • Update resource formulas         │
+    │  • Add new decision trees           │
+    │                                     │
+    └────────────────┬────────────────────┘
+                     │
+                     ▼
+    ┌─────────────────────────────────────┐
+    │                                     │
+    │  Update Knowledge Base              │
+    │  • Successful patterns              │
+    │  • Failed approaches                │
+    │  • Edge cases                       │
+    │  • Optimizations                    │
+    │                                     │
+    └─────────────────────────────────────┘
+                     │
+                     └──────► REPEAT
+
+
+═══════════════════════════════════════════════════════════════════════
+Created: 2025-12-09
+Version: 1.0.0
+Part of: GM Decision Engine for Cortex Automation System
+═══════════════════════════════════════════════════════════════════════

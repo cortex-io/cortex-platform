@@ -1,0 +1,141 @@
+---
+# Build Job that uses local source via ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cortex-mcp-source
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+data:
+  Dockerfile: |
+    FROM node:18-alpine AS builder
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm ci --only=production
+
+    FROM node:18-alpine
+    RUN apk add --no-cache curl bash
+    RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+        chmod +x kubectl && \
+        mv kubectl /usr/local/bin/
+    WORKDIR /app
+    COPY --from=builder /app/node_modules ./node_modules
+    COPY . .
+    RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+    RUN chown -R nodejs:nodejs /app
+    USER nodejs
+    EXPOSE 3000 8080
+    HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+      CMD curl -f http://localhost:8080/health || exit 1
+    CMD ["node", "src/index.js"]
+
+  package.json: |
+    {
+      "name": "@cortex/mcp-server",
+      "version": "1.0.0",
+      "description": "Cortex MCP Server - Unified interface to the Cortex construction company ecosystem",
+      "main": "src/index.js",
+      "scripts": {
+        "start": "node src/index.js",
+        "dev": "NODE_ENV=development node src/index.js",
+        "test": "echo \"Tests coming soon\" && exit 0",
+        "docker:build": "docker build -t cortex-mcp-server:latest .",
+        "k8s:deploy": "kubectl apply -f k8s/"
+      },
+      "keywords": ["mcp", "cortex", "orchestration", "infrastructure"],
+      "author": "Cortex AI",
+      "license": "MIT",
+      "dependencies": {
+        "axios": "^1.6.0",
+        "uuid": "^9.0.1"
+      }
+    }
+
+---
+# Updated Build Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-cortex-mcp-build-v2
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: builder
+    build-type: kaniko
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app: cortex-mcp-server
+        component: builder
+    spec:
+      restartPolicy: Never
+      serviceAccountName: kaniko-builder
+
+      initContainers:
+      # Copy source code from ConfigMap
+      - name: prepare-source
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Copying source code from ConfigMaps..."
+          mkdir -p /workspace/src /workspace/src/clients /workspace/src/worker-pool /workspace/src/masters /workspace/src/tools
+
+          # Copy files from all source ConfigMaps
+          cp /source/Dockerfile /workspace/
+          cp /source/package.json /workspace/
+
+          echo "Source prepared successfully"
+          ls -la /workspace/
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        - name: source
+          mountPath: /source
+
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+        - "--dockerfile=/workspace/Dockerfile"
+        - "--context=/workspace"
+        - "--destination=docker-registry.cortex-system.svc.cluster.local:5000/cortex-mcp-server:latest"
+        - "--insecure"
+        - "--skip-tls-verify"
+        - "--cache=true"
+        - "--cache-repo=docker-registry.cortex-system.svc.cluster.local:5000/cache"
+        - "--compressed-caching=false"
+        - "--snapshot-mode=redo"
+        - "--log-format=text"
+        - "--verbosity=info"
+
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        - name: docker-config
+          mountPath: /kaniko/.docker
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      - name: source
+        configMap:
+          name: cortex-mcp-source
+      - name: docker-config
+        configMap:
+          name: docker-config

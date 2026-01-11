@@ -1,0 +1,303 @@
+{
+  "registry": {
+    "name": "Cortex MCP Server Registry",
+    "version": "1.0.0",
+    "maintainer": "ry-ops",
+    "github_org": "https://github.com/ry-ops",
+    "last_updated": "2025-12-19T00:00:00Z",
+    "total_servers": 6
+  },
+  "servers": [
+    {
+      "id": "cortex-resource-manager",
+      "name": "Cortex Resource Manager",
+      "repository": "https://github.com/ry-ops/cortex-resource-manager",
+      "status": "active",
+      "language": "python",
+      "tool_count": 16,
+      "description": "Kubernetes resource management and dynamic worker provisioning for cortex",
+      "capabilities": [
+        "burst_worker_provisioning",
+        "node_management",
+        "vm_integration",
+        "auto_clustering",
+        "resource_labeling"
+      ],
+      "configuration": {
+        "requirements": [
+          "Python 3.8+",
+          "Kubernetes cluster access",
+          "kubeconfig or service account",
+          "Talos or Proxmox MCP integration"
+        ]
+      },
+      "use_cases": [
+        "dynamic_worker_scaling",
+        "burst_compute_capacity",
+        "graceful_node_maintenance",
+        "resource_lifecycle_management"
+      ],
+      "tags": ["kubernetes", "resource-management", "scaling", "cortex"]
+    },
+    {
+      "id": "talos-mcp-server",
+      "name": "Talos MCP Server",
+      "repository": "https://github.com/ry-ops/talos-mcp-server",
+      "status": "active",
+      "language": "python",
+      "tool_count": 12,
+      "description": "Model Context Protocol server for Talos Linux cluster management",
+      "capabilities": [
+        "cluster_management",
+        "disk_management",
+        "monitoring",
+        "filesystem_access",
+        "etcd_integration",
+        "kubernetes_config",
+        "resource_inspection"
+      ],
+      "configuration": {
+        "requirements": [
+          "Valid Talos configuration (~/.talos/config)",
+          "Talos cluster credentials",
+          "gRPC API access"
+        ]
+      },
+      "use_cases": [
+        "talos_cluster_monitoring",
+        "node_troubleshooting",
+        "configuration_inspection",
+        "kubernetes_bootstrap",
+        "etcd_cluster_management"
+      ],
+      "tags": ["talos", "kubernetes", "cluster-management", "linux"]
+    },
+    {
+      "id": "proxmox-mcp-server",
+      "name": "Proxmox MCP Server",
+      "repository": "https://github.com/ry-ops/proxmox-mcp-server",
+      "status": "active",
+      "language": "python",
+      "tool_count": 15,
+      "description": "Model Context Protocol server for Proxmox virtualization management",
+      "capabilities": [
+        "vm_management",
+        "container_management",
+        "resource_monitoring",
+        "cluster_management",
+        "backup_operations",
+        "network_configuration"
+      ],
+      "configuration": {
+        "env_vars": [
+          {
+            "name": "PROXMOX_URL",
+            "description": "Proxmox API endpoint URL",
+            "required": true
+          },
+          {
+            "name": "PROXMOX_TOKEN_ID",
+            "description": "API token ID",
+            "required": true
+          },
+          {
+            "name": "PROXMOX_TOKEN_SECRET",
+            "description": "API token secret",
+            "required": true
+          }
+        ]
+      },
+      "use_cases": [
+        "vm_provisioning",
+        "container_orchestration",
+        "infrastructure_automation",
+        "resource_capacity_planning",
+        "disaster_recovery"
+      ],
+      "tags": ["proxmox", "virtualization", "vm", "lxc", "infrastructure"]
+    },
+    {
+      "id": "unifi-mcp-server",
+      "name": "UniFi MCP Server",
+      "repository": "https://github.com/ry-ops/unifi-mcp-server",
+      "status": "active",
+      "language": "python",
+      "tool_count": 18,
+      "description": "Comprehensive UniFi infrastructure monitoring and management with A2A protocol",
+      "capabilities": [
+        "local_controller_integration",
+        "cloud_site_manager",
+        "smart_fallback",
+        "a2a_protocol",
+        "network_management",
+        "security_operations"
+      ],
+      "configuration": {
+        "env_vars": [
+          {
+            "name": "UNIFI_URL",
+            "description": "UniFi controller URL (local or cloud)",
+            "required": true
+          },
+          {
+            "name": "UNIFI_USERNAME",
+            "description": "UniFi username",
+            "required": true
+          },
+          {
+            "name": "UNIFI_PASSWORD",
+            "description": "UniFi password",
+            "required": true
+          },
+          {
+            "name": "UNIFI_SITE_ID",
+            "description": "Site ID for multi-site deployments",
+            "required": false
+          }
+        ]
+      },
+      "use_cases": [
+        "network_monitoring",
+        "client_device_management",
+        "security_policy_enforcement",
+        "network_performance_optimization",
+        "multi_site_management"
+      ],
+      "tags": ["unifi", "networking", "wifi", "security", "monitoring"],
+      "forked_from": "zcking/mcp-server-unifi"
+    },
+    {
+      "id": "cloudflare-mcp-server",
+      "name": "Cloudflare MCP Server",
+      "repository": "https://github.com/ry-ops/cloudflare-mcp-server",
+      "status": "active",
+      "language": "python",
+      "tool_count": 13,
+      "description": "Seamless Cloudflare API integration for DNS, zones, and CDN management",
+      "capabilities": [
+        "zone_management",
+        "dns_operations",
+        "kv_storage",
+        "ssl_tls_management",
+        "firewall_rules",
+        "analytics",
+        "filtering_support"
+      ],
+      "configuration": {
+        "env_vars": [
+          {
+            "name": "CLOUDFLARE_API_TOKEN",
+            "description": "API token with appropriate permissions",
+            "required": true
+          },
+          {
+            "name": "CLOUDFLARE_ACCOUNT_ID",
+            "description": "Account ID (needed for KV operations)",
+            "required": false
+          }
+        ]
+      },
+      "use_cases": [
+        "dns_automation",
+        "zone_configuration",
+        "cdn_cache_management",
+        "security_policy_deployment",
+        "edge_compute_management"
+      ],
+      "tags": ["cloudflare", "dns", "cdn", "security", "edge-compute"]
+    },
+    {
+      "id": "microsoft-graph-mcp-server",
+      "name": "Microsoft Graph MCP Server",
+      "repository": "https://github.com/ry-ops/microsoft-graph-mcp-server",
+      "status": "active",
+      "language": "python",
+      "tool_count": 10,
+      "description": "Microsoft Graph API integration for Microsoft 365 user and license management",
+      "capabilities": [
+        "user_management",
+        "license_management",
+        "group_management",
+        "organization_data",
+        "user_search",
+        "tenant_operations"
+      ],
+      "configuration": {
+        "env_vars": [
+          {
+            "name": "MICROSOFT_TENANT_ID",
+            "description": "Azure AD tenant ID",
+            "required": true
+          },
+          {
+            "name": "MICROSOFT_CLIENT_ID",
+            "description": "App registration client ID",
+            "required": true
+          },
+          {
+            "name": "MICROSOFT_CLIENT_SECRET",
+            "description": "App registration client secret",
+            "required": true
+          }
+        ]
+      },
+      "use_cases": [
+        "user_provisioning",
+        "license_automation",
+        "group_membership_management",
+        "directory_synchronization",
+        "compliance_reporting"
+      ],
+      "tags": ["microsoft", "microsoft-365", "azure-ad", "graph-api", "identity"]
+    }
+  ],
+  "integration_patterns": {
+    "cortex_integration": [
+      "direct_integration",
+      "worker_integration",
+      "master_orchestration",
+      "a2a_protocol"
+    ],
+    "configuration_template": {
+      "mcpServers": {
+        "server-name": {
+          "command": "uv",
+          "args": [
+            "--directory",
+            "/path/to/server",
+            "run",
+            "server-name"
+          ],
+          "env": {
+            "API_KEY": "your-api-key",
+            "API_URL": "your-api-url"
+          }
+        }
+      }
+    }
+  },
+  "status_legend": {
+    "active": "Currently maintained and production-ready",
+    "beta": "Under active development, may have breaking changes",
+    "deprecated": "No longer maintained, use alternative",
+    "archived": "Historical reference only"
+  },
+  "related_projects": [
+    {
+      "name": "unifi-grafana-streamer",
+      "repository": "https://github.com/ry-ops/unifi-grafana-streamer",
+      "description": "Real-time UniFi event streaming to Grafana via MCP"
+    },
+    {
+      "name": "starlink-enterprise-mcp-server",
+      "repository": "https://github.com/ry-ops/starlink-enterprise-mcp-server",
+      "description": "MCP server for Starlink Enterprise management"
+    }
+  ],
+  "metadata": {
+    "schema_version": "1.0.0",
+    "created_by": "cortex-development-master",
+    "created_at": "2025-12-09T00:00:00Z",
+    "purpose": "Unified registry for cortex MCP server integration and discovery"
+  }
+}

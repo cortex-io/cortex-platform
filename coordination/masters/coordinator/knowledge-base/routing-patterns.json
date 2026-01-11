@@ -1,0 +1,310 @@
+{
+  "routing_strategy": "mixture_of_experts",
+  "version": "4.0.0",
+  "description": "Enhanced MoE routing patterns with comprehensive keyword coverage, adjusted thresholds for >90% single-expert routing",
+  "last_updated": "2025-11-20T20:30:00Z",
+  "thresholds": {
+    "single_expert": 0.70,
+    "multi_expert": 0.50,
+    "minimum_activation": 0.25
+  },
+  "experts": {
+    "development": {
+      "description": "Development specialist for features, bug fixes, code improvements, and system operations",
+      "specializations": [
+        "feature implementation",
+        "bug fixes",
+        "code refactoring",
+        "performance optimization",
+        "API development",
+        "testing",
+        "dashboard improvements",
+        "automation scripting",
+        "system operations",
+        "daemon management"
+      ],
+      "activation_keywords": [
+        "add", "authentication", "bug", "bug fix", "build", "change", "create", "debug", "develop",
+        "edit", "enhance", "extend", "fix", "implement", "improve", "integration", "learning",
+        "login", "migrate", "modify", "new feature", "optimize", "port", "refactor", "remove",
+        "rename", "replace", "rewrite", "setup", "test", "troubleshoot", "unit test", "update",
+        "upgrade", "write", "configure", "initialize", "install", "bootstrap", "scaffold",
+        "generate", "code", "program", "engineer", "craft", "construct", "compose", "patch",
+        "resolve", "correct", "repair", "mend", "restructure", "reorganize", "redesign",
+        "overhaul", "boost", "accelerate", "streamline", "tune", "validate", "verify", "check",
+        "assert", "confirm", "alter", "adjust", "expand", "augment", "grow", "scale", "diagnose",
+        "trace", "profile", "analyze", "inspect", "spawn", "start", "stop", "restart", "daemon",
+        "worker", "heartbeat", "monitor", "health", "status", "metrics", "performance", "speed",
+        "efficiency", "throughput", "latency", "response", "timeout", "retry", "error", "failure",
+        "success", "completion", "progress", "tracking", "logging", "streaming", "event",
+        "listener", "callback", "promise", "async", "await", "parallel", "concurrent", "batch",
+        "queue", "process", "thread", "pool", "buffer", "cache", "memory", "CPU", "resource",
+        "allocation", "scheduling", "orchestration", "coordination", "management", "control",
+        "git", "push", "pull", "commit", "merge", "branch", "checkout", "rebase", "stash",
+        "clone", "fetch", "reset", "cherry-pick", "tag", "remote", "origin", "upstream",
+        "stress", "load", "benchmark", "DDQD", "MoE", "routing", "confidence", "scoring",
+        "threshold", "pattern", "keyword", "matching", "algorithm", "formula", "calculation",
+        "weight", "score", "rate", "percentage", "ratio", "count", "total", "average", "sum",
+        "minimum", "maximum", "range", "limit", "capacity", "budget", "token", "usage",
+        "consumption", "allocation", "distribution", "balance", "equilibrium"
+      ],
+      "confidence_boosters": [
+        "API", "Alpine.js", "algorithm", "architecture", "authentication", "backend", "bash",
+        "button", "cache", "class", "code", "component", "controller", "CSS", "daemon",
+        "dashboard", "database", "efficiency", "endpoint", "error handling", "Express",
+        "feature", "form", "frontend", "function", "functionality", "handler", "HTML",
+        "interface", "JavaScript", "JSON", "JSONL", "library", "logic", "login", "method",
+        "middleware", "MoE", "module", "Node.js", "npm", "page", "pattern", "performance",
+        "pipeline", "plugin", "prompt", "queue", "router", "routing", "script", "service",
+        "shell", "speed", "state", "system", "Tailwind", "template", "TypeScript", "UI",
+        "user authentication", "UX", "validation", "view", "WebSocket", "worker", "chart",
+        "graph", "visualization", "panel", "widget", "real-time", "streaming", "event",
+        "listener", "callback", "promise", "async", "await", "spawn", "process", "thread",
+        "concurrency", "parallel", "batch", "heartbeat", "checkin", "monitor", "health",
+        "status", "metrics", "logging", "benchmark", "clean", "Alpine", "Express.js",
+        "Chart.js", "ApexCharts", "Lucide", "SSE", "REST", "HTTP", "jq", "sed", "awk",
+        "grep", "Chokidar", "nodemon", "pm2", "Jest", "Mocha", "Chai", "e2e",
+        "cortex", "coordinator", "master", "specialist", "DDQD", "stress test",
+        "load test", "performance test", "git operation", "version control", "repository",
+        "branch management", "merge conflict", "pull request", "code review",
+        "worker daemon", "task orchestrator", "handoff processor", "metrics snapshot",
+        "health monitor", "zombie cleanup", "auto-fix", "self-healing", "sparse activation",
+        "expert pool", "token budget", "workforce streams", "task queue", "routing decision",
+        "confidence score", "keyword pattern", "activation threshold", "single expert",
+        "multi expert", "parallel activation", "sequential processing"
+      ],
+      "negative_indicators": [
+        "document only", "catalog only", "list only", "CVE", "vulnerability scan",
+        "security audit", "compliance check", "secrets detection", "penetration test",
+        "deploy only", "release only", "rollout only", "inventory only", "survey only"
+      ]
+    },
+    "security": {
+      "description": "Security specialist for vulnerability scanning, audits, and remediation",
+      "specializations": [
+        "vulnerability scanning",
+        "CVE remediation",
+        "dependency audits",
+        "security patches",
+        "compliance monitoring",
+        "secrets detection",
+        "penetration testing",
+        "security incident response"
+      ],
+      "activation_keywords": [
+        "vulnerability", "security", "CVE", "audit", "scan", "exploit", "patch", "fix security",
+        "secure", "harden", "compliance", "secrets", "credentials", "authentication",
+        "authorization", "encryption", "protect", "defend", "shield", "guard", "safeguard",
+        "attack", "breach", "compromise", "intrusion", "malware", "trojan", "virus", "phishing",
+        "ransomware", "zero-day", "CVE-", "severity", "CVSS", "NVD", "threat", "risk",
+        "malicious", "injection", "XSS", "CSRF", "SQL injection", "buffer overflow",
+        "penetration", "OWASP", "npm audit", "dependency scan", "secrets detection",
+        "credential scan", "security patch", "vulnerability fix", "security remediation",
+        "compliance audit", "threat assessment", "risk analysis", "security review",
+        "code security", "critical vulnerability", "high severity", "exploit detection",
+        "malware scan", "access control", "permission", "SQLi", "overflow", "traversal",
+        "escalation", "advisory", "disclosure", "bounty", "fuzzing", "payload", "vector",
+        "surface", "exposure", "weakness", "flaw", "defect", "insecure", "unsafe", "dangerous",
+        "risky", "exposed", "leaked", "compromised", "infected", "backdoor", "rootkit",
+        "keylogger", "spyware", "adware", "botnet", "DDoS", "man-in-the-middle", "MITM",
+        "replay", "spoofing", "tampering", "repudiation", "elevation", "privilege"
+      ],
+      "confidence_boosters": [
+        "attack", "threat", "malicious", "injection", "XSS", "CSRF", "SQL injection",
+        "buffer overflow", "dependency", "npm audit", "OWASP", "penetration", "security scan",
+        "vulnerability assessment", "risk score", "severity level", "CVE identifier",
+        "CVSS score", "NVD database", "exploit database", "critical", "high", "medium", "low",
+        "remediation", "mitigation", "workaround", "zero-day", "proof of concept", "PoC",
+        "remote code execution", "RCE", "privilege escalation", "information disclosure",
+        "denial of service", "DoS", "authentication bypass", "session hijacking", "clickjacking",
+        "SSRF", "XXE", "deserialization", "prototype pollution", "path traversal",
+        "directory traversal", "secrets", "API key", "access token", "private key",
+        "certificate", "password", "regulation", "audit trail", "access log", "security event",
+        "Snyk", "OWASP ZAP", "Bandit", "SonarQube", "Trivy", "Grype", "GDPR", "HIPAA",
+        "SOC2", "PCI-DSS", "ISO 27001", "NIST", "CIS", "SAST", "DAST", "SCA",
+        "container scanning", "token", "key", "SSL", "TLS", "HTTPS", "OAuth", "JWT",
+        "hash", "salt", "bcrypt", "argon", "cipher", "CVE-2024", "CVE-2023", "CVE-2025",
+        "security-master", "security specialist", "security scan", "vulnerability report",
+        "security advisory", "security bulletin", "security patch", "security update"
+      ],
+      "negative_indicators": [
+        "feature development", "new functionality", "UI improvement", "UX enhancement",
+        "performance optimization", "code refactoring", "documentation generation",
+        "repository cataloging", "inventory listing", "deploy", "release", "build"
+      ]
+    },
+    "inventory": {
+      "description": "Inventory specialist for cataloging, documentation, and portfolio management",
+      "specializations": [
+        "repository discovery",
+        "metadata cataloging",
+        "documentation generation",
+        "dependency tracking",
+        "health monitoring",
+        "portfolio management",
+        "cross-repository analysis"
+      ],
+      "activation_keywords": [
+        "document", "catalog", "inventory", "list", "discover", "track", "monitor", "survey",
+        "audit repositories", "metadata", "portfolio", "overview", "status", "health check",
+        "index", "register", "enumerate", "census", "summary", "report", "analytics", "wiki",
+        "guide", "tutorial", "manual", "reference", "specification", "changelog", "release notes",
+        "version history", "upgrade guide", "catalog repository", "document codebase",
+        "inventory project", "generate documentation", "create README", "write changelog",
+        "architecture diagram", "dependency tracking", "portfolio overview", "health report",
+        "status report", "project summary", "metadata extraction", "repository discovery",
+        "cross-repo analysis", "documentation generation", "technical writing",
+        "API documentation", "README", "map", "analyze", "diagram", "flowchart", "schema",
+        "ERD", "UML", "sequence", "class diagram", "component diagram", "deployment diagram",
+        "data model", "entity", "relationship", "attribute", "property", "field", "column",
+        "table", "collection", "schema", "structure", "hierarchy", "tree", "graph", "network",
+        "topology", "layout", "arrangement", "organization", "classification", "taxonomy",
+        "ontology", "vocabulary", "glossary", "terminology", "definition", "description",
+        "explanation", "annotation", "comment", "note", "remark", "observation"
+      ],
+      "confidence_boosters": [
+        "repository", "repo", "repositories", "portfolio", "projects", "codebase", "overview",
+        "summary", "README", "documentation", "dependencies", "versions", "health",
+        "status report", "architecture", "diagram", "metadata", "catalog", "index", "registry",
+        "inventory", "list", "enumerate", "discover", "track", "changelog", "release notes",
+        "version history", "upgrade path", "migration guide", "API reference",
+        "code documentation", "inline comments", "docstrings", "technical specification",
+        "design document", "architecture decision record", "portfolio health",
+        "repository metrics", "code quality score", "test coverage", "dependency tree",
+        "dependency graph", "package versions", "outdated packages", "license information",
+        "contributor stats", "commit history", "activity metrics", "GitHub API", "GitLab API",
+        "Markdown", "MDX", "AsciiDoc", "reStructuredText", "JSDoc", "TypeDoc", "Mermaid",
+        "PlantUML", "D2", "Graphviz", "diagrams.net", "folder", "directory", "file", "asset",
+        "resource", "artifact", "package", "module", "library", "version", "tag", "branch",
+        "commit", "history", "timeline", "evolution", "inventory-master", "documentation-worker",
+        "catalog-worker", "metadata-worker", "portfolio analysis", "repository health"
+      ],
+      "negative_indicators": [
+        "code implementation", "feature development", "bug fix", "security scan",
+        "vulnerability audit", "CVE remediation", "build", "deploy", "release",
+        "test execution", "performance optimization", "code refactoring"
+      ]
+    },
+    "cicd": {
+      "description": "CI/CD specialist for build, test, and deployment automation",
+      "specializations": [
+        "build automation",
+        "test orchestration",
+        "deployment strategies",
+        "release workflows",
+        "pipeline optimization",
+        "integration testing",
+        "deployment verification"
+      ],
+      "activation_keywords": [
+        "build", "deploy", "deployment", "release", "pipeline", "CI/CD", "continuous",
+        "automation", "test", "testing", "rollback", "environment", "production", "staging",
+        "artifact", "coverage", "blue-green", "canary", "workflow", "compile", "bundle",
+        "package", "publish", "ship", "rollout", "promote", "trigger", "hook", "webhook",
+        "action", "job", "step", "stage", "phase", "deploy to production", "release pipeline",
+        "CI/CD pipeline", "GitHub Actions", "build automation", "test automation",
+        "deployment workflow", "rollback deployment", "blue-green deployment", "canary release",
+        "staging environment", "production release", "artifact generation", "test coverage",
+        "integration pipeline", "continuous integration", "continuous deployment",
+        "continuous delivery", "pipeline optimization", "CI", "CD", "binary", "container",
+        "spec", "unit", "integration", "e2e", "smoke", "development", "QA", "UAT",
+        "preview", "snapshot", "nightly", "scheduled", "cron", "timer", "periodic"
+      ],
+      "confidence_boosters": [
+        "Jenkins", "GitHub Actions", "GitLab CI", "CircleCI", "Travis CI", "Buildkite",
+        "Dockerfile", "Kubernetes", "container", "pod", "service", "deployment", "workflow",
+        "pipeline", "automated", "schedule", "cron", "trigger", "webhook", "artifact",
+        "binary", "package", "bundle", "archive", "release asset", "test suite", "test runner",
+        "coverage report", "quality gate", "lint", "staging", "production", "QA", "UAT",
+        "preview", "canary", "blue-green", "rollout", "rollback", "promote", "demote",
+        "scale", "replicas", "instances", "health check", "readiness probe", "liveness probe",
+        "startup probe", "secrets management", "environment variables", "config map", "vault",
+        "monitoring", "alerting", "logging", "tracing", "observability", "APM", "npm", "yarn",
+        "pnpm", "webpack", "rollup", "esbuild", "vite", "turbopack", "Jest", "Mocha",
+        "Cypress", "Playwright", "Puppeteer", "pytest", "JUnit", "Docker", "Helm", "ArgoCD",
+        "Terraform", "Ansible", "AWS", "GCP", "Azure", "Drone", "runner", "agent", "executor",
+        "worker", "node", "instance", "cluster", "yaml", "yml", "toml", "configuration",
+        "manifest", "cicd-master", "build-worker", "deploy-worker", "release-worker"
+      ],
+      "negative_indicators": [
+        "feature development without deploy", "documentation only", "catalog only",
+        "security scan only", "inventory only", "code review only", "design only"
+      ]
+    }
+  },
+  "routing_rules": {
+    "parallel_activation": {
+      "description": "Activate multiple experts when confidence is split",
+      "example": "Security vulnerability in a feature: activate both security + development",
+      "trigger_threshold": 0.50
+    },
+    "sparse_activation": {
+      "description": "Only activate experts above minimum threshold",
+      "rationale": "Like MoE activating 1B/7B params, only use what's needed"
+    },
+    "confidence_weighted": {
+      "description": "Primary expert gets full task, secondary experts provide support",
+      "example": "70% dev, 55% security: dev is primary, security reviews"
+    },
+    "type_based_routing": {
+      "description": "Task type prefixes provide highest confidence (95%)",
+      "types": {
+        "security": ["security-scan", "security-audit", "cve", "vulnerability", "security-fix", "compliance-check", "penetration-test", "secrets-scan"],
+        "development": ["feature", "bug-fix", "refactor", "optimization", "development", "enhancement", "implementation", "improvement", "fix", "update", "add", "create", "modify"],
+        "inventory": ["inventory", "catalog", "discovery", "documentation", "doc", "readme", "changelog", "wiki", "guide", "report", "list", "document"],
+        "cicd": ["build", "deploy", "test", "ci-cd", "release", "rollback", "pipeline", "workflow", "automation", "publish"]
+      }
+    }
+  },
+  "merge_strategies": {
+    "sequential": {
+      "description": "Results flow from one expert to next",
+      "example": "Development implements -> Security reviews -> Inventory documents"
+    },
+    "parallel": {
+      "description": "Experts work independently, results aggregated",
+      "example": "Multiple repos scanned in parallel"
+    },
+    "voting": {
+      "description": "Multiple experts vote on best approach",
+      "example": "Conflicting solutions from different experts"
+    },
+    "weighted": {
+      "description": "Results weighted by expert confidence",
+      "example": "Combine recommendations based on confidence scores"
+    }
+  },
+  "scoring_algorithm": {
+    "description": "Additive keyword scoring with booster multipliers",
+    "formula": "(keyword_matches * 25) + (booster_matches * 12) - (negative_matches * 30)",
+    "normalization": "Clamped to 0-100 range",
+    "notes": [
+      "2-3 activation keywords + 1-2 boosters typically yield 70+ confidence",
+      "Negative indicators can significantly reduce confidence",
+      "Type-based routing provides 95% confidence for explicit prefixes",
+      "Lowered single_expert threshold to 70% for better single-expert routing"
+    ]
+  },
+  "keyword_statistics": {
+    "development": {
+      "activation_keywords": 156,
+      "confidence_boosters": 142,
+      "negative_indicators": 12
+    },
+    "security": {
+      "activation_keywords": 98,
+      "confidence_boosters": 96,
+      "negative_indicators": 12
+    },
+    "inventory": {
+      "activation_keywords": 89,
+      "confidence_boosters": 82,
+      "negative_indicators": 12
+    },
+    "cicd": {
+      "activation_keywords": 68,
+      "confidence_boosters": 84,
+      "negative_indicators": 7
+    }
+  }
+}

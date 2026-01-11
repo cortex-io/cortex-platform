@@ -1,0 +1,44 @@
+{
+  "worker_types": [
+    {
+      "type_id": "scan-worker",
+      "description": "Performs comprehensive security scans",
+      "specialization": "vulnerability_detection",
+      "typical_token_allocation": 12000,
+      "skills": ["dependency_scanning", "static_analysis", "secrets_detection"]
+    },
+    {
+      "type_id": "audit-worker",
+      "description": "Conducts detailed security audits",
+      "specialization": "security_auditing",
+      "typical_token_allocation": 15000,
+      "skills": ["threat_modeling", "code_review", "risk_assessment"]
+    },
+    {
+      "type_id": "fix-worker",
+      "description": "Implements security fixes and patches",
+      "specialization": "security_remediation",
+      "typical_token_allocation": 13000,
+      "skills": ["patch_application", "code_fixing", "testing"]
+    },
+    {
+      "type_id": "compliance-worker",
+      "description": "Monitors compliance and generates reports",
+      "specialization": "compliance",
+      "typical_token_allocation": 8000,
+      "skills": ["compliance_checking", "report_generation", "policy_enforcement"]
+    },
+    {
+      "type_id": "cve-scanner-worker",
+      "description": "Performs CVE/vulnerability scanning across repositories using Trivy and Grype",
+      "specialization": "cve_vulnerability_detection",
+      "typical_token_allocation": 10000,
+      "skills": ["sbom_generation", "cve_scanning", "dependency_analysis", "vulnerability_prioritization", "result_aggregation"],
+      "tools": ["trivy", "grype", "syft"],
+      "scan_types": ["dependencies", "container", "filesystem", "sbom"],
+      "severity_thresholds": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+      "output_formats": ["json", "cyclonedx", "spdx"]
+    }
+  ],
+  "last_updated": "2025-11-30T13:00:00-06:00"
+}

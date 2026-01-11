@@ -1,0 +1,68 @@
+{
+  "handoff_id": "coord-to-dev-8FFCA60A",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-mcp-integration-001",
+  "priority": "high",
+  "task_data": {
+    "title": "Task 1: Integrate Existing MCP Servers into Cortex API",
+    "description": "Add 3 existing MCP servers to Cortex orchestrator (server.js)",
+    "mcp_servers": [
+      {
+        "name": "cloudflare-mcp-server",
+        "url": "http://cloudflare-mcp-server.cortex-system.svc.cluster.local:3000",
+        "cluster_ip": "10.43.183.185",
+        "port": 3000
+      },
+      {
+        "name": "cortex-mcp-server",
+        "url": "http://cortex-mcp-server.cortex-system.svc.cluster.local:3000",
+        "cluster_ip": "10.43.41.79",
+        "port": 3000
+      },
+      {
+        "name": "security-master",
+        "url": "http://security-master.cortex-system.svc.cluster.local:8080",
+        "cluster_ip": "10.43.173.115",
+        "port": 8080,
+        "note": "Security master MCP endpoint (if available)"
+      }
+    ],
+    "target_file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-chat/cortex-api/server.js",
+    "requirements": [
+      "Add MCP servers to MCP_SERVERS config object (lines 11-15)",
+      "Create query functions: queryCloudflare(), queryCortexMCP(), querySecurity()",
+      "Add tool definitions to tools array for Claude (lines 812-869)",
+      "Add cases in executeTool() switch statement (lines 781-799)",
+      "Follow existing patterns from sandfly_query, unifi_query, proxmox_query",
+      "Test integration by calling /api/tasks endpoint with queries"
+    ],
+    "pattern_reference": {
+      "config_pattern": "cloudflare: process.env.CLOUDFLARE_MCP_URL || 'http://cloudflare-mcp-server.cortex-system.svc.cluster.local:3000'",
+      "query_function_pattern": "queryCloudflare(query) - use queryMCPServer() or callMCPTool()",
+      "tool_definition_pattern": "{ name: 'cloudflare_query', description: '...', input_schema: {...} }",
+      "executeTool_pattern": "case 'cloudflare_query': return await queryCloudflare(input.query);"
+    },
+    "validation": [
+      "Verify all 3 MCP servers are added to config",
+      "Verify all 3 query functions are implemented",
+      "Verify all 3 tools are added to Claude tools array",
+      "Verify all 3 cases are in executeTool() switch",
+      "Test each integration with sample queries"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE: code development task",
+    "priority": "high",
+    "expected_outcome": "Cortex API server.js updated with 3 new MCP integrations",
+    "current_architecture": {
+      "existing_mcp_servers": ["sandfly", "unifi", "proxmox"],
+      "mcp_pattern": "Uses queryMCPServer() for /query endpoint or callMCPTool() for specific tools",
+      "authentication": "Each MCP handles its own auth to backend APIs"
+    },
+    "routing_confidence": 0.90,
+    "estimated_complexity": "medium"
+  },
+  "created_at": "2025-12-26T13:41:34Z",
+  "status": "pending_pickup"
+}

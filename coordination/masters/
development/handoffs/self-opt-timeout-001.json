@@ -1,0 +1,38 @@
+{
+  "handoff_id": "self-opt-timeout-001",
+  "task_id": "self-opt-timeout-001",
+  "assigned_to": "\ndevelopment",
+  "created_at": "2025-12-05T08:26:31-0600",
+  "status": "pending",
+  "task": {
+    "id": "self-opt-timeout-001",
+    "title": "Create timeout learning infrastructure",
+    "type": "development",
+    "description": "development: Create lib/learning/timeout-learner.sh with functions: record_task_duration(), get_recommended_timeout(), calculate_p95_timeout(). Setup JSONL database at coordination/knowledge-base/learned-timeouts.jsonl. Include schema validation and error handling.",
+    "priority": "high",
+    "status": "pending",
+    "created_at": "2025-12-05T08:23:22-0600",
+    "created_by": "self-optimization-initiative",
+    "context": {
+      "track_id": "track-a-timeout-learning",
+      "track_name": "Timeout Learning System",
+      "complexity": 6,
+      "dependencies": [],
+      "deliverables": [
+        "lib/learning/timeout-learner.sh",
+        "coordination/knowledge-base/learned-timeouts.jsonl (schema)",
+        "testing/unit/timeout-learner.test.sh"
+      ],
+      "test_command": "./testing/unit/timeout-learner.test.sh",
+      "acceptance_criteria": [
+        "Can record task durations with metadata (type, complexity, outcome)",
+        "Can calculate P95 timeout from historical data",
+        "Can recommend timeout with 50% buffer",
+        "Defaults to 300s when no history",
+        "Unit tests pass with 100% coverage"
+      ],
+      "self_optimization": true,
+      "parallel_track": true
+    }
+  }
+}
