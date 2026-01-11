@@ -3170,7 +3170,7 @@ intrusion_detection:
       - Log all security events
 
   monitoring:
-    tool: Wazuh or OSSEC
+    tool: Sandfly or OSSEC
     deployment: Agent on all VMs
 
     capabilities:

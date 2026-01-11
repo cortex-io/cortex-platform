@@ -27,7 +27,7 @@
       "diskwrite": 4905639936
     },
     {
-      "name": "wazuh",
+      "name": "sandfly",
       "vmid": 101,
       "node": "pve01",
       "memhost": 0,

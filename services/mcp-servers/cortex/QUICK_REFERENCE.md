@@ -46,14 +46,14 @@ kubectl apply -f /Users/ryandahlberg/Projects/cortex/mcp-servers/cortex/k8s/cort
 
 ## MCP Tools Available
 
-1. **cortex_query** - Query routing to UniFi, Proxmox, Wazuh, K8s
+1. **cortex_query** - Query routing to UniFi, Proxmox, Sandfly, K8s
 2. **cortex_get_status** - Aggregate status from all subsystems
 
 ## Integration URLs
 
 - UniFi: `http://unifi-mcp-server.cortex-system.svc.cluster.local:3000`
 - Proxmox: `http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000`
-- Wazuh: `http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080`
+- Sandfly: `http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080`
 - Kubernetes: (in-cluster API)
 
 ## Files

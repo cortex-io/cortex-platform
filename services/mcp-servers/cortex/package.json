@@ -1,7 +1,7 @@
 {
   "name": "cortex-mcp-server",
   "version": "1.0.0",
-  "description": "Cortex MCP Server - Intelligent routing to UniFi, Proxmox, Wazuh, and Kubernetes",
+  "description": "Cortex MCP Server - Intelligent routing to UniFi, Proxmox, Sandfly, and Kubernetes",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^1.6.0"
   },
-  "keywords": ["mcp", "cortex", "routing", "unifi", "proxmox", "wazuh", "kubernetes"],
+  "keywords": ["mcp", "cortex", "routing", "unifi", "proxmox", "sandfly", "kubernetes"],
   "author": "Cortex Development Team",
   "license": "MIT"
 }

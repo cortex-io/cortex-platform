@@ -64,7 +64,7 @@ class ToolValidator {
     }
 
     // Validate master
-    const validMasters = ['unifi', 'proxmox', 'wazuh', 'coordinator'];
+    const validMasters = ['unifi', 'proxmox', 'sandfly', 'coordinator'];
     if (!input.master) {
       errors.push('master is required');
     } else if (!validMasters.includes(input.master)) {
@@ -223,7 +223,7 @@ console.log('  ✓ Missing query rejected');
 
 // Short query
 result = validator.validateQueryMasterInput({
-  master: 'wazuh',
+  master: 'sandfly',
   query: 'Hi'
 });
 assert.strictEqual(result.valid, false);

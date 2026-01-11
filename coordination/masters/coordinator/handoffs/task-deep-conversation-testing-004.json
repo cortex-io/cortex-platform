@@ -7,13 +7,13 @@
   "task_data": {
     "title": "Deep Conversation Testing - All Vendor APIs",
     "category": "development",
-    "description": "Test DEEP multi-turn conversations across all vendor MCP servers (Sandfly, Proxmox, UniFi, Wazuh) to verify context persistence and API coverage",
+    "description": "Test DEEP multi-turn conversations across all vendor MCP servers (Sandfly, Proxmox, UniFi, Sandfly) to verify context persistence and API coverage",
     "requirements": [
       "Create comprehensive test scripts for deep conversations",
       "Test Sandfly API with 20+ message exchanges",
       "Test Proxmox API with 20+ message exchanges",
       "Test UniFi API with 20+ message exchanges",
-      "Test Wazuh API with 20+ message exchanges",
+      "Test Sandfly API with 20+ message exchanges",
       "Verify context is maintained throughout",
       "Document all available API endpoints through natural language",
       "Create test report with results"
@@ -86,7 +86,7 @@
           "What firmware versions are running?",
           "Show me device uptime"
         ],
-        "wazuh": [
+        "sandfly": [
           "Show me security alerts from the last 24 hours",
           "What critical alerts exist?",
           "Show me agents status",
@@ -121,7 +121,7 @@
       "Complete 20+ message conversation for Sandfly without context loss",
       "Complete 20+ message conversation for Proxmox without context loss",
       "Complete 20+ message conversation for UniFi without context loss",
-      "Complete 20+ message conversation for Wazuh without context loss",
+      "Complete 20+ message conversation for Sandfly without context loss",
       "All vendor API endpoints accessible via natural language",
       "Context properly maintained including tool results",
       "Conversation summarization works correctly at 15+ messages",

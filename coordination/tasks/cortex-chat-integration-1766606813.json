@@ -8,7 +8,7 @@
   "requirements": [
     "Add Claude/AI capability to Cortex orchestrator",
     "Parse user natural language queries",
-    "Route to appropriate systems (kubectl, UniFi MCP, Wazuh MCP, Proxmox MCP)",
+    "Route to appropriate systems (kubectl, UniFi MCP, Sandfly MCP, Proxmox MCP)",
     "Return user-friendly answers instead of raw kubectl output",
     "Implement tool execution for kubectl, MCP servers, masters"
   ],
@@ -26,7 +26,7 @@
   "success_criteria": [
     "User asks 'how is my unifi network today?' → Cortex routes to UniFi MCP",
     "User asks 'what pods are running?' → Cortex executes kubectl",
-    "User asks 'any security alerts?' → Cortex routes to Wazuh MCP",
+    "User asks 'any security alerts?' → Cortex routes to Sandfly MCP",
     "Responses are natural language, not raw JSON/kubectl dumps",
     "No token loops - one query, one answer"
   ],
