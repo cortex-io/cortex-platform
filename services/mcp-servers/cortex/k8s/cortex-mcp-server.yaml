@@ -12,7 +12,7 @@ data:
   # MCP Server URLs
   UNIFI_MCP_URL: "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000"
   PROXMOX_MCP_URL: "http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000"
-  WAZUH_MCP_URL: "http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080"
+  SANDFLY_MCP_URL: "http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080"
 
   # Worker Pool Configuration
   WORKER_POOL_SIZE: "10000"
@@ -95,11 +95,11 @@ spec:
             configMapKeyRef:
               name: cortex-mcp-config
               key: PROXMOX_MCP_URL
-        - name: WAZUH_MCP_URL
+        - name: SANDFLY_MCP_URL
           valueFrom:
             configMapKeyRef:
               name: cortex-mcp-config
-              key: WAZUH_MCP_URL
+              key: SANDFLY_MCP_URL
         - name: WORKER_POOL_SIZE
           valueFrom:
             configMapKeyRef:

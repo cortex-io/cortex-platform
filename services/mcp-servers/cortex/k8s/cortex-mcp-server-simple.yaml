@@ -69,7 +69,7 @@ spec:
           cp /source/k8s.js /app/src/clients/
           cp /source/proxmox.js /app/src/clients/
           cp /source/unifi.js /app/src/clients/
-          cp /source/wazuh.js /app/src/clients/
+          cp /source/sandfly.js /app/src/clients/
 
           # Copy tool files
           echo "Copying tool files..."
@@ -237,11 +237,11 @@ spec:
             configMapKeyRef:
               name: cortex-mcp-config
               key: PROXMOX_MCP_URL
-        - name: WAZUH_MCP_URL
+        - name: SANDFLY_MCP_URL
           valueFrom:
             configMapKeyRef:
               name: cortex-mcp-config
-              key: WAZUH_MCP_URL
+              key: SANDFLY_MCP_URL
         - name: WORKER_POOL_SIZE
           valueFrom:
             configMapKeyRef:

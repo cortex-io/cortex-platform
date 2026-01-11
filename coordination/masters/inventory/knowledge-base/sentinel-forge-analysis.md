@@ -13,7 +13,7 @@ Sentinel Forge is a sophisticated Red vs Blue Team security testing environment 
 
 **Strategic Value**: HIGH - Critical security capability with direct integration opportunities with Cortex security infrastructure.
 
-**Deployment Status**: Infrastructure-as-code complete, awaiting deployment prerequisites (Wazuh, n8n, Proxmox templates).
+**Deployment Status**: Infrastructure-as-code complete, awaiting deployment prerequisites (Sandfly, n8n, Proxmox templates).
 
 ---
 
@@ -26,7 +26,7 @@ Sentinel Forge is a sophisticated Red vs Blue Team security testing environment 
 - **License**: MIT
 - **Primary Language**: Not detected (Infrastructure/Config heavy)
 - **Files**: 11 core files
-- **Lines of Code**: ~4,000+ (Terraform, n8n workflows, Wazuh rules, documentation)
+- **Lines of Code**: ~4,000+ (Terraform, n8n workflows, Sandfly rules, documentation)
 
 ### Repository Structure
 ```
@@ -37,7 +37,7 @@ sentinel-forge/
 ├── n8n-workflows/
 │   ├── 01-exercise-orchestrator.json  # Main control workflow
 │   └── 02-red-team-automation.json    # Attack automation
-├── wazuh/
+├── sandfly/
 │   └── rules/
 │       └── security-lab-rules.xml     # 100+ custom detection rules
 ├── README.md                # Quick start guide
@@ -65,7 +65,7 @@ sentinel-forge/
    - Phishing simulation (GoPhish)
 
 2. **Blue Team Defense & Detection**
-   - Real-time detection via Wazuh SIEM
+   - Real-time detection via Sandfly SIEM
    - Automated incident response workflows
    - SOC analyst workstation
    - Threat intelligence (MISP)
@@ -115,7 +115,7 @@ sentinel-forge/
 1. **Exercise Orchestrator** (01-exercise-orchestrator.json)
    - Webhook trigger: `/start-exercise`
    - VM verification via Proxmox API
-   - Wazuh rule activation
+   - Sandfly rule activation
    - Team coordination
    - 5-minute monitoring loop
    - Unauthorized threat detection
@@ -131,7 +131,7 @@ sentinel-forge/
 
 ### Detection Layer
 
-**Wazuh Custom Rules** (100+ rules):
+**Sandfly Custom Rules** (100+ rules):
 - 100001-100009: Red Team activity (authorized, level 5-8)
 - 100010-100014: Unauthorized attacks (CRITICAL, level 12-14)
 - 100020-100027: Honeypot interactions (level 10)
@@ -164,7 +164,7 @@ ELSE:
 - **Networking**: Linux bridges, VLANs, iptables
 
 ### Security & Monitoring
-- **SIEM**: Wazuh 4.x (existing deployment)
+- **SIEM**: Sandfly 4.x (existing deployment)
 - **IDS/IPS**: Suricata
 - **Network Analysis**: Zeek
 - **Threat Intel**: MISP, ThreatFox, OpenCTI
@@ -205,7 +205,7 @@ ELSE:
    - Minimal manual intervention required
 
 3. **Existing Infrastructure Integration**
-   - Leverages existing Wazuh SIEM (no new SIEM needed)
+   - Leverages existing Sandfly SIEM (no new SIEM needed)
    - Proxmox integration (existing hypervisor)
    - Zero additional licensing costs
    - Integrates with Cortex (optional enhancement)
@@ -227,7 +227,7 @@ ELSE:
 
 1. **Deployment Prerequisites**
    - Requires manual VM template creation
-   - Wazuh rules need manual installation
+   - Sandfly rules need manual installation
    - n8n workflows require manual import
    - Not fully automated end-to-end (by design for security)
 
@@ -278,7 +278,7 @@ ELSE:
 cortex_integration:
   security_master:
     - trigger_exercises: webhook → Sentinel Forge n8n
-    - receive_alerts: Wazuh → Cortex Security Master
+    - receive_alerts: Sandfly → Cortex Security Master
     - metrics_pipeline: Sentinel Forge → Cortex dashboard
     - incident_response: Unauthorized attack → Cortex IR workflow
 ```
@@ -395,7 +395,7 @@ From the Cortex ecosystem, we have:
 - **n8n-mcp-server**: Already integrated with Cortex
 - **proxmox-mcp-server**: Already integrated with Cortex
 - **Dependency-Track**: Container security scanning
-- **Wazuh**: Already deployed SIEM
+- **Sandfly**: Already deployed SIEM
 
 ### Sentinel Forge Enhancements
 
@@ -411,7 +411,7 @@ Sentinel Forge adds:
 | Capability | Cortex Security | Sentinel Forge | Combined |
 |------------|----------------|----------------|----------|
 | Vulnerability Scanning | Dependency-Track | Red Team Attacks | Comprehensive |
-| Threat Detection | Wazuh Alerts | Wazuh + Honeypots | Enhanced |
+| Threat Detection | Sandfly Alerts | Sandfly + Honeypots | Enhanced |
 | Incident Response | Manual | Automated n8n | Fully Automated |
 | Security Testing | Manual | Automated Exercises | Continuous |
 | Attack Simulation | None | Full Red Team | Complete |
@@ -452,7 +452,7 @@ Sentinel Forge adds:
 **Integration Plan**:
 1. Security Master → Sentinel Forge webhook triggers
 2. Sentinel Forge → Security Master alert pipeline
-3. Wazuh → Cortex dashboard metrics export
+3. Sandfly → Cortex dashboard metrics export
 4. Unauthorized threats → Cortex IR workflows
 
 **Timeline**: 2 days post-deployment
@@ -497,7 +497,7 @@ Sentinel Forge adds:
 - [ ] Create Proxmox VM templates
 - [ ] Configure VLANs
 - [ ] Deploy Terraform infrastructure
-- [ ] Install Wazuh custom rules
+- [ ] Install Sandfly custom rules
 - [ ] Import n8n workflows
 - [ ] Test basic Red Team attack
 - [ ] Verify Blue Team detection
@@ -541,7 +541,7 @@ Sentinel Forge adds:
    - Impact: Potential escape to production network
 
 3. **False Positive Overload** (Medium)
-   - Mitigation: Tuning Wazuh rules during testing phase
+   - Mitigation: Tuning Sandfly rules during testing phase
    - Impact: Alert fatigue, missed real threats
 
 ### Operational Risks
@@ -565,7 +565,7 @@ Sentinel Forge adds:
    - Impact: Intentionally vulnerable systems could be exploited
 
 2. **Unauthorized Access** (Low)
-   - Mitigation: SSH key-based auth, Wazuh monitoring, audit logging
+   - Mitigation: SSH key-based auth, Sandfly monitoring, audit logging
    - Impact: Unauthorized use of Red Team tools
 
 ---
@@ -576,7 +576,7 @@ Sentinel Forge adds:
 
 - [ ] All 15+ VMs deployed and operational
 - [ ] Network segmentation verified
-- [ ] Wazuh rules active and triggering
+- [ ] Sandfly rules active and triggering
 - [ ] n8n workflows executing successfully
 - [ ] First exercise completed end-to-end
 - [ ] Blue Team detection confirmed
@@ -597,7 +597,7 @@ Sentinel Forge adds:
 
 **System Health**:
 - VM Uptime: Target > 99%
-- Wazuh Agent Status: Target 100% agents active
+- Sandfly Agent Status: Target 100% agents active
 - n8n Workflow Success Rate: Target > 95%
 
 ---

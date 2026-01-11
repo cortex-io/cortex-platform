@@ -26,7 +26,7 @@ kubectl create configmap "$CM_NAME" -n "$NAMESPACE" \
   --from-file=src/clients/k8s.js \
   --from-file=src/clients/proxmox.js \
   --from-file=src/clients/unifi.js \
-  --from-file=src/clients/wazuh.js \
+  --from-file=src/clients/sandfly.js \
   --from-file=src/tools/query.js \
   --from-file=src/tools/status.js \
   --from-file=src/worker-pool/coordinator.js \

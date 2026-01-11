@@ -78,7 +78,7 @@ Comprehensive testing across all vendor APIs:
 - **Sandfly**: 20+ message conversation testing all security capabilities
 - **Proxmox**: 20+ message conversation testing VM/infrastructure management
 - **UniFi**: 20+ message conversation testing network operations
-- **Wazuh**: 20+ message conversation testing security monitoring
+- **Sandfly**: 20+ message conversation testing security monitoring
 
 Each test will verify:
 - Context is maintained across full conversation
@@ -94,7 +94,7 @@ Each test will verify:
 I analyzed the existing chat backend and identified:
 
 1. **MCP Server Routing**: Tool executor routes based on tool name prefix
-   - `wazuh_*` → wazuh-mcp service
+   - `sandfly_*` → sandfly-mcp service
    - `unifi_*` → unifi-mcp service
    - `proxmox_*` → proxmox-mcp service
    - `cortex_*` → cortex-orchestrator service
@@ -239,7 +239,7 @@ Phases 1 and 3 can run in parallel, but Phase 2 depends on Phase 1, and Phase 4 
 - [ ] Sandfly: 20+ message conversation completed successfully
 - [ ] Proxmox: 20+ message conversation completed successfully
 - [ ] UniFi: 20+ message conversation completed successfully
-- [ ] Wazuh: 20+ message conversation completed successfully
+- [ ] Sandfly: 20+ message conversation completed successfully
 - [ ] Test report generated documenting all scenarios
 
 ---

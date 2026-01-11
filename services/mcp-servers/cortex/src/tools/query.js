@@ -6,7 +6,7 @@
 import { routeQuery, getRoutingSuggestion } from '../moe-router.js';
 import { queryUniFi } from '../clients/unifi.js';
 import { queryProxmox } from '../clients/proxmox.js';
-import { queryWazuh } from '../clients/wazuh.js';
+import { querySandfly } from '../clients/sandfly.js';
 import { queryKubernetes } from '../clients/k8s.js';
 
 /**
@@ -14,7 +14,7 @@ import { queryKubernetes } from '../clients/k8s.js';
  */
 export const cortexQueryTool = {
   name: 'cortex_query',
-  description: 'Query any Cortex subsystem (UniFi, Proxmox, Wazuh, Kubernetes). Use auto routing for intelligent system selection based on query content.',
+  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, Kubernetes). Use auto routing for intelligent system selection based on query content.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -24,7 +24,7 @@ export const cortexQueryTool = {
       },
       system: {
         type: 'string',
-        enum: ['auto', 'unifi', 'proxmox', 'wazuh', 'k8s'],
+        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'k8s'],
         description: 'Target system (auto = MoE intelligent routing)',
         default: 'auto'
       }
@@ -57,7 +57,7 @@ export async function executeCortexQuery(args) {
       return {
         success: false,
         error: 'Could not determine target system from query',
-        suggestion: 'Please specify system explicitly: unifi, proxmox, wazuh, or k8s',
+        suggestion: 'Please specify system explicitly: unifi, proxmox, sandfly, or k8s',
         routing_info: routingInfo
       };
     }
@@ -73,8 +73,8 @@ export async function executeCortexQuery(args) {
       case 'proxmox':
         result = await queryProxmox(query);
         break;
-      case 'wazuh':
-        result = await queryWazuh(query);
+      case 'sandfly':
+        result = await querySandfly(query);
         break;
       case 'k8s':
         result = await queryKubernetes(query);
@@ -83,7 +83,7 @@ export async function executeCortexQuery(args) {
         return {
           success: false,
           error: `Unknown system: ${targetSystem}`,
-          valid_systems: ['unifi', 'proxmox', 'wazuh', 'k8s']
+          valid_systems: ['unifi', 'proxmox', 'sandfly', 'k8s']
         };
     }
 

@@ -1,6 +1,6 @@
 /**
  * Integration tests for MCP Client connections
- * Tests connectivity to UniFi, Proxmox, and Wazuh MCP servers
+ * Tests connectivity to UniFi, Proxmox, and Sandfly MCP servers
  */
 
 const assert = require('assert');
@@ -86,8 +86,8 @@ const TEST_CONFIG = {
     url: process.env.PROXMOX_MCP_URL || 'http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000',
     tools: ['list_vms', 'get_vm_status', 'list_nodes']
   },
-  wazuh: {
-    url: process.env.WAZUH_MCP_URL || 'http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080',
+  sandfly: {
+    url: process.env.SANDFLY_MCP_URL || 'http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080',
     tools: ['get_alerts', 'get_agents', 'get_vulnerabilities']
   }
 };
@@ -166,39 +166,39 @@ async function runTests() {
     console.log(`  ⚠ Proxmox tests skipped: ${error.message}`);
   }
 
-  // Test Wazuh MCP Client
-  console.log('\nWazuh MCP Server Tests');
-  const wazuhClient = new MCPClient(TEST_CONFIG.wazuh.url);
+  // Test Sandfly MCP Client
+  console.log('\nSandfly MCP Server Tests');
+  const sandflyClient = new MCPClient(TEST_CONFIG.sandfly.url);
 
   try {
-    const connectResult = await wazuhClient.connect();
+    const connectResult = await sandflyClient.connect();
     if (connectResult.success) {
-      console.log('  ✓ Connected to Wazuh MCP server');
+      console.log('  ✓ Connected to Sandfly MCP server');
     } else {
       console.log(`  ⚠ Connection failed: ${connectResult.message} (server may not be running)`);
     }
 
-    if (wazuhClient.connected) {
+    if (sandflyClient.connected) {
       // Test get_alerts tool
-      const alertsResult = await wazuhClient.query('get_alerts', { limit: 10 });
+      const alertsResult = await sandflyClient.query('get_alerts', { limit: 10 });
       assert.ok(alertsResult.result);
       console.log('  ✓ get_alerts query successful');
 
       // Test get_agents tool
-      const agentsResult = await wazuhClient.query('get_agents', {});
+      const agentsResult = await sandflyClient.query('get_agents', {});
       assert.ok(agentsResult.result);
       console.log('  ✓ get_agents query successful');
 
       // Test get_vulnerabilities tool
-      const vulnResult = await wazuhClient.query('get_vulnerabilities', {});
+      const vulnResult = await sandflyClient.query('get_vulnerabilities', {});
       assert.ok(vulnResult.result);
       console.log('  ✓ get_vulnerabilities query successful');
 
-      wazuhClient.disconnect();
-      console.log('  ✓ Disconnected from Wazuh MCP server');
+      sandflyClient.disconnect();
+      console.log('  ✓ Disconnected from Sandfly MCP server');
     }
   } catch (error) {
-    console.log(`  ⚠ Wazuh tests skipped: ${error.message}`);
+    console.log(`  ⚠ Sandfly tests skipped: ${error.message}`);
   }
 
   // Test connection pooling
@@ -206,7 +206,7 @@ async function runTests() {
   const clients = [
     new MCPClient(TEST_CONFIG.unifi.url),
     new MCPClient(TEST_CONFIG.proxmox.url),
-    new MCPClient(TEST_CONFIG.wazuh.url)
+    new MCPClient(TEST_CONFIG.sandfly.url)
   ];
 
   const connections = await Promise.allSettled(

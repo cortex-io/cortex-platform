@@ -60,7 +60,7 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
     "tools": [
       {
         "name": "cortex_query",
-        "description": "Query any Cortex subsystem (UniFi, Proxmox, Wazuh, Kubernetes)...",
+        "description": "Query any Cortex subsystem (UniFi, Proxmox, Sandfly, Kubernetes)...",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -70,7 +70,7 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
             },
             "system": {
               "type": "string",
-              "enum": ["auto", "unifi", "proxmox", "wazuh", "k8s"],
+              "enum": ["auto", "unifi", "proxmox", "sandfly", "k8s"],
               "default": "auto"
             }
           },
@@ -159,7 +159,7 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
 }
 ```
 
-### 5. Check Wazuh Security Alerts
+### 5. Check Sandfly Security Alerts
 
 **Request:**
 ```json
@@ -179,7 +179,7 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
 
 **Console Output (stderr):**
 ```
-[Cortex Query] MoE Router: force routing to wazuh (confidence: 1.0)
+[Cortex Query] MoE Router: force routing to sandfly (confidence: 1.0)
 [Cortex Query] Reason: Matched keywords: security, alert
 ```
 
@@ -225,7 +225,7 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
     "content": [
       {
         "type": "text",
-        "text": "{\"success\":true,\"status\":{\"timestamp\":\"2025-12-24T19:00:00Z\",\"mcp_servers\":{\"unifi\":\"healthy\",\"proxmox\":\"healthy\",\"wazuh\":\"healthy\",\"k8s\":\"healthy\"},\"cortex_operations\":{\"active_workers\":0,\"active_masters\":1,\"running_tasks\":0},\"overall_health\":\"healthy\"}}"
+        "text": "{\"success\":true,\"status\":{\"timestamp\":\"2025-12-24T19:00:00Z\",\"mcp_servers\":{\"unifi\":\"healthy\",\"proxmox\":\"healthy\",\"sandfly\":\"healthy\",\"k8s\":\"healthy\"},\"cortex_operations\":{\"active_workers\":0,\"active_masters\":1,\"running_tasks\":0},\"overall_health\":\"healthy\"}}"
       }
     ]
   }
@@ -269,9 +269,9 @@ All communication follows JSON-RPC 2.0 over stdin/stdout.
 **Query:** "Show me network security alerts"
 - **Matched Keywords:**
   - unifi: network
-  - wazuh: security, alert
-- **Top Match:** wazuh (confidence: 2.0)
-- **System:** wazuh
+  - sandfly: security, alert
+- **Top Match:** sandfly (confidence: 2.0)
+- **System:** sandfly
 
 ## Error Handling
 
@@ -356,7 +356,7 @@ Add to `claude_desktop_config.json`:
       "env": {
         "UNIFI_MCP_URL": "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000",
         "PROXMOX_MCP_URL": "http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000",
-        "WAZUH_MCP_URL": "http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080"
+        "SANDFLY_MCP_URL": "http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080"
       }
     }
   }

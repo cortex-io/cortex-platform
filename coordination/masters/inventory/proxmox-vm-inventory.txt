@@ -2,7 +2,7 @@
 VMID   Name                           Status     Node     vCPU     Memory             Disk               Uptime       Tags                          
 ======================================================================================================================================================
 100    proxmox-datacenter-manager     running    pve01    2        0.1/2.0GB          2.5/9.7GB          0d 14h       community-script;datacenter   
-101    wazuh                          running    pve01    4        2.3/4.0GB          11.6/24.4GB        0d 15h       community-script;monitoring;s 
+101    sandfly                          running    pve01    4        2.3/4.0GB          11.6/24.4GB        0d 15h       community-script;monitoring;s 
 102    actualbudget                   running    pve01    2        0.1/2.0GB          1.4/3.9GB          0d 15h       community-script;finance      
 103    checkmk                        running    pve01    2        0.8/2.0GB          2.3/5.8GB          0d 15h       community-script;monitoring   
 104    n8n                            running    pve01    2        0.3/2.0GB          2.7/9.7GB          0d 15h       automation;community-script   
@@ -30,11 +30,11 @@ VM Details by Category:
   analytics: uptimekuma
   automation: n8n
   cloudflare: cloudflared
-  community-script: proxmox-datacenter-manager, wazuh, actualbudget, checkmk, n8n, auvik-collector, uptimekuma, nginxproxymanager, cloudflared
+  community-script: proxmox-datacenter-manager, sandfly, actualbudget, checkmk, n8n, auvik-collector, uptimekuma, nginxproxymanager, cloudflared
   datacenter: proxmox-datacenter-manager
   docker: auvik-collector
   finance: actualbudget
-  monitoring: wazuh, checkmk, uptimekuma
+  monitoring: sandfly, checkmk, uptimekuma
   network: cloudflared
   proxy: nginxproxymanager
-  security: wazuh
+  security: sandfly
