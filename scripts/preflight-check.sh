@@ -66,7 +66,7 @@ fi
 
 echo ""
 echo "4. Checking MCP Servers..."
-for MCP in unifi-mcp-server wazuh-mcp-server proxmox-mcp-server; do
+for MCP in unifi-mcp-server sandfly-mcp-server proxmox-mcp-server; do
     POD_STATUS=$(kubectl get pod -n cortex-system -l app=$MCP -o jsonpath='{.items[0].status.phase}' 2>/dev/null)
     if [ "$POD_STATUS" == "Running" ]; then
         check_pass "$MCP is Running"
@@ -77,7 +77,7 @@ done
 
 echo ""
 echo "5. Checking MCP Service Aliases..."
-for SVC in unifi-mcp wazuh-mcp proxmox-mcp; do
+for SVC in unifi-mcp sandfly-mcp proxmox-mcp; do
     SVC_EXISTS=$(kubectl get svc -n cortex-system $SVC --no-headers 2>/dev/null | wc -l | tr -d ' ')
     if [ "$SVC_EXISTS" -eq 1 ]; then
         check_pass "Service alias $SVC exists"
@@ -102,15 +102,15 @@ else
     check_fail "UniFi MCP health check failed"
 fi
 
-# Wazuh
-WAZUH_HEALTH=$(kubectl run test-mcp-wazuh-$RANDOM --rm -i --restart=Never --image=curlimages/curl --quiet -- \
-    curl -s -m 5 http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080/health 2>/dev/null | grep -o '"status":"healthy"' || echo "")
+# Sandfly
+SANDFLY_HEALTH=$(kubectl run test-mcp-sandfly-$RANDOM --rm -i --restart=Never --image=curlimages/curl --quiet -- \
+    curl -s -m 5 http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080/health 2>/dev/null | grep -o '"status":"healthy"' || echo "")
 HEALTH_CHECKS=$((HEALTH_CHECKS + 1))
-if [ -n "$WAZUH_HEALTH" ]; then
-    check_pass "Wazuh MCP health check passed"
+if [ -n "$SANDFLY_HEALTH" ]; then
+    check_pass "Sandfly MCP health check passed"
     HEALTH_PASS=$((HEALTH_PASS + 1))
 else
-    check_fail "Wazuh MCP health check failed"
+    check_fail "Sandfly MCP health check failed"
 fi
 
 # Proxmox

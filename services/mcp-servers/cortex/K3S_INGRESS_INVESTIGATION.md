@@ -262,7 +262,7 @@ If using k3s-master01 temporarily:
 
 - **Network Diagnosis:** `/Users/ryandahlberg/Projects/cortex/NETWORK_DIAGNOSIS.md`
 - **Proxmox Credentials:** `/Users/ryandahlberg/Projects/cortex/coordination/config/proxmox-credentials.sh`
-- **Wazuh Deployment (Tailscale IPs):** `/Users/ryandahlberg/Projects/cortex/wazuh-integration/DEPLOYMENT-COMPLETE.md`
+- **Sandfly Deployment (Tailscale IPs):** `/Users/ryandahlberg/Projects/cortex/sandfly-integration/DEPLOYMENT-COMPLETE.md`
 - **K3s Deployment:** `/Users/ryandahlberg/Projects/cortex/K3S-DEPLOYMENT-COMPLETE.md`
 
 ---

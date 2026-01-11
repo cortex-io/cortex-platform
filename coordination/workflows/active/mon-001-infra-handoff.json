@@ -13,7 +13,7 @@
     "infrastructure_ready": true,
     "existing_monitoring": {
       "count": 3,
-      "services": ["wazuh", "checkmk", "uptimekuma"],
+      "services": ["sandfly", "checkmk", "uptimekuma"],
       "integration_required": true
     },
     "capacity_available": true,
@@ -36,7 +36,7 @@
   },
 
   "existing_monitoring_services": {
-    "wazuh": {
+    "sandfly": {
       "vmid": 101,
       "purpose": "Security Information and Event Management (SIEM)",
       "tags": ["security", "monitoring"],
@@ -227,10 +227,10 @@
         "retention": "7-14 days"
       },
       "security_events": {
-        "sources": ["Wazuh SIEM"],
-        "integration": "Wazuh API -> Prometheus exporter for security metrics",
+        "sources": ["Sandfly SIEM"],
+        "integration": "Sandfly API -> Prometheus exporter for security metrics",
         "alerting": "Critical security events to Alertmanager",
-        "notes": "Maintain Wazuh as primary security monitoring, expose metrics to Prometheus"
+        "notes": "Maintain Sandfly as primary security monitoring, expose metrics to Prometheus"
       }
     },
     "recommended_exporters": {
@@ -248,11 +248,11 @@
         "purpose": "Endpoint availability monitoring (HTTP, ICMP, DNS, TCP)",
         "integration": "Enhance UptimeKuma with Prometheus-native checks"
       },
-      "wazuh_exporter": {
+      "sandfly_exporter": {
         "install_on": "Prometheus VM",
-        "purpose": "Expose Wazuh security metrics to Prometheus",
+        "purpose": "Expose Sandfly security metrics to Prometheus",
         "custom": true,
-        "notes": "May require custom exporter development or use Wazuh API scraping"
+        "notes": "May require custom exporter development or use Sandfly API scraping"
       }
     }
   },
@@ -302,7 +302,7 @@
       "step_7": "Configure Grafana dashboards and data sources",
       "step_8": "Set up Alertmanager routing and notifications",
       "step_9": "Install node_exporter on all existing VMs",
-      "step_10": "Integrate with existing monitoring services (CheckMK, Wazuh, UptimeKuma)"
+      "step_10": "Integrate with existing monitoring services (CheckMK, Sandfly, UptimeKuma)"
     }
   },
 

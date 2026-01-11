@@ -119,7 +119,7 @@ Comprehensive testing of all vendor APIs:
 - Test Sandfly (20+ message conversation)
 - Test Proxmox (20+ message conversation)
 - Test UniFi (20+ message conversation)
-- Test Wazuh (20+ message conversation)
+- Test Sandfly (20+ message conversation)
 
 **Test Scenarios**: See handoff document for detailed conversation flows
 
@@ -151,7 +151,7 @@ Comprehensive testing of all vendor APIs:
            ▼
 ┌─────────────────────────────────────────┐
 │         MCP Server Routing              │
-│  - wazuh-mcp (existing)                 │
+│  - sandfly-mcp (existing)                 │
 │  - unifi-mcp (existing)                 │
 │  - proxmox-mcp (existing)               │
 │  - cortex-orchestrator (existing)       │
@@ -176,7 +176,7 @@ Comprehensive testing of all vendor APIs:
            ▼
 ┌─────────────────────────────────────────┐
 │         MCP Server Routing              │
-│  - wazuh-mcp                            │
+│  - sandfly-mcp                            │
 │  - unifi-mcp                            │
 │  - proxmox-mcp                          │
 │  - cortex-orchestrator                  │
@@ -186,7 +186,7 @@ Comprehensive testing of all vendor APIs:
            ▼
 ┌─────────────────────────────────────────┐
 │         Vendor APIs                     │
-│  - Wazuh Server                         │
+│  - Sandfly Server                         │
 │  - UniFi Controller                     │
 │  - Proxmox Cluster                      │
 │  - Sandfly (10.88.140.176)              │
@@ -274,7 +274,7 @@ SANDFLY_VERIFY_SSL=false
 - [ ] Sandfly: 20+ message conversation completed
 - [ ] Proxmox: 20+ message conversation completed
 - [ ] UniFi: 20+ message conversation completed
-- [ ] Wazuh: 20+ message conversation completed
+- [ ] Sandfly: 20+ message conversation completed
 - [ ] Test report generated
 
 ## Risk Assessment

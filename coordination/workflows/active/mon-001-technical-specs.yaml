@@ -43,7 +43,7 @@ infrastructure:
 
 existing_monitoring:
   services:
-    - name: wazuh
+    - name: sandfly
       vmid: 101
       purpose: "Security Information and Event Management (SIEM)"
       vcpu: 4
@@ -169,9 +169,9 @@ exporters:
     install_on: prometheus_vm
     purpose: "Endpoint availability monitoring (HTTP, ICMP, DNS, TCP)"
 
-  wazuh_exporter:
+  sandfly_exporter:
     install_on: prometheus_vm
-    purpose: "Wazuh security metrics"
+    purpose: "Sandfly security metrics"
     custom: true
     method: "API scraping or custom exporter"
 
@@ -258,7 +258,7 @@ integration_architecture:
       - "Proxmox host (pve_exporter)"
       - "All VMs (node_exporter)"
       - "CheckMK (federation)"
-      - "Wazuh (API exporter)"
+      - "Sandfly (API exporter)"
       - "UptimeKuma (blackbox_exporter)"
     collectors:
       - prometheus

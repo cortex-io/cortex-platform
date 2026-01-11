@@ -4,7 +4,7 @@
 
 **Current State:**
 - Chat sends queries to Cortex orchestrator
-- Cortex has MCP tools (unifi_query, proxmox_query, wazuh_query) defined
+- Cortex has MCP tools (unifi_query, proxmox_query, sandfly_query) defined
 - MCP servers are healthy and reachable
 - BUT: Claude defaults to kubectl tool instead of MCP tools
 - Result: Only k8s queries work, UniFi/Proxmox queries return kubectl output
@@ -67,9 +67,9 @@ const MoE_ROUTES = {
     tool: 'proxmox_query',
     priority: 100
   },
-  wazuh: {
-    keywords: ['wazuh', 'security', 'alert'],
-    tool: 'wazuh_query',
+  sandfly: {
+    keywords: ['sandfly', 'security', 'alert'],
+    tool: 'sandfly_query',
     priority: 100
   },
   kubernetes: {
@@ -103,7 +103,7 @@ const MoE_ROUTES = {
 │  - Routes to specialists:            │
 │    • UniFi MCP                       │
 │    • Proxmox MCP                     │
-│    • Wazuh MCP                       │
+│    • Sandfly MCP                       │
 │    • Worker Pool                     │
 │    • Master Agents                   │
 │    • kubectl                         │
@@ -114,12 +114,12 @@ const MoE_ROUTES = {
 ```javascript
 {
   name: 'cortex_route',
-  description: 'Route query to appropriate Cortex subsystem (UniFi, Proxmox, Wazuh, k8s, workers)',
+  description: 'Route query to appropriate Cortex subsystem (UniFi, Proxmox, Sandfly, k8s, workers)',
   input_schema: {
     type: 'object',
     properties: {
       query: { type: 'string' },
-      system: { type: 'string', enum: ['auto', 'unifi', 'proxmox', 'wazuh', 'k8s', 'workers'] }
+      system: { type: 'string', enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'k8s', 'workers'] }
     }
   }
 },
@@ -157,7 +157,7 @@ cortex-mcp-server/
 │   └── clients/
 │       ├── unifi.js      # UniFi MCP client
 │       ├── proxmox.js    # Proxmox MCP client
-│       ├── wazuh.js      # Wazuh MCP client
+│       ├── sandfly.js      # Sandfly MCP client
 │       └── kubectl.js    # k8s client
 ├── package.json
 └── Dockerfile
@@ -210,9 +210,9 @@ curl -X POST http://cortex:8000/api/tasks \
 curl -X POST http://cortex:8000/api/tasks \
   -d '{"id":"test-2","payload":{"query":"what VMs are running on proxmox?"}}'
 
-# Should route to wazuh_query
+# Should route to sandfly_query
 curl -X POST http://cortex:8000/api/tasks \
-  -d '{"id":"test-3","payload":{"query":"any security alerts from wazuh?"}}'
+  -d '{"id":"test-3","payload":{"query":"any security alerts from sandfly?"}}'
 
 # Should route to kubectl
 curl -X POST http://cortex:8000/api/tasks \

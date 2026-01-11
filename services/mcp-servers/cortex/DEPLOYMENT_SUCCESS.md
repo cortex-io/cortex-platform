@@ -91,7 +91,7 @@ ConfigMap `cortex-mcp-src` contains 13 files:
 5. **k8s.js** - Kubernetes client (src/clients/)
 6. **proxmox.js** - Proxmox client (src/clients/)
 7. **unifi.js** - UniFi client (src/clients/)
-8. **wazuh.js** - Wazuh client (src/clients/)
+8. **sandfly.js** - Sandfly client (src/clients/)
 9. **query.js** - Query tool (src/tools/)
 10. **status.js** - Status tool (src/tools/)
 11. **coordinator.js** - Worker coordinator (src/worker-pool/)
@@ -132,7 +132,7 @@ cortex_mcp_up 1
 [MCP Server] Cortex MCP Server v1.0.0 starting...
 [MCP Server] Mode: stdio
 [MCP Server] Tools: cortex_query, cortex_get_status
-[MCP Server] Subsystems: UniFi, Proxmox, Wazuh, Kubernetes
+[MCP Server] Subsystems: UniFi, Proxmox, Sandfly, Kubernetes
 [MCP Server] Ready to accept requests
 ```
 
@@ -144,7 +144,7 @@ cortex_mcp_up 1
 ```yaml
 UNIFI_MCP_URL: "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000"
 PROXMOX_MCP_URL: "http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000"
-WAZUH_MCP_URL: "http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080"
+SANDFLY_MCP_URL: "http://sandfly-mcp-server.cortex-system.svc.cluster.local:8080"
 ```
 
 ### Worker Pool Configuration
@@ -215,7 +215,7 @@ readinessProbe:
 4. **Logging:** Configure structured logging with log aggregation
 
 ### Integration Testing
-1. Test `cortex_query` tool with all subsystems (UniFi, Proxmox, Wazuh, K8s)
+1. Test `cortex_query` tool with all subsystems (UniFi, Proxmox, Sandfly, K8s)
 2. Test `cortex_get_status` tool for health aggregation
 3. Verify MoE routing decisions with sample queries
 4. Test worker pool spawning and coordination
@@ -264,7 +264,7 @@ kubectl rollout restart deployment/cortex-mcp-server -n cortex-system
 - [x] Metrics endpoint responding (Prometheus format)
 - [x] MCP server process running (stdio mode in wrapper)
 - [x] Service accessible cluster-wide (verified with test pod)
-- [x] Integration endpoints configured (UniFi, Proxmox, Wazuh)
+- [x] Integration endpoints configured (UniFi, Proxmox, Sandfly)
 - [x] Worker pool configuration loaded (from ConfigMap)
 
 ---

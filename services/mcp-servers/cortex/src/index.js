@@ -2,7 +2,7 @@
 /**
  * Cortex MCP Server
  * Main entry point - implements MCP protocol over stdio
- * Routes to UniFi, Proxmox, Wazuh, and Kubernetes subsystems
+ * Routes to UniFi, Proxmox, Sandfly, and Kubernetes subsystems
  */
 
 import { cortexQueryTool, executeCortexQuery } from './tools/query.js';
@@ -149,7 +149,7 @@ async function main() {
   console.error('[MCP Server] Cortex MCP Server v1.0.0 starting...');
   console.error('[MCP Server] Mode: stdio');
   console.error('[MCP Server] Tools: cortex_query, cortex_get_status');
-  console.error('[MCP Server] Subsystems: UniFi, Proxmox, Wazuh, Kubernetes');
+  console.error('[MCP Server] Subsystems: UniFi, Proxmox, Sandfly, Kubernetes');
 
   let buffer = '';
 

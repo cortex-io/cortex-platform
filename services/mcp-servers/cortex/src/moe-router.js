@@ -20,12 +20,12 @@ const MOE_ROUTES = {
     system: 'proxmox',
     priority: 100
   },
-  wazuh: {
+  sandfly: {
     keywords: [
-      'wazuh', 'security', 'alert', 'vulnerability', 'threat', 'compliance',
+      'sandfly', 'security', 'alert', 'vulnerability', 'threat', 'compliance',
       'cve', 'intrusion', 'siem', 'log', 'agent', 'malware'
     ],
-    system: 'wazuh',
+    system: 'sandfly',
     priority: 100
   },
   kubernetes: {
