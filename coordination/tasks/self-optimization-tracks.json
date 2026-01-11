@@ -1,0 +1,419 @@
+{
+  "meta": {
+    "project": "cortex-self-optimization",
+    "created_at": "2025-12-05T00:00:00Z",
+    "description": "5 parallel tracks implementing self-optimization framework",
+    "execution_strategy": "parallel",
+    "total_tracks": 5,
+    "estimated_completion": "10 weeks",
+    "priority": "high"
+  },
+  "tracks": [
+    {
+      "track_id": "track-a-timeout-learning",
+      "name": "Timeout Learning System",
+      "priority": "high",
+      "complexity": 6,
+      "dependencies": [],
+      "estimated_duration": "2 weeks",
+      "tasks": [
+        {
+          "id": "timeout-001",
+          "title": "Create timeout learning infrastructure",
+          "type": "development",
+          "description": "development: Create lib/learning/timeout-learner.sh with functions: record_task_duration(), get_recommended_timeout(), calculate_p95_timeout(). Setup JSONL database at coordination/knowledge-base/learned-timeouts.jsonl. Include schema validation and error handling.",
+          "priority": "high",
+          "dependencies": [],
+          "deliverables": [
+            "lib/learning/timeout-learner.sh",
+            "coordination/knowledge-base/learned-timeouts.jsonl (schema)",
+            "testing/unit/timeout-learner.test.sh"
+          ],
+          "test_command": "./testing/unit/timeout-learner.test.sh",
+          "acceptance_criteria": [
+            "Can record task durations with metadata (type, complexity, outcome)",
+            "Can calculate P95 timeout from historical data",
+            "Can recommend timeout with 50% buffer",
+            "Defaults to 300s when no history",
+            "Unit tests pass with 100% coverage"
+          ]
+        },
+        {
+          "id": "timeout-002",
+          "title": "Integrate timeout learning with worker spawning",
+          "type": "development",
+          "description": "development: Modify scripts/spawn-worker.sh to use learned timeouts. Before spawning, call get_recommended_timeout() based on task type and complexity. After completion, record actual duration and outcome. Add timeout hit detection and logging.",
+          "priority": "high",
+          "dependencies": ["timeout-001"],
+          "deliverables": [
+            "scripts/spawn-worker.sh (modified)",
+            "testing/integration/timeout-integration.test.sh"
+          ],
+          "test_command": "./testing/integration/timeout-integration.test.sh",
+          "acceptance_criteria": [
+            "Workers spawn with learned timeouts instead of default 300s",
+            "Successful completions record duration",
+            "Timeout events record duration",
+            "Integration tests validate end-to-end flow"
+          ]
+        },
+        {
+          "id": "timeout-003",
+          "title": "Build timeout analytics and reporting",
+          "type": "development",
+          "description": "development: Create lib/learning/timeout-analytics.sh with functions: analyze_timeout_accuracy(), generate_timeout_report(), identify_problematic_patterns(). Create CLI tool cortex-ctl.sh timeout-stats command.",
+          "priority": "medium",
+          "dependencies": ["timeout-002"],
+          "deliverables": [
+            "lib/learning/timeout-analytics.sh",
+            "scripts/cortex-ctl.sh (enhanced)",
+            "docs/timeout-learning.md"
+          ],
+          "test_command": "./testing/unit/timeout-analytics.test.sh",
+          "acceptance_criteria": [
+            "Can calculate timeout prediction accuracy",
+            "Generates human-readable reports",
+            "Identifies task types with high timeout rates",
+            "CLI integration works"
+          ]
+        }
+      ]
+    },
+    {
+      "track_id": "track-b-granularity-optimizer",
+      "name": "Adaptive Task Granularity",
+      "priority": "high",
+      "complexity": 7,
+      "dependencies": [],
+      "estimated_duration": "3 weeks",
+      "tasks": [
+        {
+          "id": "granularity-001",
+          "title": "Create granularity optimizer core",
+          "type": "development",
+          "description": "development: Create lib/learning/granularity-optimizer.sh with functions: record_decomposition(), should_decompose(), recommend_subtask_count(), calculate_efficiency_score(). Database at coordination/knowledge-base/granularity-decisions.jsonl.",
+          "priority": "high",
+          "dependencies": [],
+          "deliverables": [
+            "lib/learning/granularity-optimizer.sh",
+            "coordination/knowledge-base/granularity-decisions.jsonl (schema)",
+            "testing/unit/granularity-optimizer.test.sh"
+          ],
+          "test_command": "./testing/unit/granularity-optimizer.test.sh",
+          "acceptance_criteria": [
+            "Can record decomposition outcomes with efficiency scores",
+            "Calculates coordination overhead vs. actual work ratio",
+            "Recommends optimal subtask counts based on history",
+            "Learning curve visible after 20+ decompositions"
+          ]
+        },
+        {
+          "id": "granularity-002",
+          "title": "Integrate with Initializer Master",
+          "type": "development",
+          "description": "development: Modify coordination/masters/initializer/lib/feature-decomposer.sh to use granularity optimizer. Query for optimal feature count before decomposition. Record outcomes after execution. Implement adaptive scaling: complexity 1-3 → 25-50 features, 4-6 → 50-150, 7+ → 150-300.",
+          "priority": "high",
+          "dependencies": ["granularity-001"],
+          "deliverables": [
+            "coordination/masters/initializer/lib/feature-decomposer.sh (modified)",
+            "testing/integration/granularity-initializer.test.sh"
+          ],
+          "test_command": "./testing/integration/granularity-initializer.test.sh",
+          "acceptance_criteria": [
+            "Feature count scales with complexity",
+            "Decomposition outcomes tracked",
+            "Token usage reduced by 30-40% on small tasks",
+            "Large tasks still get adequate granularity"
+          ]
+        },
+        {
+          "id": "granularity-003",
+          "title": "Build feedback loop from worker outcomes",
+          "type": "development",
+          "description": "development: Create lib/learning/outcome-tracker.sh that captures worker completion times, success rates, and coordination overhead per decomposition. Feed back into granularity optimizer to improve recommendations over time.",
+          "priority": "medium",
+          "dependencies": ["granularity-002"],
+          "deliverables": [
+            "lib/learning/outcome-tracker.sh",
+            "testing/integration/granularity-feedback-loop.test.sh"
+          ],
+          "test_command": "./testing/integration/granularity-feedback-loop.test.sh",
+          "acceptance_criteria": [
+            "Worker outcomes automatically update granularity models",
+            "Efficiency scores improve over time",
+            "Can demonstrate learning curve over 50+ tasks"
+          ]
+        }
+      ]
+    },
+    {
+      "track_id": "track-c-result-analyzer",
+      "name": "Parallel Worker Result Analysis",
+      "priority": "high",
+      "complexity": 8,
+      "dependencies": [],
+      "estimated_duration": "3 weeks",
+      "tasks": [
+        {
+          "id": "result-001",
+          "title": "Build result analyzer core",
+          "type": "development",
+          "description": "development: Create lib/coordination/result-analyzer.sh with functions: analyze_parallel_results(), compare_text_similarity(), calculate_waste_score(), detect_redundancy(). Use Jaccard similarity for text comparison. Database at coordination/knowledge-base/result-analysis.jsonl.",
+          "priority": "high",
+          "dependencies": [],
+          "deliverables": [
+            "lib/coordination/result-analyzer.sh",
+            "coordination/knowledge-base/result-analysis.jsonl (schema)",
+            "testing/unit/result-analyzer.test.sh"
+          ],
+          "test_command": "./testing/unit/result-analyzer.test.sh",
+          "acceptance_criteria": [
+            "Can compare worker outputs for similarity",
+            "Calculates waste scores (0-1 scale)",
+            "Detects high/medium/low waste patterns",
+            "Unit tests with mock worker outputs"
+          ]
+        },
+        {
+          "id": "result-002",
+          "title": "Integrate analyzer with MoE router",
+          "type": "development",
+          "description": "development: Modify coordination/masters/coordinator/lib/moe-router.sh to check historical waste before routing to parallel experts. If task type has high waste history (>0.6), prefer single expert routing. Add waste feedback to routing decisions.",
+          "priority": "high",
+          "dependencies": ["result-001"],
+          "deliverables": [
+            "coordination/masters/coordinator/lib/moe-router.sh (modified)",
+            "testing/integration/result-analyzer-routing.test.sh"
+          ],
+          "test_command": "./testing/integration/result-analyzer-routing.test.sh",
+          "acceptance_criteria": [
+            "Router queries waste history before parallel routing",
+            "High waste tasks route to single expert",
+            "Routing explanation includes waste reasoning",
+            "Demonstrable waste reduction over 30+ tasks"
+          ]
+        },
+        {
+          "id": "result-003",
+          "title": "Build intelligent result aggregation",
+          "type": "development",
+          "description": "development: Create lib/coordination/aggregation.sh with merge strategies: consensus (majority vote), best-quality (highest confidence), union (combine all), intersection (common elements). Auto-select strategy based on task type and historical success.",
+          "priority": "medium",
+          "dependencies": ["result-002"],
+          "deliverables": [
+            "lib/coordination/aggregation.sh",
+            "testing/unit/aggregation.test.sh",
+            "docs/aggregation-strategies.md"
+          ],
+          "test_command": "./testing/unit/aggregation.test.sh",
+          "acceptance_criteria": [
+            "Multiple merge strategies implemented",
+            "Auto-selection based on task type",
+            "Quality scoring for worker outputs",
+            "Conflict resolution documented"
+          ]
+        }
+      ]
+    },
+    {
+      "track_id": "track-d-multi-instance",
+      "name": "Multi-Instance Coordination",
+      "priority": "high",
+      "complexity": 7,
+      "dependencies": [],
+      "estimated_duration": "2 weeks",
+      "tasks": [
+        {
+          "id": "instance-001",
+          "title": "Build instance registry system",
+          "type": "development",
+          "description": "development: Create lib/coordination/instance-registry.sh with functions: register_instance(), update_heartbeat(), get_active_instances(), cleanup_dead_instances(). Use file-based coordination at coordination/instances/. Each instance has JSON descriptor with heartbeat.",
+          "priority": "high",
+          "dependencies": [],
+          "deliverables": [
+            "lib/coordination/instance-registry.sh",
+            "coordination/instances/ (directory)",
+            "testing/unit/instance-registry.test.sh"
+          ],
+          "test_command": "./testing/unit/instance-registry.test.sh",
+          "acceptance_criteria": [
+            "Instances can register with unique IDs",
+            "Heartbeat updates every 30s",
+            "Dead instance detection (60s timeout)",
+            "Multiple instances visible in registry"
+          ]
+        },
+        {
+          "id": "instance-002",
+          "title": "Implement atomic task claiming",
+          "type": "development",
+          "description": "development: Add claim_task() and release_task() functions using mkdir for atomic locks at coordination/tasks/locks/. Integrate with coordinator daemon to prevent duplicate task assignment across instances.",
+          "priority": "high",
+          "dependencies": ["instance-001"],
+          "deliverables": [
+            "lib/coordination/instance-registry.sh (enhanced)",
+            "scripts/coordinator-daemon.sh (modified)",
+            "testing/integration/task-claiming.test.sh"
+          ],
+          "test_command": "./testing/integration/task-claiming.test.sh",
+          "acceptance_criteria": [
+            "Atomic task locks via mkdir",
+            "No duplicate task assignments",
+            "Lock cleanup on completion",
+            "Race condition testing passes"
+          ]
+        },
+        {
+          "id": "instance-003",
+          "title": "Build unified control interface",
+          "type": "development",
+          "description": "development: Create scripts/cortex-ctl.sh with commands: status (show instances), stats (learning metrics), optimize (run meta-learner), instances (list active). Enhance with instance-aware commands.",
+          "priority": "medium",
+          "dependencies": ["instance-002"],
+          "deliverables": [
+            "scripts/cortex-ctl.sh",
+            "testing/integration/cortex-ctl.test.sh",
+            "docs/cortex-ctl-usage.md"
+          ],
+          "test_command": "./testing/integration/cortex-ctl.test.sh",
+          "acceptance_criteria": [
+            "Single command shows all instance status",
+            "Learning stats aggregated across instances",
+            "Manual optimization trigger works",
+            "Documentation complete with examples"
+          ]
+        }
+      ]
+    },
+    {
+      "track_id": "track-e-meta-learner",
+      "name": "Meta-Learning Intelligence",
+      "priority": "medium",
+      "complexity": 9,
+      "dependencies": ["track-a-timeout-learning", "track-b-granularity-optimizer", "track-c-result-analyzer"],
+      "estimated_duration": "3 weeks",
+      "tasks": [
+        {
+          "id": "meta-001",
+          "title": "Build meta-learner core system",
+          "type": "development",
+          "description": "development: Create lib/learning/meta-learner.sh with functions: run_meta_learning(), synthesize_insights(), generate_recommendations(), analyze_timeout_patterns(), analyze_granularity_efficiency(), analyze_waste_patterns(). Aggregates data from all learning systems.",
+          "priority": "high",
+          "dependencies": [],
+          "deliverables": [
+            "lib/learning/meta-learner.sh",
+            "coordination/knowledge-base/meta-insights.jsonl",
+            "testing/unit/meta-learner.test.sh"
+          ],
+          "test_command": "./testing/unit/meta-learner.test.sh",
+          "acceptance_criteria": [
+            "Can aggregate insights from timeout/granularity/waste learners",
+            "Generates actionable recommendations",
+            "Identifies system-wide optimization opportunities",
+            "Insights logged with reasoning"
+          ]
+        },
+        {
+          "id": "meta-002",
+          "title": "Build policy optimizer",
+          "type": "development",
+          "description": "development: Create lib/learning/policy-optimizer.sh with functions: update_routing_parameters(), update_timeout_parameters(), update_granularity_parameters(), validate_parameter_changes(). Auto-tune system parameters based on meta-insights. Require approval for changes >10%.",
+          "priority": "high",
+          "dependencies": ["meta-001"],
+          "deliverables": [
+            "lib/learning/policy-optimizer.sh",
+            "coordination/knowledge-base/optimization-history.jsonl",
+            "testing/integration/policy-optimizer.test.sh"
+          ],
+          "test_command": "./testing/integration/policy-optimizer.test.sh",
+          "acceptance_criteria": [
+            "Can update system parameters automatically",
+            "Changes logged with justification",
+            "Large changes require approval",
+            "Rollback capability implemented"
+          ]
+        },
+        {
+          "id": "meta-003",
+          "title": "Build meta-learner daemon",
+          "type": "development",
+          "description": "development: Create scripts/daemons/meta-learner-daemon.sh that runs daily at 2 AM. Executes run_meta_learning(), applies optimizations, generates reports. Add to daemon control system.",
+          "priority": "medium",
+          "dependencies": ["meta-002"],
+          "deliverables": [
+            "scripts/daemons/meta-learner-daemon.sh",
+            "scripts/daemon-control.sh (enhanced)",
+            "testing/integration/meta-learner-daemon.test.sh"
+          ],
+          "test_command": "./testing/integration/meta-learner-daemon.test.sh",
+          "acceptance_criteria": [
+            "Daemon runs on schedule",
+            "Optimizations applied automatically",
+            "Reports generated and logged",
+            "Integrates with existing daemon infrastructure"
+          ]
+        },
+        {
+          "id": "meta-004",
+          "title": "Build meta-learning dashboard",
+          "type": "development",
+          "description": "development: Create eui-dashboard/src/components/learning/ with MetaLearningViz.tsx, OptimizationHistory.tsx, PredictiveAnalytics.tsx. Add API endpoints at dashboard/server/learning-api.js. Show system improvements over time.",
+          "priority": "medium",
+          "dependencies": ["meta-003"],
+          "deliverables": [
+            "eui-dashboard/src/components/learning/MetaLearningViz.tsx",
+            "eui-dashboard/src/components/learning/OptimizationHistory.tsx",
+            "dashboard/server/learning-api.js",
+            "testing/integration/meta-dashboard.test.sh"
+          ],
+          "test_command": "npm test -- learning-dashboard",
+          "acceptance_criteria": [
+            "Real-time visualization of system learning",
+            "Optimization history with before/after metrics",
+            "Predictive analytics for future performance",
+            "ROI tracking for learning initiatives"
+          ]
+        }
+      ]
+    }
+  ],
+  "coordination_strategy": {
+    "approach": "parallel_tracks",
+    "description": "Execute all 5 tracks simultaneously using Cortex's multi-worker coordination",
+    "worker_allocation": {
+      "track_a": "2 workers (implementation + testing)",
+      "track_b": "2-3 workers (complex integration)",
+      "track_c": "2-3 workers (most complex)",
+      "track_d": "2 workers (clear scope)",
+      "track_e": "3 workers (requires track dependencies)"
+    },
+    "total_workers": "11-13 parallel workers",
+    "coordination_points": [
+      "Week 2: Track A/B/C/D review",
+      "Week 4: Integration checkpoint",
+      "Week 6: Track E begins (requires A/B/C)",
+      "Week 8: System integration",
+      "Week 10: Final validation"
+    ]
+  },
+  "success_metrics": {
+    "week_2": {
+      "timeout_learning": "50+ tasks with learned timeouts",
+      "granularity_optimizer": "30+ decompositions tracked",
+      "result_analyzer": "20+ parallel comparisons",
+      "multi_instance": "2+ instances coordinating"
+    },
+    "week_4": {
+      "timeout_efficiency": "40% improvement vs. default",
+      "token_reduction": "25-30% from adaptive targeting",
+      "waste_detection": "15%+ waste identified",
+      "instance_coordination": "Zero task conflicts"
+    },
+    "week_10": {
+      "meta_learner": "Daily optimizations running",
+      "dashboard": "Full visibility into learning",
+      "routing_accuracy": "96%+ (up from 94.5%)",
+      "self_optimization_score": "60/100"
+    }
+  }
+}

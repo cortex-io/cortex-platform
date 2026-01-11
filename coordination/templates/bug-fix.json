@@ -1,0 +1,40 @@
+{
+  "template_id": "bug-fix",
+  "description": "Fix reported bug",
+  "master": "development-master",
+  "required_fields": [
+    "bug_description",
+    "steps_to_reproduce"
+  ],
+  "optional_fields": [
+    "affected_versions",
+    "severity",
+    "expected_behavior",
+    "actual_behavior",
+    "error_logs"
+  ],
+  "field_descriptions": {
+    "bug_description": "Clear description of the bug",
+    "steps_to_reproduce": "Step-by-step instructions to reproduce the bug",
+    "affected_versions": "Versions where this bug exists",
+    "severity": "Bug severity: critical, high, medium, low",
+    "expected_behavior": "What should happen",
+    "actual_behavior": "What actually happens",
+    "error_logs": "Relevant error logs or stack traces"
+  },
+  "default_priority": "high",
+  "estimated_duration_minutes": 120,
+  "tags": ["development", "bug", "fix"],
+  "examples": [
+    {
+      "description": "Fix authentication timeout bug",
+      "fields": {
+        "bug_description": "Users are logged out unexpectedly after 5 minutes",
+        "steps_to_reproduce": "1. Login to app, 2. Wait 5 minutes, 3. Try to access protected resource",
+        "severity": "high",
+        "expected_behavior": "Session should last 30 minutes",
+        "actual_behavior": "Session expires after 5 minutes"
+      }
+    }
+  ]
+}

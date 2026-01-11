@@ -1,0 +1,51 @@
+{
+  "task_id": "task-step-runner-1733000004",
+  "description": "Implement step runner supporting all action types: bash, delegate, http_request, aggregate with error handling and retries",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:04Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/step-runner.sh",
+    "dependencies": ["task-output-resolver-1733000005"],
+    "estimated_duration_minutes": 120
+  },
+  "requirements": {
+    "inputs": [
+      "Step definition (action type, inputs, outputs)",
+      "Resolved input variables"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/step-runner.sh"
+    ],
+    "validation": [
+      "Execute bash commands",
+      "Delegate to masters via spawn-worker.sh",
+      "Make HTTP requests",
+      "Aggregate results from multiple steps"
+    ],
+    "features": [
+      "Action type: bash - Execute bash commands with variable substitution",
+      "Action type: delegate - Spawn worker for master execution",
+      "Action type: http_request - Make HTTP requests (GET, POST, PUT, DELETE)",
+      "Action type: aggregate - Combine outputs from multiple steps",
+      "Capture stdout/stderr from bash commands",
+      "Parse outputs based on output schema",
+      "Retry logic with exponential backoff (configurable max_retries)",
+      "Timeout handling per step",
+      "continue_on_failure flag support",
+      "Emit step.started, step.completed, step.failed events",
+      "Update state manager with step progress"
+    ]
+  },
+  "acceptance_criteria": [
+    "Successfully executes bash commands from security-audit.yaml",
+    "Delegates to security-master for security scans",
+    "Makes HTTP POST requests for notifications",
+    "Aggregates results from parallel scans",
+    "Retries failed steps up to max_retries",
+    "Respects continue_on_failure flag",
+    "Includes tests for each action type"
+  ]
+}

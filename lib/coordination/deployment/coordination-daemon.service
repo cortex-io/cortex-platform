@@ -1,0 +1,50 @@
+# Systemd service file for Coordination Daemon
+# Install to: /etc/systemd/system/coordination-daemon.service
+#
+# Usage:
+#   sudo systemctl enable coordination-daemon
+#   sudo systemctl start coordination-daemon
+#   sudo systemctl status coordination-daemon
+#   sudo systemctl stop coordination-daemon
+
+[Unit]
+Description=Cortex Coordination Daemon
+Documentation=https://github.com/ry-ops/cortex
+After=network.target
+
+[Service]
+Type=simple
+User=cortex
+Group=cortex
+WorkingDirectory=/opt/cortex
+Environment="NODE_ENV=production"
+Environment="COORDINATION_PORT=9500"
+Environment="COORDINATION_WS_PORT=9501"
+Environment="COORDINATION_PERSISTENCE=periodic-snapshot"
+Environment="COORDINATION_SNAPSHOT_PATH=/var/lib/cortex/coordination/state-snapshot.json"
+
+# Start the daemon
+ExecStart=/usr/bin/node /opt/cortex/scripts/coordination-daemon.js --preset production
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Resource limits
+LimitNOFILE=65536
+MemoryLimit=2G
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=coordination-daemon
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cortex/coordination
+
+[Install]
+WantedBy=multi-user.target

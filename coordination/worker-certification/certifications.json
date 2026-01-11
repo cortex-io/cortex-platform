@@ -1,0 +1,1197 @@
+{
+  "version": "2.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "description": "Comprehensive certification definitions, skill requirements, and renewal policies for Cortex worker certification system",
+
+  "certification_levels": {
+    "level_0": {
+      "name": "Uncertified (Non-Union)",
+      "description": "Default certification level for all new workers. Optimized for development velocity.",
+      "status": "non_union",
+      "environments_allowed": ["local", "development", "test"],
+      "environments_blocked": ["staging", "production"],
+
+      "capabilities": [
+        "read_only_dev_test",
+        "feature_development_isolated",
+        "documentation_updates",
+        "test_writing_execution",
+        "code_exploration",
+        "local_experimentation"
+      ],
+
+      "restrictions": {
+        "no_production_access": true,
+        "no_sensitive_data_access": true,
+        "no_infrastructure_changes": true,
+        "no_customer_facing_operations": true,
+        "max_token_allocation": 10000,
+        "max_time_limit_minutes": 45,
+        "max_concurrent_tasks": 3
+      },
+
+      "requirements": {
+        "prerequisites": [],
+        "training": [],
+        "exam": null,
+        "approval": "automatic"
+      },
+
+      "probation": {
+        "required": false,
+        "duration_days": 0
+      },
+
+      "renewal": {
+        "required": false,
+        "frequency": "not_applicable"
+      },
+
+      "upgrade_path": {
+        "next_level": 1,
+        "automatic_upgrade_eligible": true,
+        "requirements": {
+          "time_in_level_days": 30,
+          "successful_operations_min": 50,
+          "success_rate_min": 0.98,
+          "incidents_max": 0
+        }
+      }
+    },
+
+    "level_1": {
+      "name": "Basic Certification (Read-Only Union)",
+      "description": "Entry-level union certification for production observability and monitoring",
+      "status": "union_basic",
+      "environments_allowed": ["local", "development", "test", "staging", "production_readonly"],
+      "environments_blocked": [],
+
+      "capabilities": [
+        "production_observability",
+        "read_only_database_queries",
+        "log_analysis",
+        "metrics_querying",
+        "incident_investigation_readonly",
+        "configuration_inspection"
+      ],
+
+      "restrictions": {
+        "read_only_production": true,
+        "no_write_operations": true,
+        "no_sensitive_data_modification": true,
+        "no_infrastructure_changes": true,
+        "max_token_allocation": 15000,
+        "max_time_limit_minutes": 60,
+        "max_concurrent_tasks": 5
+      },
+
+      "requirements": {
+        "prerequisites": [
+          "30_days_level_0_experience",
+          "10_successful_level_0_operations",
+          "no_incidents_30_days"
+        ],
+        "training": [
+          "production_observability_basics",
+          "read_only_query_safety",
+          "incident_investigation_procedures"
+        ],
+        "exam": "level_1_certification_exam",
+        "test_coverage_min": 0.85,
+        "approval": "manager_approval"
+      },
+
+      "probation": {
+        "required": true,
+        "duration_days": 14,
+        "monitoring": {
+          "daily_activity_review": true,
+          "read_only_verification": true,
+          "access_pattern_analysis": true,
+          "incident_tracking": true
+        },
+        "success_criteria": {
+          "successful_operations_min": 20,
+          "access_violations_max": 0,
+          "incidents_max": 0,
+          "query_accuracy_min": 0.95,
+          "training_completion_required": true
+        },
+        "restrictions": {
+          "supervisor_notification": true,
+          "business_hours_only": true,
+          "enhanced_audit_logging": true,
+          "no_critical_system_access": true
+        }
+      },
+
+      "renewal": {
+        "required": true,
+        "frequency": "annual",
+        "notification_days_before": 60,
+        "grace_period_days": 14,
+        "requirements": {
+          "test_coverage_verification": 0.85,
+          "security_scan_passed": true,
+          "security_violations_max": 0,
+          "performance_review_completed": true,
+          "training_updates_completed": true,
+          "skill_assessment_passed": true
+        },
+        "consequence_non_renewal": "downgrade_to_level_0"
+      },
+
+      "upgrade_path": {
+        "next_level": 2,
+        "automatic_upgrade_eligible": false,
+        "requirements": {
+          "time_in_level_days": 60,
+          "successful_operations_min": 100,
+          "success_rate_min": 0.95,
+          "incidents_max": 0,
+          "manager_recommendation": true
+        }
+      }
+    },
+
+    "level_2": {
+      "name": "Standard Certification (Production Union)",
+      "description": "Standard production certification for deployments and configuration changes",
+      "status": "union_standard",
+      "environments_allowed": ["local", "development", "test", "staging", "production"],
+      "environments_blocked": [],
+
+      "capabilities": [
+        "production_deployments_standard",
+        "configuration_changes",
+        "infrastructure_updates_non_critical",
+        "customer_facing_services_standard_risk",
+        "code_deployments_cicd",
+        "service_restarts_scaling"
+      ],
+
+      "restrictions": {
+        "no_critical_infrastructure": true,
+        "no_database_migrations": true,
+        "no_security_operations": true,
+        "no_sensitive_data_operations": true,
+        "max_token_allocation": 25000,
+        "max_time_limit_minutes": 120,
+        "max_concurrent_tasks": 8
+      },
+
+      "requirements": {
+        "prerequisites": [
+          "level_1_60_days_or_level_0_30_days",
+          "20_successful_operations_previous_level",
+          "no_incidents_60_days",
+          "production_worker_training_completed"
+        ],
+        "training": [
+          "production_operations_training",
+          "deployment_best_practices",
+          "rollback_procedures",
+          "incident_response_basics"
+        ],
+        "exam": "level_2_certification_exam",
+        "test_coverage_min": 0.90,
+        "code_review_required": true,
+        "security_scan_passed": true,
+        "rollback_procedures_documented": true,
+        "rollback_procedures_tested": true,
+        "manager_recommendation": true,
+        "approval": "manager_approval"
+      },
+
+      "probation": {
+        "required": true,
+        "duration_days": 30,
+        "monitoring": {
+          "daily_deployment_review": true,
+          "change_success_rate_tracking": true,
+          "rollback_execution_verification": true,
+          "customer_impact_monitoring": true
+        },
+        "success_criteria": {
+          "successful_deployments_min": 15,
+          "failed_rollbacks_max": 0,
+          "customer_impacting_incidents_max": 0,
+          "deployment_success_rate_min": 0.90,
+          "rollback_procedures_demonstrated": true
+        },
+        "restrictions": {
+          "manager_approval_each_deployment": true,
+          "peak_hours_deployments_restricted": true,
+          "rollback_plan_review_required": true,
+          "post_deployment_validation_required": true
+        }
+      },
+
+      "renewal": {
+        "required": true,
+        "frequency": "annual",
+        "notification_days_before": 60,
+        "grace_period_days": 14,
+        "requirements": {
+          "test_coverage_verification": 0.85,
+          "security_scan_passed": true,
+          "security_violations_max": 0,
+          "performance_review_completed": true,
+          "training_updates_completed": true,
+          "skill_assessment_passed": true,
+          "deployment_success_rate_min": 0.85
+        },
+        "consequence_non_renewal": "downgrade_to_level_1"
+      },
+
+      "upgrade_path": {
+        "next_level": 3,
+        "automatic_upgrade_eligible": false,
+        "requirements": {
+          "time_in_level_days": 90,
+          "successful_operations_min": 50,
+          "success_rate_min": 0.95,
+          "incidents_max": 0,
+          "security_violations_ever": 0,
+          "senior_engineer_recommendation": true,
+          "director_approval": true,
+          "security_audit_required": true
+        }
+      }
+    },
+
+    "level_3": {
+      "name": "Advanced Certification (Critical Systems Union)",
+      "description": "Advanced certification for critical infrastructure, database operations, and sensitive data",
+      "status": "union_advanced",
+      "environments_allowed": ["local", "development", "test", "staging", "production", "production_critical"],
+      "environments_blocked": [],
+
+      "capabilities": [
+        "critical_infrastructure_changes",
+        "database_migrations_schema_changes",
+        "security_operations_firewall_iam_rbac",
+        "pii_phi_financial_operations",
+        "multi_service_coordinated_changes",
+        "system_wide_configuration_changes",
+        "disaster_recovery_operations",
+        "complex_rollback_procedures"
+      ],
+
+      "restrictions": {
+        "no_multi_region_architecture": true,
+        "no_compliance_critical_operations": true,
+        "max_token_allocation": 40000,
+        "max_time_limit_minutes": 240,
+        "max_concurrent_tasks": 12
+      },
+
+      "requirements": {
+        "prerequisites": [
+          "level_2_90_days",
+          "25_successful_level_2_operations",
+          "no_incidents_90_days",
+          "zero_security_violations_ever",
+          "senior_engineer_recommendation"
+        ],
+        "training": [
+          "advanced_operations_training",
+          "database_migration_procedures",
+          "security_operations_training",
+          "disaster_recovery_procedures",
+          "compliance_training_soc2_hipaa_gdpr"
+        ],
+        "exam": "level_3_certification_exam",
+        "test_coverage_min": 0.95,
+        "code_review_required": true,
+        "security_audit_required": true,
+        "architecture_review_required": true,
+        "penetration_testing_passed": true,
+        "chaos_testing_completed": true,
+        "disaster_recovery_plan_documented": true,
+        "comprehensive_rollback_tested": true,
+        "director_approval": true,
+        "security_lead_approval": true,
+        "approval": "two_director_level_approvers"
+      },
+
+      "probation": {
+        "required": true,
+        "duration_days": 60,
+        "monitoring": {
+          "weekly_security_review": true,
+          "data_operation_auditing": true,
+          "compliance_verification": true,
+          "architecture_review_participation": true
+        },
+        "success_criteria": {
+          "successful_critical_operations_min": 10,
+          "security_violations_max": 0,
+          "data_incidents_max": 0,
+          "operation_success_rate_min": 0.95,
+          "security_audit_passed": true,
+          "compliance_training_completed": true
+        },
+        "restrictions": {
+          "director_approval_required": true,
+          "security_lead_oversight": true,
+          "pre_operation_review_meetings": true,
+          "post_operation_retrospectives": true,
+          "maintenance_windows_only": true
+        }
+      },
+
+      "renewal": {
+        "required": true,
+        "frequency": "quarterly",
+        "notification_days_before": 30,
+        "grace_period_days": 7,
+        "requirements": {
+          "test_coverage_verification": 0.95,
+          "comprehensive_test_suite_passed": true,
+          "security_audit_update": true,
+          "compliance_training_current": true,
+          "performance_metrics_reviewed": true,
+          "incidents_max": 0,
+          "security_violations_max": 0
+        },
+        "consequence_non_renewal": "immediate_suspension_recertification_required"
+      },
+
+      "upgrade_path": {
+        "next_level": 4,
+        "automatic_upgrade_eligible": false,
+        "requirements": {
+          "time_in_level_days": 180,
+          "successful_operations_min": 30,
+          "success_rate_min": 0.98,
+          "incidents_max": 0,
+          "security_violations_ever": 0,
+          "architectural_expertise_demonstrated": true,
+          "director_recommendation": true,
+          "executive_sponsorship": true,
+          "certification_board_approval": true
+        }
+      }
+    },
+
+    "level_4": {
+      "name": "Master Certification (System Architecture Union)",
+      "description": "Master-level certification for system-wide changes, multi-region operations, and architectural decisions",
+      "status": "union_master",
+      "environments_allowed": ["all"],
+      "environments_blocked": [],
+
+      "capabilities": [
+        "system_architecture_changes",
+        "multi_region_deployments",
+        "cross_system_integrations",
+        "compliance_critical_operations",
+        "financial_system_operations_sox",
+        "regulatory_compliance_operations",
+        "enterprise_wide_infrastructure",
+        "merger_acquisition_integrations"
+      ],
+
+      "restrictions": {
+        "max_token_allocation": 75000,
+        "max_time_limit_minutes": 480,
+        "max_concurrent_tasks": 20,
+        "change_advisory_board_required": true
+      },
+
+      "requirements": {
+        "prerequisites": [
+          "level_3_180_days",
+          "50_successful_level_3_operations",
+          "no_incidents_180_days",
+          "proven_architectural_expertise",
+          "director_recommendation"
+        ],
+        "training": [
+          "master_level_training",
+          "architecture_patterns_training",
+          "business_continuity_planning",
+          "executive_leadership_training",
+          "compliance_frameworks_advanced"
+        ],
+        "exam": "level_4_certification_exam",
+        "test_coverage_min": 0.98,
+        "code_review_required": true,
+        "security_audit_required": true,
+        "external_security_audit_required": true,
+        "architecture_review_required": true,
+        "architecture_board_presentation": true,
+        "multi_region_testing_completed": true,
+        "disaster_recovery_rehearsal_completed": true,
+        "business_continuity_validation": true,
+        "executive_sponsorship": true,
+        "certification_board_approval": true,
+        "approval": "three_executive_approvers_plus_cab"
+      },
+
+      "probation": {
+        "required": true,
+        "duration_days": 90,
+        "monitoring": {
+          "executive_oversight": true,
+          "architecture_board_reviews": true,
+          "cross_functional_coordination_validation": true,
+          "business_impact_assessment": true
+        },
+        "success_criteria": {
+          "successful_system_wide_changes_min": 5,
+          "major_incidents_max": 0,
+          "compliance_violations_max": 0,
+          "operation_success_rate_min": 0.98,
+          "business_continuity_validation": true,
+          "executive_sponsorship_maintained": true
+        },
+        "restrictions": {
+          "cab_approval_all_changes": true,
+          "executive_presence_during_execution": true,
+          "independent_validation_required": true,
+          "full_documentation_review": true,
+          "business_continuity_validation": true
+        }
+      },
+
+      "renewal": {
+        "required": true,
+        "frequency": "quarterly",
+        "notification_days_before": 30,
+        "grace_period_days": 7,
+        "continuous_monitoring": true,
+        "requirements": {
+          "test_coverage_verification": 0.98,
+          "master_test_suite_passed": true,
+          "external_security_audit": true,
+          "compliance_training_current": true,
+          "performance_metrics_reviewed": true,
+          "incidents_max": 0,
+          "quarterly_board_presentation": true,
+          "architecture_review_participation": true
+        },
+        "consequence_non_renewal": "immediate_suspension_mandatory_recertification"
+      },
+
+      "upgrade_path": null
+    }
+  },
+
+  "domain_certifications": {
+    "infrastructure": {
+      "name": "Infrastructure Specialist",
+      "description": "Specialization in infrastructure as code, cloud platforms, and system architecture",
+      "certification_exam": "infrastructure_specialist_exam",
+      "renewal_frequency_days": 180,
+
+      "required_skills": {
+        "apprentice": [
+          "terraform_read_configs",
+          "kubernetes_deploy_workloads",
+          "networking_basic_config",
+          "cloud_platforms_basic_operations",
+          "iac_use_templates"
+        ],
+        "journeyman": [
+          "terraform_write_modules",
+          "kubernetes_manage_clusters",
+          "networking_advanced_routing",
+          "cloud_platforms_advanced_services",
+          "iac_write_templates"
+        ],
+        "master": [
+          "terraform_design_architectures",
+          "kubernetes_multi_cluster_orchestration",
+          "networking_architecture",
+          "cloud_platforms_multi_cloud_strategy",
+          "iac_design_frameworks"
+        ]
+      },
+
+      "skill_requirements": [
+        "terraform",
+        "kubernetes",
+        "docker",
+        "networking",
+        "cloud_platforms_aws_gcp_azure",
+        "infrastructure_as_code",
+        "ci_cd_pipelines",
+        "monitoring_observability"
+      ],
+
+      "cross_training_from": ["containers", "configuration"],
+      "cross_training_to": ["containers", "workflows", "monitoring"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 3,
+          "projects_completed": 5
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 12,
+          "projects_completed": 20
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 36,
+          "projects_completed": 50
+        }
+      }
+    },
+
+    "containers": {
+      "name": "Container Specialist",
+      "description": "Specialization in containerization, orchestration, and microservices",
+      "certification_exam": "container_specialist_exam",
+      "renewal_frequency_days": 180,
+
+      "required_skills": {
+        "apprentice": [
+          "docker_build_images",
+          "kubernetes_deploy_pods",
+          "helm_use_charts",
+          "service_mesh_basic_config",
+          "container_security_scan_images"
+        ],
+        "journeyman": [
+          "docker_optimize_images",
+          "kubernetes_manage_operators",
+          "helm_write_charts",
+          "service_mesh_advanced_patterns",
+          "container_security_implement_policies"
+        ],
+        "master": [
+          "docker_security_hardening",
+          "kubernetes_platform_engineering",
+          "helm_chart_architecture",
+          "service_mesh_architecture",
+          "container_security_architecture"
+        ]
+      },
+
+      "skill_requirements": [
+        "docker",
+        "kubernetes",
+        "helm",
+        "container_networking",
+        "service_mesh_istio_linkerd",
+        "container_security",
+        "container_orchestration",
+        "microservices_patterns"
+      ],
+
+      "cross_training_from": ["infrastructure", "workflows"],
+      "cross_training_to": ["infrastructure", "monitoring"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 3,
+          "projects_completed": 5
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 12,
+          "projects_completed": 20
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 36,
+          "projects_completed": 50
+        }
+      }
+    },
+
+    "workflows": {
+      "name": "Workflow Specialist",
+      "description": "Specialization in workflow automation, n8n, and event-driven architecture",
+      "certification_exam": "workflow_specialist_exam",
+      "renewal_frequency_days": 180,
+
+      "required_skills": {
+        "apprentice": [
+          "n8n_build_workflows",
+          "integrations_use_connectors",
+          "event_driven_basic_triggers",
+          "api_design_use_apis"
+        ],
+        "journeyman": [
+          "n8n_complex_automation",
+          "integrations_build_connectors",
+          "event_driven_event_orchestration",
+          "api_design_design_apis"
+        ],
+        "master": [
+          "n8n_architecture_design",
+          "integrations_integration_patterns",
+          "event_driven_system_architecture",
+          "api_design_api_governance"
+        ]
+      },
+
+      "skill_requirements": [
+        "n8n",
+        "automation",
+        "workflow_design",
+        "integrations",
+        "api_orchestration",
+        "event_driven_architecture",
+        "webhook_management",
+        "data_transformation"
+      ],
+
+      "cross_training_from": ["infrastructure", "intelligence"],
+      "cross_training_to": ["intelligence", "monitoring"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 2,
+          "projects_completed": 5
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 9,
+          "projects_completed": 15
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 24,
+          "projects_completed": 40
+        }
+      }
+    },
+
+    "databases": {
+      "name": "Database Specialist",
+      "description": "Specialization in database design, migrations, performance tuning, and data management",
+      "certification_exam": "database_specialist_exam",
+      "renewal_frequency_days": 90,
+
+      "required_skills": {
+        "apprentice": [
+          "sql_basic_queries",
+          "schema_design_simple_schemas",
+          "migrations_run_migrations",
+          "performance_basic_tuning",
+          "backup_recovery_run_backups"
+        ],
+        "journeyman": [
+          "sql_complex_queries",
+          "schema_design_normalized_design",
+          "migrations_write_migrations",
+          "performance_index_optimization",
+          "backup_recovery_recovery_procedures"
+        ],
+        "master": [
+          "sql_query_optimization",
+          "schema_design_architecture_patterns",
+          "migrations_migration_strategy",
+          "performance_architecture_tuning",
+          "backup_recovery_dr_architecture"
+        ]
+      },
+
+      "skill_requirements": [
+        "sql",
+        "database_design",
+        "migrations",
+        "performance_tuning",
+        "backup_recovery",
+        "replication",
+        "database_security",
+        "data_modeling"
+      ],
+
+      "cross_training_from": ["infrastructure"],
+      "cross_training_to": ["infrastructure", "security"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 2,
+          "experience_months": 6,
+          "projects_completed": 8
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 18,
+          "projects_completed": 25
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 48,
+          "projects_completed": 60
+        }
+      }
+    },
+
+    "security": {
+      "name": "Security Specialist",
+      "description": "Specialization in security operations, vulnerability assessment, and compliance",
+      "certification_exam": "security_specialist_exam",
+      "renewal_frequency_days": 90,
+
+      "required_skills": [
+        "security_audit",
+        "vulnerability_scanning",
+        "penetration_testing",
+        "iam",
+        "rbac",
+        "encryption",
+        "compliance",
+        "incident_response",
+        "threat_modeling",
+        "security_architecture"
+      ],
+
+      "cross_training_from": [],
+      "cross_training_to": ["all_domains"],
+
+      "prerequisites": "level_3_certification_in_primary_domain",
+
+      "certification_levels": {
+        "journeyman": {
+          "min_certification_level": 3,
+          "experience_months": 24,
+          "projects_completed": 30,
+          "certifications_required": ["cissp_or_ceh_or_oscp"]
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 60,
+          "projects_completed": 75,
+          "certifications_required": ["cissp", "one_additional_security_cert"]
+        }
+      }
+    },
+
+    "monitoring": {
+      "name": "Monitoring Specialist",
+      "description": "Specialization in observability, metrics, logging, and SRE practices",
+      "certification_exam": "monitoring_specialist_exam",
+      "renewal_frequency_days": 180,
+
+      "required_skills": [
+        "observability",
+        "metrics",
+        "logging",
+        "alerting",
+        "dashboards",
+        "tracing",
+        "sre_practices",
+        "prometheus_grafana",
+        "elk_stack"
+      ],
+
+      "cross_training_from": ["infrastructure", "workflows"],
+      "cross_training_to": ["infrastructure", "containers"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 3,
+          "projects_completed": 5
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 12,
+          "projects_completed": 20
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 30,
+          "projects_completed": 45
+        }
+      }
+    },
+
+    "intelligence": {
+      "name": "Intelligence Specialist",
+      "description": "Specialization in AI agents, LLM integration, and intelligent automation",
+      "certification_exam": "intelligence_specialist_exam",
+      "renewal_frequency_days": 90,
+
+      "required_skills": [
+        "ai_agents",
+        "llm_integration",
+        "prompt_engineering",
+        "rag_systems",
+        "vector_databases",
+        "ai_orchestration",
+        "model_evaluation",
+        "ai_safety"
+      ],
+
+      "cross_training_from": ["workflows"],
+      "cross_training_to": ["workflows"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 2,
+          "projects_completed": 3
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 9,
+          "projects_completed": 12
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 24,
+          "projects_completed": 30
+        }
+      }
+    },
+
+    "configuration": {
+      "name": "Configuration Specialist",
+      "description": "Specialization in configuration management, GitOps, and secret management",
+      "certification_exam": "configuration_specialist_exam",
+      "renewal_frequency_days": 180,
+
+      "required_skills": [
+        "configuration_management",
+        "version_control",
+        "gitops",
+        "secret_management",
+        "config_validation",
+        "ansible_terraform",
+        "vault_management"
+      ],
+
+      "cross_training_from": ["infrastructure", "security"],
+      "cross_training_to": ["infrastructure", "security"],
+
+      "certification_levels": {
+        "apprentice": {
+          "min_certification_level": 1,
+          "experience_months": 3,
+          "projects_completed": 5
+        },
+        "journeyman": {
+          "min_certification_level": 2,
+          "experience_months": 12,
+          "projects_completed": 20
+        },
+        "master": {
+          "min_certification_level": 3,
+          "experience_months": 30,
+          "projects_completed": 45
+        }
+      }
+    }
+  },
+
+  "cross_training_paths": {
+    "infrastructure_to_containers": {
+      "overlap_skills": ["kubernetes", "networking", "cloud_platforms"],
+      "additional_training": ["docker_advanced", "service_mesh", "container_security"],
+      "training_duration_days": 30,
+      "certification_exam": "infrastructure_to_containers_exam",
+      "success_rate_required": 0.85
+    },
+
+    "infrastructure_to_workflows": {
+      "overlap_skills": ["automation", "api_integration"],
+      "additional_training": ["n8n_platform", "workflow_design", "event_driven"],
+      "training_duration_days": 45,
+      "certification_exam": "infrastructure_to_workflows_exam",
+      "success_rate_required": 0.85
+    },
+
+    "containers_to_monitoring": {
+      "overlap_skills": ["kubernetes", "observability"],
+      "additional_training": ["metrics_systems", "logging_platforms", "alerting"],
+      "training_duration_days": 30,
+      "certification_exam": "containers_to_monitoring_exam",
+      "success_rate_required": 0.85
+    },
+
+    "workflows_to_intelligence": {
+      "overlap_skills": ["automation", "api_orchestration"],
+      "additional_training": ["llm_integration", "prompt_engineering", "rag_systems"],
+      "training_duration_days": 60,
+      "certification_exam": "workflows_to_intelligence_exam",
+      "success_rate_required": 0.90
+    },
+
+    "any_to_security": {
+      "overlap_skills": [],
+      "additional_training": [
+        "security_fundamentals",
+        "vulnerability_assessment",
+        "penetration_testing",
+        "compliance",
+        "incident_response"
+      ],
+      "training_duration_days": 90,
+      "certification_exam": "security_specialist_exam",
+      "success_rate_required": 0.95,
+      "prerequisites": "level_3_certification_in_primary_domain"
+    }
+  },
+
+  "multi_domain_benefits": {
+    "token_allocation_bonus_per_domain": 5000,
+    "priority_scheduling": true,
+    "flexible_task_assignment": true,
+    "mentorship_opportunities": true,
+    "compensation_multiplier": 1.15
+  },
+
+  "renewal_policies": {
+    "annual_renewal": {
+      "applicable_levels": [1, 2],
+      "notification_timeline": {
+        "first_notification_days": 60,
+        "second_notification_days": 30,
+        "final_notification_days": 14
+      },
+      "grace_period_days": 14,
+      "requirements": {
+        "test_coverage_verification": true,
+        "security_scan": true,
+        "performance_review": true,
+        "training_updates": true,
+        "skill_assessment": true
+      },
+      "auto_renewal_eligible": {
+        "conditions": {
+          "zero_incidents_past_year": true,
+          "success_rate_min": 0.95,
+          "security_violations": 0,
+          "training_current": true
+        }
+      }
+    },
+
+    "quarterly_renewal": {
+      "applicable_levels": [3, 4],
+      "notification_timeline": {
+        "first_notification_days": 30,
+        "second_notification_days": 14,
+        "final_notification_days": 7
+      },
+      "grace_period_days": 7,
+      "requirements": {
+        "comprehensive_test_suite": true,
+        "security_audit_update": true,
+        "compliance_training_current": true,
+        "performance_metrics_review": true,
+        "incident_free_quarter": true,
+        "architecture_review_participation": true
+      },
+      "auto_renewal_eligible": false
+    },
+
+    "continuous_monitoring": {
+      "applicable_levels": [4],
+      "requirements": {
+        "monthly_executive_reviews": true,
+        "quarterly_board_presentations": true,
+        "continuous_performance_tracking": true,
+        "real_time_incident_response_evaluation": true,
+        "architecture_decision_review": true,
+        "business_impact_assessment": true
+      }
+    }
+  },
+
+  "revocation_policies": {
+    "automatic_revocation_hard": {
+      "triggers": [
+        "security_breach",
+        "customer_data_loss",
+        "compliance_violation",
+        "credential_exposure",
+        "intentional_sabotage",
+        "certification_fraud"
+      ],
+      "appeal_rights": false,
+      "consequence": "permanent_ban"
+    },
+
+    "immediate_revocation_with_appeal": {
+      "triggers": [
+        "safety_violation",
+        "unauthorized_access",
+        "severe_policy_violation",
+        "repeated_failures_3_plus",
+        "gross_negligence",
+        "insubordination"
+      ],
+      "appeal_rights": true,
+      "appeal_period_days": 30,
+      "investigation_required": true
+    },
+
+    "suspension_temporary": {
+      "triggers": [
+        "performance_decline_below_80_percent",
+        "incident_caused",
+        "near_miss_security_safety",
+        "training_lapse",
+        "concerning_audit_findings",
+        "peer_concerns_multiple"
+      ],
+      "suspension_duration_days": {
+        "min": 30,
+        "max": 90
+      },
+      "remediation_required": true,
+      "recertification_required": true
+    },
+
+    "progressive_discipline": {
+      "first_warning": {
+        "action": "written_warning",
+        "remediation_plan_required": true
+      },
+      "second_warning": {
+        "action": "suspension_7_days",
+        "mandatory_training": true
+      },
+      "third_warning": {
+        "action": "suspension_30_days",
+        "probationary_status": true
+      },
+      "fourth_warning": {
+        "action": "certification_revocation"
+      },
+      "exceptions": "security_violations_skip_to_step_3_or_4"
+    }
+  },
+
+  "performance_metrics": {
+    "tracked_metrics": [
+      "success_rate",
+      "incident_count",
+      "security_violations",
+      "deployment_success_rate",
+      "rollback_success_rate",
+      "average_task_completion_time",
+      "customer_satisfaction_score",
+      "peer_review_score",
+      "complexity_score",
+      "operations_count"
+    ],
+
+    "thresholds": {
+      "excellent_performance": {
+        "success_rate_min": 0.98,
+        "incidents_max": 0,
+        "security_violations_max": 0,
+        "upgrade_fast_track_eligible": true
+      },
+      "good_performance": {
+        "success_rate_min": 0.95,
+        "incidents_max": 1,
+        "security_violations_max": 0,
+        "renewal_auto_approved": true
+      },
+      "acceptable_performance": {
+        "success_rate_min": 0.90,
+        "incidents_max": 2,
+        "security_violations_max": 0,
+        "renewal_requires_review": true
+      },
+      "concerning_performance": {
+        "success_rate_max": 0.85,
+        "incidents_max": 3,
+        "security_violations_max": 1,
+        "remediation_plan_required": true
+      },
+      "unacceptable_performance": {
+        "success_rate_below": 0.80,
+        "incidents_more_than": 3,
+        "security_violations_any": true,
+        "suspension_triggered": true
+      }
+    }
+  },
+
+  "contractor_standards": {
+    "qualification_requirements": {
+      "external_certifications_accepted": [
+        "aws_certified_solutions_architect",
+        "certified_kubernetes_administrator",
+        "google_cloud_professional_architect",
+        "cisco_ccna_ccnp",
+        "cissp",
+        "ceh",
+        "oscp"
+      ],
+      "internal_certification_required": true,
+      "verification_process": {
+        "background_check": true,
+        "reference_verification": true,
+        "skills_assessment": true,
+        "trial_period_days": 30
+      },
+      "renewal_frequency": "same_as_internal_workers",
+      "audit_frequency": "quarterly",
+      "contract_terms_must_include": [
+        "certification_maintenance_requirements",
+        "performance_standards",
+        "security_compliance",
+        "audit_cooperation",
+        "termination_for_cause"
+      ]
+    },
+    "performance_requirements": {
+      "success_rate_min": 0.90,
+      "availability_hours_per_week": 20,
+      "response_time_hours": 4,
+      "documentation_quality_min": 0.85
+    }
+  },
+
+  "audit_schedule": {
+    "continuous_audit": {
+      "real_time_monitoring": true,
+      "automated_checks": [
+        "certification_expiry",
+        "renewal_status",
+        "performance_metrics",
+        "security_violations",
+        "incident_tracking"
+      ]
+    },
+    "monthly_audit": {
+      "scope": [
+        "certification_stats",
+        "renewal_compliance",
+        "upgrade_activity",
+        "revocation_activity",
+        "performance_trends",
+        "compliance_status"
+      ],
+      "report_distribution": ["engineering_leadership", "security_team", "compliance_team"]
+    },
+    "quarterly_compliance_audit": {
+      "external_auditor_required": true,
+      "scope": [
+        "certification_records_completeness",
+        "renewal_compliance_tracking",
+        "revocation_documentation",
+        "incident_response_procedures",
+        "training_completion_verification",
+        "performance_metric_accuracy",
+        "audit_trail_integrity",
+        "access_control_verification",
+        "compliance_framework_mapping"
+      ],
+      "deliverables": [
+        "audit_findings_report",
+        "compliance_attestation",
+        "remediation_recommendations",
+        "process_improvement_suggestions"
+      ]
+    }
+  }
+}

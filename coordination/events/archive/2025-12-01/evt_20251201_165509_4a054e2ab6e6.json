@@ -1,0 +1,14 @@
+{
+  "event_id": "evt_20251201_165509_4a054e2ab6e6",
+  "event_type": "worker.completed",
+  "timestamp": "2025-12-01T22:55:09+0000",
+  "source": "test-worker-logging",
+  "correlation_id": "test-task-001",
+  "metadata": {
+    "priority": "low"
+  },
+  "payload": {
+    "worker_id": "test-001",
+    "status": "completed"
+  }
+}

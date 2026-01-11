@@ -1,0 +1,172 @@
+{
+  "version": "2.0.0",
+  "protected_executables": {
+    "description": "Executable files that should NEVER be removed - from Cortex inventory 2025-12-05",
+    "scripts": [
+      "scripts/cortex",
+      "scripts/coordination-daemon.js",
+      "scripts/auto-optimizer",
+      "scripts/emergence",
+      "scripts/healer",
+      "scripts/optimizer-pool",
+      "scripts/optimizer-profile",
+      "scripts/optimizer-scheduler",
+      "scripts/optimizer-tokens",
+      "scripts/predictor",
+      "scripts/daemon-control.sh",
+      "scripts/worker-pool-daemon.sh"
+    ],
+    "cleanup_master": [
+      "coordination/masters/cleanup/run.sh",
+      "coordination/masters/cleanup/report.sh",
+      "coordination/masters/cleanup/lib/scanner.sh",
+      "coordination/masters/cleanup/lib/analyzer.sh",
+      "coordination/masters/cleanup/lib/auto-fix.sh"
+    ],
+    "coordinator_master": [
+      "coordination/masters/coordinator/coordinator.sh",
+      "coordination/masters/coordinator/lib/core.sh",
+      "coordination/masters/coordinator/lib/moe.sh",
+      "coordination/masters/coordinator/lib/lifecycle.sh",
+      "coordination/masters/coordinator/lib/monitoring.sh"
+    ],
+    "security_master": [
+      "coordination/masters/security/run.sh",
+      "coordination/masters/security/lib/scanner.sh",
+      "coordination/masters/security/lib/reporter.sh"
+    ],
+    "other_masters": [
+      "coordination/masters/documentation/doc-master.sh",
+      "coordination/masters/health/health-checker.sh",
+      "coordination/masters/optimization/optimizer.sh",
+      "coordination/masters/testing/test-runner.sh"
+    ]
+  },
+  "protected_core_modules": {
+    "description": "Core JavaScript modules essential for Cortex operation",
+    "cortex_core": [
+      "lib/cortex-core/index.js"
+    ],
+    "coordination": [
+      "lib/coordination/daemon.js",
+      "lib/coordination/state-store.js",
+      "lib/coordination/message-bus.js",
+      "lib/coordination/client.js",
+      "lib/coordination/index.js"
+    ],
+    "worker_pool": [
+      "lib/worker-pool/pool-manager.js",
+      "lib/worker-pool/worker-process.js",
+      "lib/worker-pool/task-queue.js",
+      "lib/worker-pool/health-monitor.js",
+      "lib/worker-pool/fifo-channel.js",
+      "lib/worker-pool/index.js"
+    ],
+    "scheduler": [
+      "lib/scheduler/intelligent-scheduler.js",
+      "lib/scheduler/resource-predictor.js",
+      "lib/scheduler/feasibility-checker.js",
+      "lib/scheduler/priority-engine.js",
+      "lib/scheduler/ml-model.js",
+      "lib/scheduler/training-data.js",
+      "lib/scheduler/index.js"
+    ]
+  },
+  "protected_python_sdk": {
+    "description": "Python SDK modules for Cortex integration",
+    "files": [
+      "sdk/cortex/__init__.py",
+      "sdk/cortex/client.py",
+      "sdk/cortex/models.py",
+      "sdk/cortex/exceptions.py",
+      "sdk/cortex/async_client.py"
+    ]
+  },
+  "protected_analysis": {
+    "description": "Analysis dashboards and data intelligence",
+    "files": [
+      "analysis/cortex-dashboard.py",
+      "analysis/cost-report.py",
+      "analysis/security-report.py",
+      "analysis/data-intelligence/lakehouse.py",
+      "analysis/data-intelligence/ingestion.py"
+    ]
+  },
+  "safe_to_remove": {
+    "exclude_patterns": [
+      "README",
+      "LICENSE",
+      "package.json",
+      ".gitignore",
+      ".gitkeep",
+      "/lib/",
+      "/config/",
+      "/docs/",
+      "/scripts/",
+      "/sdk/",
+      "/analysis/"
+    ],
+    "confidence_threshold": 0.95
+  },
+  "auto_fix": {
+    "enable_empty_directory_removal": true,
+    "enable_permission_fixes": true,
+    "enable_duplicate_removal": true,
+    "enable_gitignore_cleanup": true,
+    "enable_unreferenced_file_removal": false,
+    "enable_junk_file_removal": true,
+    "enable_analysis_artifact_removal": true
+  },
+  "analysis_artifact_detection": {
+    "description": "Detect cache directories and temporary files from analysis tools",
+    "cache_directories": ["__marimo__", "__pycache__", ".pytest_cache", ".mypy_cache", ".ipynb_checkpoints", ".coverage", ".nox", ".tox"],
+    "egg_info_pattern": "*.egg-info",
+    "temp_file_patterns": ["*.tmp", "*.bak", "*.orig", "*.swp", "*~", "*.pyc", "*.pyo"],
+    "log_in_analysis": true,
+    "excluded_paths": ["node_modules", ".git", ".venv"]
+  },
+  "junk_file_detection": {
+    "description": "Detect malformed shell command artifacts and junk files",
+    "shell_metacharacters": ["|", ">", "<", "&", ";", "`", "$"],
+    "partial_word_patterns": ["orld", "ello", "rint", "xport", "unction", "equire", "mport"],
+    "max_size_bytes": 100,
+    "scan_depth": 3,
+    "excluded_names": ["LICENSE", "Makefile", "README"]
+  },
+  "legacy_patterns": {
+    "api_endpoints": [
+      "localhost:3000",
+      "localhost:8080",
+      "localhost:9000",
+      "api/achievements",
+      "api/dashboard"
+    ],
+    "old_project_names": [
+      "commit-relay",
+      "api-server"
+    ],
+    "deprecated_systems": [
+      "worker-pool.json",
+      "dashboard-events",
+      "health-monitor"
+    ]
+  },
+  "priority_weights": {
+    "broken_references": 10,
+    "permission_issues": 9,
+    "junk_files": 8,
+    "analysis_artifacts": 7,
+    "legacy_api_calls": 8,
+    "unreferenced_files": 5,
+    "duplicate_files": 5,
+    "legacy_patterns": 4,
+    "dead_functions": 2,
+    "empty_directories": 1,
+    "gitignore_issues": 1
+  },
+  "reporting": {
+    "max_items_per_category": 50,
+    "include_file_sizes": true,
+    "include_recommendations": true
+  }
+}

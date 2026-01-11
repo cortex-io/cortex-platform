@@ -1,0 +1,46 @@
+{
+  "template_id": "feature-implementation",
+  "description": "Implement new feature",
+  "master": "development-master",
+  "required_fields": [
+    "feature_description",
+    "acceptance_criteria"
+  ],
+  "optional_fields": [
+    "affected_components",
+    "breaking_changes",
+    "target_version",
+    "dependencies"
+  ],
+  "field_descriptions": {
+    "feature_description": "Detailed description of the feature to implement",
+    "acceptance_criteria": "List of criteria that define when the feature is complete",
+    "affected_components": "Components or modules that will be modified",
+    "breaking_changes": "Whether this introduces breaking changes (true/false)",
+    "target_version": "Target version for this feature (e.g., v2.1.0)",
+    "dependencies": "External dependencies required for this feature"
+  },
+  "default_priority": "medium",
+  "estimated_duration_minutes": 240,
+  "tags": ["development", "feature", "implementation"],
+  "examples": [
+    {
+      "description": "Implement user authentication",
+      "fields": {
+        "feature_description": "Add JWT-based authentication with refresh tokens",
+        "acceptance_criteria": "Users can login, logout, tokens refresh automatically, sessions persist",
+        "affected_components": "auth-service, user-service, api-gateway",
+        "breaking_changes": "false"
+      }
+    },
+    {
+      "description": "Add GraphQL API endpoint",
+      "fields": {
+        "feature_description": "Create GraphQL endpoint for querying user data",
+        "acceptance_criteria": "GraphQL schema defined, queries work, mutations work, subscriptions enabled",
+        "dependencies": "apollo-server, graphql",
+        "target_version": "v2.0.0"
+      }
+    }
+  ]
+}

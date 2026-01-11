@@ -1,0 +1,18 @@
+{
+  "name": "test-hello",
+  "version": "1.0.0",
+  "description": "Simplest possible test - single bash command",
+  "inputs": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "steps": [
+    {
+      "id": "greet",
+      "action": "bash",
+      "command": "echo \"Hello, {{ inputs.name }}!\""
+    }
+  ]
+}

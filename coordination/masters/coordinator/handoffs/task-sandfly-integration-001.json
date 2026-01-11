@@ -1,0 +1,54 @@
+{
+  "handoff_id": "coord-to-dev-sandfly-integration-001",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-sandfly-integration-001",
+  "priority": "critical",
+  "task_data": {
+    "title": "Deploy Sandfly MCP Server to K8s Cluster",
+    "category": "development",
+    "description": "Deploy the Sandfly MCP server as a Kubernetes service in the cortex-system namespace",
+    "requirements": [
+      "Create Kubernetes deployment manifest for Sandfly MCP",
+      "Configure environment variables for Sandfly connection (10.88.140.176)",
+      "Deploy to cortex-system namespace",
+      "Expose service as sandfly-mcp.cortex-system.svc.cluster.local:3000",
+      "Verify health endpoint is accessible",
+      "Test tool listing endpoint"
+    ],
+    "technical_details": {
+      "source_location": "/Users/ryandahlberg/Desktop/sandfly/",
+      "dockerfile": "/Users/ryandahlberg/Desktop/sandfly/Dockerfile",
+      "deployment_yaml": "/Users/ryandahlberg/Desktop/sandfly/deployment.yaml",
+      "sandfly_host": "10.88.140.176",
+      "target_namespace": "cortex-system",
+      "service_name": "sandfly-mcp",
+      "service_port": 3000,
+      "environment_variables": {
+        "SANDFLY_HOST": "10.88.140.176",
+        "SANDFLY_USERNAME": "admin",
+        "SANDFLY_PASSWORD": "<from-existing-config>",
+        "SANDFLY_VERIFY_SSL": "false"
+      }
+    },
+    "success_criteria": [
+      "Pod is running in cortex-system namespace",
+      "Service is accessible at http://sandfly-mcp.cortex-system.svc.cluster.local:3000/health",
+      "Tool listing returns 45+ tools",
+      "Test authentication to Sandfly server succeeds"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development category",
+    "expected_outcome": "Sandfly MCP server deployed and accessible",
+    "related_files": [
+      "/Users/ryandahlberg/Desktop/sandfly/deployment.yaml",
+      "/Users/ryandahlberg/Desktop/sandfly/Dockerfile",
+      "/Users/ryandahlberg/Desktop/sandfly/src/mcp_sandfly/server.py"
+    ],
+    "governance_bypass": true,
+    "reason": "Development work for critical security integration"
+  },
+  "created_at": "2025-12-25T16:30:00Z",
+  "status": "pending_pickup"
+}

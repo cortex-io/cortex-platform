@@ -1,0 +1,14 @@
+{
+  "scan_id": "scan-20251130_123948",
+  "timestamp": "2025-11-30T18:40:00Z",
+  "summary": {
+    "unreferenced_files": 8200,
+    "dead_functions": 0,
+    "empty_directories": 125,
+    "permission_issues": 35,
+    "duplicate_files": 0,
+    "total_issues": 8360
+  },
+  "scan_directory": "coordination/masters/cleanup/scans/scan-20251130_123948",
+  "note": "Skipped dead functions and duplicates (too slow for large codebase)"
+}

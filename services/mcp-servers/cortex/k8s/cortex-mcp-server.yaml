@@ -1,0 +1,272 @@
+---
+# ConfigMap for Cortex MCP Server
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cortex-mcp-config
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+data:
+  # MCP Server URLs
+  UNIFI_MCP_URL: "http://unifi-mcp-server.cortex-system.svc.cluster.local:3000"
+  PROXMOX_MCP_URL: "http://proxmox-mcp-server.cortex-system.svc.cluster.local:3000"
+  WAZUH_MCP_URL: "http://wazuh-mcp-server.cortex-system.svc.cluster.local:8080"
+
+  # Worker Pool Configuration
+  WORKER_POOL_SIZE: "10000"
+  MAX_CONCURRENT_WORKERS: "100"
+  WORKER_TIMEOUT_MINUTES: "60"
+
+  # MoE Router Configuration
+  MOE_ENABLED: "true"
+  MOE_STRATEGY: "keyword_routing"
+
+  # Logging
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+
+  # Server Configuration
+  MCP_PORT: "3000"
+  HEALTH_PORT: "8080"
+  NODE_ENV: "production"
+
+---
+# Deployment for Cortex MCP Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+    version: v1
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: cortex-mcp-server
+  template:
+    metadata:
+      labels:
+        app: cortex-mcp-server
+        component: mcp-gateway
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: cortex-mcp-server
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+
+      containers:
+      - name: cortex-mcp-server
+        image: docker-registry.cortex-chat.svc.cluster.local:5000/cortex-mcp-server:latest
+        imagePullPolicy: Always
+
+        ports:
+        - name: mcp
+          containerPort: 3000
+          protocol: TCP
+        - name: health
+          containerPort: 8080
+          protocol: TCP
+
+        env:
+        # ConfigMap environment variables
+        - name: UNIFI_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: UNIFI_MCP_URL
+        - name: PROXMOX_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: PROXMOX_MCP_URL
+        - name: WAZUH_MCP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WAZUH_MCP_URL
+        - name: WORKER_POOL_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WORKER_POOL_SIZE
+        - name: MAX_CONCURRENT_WORKERS
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MAX_CONCURRENT_WORKERS
+        - name: WORKER_TIMEOUT_MINUTES
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: WORKER_TIMEOUT_MINUTES
+        - name: MOE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MOE_ENABLED
+        - name: MOE_STRATEGY
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MOE_STRATEGY
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: LOG_LEVEL
+        - name: LOG_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: LOG_FORMAT
+        - name: MCP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: MCP_PORT
+        - name: HEALTH_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: HEALTH_PORT
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: cortex-mcp-config
+              key: NODE_ENV
+
+        # Secret environment variables
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-secrets
+              key: anthropic-api-key
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: health
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+        volumeMounts:
+        - name: coordination
+          mountPath: /app/coordination
+        - name: tmp
+          mountPath: /tmp
+
+      volumes:
+      - name: coordination
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+
+---
+# Service for Cortex MCP Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  type: ClusterIP
+  selector:
+    app: cortex-mcp-server
+  ports:
+  - name: mcp
+    port: 3000
+    targetPort: mcp
+    protocol: TCP
+  - name: health
+    port: 8080
+    targetPort: health
+    protocol: TCP
+
+---
+# ServiceAccount for Cortex MCP Server
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+
+---
+# Role for Cortex MCP Server (namespace-scoped permissions)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+
+---
+# RoleBinding for Cortex MCP Server
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+subjects:
+- kind: ServiceAccount
+  name: cortex-mcp-server
+  namespace: cortex-system
+roleRef:
+  kind: Role
+  name: cortex-mcp-server
+  apiGroup: rbac.authorization.k8s.io

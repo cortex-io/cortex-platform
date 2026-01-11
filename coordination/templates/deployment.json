@@ -1,0 +1,50 @@
+{
+  "template_id": "deployment",
+  "description": "Deploy application or service",
+  "master": "coordinator-master",
+  "required_fields": [
+    "application_name",
+    "environment",
+    "version"
+  ],
+  "optional_fields": [
+    "deployment_strategy",
+    "rollback_plan",
+    "health_checks",
+    "notification_channels"
+  ],
+  "field_descriptions": {
+    "application_name": "Name of the application to deploy",
+    "environment": "Target environment: development, staging, production",
+    "version": "Version or commit SHA to deploy",
+    "deployment_strategy": "Strategy: rolling, blue-green, canary",
+    "rollback_plan": "Rollback strategy if deployment fails",
+    "health_checks": "Health check endpoints to verify deployment",
+    "notification_channels": "Where to send deployment notifications (slack, email)"
+  },
+  "default_priority": "high",
+  "estimated_duration_minutes": 45,
+  "tags": ["deployment", "cicd", "operations"],
+  "examples": [
+    {
+      "description": "Deploy API to production",
+      "fields": {
+        "application_name": "cortex-api",
+        "environment": "production",
+        "version": "v2.1.0",
+        "deployment_strategy": "blue-green",
+        "health_checks": "/api/health,/api/ready"
+      }
+    },
+    {
+      "description": "Canary deployment to staging",
+      "fields": {
+        "application_name": "web-app",
+        "environment": "staging",
+        "version": "abc123def",
+        "deployment_strategy": "canary",
+        "notification_channels": "slack"
+      }
+    }
+  ]
+}

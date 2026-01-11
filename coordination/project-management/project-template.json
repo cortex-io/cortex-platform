@@ -1,0 +1,355 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Cortex Project Template",
+  "description": "Template for PM-managed projects in Cortex automation system",
+  "type": "object",
+  "version": "1.0.0",
+  "project_metadata": {
+    "project_id": "proj-YYYYMMDD-NNNN",
+    "project_name": "Example Project Name",
+    "pm_id": "pm-proj-YYYYMMDD-NNNN",
+    "created_at": "2025-12-09T00:00:00Z",
+    "spawned_by": "coordinator",
+    "status": "initiated",
+    "current_phase": "initiation",
+    "priority": "medium",
+    "estimated_duration": "8 hours",
+    "actual_duration": null,
+    "started_at": null,
+    "completed_at": null
+  },
+  "project_objective": {
+    "description": "Clear, concise description of project outcome",
+    "business_value": "Why this project matters",
+    "success_criteria_summary": "High-level definition of success",
+    "constraints": [
+      "Time constraints",
+      "Resource constraints",
+      "Technical constraints"
+    ]
+  },
+  "phases": [
+    {
+      "phase_id": "phase-1",
+      "phase_name": "initiation",
+      "sequence": 1,
+      "description": "Project setup and requirements analysis",
+      "status": "active",
+      "started_at": null,
+      "completed_at": null,
+      "deliverables": [
+        "Project charter",
+        "Initial project plan",
+        "Division responsibility matrix",
+        "Risk register"
+      ],
+      "exit_criteria": [
+        "All divisions identified and notified",
+        "Initial plan approved",
+        "Risk register initialized"
+      ]
+    },
+    {
+      "phase_id": "phase-2",
+      "phase_name": "planning",
+      "sequence": 2,
+      "description": "Detailed planning and task breakdown",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "deliverables": [
+        "Detailed task breakdown",
+        "Dependency map",
+        "Resource allocation plan",
+        "Milestone schedule"
+      ],
+      "exit_criteria": [
+        "All tasks defined with acceptance criteria",
+        "Dependencies mapped",
+        "Resource allocation approved"
+      ]
+    },
+    {
+      "phase_id": "phase-3",
+      "phase_name": "execution",
+      "sequence": 3,
+      "description": "Task execution and coordination",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "deliverables": [
+        "Completed work products from divisions",
+        "Status reports",
+        "Issue resolution logs"
+      ],
+      "exit_criteria": [
+        "All tasks completed",
+        "All deliverables validated",
+        "Quality gates passed"
+      ]
+    },
+    {
+      "phase_id": "phase-4",
+      "phase_name": "closure",
+      "sequence": 4,
+      "description": "Project completion and handoff",
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "deliverables": [
+        "Project completion report",
+        "Lessons learned",
+        "Knowledge base updates",
+        "Final metrics"
+      ],
+      "exit_criteria": [
+        "All success criteria validated",
+        "Documentation complete",
+        "Artifacts archived"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "milestone_id": "milestone-1",
+      "name": "Project Kickoff",
+      "description": "Project initiated and planning started",
+      "phase": "phase-1",
+      "sequence": 1,
+      "status": "pending",
+      "target_completion": null,
+      "actual_completion": null,
+      "dependencies": [],
+      "validation_criteria": [
+        "PM spawned and operational",
+        "All divisions notified"
+      ]
+    },
+    {
+      "milestone_id": "milestone-2",
+      "name": "Planning Complete",
+      "description": "Detailed plan approved and ready for execution",
+      "phase": "phase-2",
+      "sequence": 2,
+      "status": "pending",
+      "target_completion": null,
+      "actual_completion": null,
+      "dependencies": ["milestone-1"],
+      "validation_criteria": [
+        "Task breakdown complete",
+        "Resource allocation approved"
+      ]
+    },
+    {
+      "milestone_id": "milestone-3",
+      "name": "50% Complete",
+      "description": "Half of project tasks completed",
+      "phase": "phase-3",
+      "sequence": 3,
+      "status": "pending",
+      "target_completion": null,
+      "actual_completion": null,
+      "dependencies": ["milestone-2"],
+      "validation_criteria": [
+        "50% of tasks completed",
+        "No critical blockers"
+      ]
+    },
+    {
+      "milestone_id": "milestone-4",
+      "name": "All Tasks Complete",
+      "description": "All division work completed",
+      "phase": "phase-3",
+      "sequence": 4,
+      "status": "pending",
+      "target_completion": null,
+      "actual_completion": null,
+      "dependencies": ["milestone-3"],
+      "validation_criteria": [
+        "All tasks status=completed",
+        "All deliverables received"
+      ]
+    },
+    {
+      "milestone_id": "milestone-5",
+      "name": "Project Closure",
+      "description": "Project completed and documented",
+      "phase": "phase-4",
+      "sequence": 5,
+      "status": "pending",
+      "target_completion": null,
+      "actual_completion": null,
+      "dependencies": ["milestone-4"],
+      "validation_criteria": [
+        "All success criteria met",
+        "Documentation complete"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "task-001",
+      "task_name": "Example Task",
+      "description": "Detailed task description",
+      "assigned_to_division": "development",
+      "phase": "phase-3",
+      "status": "pending",
+      "priority": "high",
+      "created_at": "2025-12-09T00:00:00Z",
+      "assigned_at": null,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies": [],
+      "blocks": [],
+      "acceptance_criteria": [
+        "Criterion 1: Specific, testable requirement",
+        "Criterion 2: Measurable outcome",
+        "Criterion 3: Quality standard"
+      ],
+      "deliverables": [
+        "Deliverable 1",
+        "Deliverable 2"
+      ],
+      "resources": {
+        "token_allocation": 5000,
+        "estimated_time": "2 hours",
+        "tokens_used": 0,
+        "actual_time": null
+      },
+      "handoff_id": null,
+      "notes": []
+    }
+  ],
+  "divisions_involved": [
+    {
+      "division": "development",
+      "role": "Primary implementer",
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "status": "active",
+      "contact": "development master"
+    },
+    {
+      "division": "security",
+      "role": "Security validation",
+      "tasks_assigned": 0,
+      "tasks_completed": 0,
+      "status": "active",
+      "contact": "security master"
+    }
+  ],
+  "resource_allocation": {
+    "total_token_budget": 50000,
+    "tokens_allocated": 0,
+    "tokens_used": 0,
+    "tokens_remaining": 50000,
+    "allocation_by_division": {
+      "development": {
+        "allocated": 0,
+        "used": 0
+      },
+      "security": {
+        "allocated": 0,
+        "used": 0
+      }
+    },
+    "allocation_by_phase": {
+      "phase-1": 2000,
+      "phase-2": 3000,
+      "phase-3": 40000,
+      "phase-4": 5000
+    }
+  },
+  "risk_register": [
+    {
+      "risk_id": "risk-001",
+      "title": "Example Risk",
+      "description": "Detailed description of the risk",
+      "category": "technical|resource|schedule|quality|external",
+      "severity": "low|medium|high|critical",
+      "probability": "low|medium|high",
+      "impact": "Description of impact if risk occurs",
+      "status": "identified",
+      "identified_at": "2025-12-09T00:00:00Z",
+      "owner": "pm-proj-YYYYMMDD-NNNN",
+      "mitigation_strategy": "How to prevent or minimize risk",
+      "contingency_plan": "What to do if risk occurs",
+      "triggers": [
+        "Warning sign 1",
+        "Warning sign 2"
+      ],
+      "monitoring_frequency": "continuous|hourly|per_status_update",
+      "last_reviewed": "2025-12-09T00:00:00Z",
+      "resolution": null,
+      "resolved_at": null
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "dep-001",
+      "type": "blocking|soft|external",
+      "from_task": "task-002",
+      "to_task": "task-003",
+      "description": "Task 002 must complete before Task 003 can start",
+      "status": "active|resolved|broken",
+      "created_at": "2025-12-09T00:00:00Z",
+      "resolved_at": null,
+      "notes": "Additional context about dependency"
+    }
+  ],
+  "success_criteria": [
+    {
+      "criterion_id": "sc-001",
+      "category": "deliverable|quality|performance|documentation|resource",
+      "description": "Specific, measurable criterion",
+      "validation_method": "How to verify this criterion is met",
+      "status": "pending|in_progress|passed|failed|waived",
+      "weight": 30,
+      "validated_at": null,
+      "validator": null,
+      "evidence": [],
+      "waiver_reason": null
+    }
+  ],
+  "minimum_success_score": 80,
+  "status_updates": [
+    {
+      "update_id": "update-001",
+      "timestamp": "2025-12-09T00:00:00Z",
+      "phase": "initiation",
+      "overall_status": "on_track|ahead|at_risk|behind|blocked",
+      "progress_percentage": 0,
+      "milestones_completed": 0,
+      "tasks_completed": 0,
+      "blockers": [],
+      "risks_active": 0,
+      "next_actions": [],
+      "token_usage_snapshot": {
+        "used": 0,
+        "remaining": 50000,
+        "burn_rate_per_hour": 0
+      }
+    }
+  ],
+  "escalations": [],
+  "lessons_learned": [],
+  "artifacts": {
+    "deliverables": [],
+    "documents": [],
+    "reports": []
+  },
+  "project_context": {
+    "related_projects": [],
+    "relevant_patterns": [],
+    "knowledge_base_refs": [],
+    "codebase_areas": [],
+    "infrastructure_components": []
+  },
+  "metadata": {
+    "template_version": "1.0.0",
+    "schema_url": "coordination/project-management/project-template.json",
+    "last_updated": "2025-12-09T00:00:00Z",
+    "update_frequency": "30 minutes",
+    "retention_after_completion": "30 days"
+  }
+}

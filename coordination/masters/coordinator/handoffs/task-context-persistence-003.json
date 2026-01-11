@@ -1,0 +1,74 @@
+{
+  "handoff_id": "coord-to-dev-context-persistence-003",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-context-persistence-003",
+  "priority": "critical",
+  "task_data": {
+    "title": "Fix Conversational Context Dropping Issue",
+    "category": "development",
+    "description": "Diagnose and fix the conversation context dropping after a few messages",
+    "requirements": [
+      "Analyze current conversation history handling in claude.ts",
+      "Identify why context is dropped after few messages",
+      "Implement Redis-based conversation persistence",
+      "Add conversation session management",
+      "Add conversation summarization for long threads (15+ messages)",
+      "Test deep conversations (20+ message exchanges)",
+      "Ensure context is maintained across multiple tool use rounds"
+    ],
+    "technical_details": {
+      "target_files": [
+        "/tmp/cortex-chat/backend/src/services/claude.ts",
+        "/tmp/cortex-chat/backend/src/routes/chat.ts"
+      ],
+      "current_issue": "History is passed via request body but not persisted server-side",
+      "solution_approach": {
+        "1_add_redis": "Deploy Redis to cortex-system namespace for session storage",
+        "2_session_management": "Create session IDs for conversations, store in Redis",
+        "3_conversation_storage": "Store full conversation history in Redis with TTL (24h)",
+        "4_summarization": "When context exceeds 15 messages, summarize old messages",
+        "5_tool_context": "Ensure tool results are properly maintained in conversation history"
+      },
+      "redis_config": {
+        "namespace": "cortex-system",
+        "service_name": "redis",
+        "port": 6379,
+        "session_ttl": 86400,
+        "key_format": "chat:session:{session_id}"
+      },
+      "conversation_limits": {
+        "max_messages_before_summary": 15,
+        "summary_keep_recent": 5,
+        "max_context_window": 100000
+      }
+    },
+    "implementation_steps": [
+      "1. Deploy Redis to cortex-system namespace",
+      "2. Add Redis client to chat backend (ioredis package)",
+      "3. Create ConversationStore service with Redis backend",
+      "4. Add session ID generation (UUIDs)",
+      "5. Update /api/chat endpoint to use session-based storage",
+      "6. Implement conversation summarization using Claude",
+      "7. Test with deep conversations (20+ messages)",
+      "8. Verify tool execution context is maintained"
+    ],
+    "success_criteria": [
+      "Redis deployed and accessible",
+      "Conversations persist across requests",
+      "Context maintained for 20+ message exchanges",
+      "Summarization kicks in at 15 messages",
+      "Tool use history properly maintained",
+      "No context loss during multi-turn tool execution"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development category",
+    "expected_outcome": "Conversations maintain full context for extended interactions",
+    "dependencies": [],
+    "governance_bypass": true,
+    "reason": "Development work for critical chat functionality"
+  },
+  "created_at": "2025-12-25T16:30:00Z",
+  "status": "pending_pickup"
+}

@@ -1,0 +1,73 @@
+{
+  "sla_config": {
+    "critical": 15,
+    "high": 30,
+    "medium": 60,
+    "low": 120
+  },
+  "priority_definitions": {
+    "1": {
+      "name": "immediate",
+      "description": "Requires immediate response (<1h)",
+      "response_time_hours": 1
+    },
+    "2": {
+      "name": "urgent",
+      "description": "Requires urgent response (<4h)",
+      "response_time_hours": 4
+    },
+    "3": {
+      "name": "high",
+      "description": "Requires prompt response (<24h)",
+      "response_time_hours": 24
+    },
+    "4": {
+      "name": "medium",
+      "description": "Requires standard response (<72h)",
+      "response_time_hours": 72
+    },
+    "5": {
+      "name": "low",
+      "description": "Can be addressed in normal cycle (<7d)",
+      "response_time_hours": 168
+    }
+  },
+  "alerts": [
+    {
+      "id": "alert-zombie-threshold-1763743367",
+      "type": "zombie_threshold",
+      "severity": "high",
+      "status": "active",
+      "message": "Zombie threshold exceeded: 44 zombies detected (threshold: 10)",
+      "metric_value": 44,
+      "threshold": 10,
+      "sla_minutes": 30,
+      "created_at": "2025-11-21T10:42:47-0600",
+      "worker_id": null,
+      "investigation_notes": [],
+      "zombie_workers": "worker-documentation-005,worker-documentation-006,worker-documentation-008,worker-documentation-009,worker-documentation-013,worker-documentation-014,worker-documentation-019,worker-documentation-053,worker-documentation-054,worker-documentation-060,worker-documentation-061,worker-implementation-001,worker-implementation-002,worker-implementation-010,worker-implementation-011,worker-implementation-016,worker-implementation-017,worker-implementation-037,worker-implementation-038,worker-implementation-039,worker-implementation-040,worker-implementation-041,worker-implementation-042,worker-implementation-043,worker-implementation-044,worker-implementation-045,worker-implementation-046,worker-implementation-047,worker-implementation-048,worker-implementation-049,worker-implementation-050,worker-implementation-055,worker-implementation-056,worker-scan-003,worker-scan-004,worker-scan-007,worker-scan-012,worker-scan-015,worker-scan-018,worker-scan-051,worker-scan-052,worker-scan-057,worker-scan-058,worker-scan-059"
+    },
+    {
+      "id": "alert-worker-daemon-down",
+      "type": "worker_daemon_failure",
+      "severity": "high",
+      "status": "active",
+      "message": "Worker daemon process not found",
+      "created_at": "2025-11-26T01:51:01-0600",
+      "sla_minutes": 30,
+      "worker_id": null,
+      "investigation_notes": []
+    },
+    {
+      "id": "alert-pm-daemon-down",
+      "type": "pm_daemon_failure",
+      "severity": "high",
+      "status": "needs_review",
+      "message": "PM Daemon heartbeat stale, PM Agent spawned as backup",
+      "created_at": "2025-11-26T10:33:35-0600",
+      "sla_minutes": 30,
+      "worker_id": null,
+      "investigation_notes": []
+    }
+  ]
+}

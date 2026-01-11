@@ -1,0 +1,67 @@
+{
+  "task_id": "task-main-executor-1733000007",
+  "description": "Implement main workflow executor orchestrating all components: parser, resolver, parallel execution, state management",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:07Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/executor.sh",
+    "dependencies": [
+      "task-workflow-parser-1733000000",
+      "task-dependency-resolver-1733000001",
+      "task-parallel-executor-1733000002",
+      "task-state-manager-1733000003",
+      "task-step-runner-1733000004",
+      "task-output-resolver-1733000005",
+      "task-workflow-visualizer-1733000006"
+    ],
+    "estimated_duration_minutes": 120
+  },
+  "requirements": {
+    "inputs": [
+      "Workflow YAML file path",
+      "Input variables JSON"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/executor.sh"
+    ],
+    "validation": [
+      "Orchestrate end-to-end workflow execution",
+      "Integrate all engine components",
+      "Handle errors at workflow level"
+    ],
+    "features": [
+      "Load and parse workflow YAML",
+      "Validate inputs against workflow schema",
+      "Initialize workflow state",
+      "Resolve dependencies and build execution plan",
+      "Display workflow visualization",
+      "Execute steps in dependency order",
+      "For each execution group:",
+      "  - Resolve input templates for all steps",
+      "  - Execute steps in parallel",
+      "  - Wait for group completion",
+      "  - Check conditions and skip if needed",
+      "  - Capture and store outputs",
+      "  - Update state",
+      "Handle step failures (retry, halt, continue)",
+      "Execute on_failure handlers if workflow fails",
+      "Emit workflow events (started, step_completed, completed, failed)",
+      "Move final state to completed/failed directory",
+      "Return workflow outputs",
+      "Support dry-run mode (validate without executing)",
+      "Support resume mode (continue from last completed step)"
+    ]
+  },
+  "acceptance_criteria": [
+    "Successfully executes security-audit.yaml end-to-end",
+    "Parallel steps run concurrently (verified with timing)",
+    "Outputs match expected values",
+    "Handles simulated failures gracefully",
+    "Resume works after interruption",
+    "Dry-run validates without side effects",
+    "Comprehensive integration tests"
+  ]
+}

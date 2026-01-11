@@ -1,0 +1,357 @@
+{
+  "scan_id": "sec-scan-20251208",
+  "scan_date": "2025-12-08T00:00:00Z",
+  "repositories_scanned": 5,
+  "total_vulnerabilities_found": 50,
+  "total_vulnerabilities_fixed": 40,
+  "total_open_vulnerabilities": 5,
+  "repositories": [
+    {
+      "name": "ATSFlow",
+      "owner": "ry-ops",
+      "vulnerabilities": {
+        "total": 3,
+        "open": 3,
+        "fixed": 0,
+        "by_severity": {
+          "critical": 0,
+          "high": 2,
+          "medium": 1,
+          "low": 0
+        }
+      },
+      "details": [
+        {
+          "alert_number": 3,
+          "package": "axios",
+          "current_version": "0.27.2",
+          "required_version": ">=0.30.2",
+          "severity": "high",
+          "summary": "Axios is vulnerable to DoS attack through lack of data size check",
+          "status": "open",
+          "indirect_dependency": true,
+          "parent_package": "linkedin-jobs-api"
+        },
+        {
+          "alert_number": 2,
+          "package": "axios",
+          "current_version": "0.27.2",
+          "required_version": ">=0.30.0",
+          "severity": "high",
+          "summary": "axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL",
+          "status": "open",
+          "indirect_dependency": true,
+          "parent_package": "linkedin-jobs-api"
+        },
+        {
+          "alert_number": 1,
+          "package": "axios",
+          "current_version": "0.27.2",
+          "required_version": ">=0.28.0",
+          "severity": "medium",
+          "summary": "Axios Cross-Site Request Forgery Vulnerability",
+          "status": "open",
+          "indirect_dependency": true,
+          "parent_package": "linkedin-jobs-api"
+        }
+      ],
+      "actions_taken": [
+        "Enabled Dependabot vulnerability alerts",
+        "Enabled automated security fixes",
+        "Identified axios as indirect dependency via linkedin-jobs-api"
+      ],
+      "recommendations": [
+        "Check if linkedin-jobs-api has an update that includes axios >=0.30.2",
+        "Consider using npm audit fix or manually updating the dependency tree",
+        "Monitor for Dependabot PRs that may auto-fix these issues"
+      ]
+    },
+    {
+      "name": "astro-carbon",
+      "owner": "ry-ops",
+      "vulnerabilities": {
+        "total": 0,
+        "open": 0,
+        "fixed": 0,
+        "by_severity": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "details": [],
+      "actions_taken": [
+        "Enabled Dependabot vulnerability alerts",
+        "Confirmed no vulnerabilities detected"
+      ],
+      "recommendations": [
+        "Repository is secure",
+        "Continue monitoring with Dependabot"
+      ]
+    },
+    {
+      "name": "blog",
+      "owner": "ry-ops",
+      "vulnerabilities": {
+        "total": 0,
+        "open": 0,
+        "fixed": 0,
+        "by_severity": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "details": [],
+      "actions_taken": [
+        "Enabled Dependabot vulnerability alerts",
+        "Confirmed no vulnerabilities detected"
+      ],
+      "recommendations": [
+        "Repository is secure",
+        "Continue monitoring with Dependabot"
+      ]
+    },
+    {
+      "name": "cortex",
+      "owner": "ry-ops",
+      "vulnerabilities": {
+        "total": 30,
+        "open": 0,
+        "fixed": 30,
+        "by_severity": {
+          "critical": 1,
+          "high": 9,
+          "medium": 16,
+          "low": 4
+        }
+      },
+      "details": [
+        {
+          "package": "prismjs",
+          "severity": "medium",
+          "summary": "PrismJS DOM Clobbering vulnerability",
+          "status": "fixed"
+        },
+        {
+          "package": "esbuild",
+          "severity": "medium",
+          "summary": "esbuild enables any website to send any requests to the development server and read the response",
+          "status": "fixed"
+        },
+        {
+          "package": "jws",
+          "severity": "high",
+          "summary": "auth0/node-jws Improperly Verifies HMAC Signature",
+          "status": "fixed"
+        },
+        {
+          "package": "langchain-core",
+          "severity": "high",
+          "summary": "LangChain Vulnerable to Template Injection via Attribute Access in Prompt Templates",
+          "status": "fixed"
+        },
+        {
+          "package": "mlflow",
+          "severity": "high",
+          "summary": "MLflow Weak Password Requirements Authentication Bypass Vulnerability",
+          "status": "fixed"
+        },
+        {
+          "package": "mlflow",
+          "severity": "high",
+          "summary": "MLFlow unsafe deserialization",
+          "status": "fixed"
+        },
+        {
+          "package": "torch",
+          "severity": "critical",
+          "summary": "PyTorch: torch.load with weights_only=True leads to remote code execution",
+          "status": "fixed"
+        },
+        {
+          "package": "transformers",
+          "severity": "medium",
+          "summary": "Multiple ReDoS vulnerabilities",
+          "status": "fixed"
+        },
+        {
+          "package": "langchain-community",
+          "severity": "high",
+          "summary": "Multiple vulnerabilities including XXE and SSRF",
+          "status": "fixed"
+        }
+      ],
+      "actions_taken": [
+        "Enabled Dependabot vulnerability alerts",
+        "All 30 vulnerabilities have been automatically fixed",
+        "Dependencies updated to secure versions"
+      ],
+      "recommendations": [
+        "Repository is now secure",
+        "All critical and high severity vulnerabilities resolved",
+        "Continue monitoring with Dependabot"
+      ]
+    },
+    {
+      "name": "DriveIQ",
+      "owner": "ry-ops",
+      "vulnerabilities": {
+        "total": 17,
+        "open": 2,
+        "fixed": 15,
+        "by_severity": {
+          "critical": 0,
+          "high": 5,
+          "medium": 11,
+          "low": 1
+        }
+      },
+      "dependabot_alerts": [
+        {
+          "alert_number": 2,
+          "package": "esbuild",
+          "current_version": "0.21.5",
+          "required_version": ">=0.25.0",
+          "severity": "medium",
+          "summary": "esbuild enables any website to send any requests to the development server and read the response",
+          "status": "open",
+          "location": "frontend/package-lock.json"
+        },
+        {
+          "alert_number": 1,
+          "package": "ecdsa",
+          "current_version": "0.19.1",
+          "required_version": null,
+          "severity": "high",
+          "summary": "Minerva timing attack on P-256 in python-ecdsa",
+          "status": "open",
+          "location": "backend/requirements.txt",
+          "note": "No fix available - timing attack considered out of scope by maintainers"
+        }
+      ],
+      "code_scanning_fixed": [
+        {
+          "type": "python-ecdsa timing attack",
+          "severity": "high",
+          "location": "backend/requirements.txt",
+          "status": "fixed",
+          "count": 1
+        },
+        {
+          "type": "python-multipart DoS",
+          "severity": "high",
+          "location": "backend/requirements.txt",
+          "status": "fixed",
+          "count": 2
+        },
+        {
+          "type": "python-jose vulnerabilities",
+          "severity": "high",
+          "location": "backend/requirements.txt",
+          "status": "fixed",
+          "count": 2
+        },
+        {
+          "type": "pypdf vulnerabilities",
+          "severity": "medium",
+          "location": "backend/requirements.txt",
+          "status": "fixed",
+          "count": 4
+        },
+        {
+          "type": "psf/black ReDoS",
+          "severity": "medium",
+          "location": "backend/requirements.txt",
+          "status": "fixed",
+          "count": 1
+        }
+      ],
+      "dependabot_prs_pending": [
+        {
+          "pr_number": 15,
+          "title": "chore(deps): bump anthropic from 0.39.0 to 0.75.0",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 14,
+          "title": "chore(deps): bump httpx from 0.25.2 to 0.28.1",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 13,
+          "title": "chore(deps): bump starlette from 0.49.1 to 0.50.0",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 12,
+          "title": "chore(deps): bump python-multipart from 0.0.18 to 0.0.20",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 11,
+          "title": "chore(deps): bump alembic from 1.12.1 to 1.17.2",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 10,
+          "title": "chore(deps): bump pytest-asyncio from 0.21.1 to 1.3.0",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 9,
+          "title": "chore(deps): bump pydantic-settings from 2.1.0 to 2.12.0",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 8,
+          "title": "chore(deps): bump pydantic from 2.5.2 to 2.12.5",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 7,
+          "title": "chore(deps): bump uvicorn[standard] from 0.32.1 to 0.38.0",
+          "state": "OPEN"
+        },
+        {
+          "pr_number": 6,
+          "title": "chore(deps): bump mypy from 1.7.1 to 1.19.0",
+          "state": "OPEN"
+        }
+      ],
+      "actions_taken": [
+        "Enabled Dependabot vulnerability alerts",
+        "Enabled automated security fixes",
+        "10 Dependabot PRs created for dependency updates",
+        "Code scanning shows 10 vulnerabilities already fixed"
+      ],
+      "recommendations": [
+        "Review and merge pending Dependabot PRs to update dependencies",
+        "esbuild: Update from 0.21.5 to >=0.25.0 in frontend/package.json",
+        "ecdsa: No fix available - timing attack is considered out of scope by maintainers. Consider risk acceptance or alternative package if critical",
+        "Monitor requirements.txt note about ecdsa timing attack"
+      ]
+    }
+  ],
+  "summary": {
+    "total_repositories": 5,
+    "repositories_secure": 2,
+    "repositories_with_open_vulnerabilities": 2,
+    "repositories_fully_remediated": 1,
+    "critical_vulnerabilities": 1,
+    "high_vulnerabilities": 11,
+    "medium_vulnerabilities": 18,
+    "low_vulnerabilities": 5,
+    "auto_fix_enabled": 5,
+    "vulnerability_alerts_enabled": 5
+  },
+  "next_steps": [
+    "ATSFlow: Monitor for Dependabot PRs to fix axios vulnerabilities (indirect dependency)",
+    "DriveIQ: Review and merge 10 pending Dependabot PRs",
+    "DriveIQ: Update esbuild from 0.21.5 to 0.25.0+ in frontend/package.json",
+    "DriveIQ: Review ecdsa timing attack risk (no fix available)",
+    "All repos: Continue monitoring with Dependabot automated security updates"
+  ]
+}

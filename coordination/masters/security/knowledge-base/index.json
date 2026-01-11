@@ -1,0 +1,28 @@
+{
+  "knowledge_base_id": "security-kb",
+  "created_at": "2025-11-03T19:09:31Z",
+  "categories": {
+    "vulnerability_database": {
+      "description": "Known vulnerabilities and their fixes",
+      "entries": []
+    },
+    "remediation_strategies": {
+      "description": "Successful security fix strategies",
+      "entries": []
+    },
+    "threat_patterns": {
+      "description": "Learned threat and vulnerability patterns",
+      "entries": []
+    },
+    "false_positives": {
+      "description": "Known false positive patterns",
+      "entries": []
+    },
+    "compliance_rules": {
+      "description": "Security compliance requirements",
+      "entries": []
+    }
+  },
+  "total_entries": 0,
+  "last_updated": "2025-11-03T19:09:31Z"
+}

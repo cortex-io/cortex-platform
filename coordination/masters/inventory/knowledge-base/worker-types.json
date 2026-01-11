@@ -1,0 +1,33 @@
+{
+  "worker_types": [
+    {
+      "type_id": "cataloger",
+      "description": "Catalogs and inventories repositories",
+      "specialization": "repository_cataloging",
+      "typical_token_allocation": 8000,
+      "skills": ["metadata_extraction", "organization", "tagging"]
+    },
+    {
+      "type_id": "dependency-auditor",
+      "description": "Audits and tracks dependencies",
+      "specialization": "dependency_management",
+      "typical_token_allocation": 10000,
+      "skills": ["dependency_analysis", "version_tracking", "update_planning"]
+    },
+    {
+      "type_id": "documentor",
+      "description": "Generates and maintains documentation",
+      "specialization": "documentation",
+      "typical_token_allocation": 12000,
+      "skills": ["doc_generation", "technical_writing", "template_usage"]
+    },
+    {
+      "type_id": "health-monitor",
+      "description": "Monitors repository health metrics",
+      "specialization": "health_monitoring",
+      "typical_token_allocation": 7000,
+      "skills": ["metrics_collection", "trend_analysis", "alerting"]
+    }
+  ],
+  "last_updated": "2025-11-03T19:09:35Z"
+}

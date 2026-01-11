@@ -1,0 +1,92 @@
+[
+  {
+    "task_id": "task-001",
+    "description": "Fix security vulnerability in authentication module",
+    "assigned_master": "security",
+    "status": "queued",
+    "priority": "high",
+    "tags": ["security", "authentication", "vulnerability"],
+    "created_at": "2025-11-27T00:00:00Z"
+  },
+  {
+    "task_id": "task-002",
+    "description": "Implement user registration feature with email verification",
+    "assigned_master": "development",
+    "status": "queued",
+    "priority": "normal",
+    "tags": ["feature", "user-management", "authentication"],
+    "created_at": "2025-11-27T00:05:00Z"
+  },
+  {
+    "task_id": "task-003",
+    "description": "Optimize database query performance for dashboard",
+    "assigned_master": "development",
+    "status": "queued",
+    "priority": "normal",
+    "tags": ["optimization", "database", "performance"],
+    "created_at": "2025-11-27T00:10:00Z"
+  },
+  {
+    "task_id": "task-004",
+    "description": "Update API documentation for v2 endpoints",
+    "assigned_master": "inventory",
+    "status": "queued",
+    "priority": "low",
+    "tags": ["documentation", "api", "maintenance"],
+    "created_at": "2025-11-27T00:15:00Z"
+  },
+  {
+    "task_id": "task-005",
+    "description": "Refactor legacy codebase to use modern patterns",
+    "assigned_master": "development",
+    "status": "queued",
+    "priority": "normal",
+    "tags": ["refactoring", "code-quality", "technical-debt"],
+    "created_at": "2025-11-27T00:20:00Z"
+  },
+  {
+    "task_id": "task-006",
+    "description": "Debug memory leak in worker process",
+    "assigned_master": "development",
+    "status": "queued",
+    "priority": "high",
+    "tags": ["bug", "memory", "debugging"],
+    "created_at": "2025-11-27T00:25:00Z"
+  },
+  {
+    "task_id": "task-007",
+    "description": "Add unit tests for routing system",
+    "assigned_master": "development",
+    "status": "queued",
+    "priority": "normal",
+    "tags": ["testing", "quality", "routing"],
+    "created_at": "2025-11-27T00:30:00Z"
+  },
+  {
+    "task_id": "task-008",
+    "description": "Deploy new feature to production",
+    "assigned_master": "cicd",
+    "status": "queued",
+    "priority": "high",
+    "tags": ["deployment", "production", "release"],
+    "created_at": "2025-11-27T00:35:00Z"
+  },
+  {
+    "task_id": "task-009",
+    "description": "Scan codebase for PII leakage",
+    "assigned_master": "security",
+    "status": "queued",
+    "priority": "high",
+    "tags": ["security", "pii", "compliance"],
+    "created_at": "2025-11-27T00:40:00Z"
+  },
+  {
+    "task_id": "task-010",
+    "description": "Generate weekly metrics report",
+    "assigned_master": "achievement",
+    "status": "queued",
+    "priority": "low",
+    "tags": ["reporting", "metrics", "analytics"],
+    "created_at": "2025-11-27T00:45:00Z"
+  }
+]

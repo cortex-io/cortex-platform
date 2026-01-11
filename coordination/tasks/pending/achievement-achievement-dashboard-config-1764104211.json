@@ -1,0 +1,12 @@
+{
+  "task_id": "achievement-achievement-dashboard-config-1764104211",
+  "created_at": "2025-11-25T20:56:51Z",
+  "source": "achievement-master",
+  "priority": "high",
+  "description": "Create dashboard configuration for achievement tracking",
+  "assigned_master": "development-master",
+  "automation": {
+    "workflow": "pr-automation",
+    "feature_type": "config"
+  }
+}

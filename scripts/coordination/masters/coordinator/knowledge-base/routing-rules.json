@@ -1,0 +1,35 @@
+{
+  "routing_rules": [
+    {
+      "rule_id": "security-scan",
+      "pattern": "security|vulnerability|audit|cve|scan",
+      "target_master": "security",
+      "priority": "high",
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "code-development",
+      "pattern": "implement|develop|code|feature|bug.*fix|refactor",
+      "target_master": "development",
+      "priority": "medium",
+      "confidence": 0.90
+    },
+    {
+      "rule_id": "inventory-management",
+      "pattern": "inventory|catalog|document|repository.*health|dependency.*update",
+      "target_master": "inventory",
+      "priority": "low",
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "multi-master",
+      "pattern": "comprehensive|full.*audit|major.*update",
+      "target_master": "multiple",
+      "involved_masters": ["security", "development", "inventory"],
+      "priority": "high",
+      "confidence": 0.80
+    }
+  ],
+  "fallback_master": "development",
+  "last_updated": "2025-12-05T08:23:53-0600"
+}

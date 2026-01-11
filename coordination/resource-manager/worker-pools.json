@@ -1,0 +1,784 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "cluster_name": "prod-k8s",
+
+  "worker_pool_definitions": {
+    "permanent": {
+      "pool_id": "permanent-pool-01",
+      "pool_type": "permanent",
+      "description": "Baseline capacity for production workloads",
+      "enabled": true,
+      "min_size": 3,
+      "max_size": 10,
+      "current_size": 5,
+      "auto_scaling": {
+        "enabled": true,
+        "scaling_policy": "cpu_memory_based",
+        "metrics": {
+          "cpu_utilization_target": 70,
+          "memory_utilization_target": 75,
+          "scale_up_threshold": 80,
+          "scale_down_threshold": 50
+        },
+        "cooldown_periods": {
+          "scale_up_seconds": 300,
+          "scale_down_seconds": 600
+        }
+      },
+      "default_template": "medium",
+      "node_labels": {
+        "node-pool": "permanent",
+        "worker-type": "permanent",
+        "workload-priority": "high"
+      },
+      "taints": []
+    },
+
+    "burst": {
+      "pool_id": "burst-pool-01",
+      "pool_type": "burst",
+      "description": "Temporary capacity for traffic spikes",
+      "enabled": true,
+      "min_size": 0,
+      "max_size": 20,
+      "current_size": 0,
+      "ttl_config": {
+        "default_ttl_hours": 4,
+        "max_ttl_hours": 12,
+        "idle_timeout_minutes": 30,
+        "cleanup_check_interval_seconds": 300
+      },
+      "provisioning_triggers": {
+        "pending_pods": {
+          "enabled": true,
+          "threshold_count": 5,
+          "threshold_duration_seconds": 120
+        },
+        "cpu_pressure": {
+          "enabled": true,
+          "threshold_percent": 80,
+          "duration_seconds": 300
+        },
+        "memory_pressure": {
+          "enabled": true,
+          "threshold_percent": 85,
+          "duration_seconds": 300
+        },
+        "manual": {
+          "enabled": true,
+          "requires_approval": false
+        }
+      },
+      "default_template": "medium",
+      "node_labels": {
+        "node-pool": "burst",
+        "worker-type": "temporary"
+      },
+      "taints": [
+        {
+          "key": "workload-type",
+          "value": "burst",
+          "effect": "NoSchedule"
+        }
+      ]
+    },
+
+    "spot": {
+      "pool_id": "spot-pool-01",
+      "pool_type": "spot",
+      "description": "Cost-optimized preemptible workers",
+      "enabled": true,
+      "min_size": 0,
+      "max_size": 15,
+      "current_size": 0,
+      "preemption_config": {
+        "policy": "terminate_after_grace_period",
+        "grace_period_seconds": 300,
+        "priority_class": "spot-workload"
+      },
+      "cost_savings_percent": 70,
+      "default_template": "medium",
+      "node_labels": {
+        "node-pool": "spot",
+        "worker-type": "preemptible",
+        "workload-priority": "low"
+      },
+      "taints": [
+        {
+          "key": "workload-type",
+          "value": "spot",
+          "effect": "NoSchedule"
+        },
+        {
+          "key": "preemptible",
+          "value": "true",
+          "effect": "PreferNoSchedule"
+        }
+      ]
+    },
+
+    "gpu": {
+      "pool_id": "gpu-pool-01",
+      "pool_type": "gpu",
+      "description": "GPU workers for ML/AI workloads",
+      "enabled": true,
+      "min_size": 0,
+      "max_size": 5,
+      "current_size": 0,
+      "gpu_config": {
+        "vendor": "nvidia",
+        "model": "tesla-t4",
+        "count_per_node": 1,
+        "vram_gb": 16,
+        "driver_version": "535.129.03",
+        "cuda_version": "12.2",
+        "device_plugin": "nvidia-device-plugin"
+      },
+      "default_template": "gpu-nvidia",
+      "node_labels": {
+        "node-pool": "gpu",
+        "worker-type": "gpu",
+        "gpu.nvidia.com/class": "tesla-t4",
+        "gpu.nvidia.com/count": "1",
+        "gpu.nvidia.com/memory": "16384"
+      },
+      "taints": [
+        {
+          "key": "nvidia.com/gpu",
+          "value": "true",
+          "effect": "NoSchedule"
+        }
+      ]
+    }
+  },
+
+  "worker_templates": {
+    "small": {
+      "template_name": "talos-worker-small-v1.8.0",
+      "proxmox_template_id": 9001,
+      "description": "Small worker for microservices",
+      "resources": {
+        "cpu_cores": 4,
+        "memory_mb": 8192,
+        "disk_gb": 100,
+        "network_bandwidth_gbps": 1
+      },
+      "allocatable_resources": {
+        "cpu_millicores": 3800,
+        "memory_mb": 7680,
+        "ephemeral_storage_gb": 95,
+        "max_pods": 100
+      },
+      "cost_per_hour": 0.12,
+      "use_cases": [
+        "Microservices (low resource)",
+        "Sidecars and proxies",
+        "Development workloads",
+        "Testing environments"
+      ],
+      "talos_config": {
+        "version": "1.8.0",
+        "kubernetes_version": "1.31.0",
+        "install_image": "ghcr.io/siderolabs/installer:v1.8.0"
+      }
+    },
+
+    "medium": {
+      "template_name": "talos-worker-medium-v1.8.0",
+      "proxmox_template_id": 9002,
+      "description": "Medium worker for general purpose",
+      "resources": {
+        "cpu_cores": 8,
+        "memory_mb": 16384,
+        "disk_gb": 200,
+        "network_bandwidth_gbps": 1
+      },
+      "allocatable_resources": {
+        "cpu_millicores": 7800,
+        "memory_mb": 15360,
+        "ephemeral_storage_gb": 190,
+        "max_pods": 100
+      },
+      "cost_per_hour": 0.24,
+      "use_cases": [
+        "General purpose applications",
+        "Web servers (moderate traffic)",
+        "API services",
+        "Databases (small to medium)"
+      ],
+      "talos_config": {
+        "version": "1.8.0",
+        "kubernetes_version": "1.31.0",
+        "install_image": "ghcr.io/siderolabs/installer:v1.8.0"
+      }
+    },
+
+    "large": {
+      "template_name": "talos-worker-large-v1.8.0",
+      "proxmox_template_id": 9003,
+      "description": "Large worker for resource-intensive workloads",
+      "resources": {
+        "cpu_cores": 16,
+        "memory_mb": 32768,
+        "disk_gb": 500,
+        "network_bandwidth_gbps": 10
+      },
+      "allocatable_resources": {
+        "cpu_millicores": 15800,
+        "memory_mb": 30720,
+        "ephemeral_storage_gb": 480,
+        "max_pods": 110
+      },
+      "cost_per_hour": 0.48,
+      "use_cases": [
+        "Large databases (PostgreSQL, MongoDB)",
+        "Data processing pipelines",
+        "ML inference serving",
+        "High-traffic applications"
+      ],
+      "talos_config": {
+        "version": "1.8.0",
+        "kubernetes_version": "1.31.0",
+        "install_image": "ghcr.io/siderolabs/installer:v1.8.0"
+      }
+    },
+
+    "gpu-nvidia": {
+      "template_name": "talos-worker-gpu-nvidia-v1.8.0",
+      "proxmox_template_id": 9004,
+      "description": "GPU worker with NVIDIA Tesla T4",
+      "resources": {
+        "cpu_cores": 8,
+        "memory_mb": 32768,
+        "disk_gb": 500,
+        "network_bandwidth_gbps": 10,
+        "gpu": {
+          "vendor": "nvidia",
+          "model": "tesla-t4",
+          "count": 1,
+          "vram_mb": 16384,
+          "pcie_passthrough": true
+        }
+      },
+      "allocatable_resources": {
+        "cpu_millicores": 7800,
+        "memory_mb": 30720,
+        "ephemeral_storage_gb": 480,
+        "max_pods": 100,
+        "nvidia.com/gpu": 1
+      },
+      "cost_per_hour": 1.20,
+      "use_cases": [
+        "ML model training",
+        "Inference serving",
+        "Video encoding/transcoding",
+        "Scientific computing"
+      ],
+      "talos_config": {
+        "version": "1.8.0",
+        "kubernetes_version": "1.31.0",
+        "install_image": "ghcr.io/siderolabs/installer:v1.8.0",
+        "extensions": [
+          "nvidia-container-toolkit",
+          "nvidia-driver-535"
+        ]
+      },
+      "proxmox_config": {
+        "hostpci0": "01:00.0,pcie=1,x-vga=1"
+      }
+    }
+  },
+
+  "lifecycle_configurations": {
+    "provisioning": {
+      "timeout_seconds": 300,
+      "retry_attempts": 3,
+      "retry_delay_seconds": 60,
+      "parallel_provisioning_limit": 5,
+      "vm_start_delay_seconds": 30,
+      "workflow": [
+        {
+          "step": 1,
+          "action": "clone_vm_from_template",
+          "mcp": "proxmox",
+          "timeout_seconds": 90,
+          "error_handling": "retry"
+        },
+        {
+          "step": 2,
+          "action": "configure_vm_resources",
+          "mcp": "proxmox",
+          "timeout_seconds": 30,
+          "error_handling": "retry"
+        },
+        {
+          "step": 3,
+          "action": "start_vm",
+          "mcp": "proxmox",
+          "timeout_seconds": 60,
+          "error_handling": "retry"
+        },
+        {
+          "step": 4,
+          "action": "wait_for_vm_boot",
+          "timeout_seconds": 120,
+          "error_handling": "fail"
+        },
+        {
+          "step": 5,
+          "action": "apply_talos_config",
+          "mcp": "talos",
+          "timeout_seconds": 120,
+          "error_handling": "retry"
+        },
+        {
+          "step": 6,
+          "action": "wait_for_node_ready",
+          "timeout_seconds": 300,
+          "error_handling": "fail"
+        },
+        {
+          "step": 7,
+          "action": "apply_kubernetes_labels",
+          "timeout_seconds": 30,
+          "error_handling": "warn"
+        }
+      ]
+    },
+
+    "joining": {
+      "timeout_seconds": 300,
+      "health_check_interval_seconds": 10,
+      "health_check_retries": 30,
+      "node_ready_wait_seconds": 60,
+      "validation_steps": [
+        {
+          "check": "node_appears_in_cluster",
+          "command": "kubectl get node {node_name}",
+          "expected": "node exists",
+          "timeout_seconds": 180
+        },
+        {
+          "check": "node_condition_ready",
+          "command": "kubectl get node {node_name} -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'",
+          "expected": "True",
+          "timeout_seconds": 120
+        },
+        {
+          "check": "kubelet_running",
+          "command": "talos service kubelet status --nodes {node_ip}",
+          "expected": "running",
+          "timeout_seconds": 60
+        }
+      ]
+    },
+
+    "draining": {
+      "grace_period_seconds": 300,
+      "timeout_seconds": 600,
+      "force_drain_after_timeout": false,
+      "ignore_daemonsets": true,
+      "delete_emptydir_data": true,
+      "pod_eviction_batch_size": 5,
+      "pod_eviction_delay_seconds": 10,
+      "validation_steps": [
+        {
+          "check": "all_pods_evicted",
+          "command": "kubectl get pods --all-namespaces --field-selector spec.nodeName={node_name} --no-headers | wc -l",
+          "expected": "0",
+          "exclude_daemonsets": true
+        }
+      ]
+    },
+
+    "termination": {
+      "timeout_seconds": 120,
+      "graceful_shutdown": true,
+      "force_shutdown_after_seconds": 300,
+      "cleanup_steps": [
+        {
+          "step": 1,
+          "action": "cordon_node",
+          "timeout_seconds": 10
+        },
+        {
+          "step": 2,
+          "action": "drain_node",
+          "timeout_seconds": 600
+        },
+        {
+          "step": 3,
+          "action": "delete_node_from_kubernetes",
+          "timeout_seconds": 30
+        },
+        {
+          "step": 4,
+          "action": "shutdown_talos_node",
+          "mcp": "talos",
+          "timeout_seconds": 120
+        },
+        {
+          "step": 5,
+          "action": "delete_vm_from_proxmox",
+          "mcp": "proxmox",
+          "timeout_seconds": 60
+        },
+        {
+          "step": 6,
+          "action": "remove_from_inventory",
+          "timeout_seconds": 10
+        }
+      ]
+    },
+
+    "ttl_cleanup": {
+      "enabled": true,
+      "check_interval_seconds": 300,
+      "grace_period_minutes": 5,
+      "cleanup_policy": "drain_then_terminate",
+      "idle_detection": {
+        "enabled": true,
+        "idle_threshold_minutes": 30,
+        "cpu_threshold_percent": 5,
+        "exclude_system_pods": true
+      },
+      "ttl_extension": {
+        "allowed": true,
+        "max_extensions": 3,
+        "extension_duration_hours": 2,
+        "requires_approval": false
+      }
+    },
+
+    "health_monitoring": {
+      "enabled": true,
+      "check_interval_seconds": 30,
+      "unhealthy_threshold_minutes": 5,
+      "auto_repair": {
+        "enabled": true,
+        "max_repair_attempts": 3,
+        "repair_cooldown_minutes": 15
+      },
+      "health_checks": [
+        {
+          "check": "node_ready_condition",
+          "severity": "critical",
+          "timeout_seconds": 10
+        },
+        {
+          "check": "memory_pressure",
+          "severity": "warning",
+          "timeout_seconds": 10
+        },
+        {
+          "check": "disk_pressure",
+          "severity": "warning",
+          "timeout_seconds": 10
+        },
+        {
+          "check": "pid_pressure",
+          "severity": "warning",
+          "timeout_seconds": 10
+        },
+        {
+          "check": "kubelet_running",
+          "severity": "critical",
+          "timeout_seconds": 10
+        },
+        {
+          "check": "containerd_running",
+          "severity": "critical",
+          "timeout_seconds": 10
+        }
+      ]
+    },
+
+    "auto_repair": {
+      "enabled": true,
+      "repair_strategies": {
+        "NotReady": {
+          "level1": {
+            "action": "restart_kubelet",
+            "trigger_after_seconds": 300,
+            "mcp": "talos",
+            "command": "talos service kubelet restart --nodes {node_ip}"
+          },
+          "level2": {
+            "action": "reboot_node",
+            "trigger_after_seconds": 600,
+            "mcp": "talos",
+            "command": "talos reboot --nodes {node_ip} --graceful"
+          },
+          "level3": {
+            "action": "replace_node",
+            "trigger_after_seconds": 1200,
+            "escalate": true
+          }
+        },
+        "DiskPressure": {
+          "level1": {
+            "action": "cleanup_disk",
+            "trigger_after_seconds": 60,
+            "command": "talos cleanup --nodes {node_ip}"
+          },
+          "level2": {
+            "action": "prune_images",
+            "trigger_after_seconds": 300,
+            "command": "crictl rmi --prune"
+          }
+        },
+        "MemoryPressure": {
+          "level1": {
+            "action": "drain_and_reboot",
+            "trigger_after_seconds": 600,
+            "mcp": "talos"
+          }
+        },
+        "KubeletCrashLoop": {
+          "level1": {
+            "action": "restart_kubelet",
+            "trigger_after_restarts": 3,
+            "mcp": "talos"
+          },
+          "level2": {
+            "action": "reboot_node",
+            "trigger_after_restarts": 5,
+            "mcp": "talos"
+          },
+          "level3": {
+            "action": "replace_node",
+            "trigger_after_restarts": 7,
+            "escalate": true
+          }
+        }
+      }
+    }
+  },
+
+  "scheduling_policies": {
+    "affinity_rules": {
+      "web_app_cache_colocation": {
+        "description": "Co-locate cache pods near web app pods",
+        "enabled": true,
+        "type": "podAffinity",
+        "strength": "required",
+        "topology_key": "kubernetes.io/hostname",
+        "label_selector": {
+          "app": "web-server"
+        }
+      },
+      "database_replica_spread": {
+        "description": "Spread database replicas across nodes",
+        "enabled": true,
+        "type": "podAntiAffinity",
+        "strength": "preferred",
+        "weight": 100,
+        "topology_key": "kubernetes.io/hostname",
+        "label_selector": {
+          "app": "database"
+        }
+      },
+      "critical_service_zone_spread": {
+        "description": "Spread critical services across zones",
+        "enabled": true,
+        "type": "podAntiAffinity",
+        "strength": "required",
+        "topology_key": "topology.kubernetes.io/zone",
+        "label_selector": {
+          "tier": "critical"
+        }
+      },
+      "prefer_permanent_workers": {
+        "description": "Prefer scheduling on permanent workers",
+        "enabled": true,
+        "type": "nodeAffinity",
+        "strength": "preferred",
+        "weight": 100,
+        "match_expressions": [
+          {
+            "key": "worker-type",
+            "operator": "In",
+            "values": ["permanent"]
+          }
+        ]
+      },
+      "require_ssd_storage": {
+        "description": "Require SSD storage for databases",
+        "enabled": true,
+        "type": "nodeAffinity",
+        "strength": "required",
+        "match_expressions": [
+          {
+            "key": "storage-tier",
+            "operator": "In",
+            "values": ["ssd", "nvme"]
+          }
+        ]
+      }
+    },
+
+    "priority_classes": {
+      "permanent-workload": {
+        "value": 1000,
+        "global_default": false,
+        "description": "Priority for permanent workload pods",
+        "preemption_policy": "PreemptLowerPriority"
+      },
+      "burst-workload": {
+        "value": 500,
+        "global_default": false,
+        "description": "Priority for burst workload pods",
+        "preemption_policy": "PreemptLowerPriority"
+      },
+      "spot-workload": {
+        "value": 100,
+        "global_default": false,
+        "description": "Priority for spot workload pods",
+        "preemption_policy": "Never"
+      }
+    }
+  },
+
+  "proxmox_integration": {
+    "api_endpoint": "${PROXMOX_URL}",
+    "authentication": {
+      "method": "api_token",
+      "token_id": "${PROXMOX_TOKEN_ID}",
+      "token_secret": "${PROXMOX_TOKEN_SECRET}"
+    },
+    "default_node": "pve-01",
+    "storage": {
+      "vm_storage": "local-lvm",
+      "iso_storage": "local",
+      "backup_storage": "backup-nfs"
+    },
+    "network": {
+      "bridge": "vmbr1",
+      "vlan_tag": 20,
+      "firewall": false
+    },
+    "vm_settings": {
+      "machine_type": "q35",
+      "bios": "ovmf",
+      "cpu_type": "host",
+      "numa": true,
+      "balloon": true,
+      "protection": false
+    },
+    "tags": {
+      "auto_tag": true,
+      "tag_prefix": "k8s",
+      "include_pool_type": true,
+      "include_template_size": true
+    }
+  },
+
+  "talos_integration": {
+    "cluster_name": "prod-k8s",
+    "cluster_endpoint": "https://192.168.1.10:6443",
+    "talos_version": "1.8.0",
+    "kubernetes_version": "1.31.0",
+    "cni": {
+      "plugin": "cilium",
+      "version": "1.16.0"
+    },
+    "network": {
+      "pod_cidr": "10.244.0.0/16",
+      "service_cidr": "10.96.0.0/12",
+      "dns_domain": "cluster.local"
+    },
+    "machine_config": {
+      "generate_on_demand": true,
+      "cache_configs": false,
+      "install_disk": "/dev/sda",
+      "kernel_args": [
+        "console=ttyS0",
+        "console=tty0"
+      ]
+    },
+    "kubelet_config": {
+      "register_with_taints": true,
+      "register_node_labels": true,
+      "max_pods": 110,
+      "pod_pids_limit": 4096
+    }
+  },
+
+  "cost_tracking": {
+    "enabled": true,
+    "currency": "USD",
+    "cost_allocation": {
+      "permanent_pool": {
+        "monthly_budget": 500.00,
+        "current_spend": 250.00,
+        "cost_per_worker_hour": 0.24
+      },
+      "burst_pool": {
+        "monthly_budget": 200.00,
+        "current_spend": 45.00,
+        "cost_per_worker_hour": 0.24
+      },
+      "spot_pool": {
+        "monthly_budget": 100.00,
+        "current_spend": 15.00,
+        "cost_per_worker_hour": 0.07
+      },
+      "gpu_pool": {
+        "monthly_budget": 1000.00,
+        "current_spend": 120.00,
+        "cost_per_worker_hour": 1.20
+      }
+    },
+    "alerts": {
+      "budget_threshold_percent": 80,
+      "burst_cost_per_event_max": 50.00,
+      "spot_preemption_cost_tracking": true
+    }
+  },
+
+  "monitoring_and_alerting": {
+    "prometheus_enabled": true,
+    "metrics_endpoint": "http://prometheus.monitoring.svc:9090",
+    "alert_rules": {
+      "worker_provision_timeout": {
+        "enabled": true,
+        "threshold_seconds": 600,
+        "severity": "warning"
+      },
+      "worker_join_failure": {
+        "enabled": true,
+        "threshold_failures": 3,
+        "severity": "critical"
+      },
+      "worker_pool_capacity_low": {
+        "enabled": true,
+        "threshold_percent": 90,
+        "severity": "warning"
+      },
+      "ttl_cleanup_failure": {
+        "enabled": true,
+        "severity": "warning"
+      },
+      "auto_repair_failure": {
+        "enabled": true,
+        "threshold_failures": 3,
+        "severity": "critical"
+      }
+    },
+    "dashboards": {
+      "worker_pool_overview": {
+        "enabled": true,
+        "grafana_dashboard_id": "worker-pools-overview"
+      },
+      "worker_lifecycle": {
+        "enabled": true,
+        "grafana_dashboard_id": "worker-lifecycle"
+      },
+      "cost_tracking": {
+        "enabled": true,
+        "grafana_dashboard_id": "worker-cost-tracking"
+      }
+    }
+  }
+}

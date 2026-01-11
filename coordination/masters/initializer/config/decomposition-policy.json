@@ -1,0 +1,48 @@
+{
+  "policy_id": "decomposition-policy",
+  "version": "1.0.0",
+  "description": "Rules for task decomposition into atomic features",
+  "feature_count_targets": {
+    "small_task": {
+      "word_count_threshold": 20,
+      "target_features": 50,
+      "min_features": 30,
+      "max_features": 70
+    },
+    "medium_task": {
+      "word_count_threshold": 50,
+      "target_features": 100,
+      "min_features": 75,
+      "max_features": 150
+    },
+    "large_task": {
+      "word_count_threshold": 100,
+      "target_features": 200,
+      "min_features": 150,
+      "max_features": 300
+    }
+  },
+  "feature_requirements": {
+    "estimated_minutes_min": 5,
+    "estimated_minutes_max": 15,
+    "max_dependencies": 3,
+    "required_fields": [
+      "description",
+      "priority",
+      "estimated_minutes",
+      "test_command",
+      "acceptance_criteria"
+    ]
+  },
+  "priority_distribution": {
+    "high": "0.2-0.3 of total features",
+    "medium": "0.4-0.5 of total features",
+    "low": "0.2-0.3 of total features"
+  },
+  "test_frameworks": {
+    "javascript": ["npm test --", "jest", "mocha"],
+    "python": ["pytest", "python -m unittest"],
+    "bash": ["./test-", "bats"],
+    "typescript": ["npm test --", "jest"]
+  }
+}

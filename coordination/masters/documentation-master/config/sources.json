@@ -1,0 +1,127 @@
+{
+  "sandfly": {
+    "enabled": true,
+    "priority": "high",
+    "sources": [
+      {
+        "url": "https://docs.sandflysecurity.com",
+        "type": "documentation",
+        "crawl_depth": 5,
+        "update_frequency": "daily",
+        "selectors": {
+          "content": "main, article, .documentation",
+          "exclude": "nav, footer, .sidebar"
+        }
+      },
+      {
+        "url": "https://sandflysecurity.com/blog",
+        "type": "blog",
+        "crawl_depth": 2,
+        "update_frequency": "weekly",
+        "selectors": {
+          "content": "article, .post-content",
+          "exclude": "nav, footer, .comments"
+        }
+      },
+      {
+        "url": "https://docs.sandflysecurity.com/api",
+        "type": "api_reference",
+        "crawl_depth": 3,
+        "update_frequency": "daily",
+        "selectors": {
+          "content": ".api-endpoint, .api-reference",
+          "exclude": "nav, .sidebar"
+        }
+      }
+    ],
+    "knowledge_graph": {
+      "entities": [
+        "alerts",
+        "hosts",
+        "processes",
+        "forensics",
+        "policies"
+      ],
+      "relationships": [
+        "detects",
+        "monitors",
+        "analyzes",
+        "integrates_with"
+      ],
+      "cross_domain_links": {
+        "security-master": [
+          "threat_detection",
+          "vulnerability_scanning"
+        ],
+        "inventory-master": [
+          "host_inventory",
+          "asset_tracking"
+        ]
+      }
+    }
+  },
+  "proxmox": {
+    "enabled": false,
+    "priority": "medium",
+    "sources": [
+      {
+        "url": "https://pve.proxmox.com/wiki",
+        "type": "documentation",
+        "crawl_depth": 4,
+        "update_frequency": "weekly"
+      },
+      {
+        "url": "https://pve.proxmox.com/pve-docs",
+        "type": "api_reference",
+        "crawl_depth": 3,
+        "update_frequency": "weekly"
+      }
+    ],
+    "knowledge_graph": {
+      "entities": [
+        "vm",
+        "container",
+        "cluster",
+        "node",
+        "storage"
+      ],
+      "relationships": [
+        "hosts",
+        "manages",
+        "connects_to"
+      ]
+    }
+  },
+  "k3s": {
+    "enabled": false,
+    "priority": "medium",
+    "sources": [
+      {
+        "url": "https://docs.k3s.io",
+        "type": "documentation",
+        "crawl_depth": 4,
+        "update_frequency": "weekly"
+      },
+      {
+        "url": "https://kubernetes.io/docs",
+        "type": "documentation",
+        "crawl_depth": 3,
+        "update_frequency": "monthly"
+      }
+    ],
+    "knowledge_graph": {
+      "entities": [
+        "pod",
+        "deployment",
+        "service",
+        "ingress",
+        "namespace"
+      ],
+      "relationships": [
+        "deploys",
+        "exposes",
+        "routes_to"
+      ]
+    }
+  }
+}

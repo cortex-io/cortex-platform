@@ -1,0 +1,47 @@
+{
+  "task_id": "task-workflow-visualizer-1733000006",
+  "description": "Implement ASCII workflow DAG visualizer showing parallel execution groups and dependencies",
+  "master": "development-master",
+  "priority": "medium",
+  "created_at": "2025-11-29T17:00:06Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/visualizer.sh",
+    "dependencies": ["task-dependency-resolver-1733000001"],
+    "estimated_duration_minutes": 90
+  },
+  "requirements": {
+    "inputs": [
+      "Execution plan with dependency graph",
+      "Parallel execution groups"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/visualizer.sh"
+    ],
+    "validation": [
+      "Generate ASCII art workflow diagram",
+      "Show parallel execution clearly",
+      "Display dependencies with arrows"
+    ],
+    "features": [
+      "Render workflow as ASCII DAG",
+      "Show sequential steps with vertical arrows (↓)",
+      "Show parallel steps with branches (├─┬─┤)",
+      "Number execution groups [1], [2a], [2b], [2c], [3]",
+      "Display step names",
+      "Highlight critical path",
+      "Show estimated duration per step",
+      "Color-code step status (pending, running, completed, failed)",
+      "Add legend for symbols",
+      "Support wide and compact layouts"
+    ]
+  },
+  "acceptance_criteria": [
+    "Visualizes security-audit.yaml showing 3 parallel scans",
+    "Clear visual distinction between sequential and parallel",
+    "Readable in 80-column terminal",
+    "Updates visualization during execution (live progress)",
+    "Includes examples for various workflow topologies"
+  ]
+}

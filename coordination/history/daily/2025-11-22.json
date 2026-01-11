@@ -1,0 +1,23 @@
+{
+  "date": "2025-11-22",
+  "snapshots_count": 601,
+  "first_snapshot": "2025-11-22T00:04:21-0600",
+  "last_snapshot": "2025-11-22T23:57:30-0600",
+  "workers": {
+    "avg_active": 19.467554076539102,
+    "total_completed": 58,
+    "total_failed": 6,
+    "total_zombie": 40,
+    "avg_success_rate": 79.65590682196313
+  },
+  "tokens": {
+    "total_budget": 500000,
+    "total_used": 0,
+    "avg_usage_percentage": 0
+  },
+  "tasks": {
+    "total_completed": 12,
+    "avg_pending": 0.4442595673876872,
+    "avg_in_progress": 2.75540765391015
+  }
+}

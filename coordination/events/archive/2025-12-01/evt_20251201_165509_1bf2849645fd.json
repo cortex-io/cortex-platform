@@ -1,0 +1,14 @@
+{
+  "event_id": "evt_20251201_165509_1bf2849645fd",
+  "event_type": "worker.heartbeat",
+  "timestamp": "2025-12-01T22:55:09+0000",
+  "source": "test-worker-dispatcher",
+  "correlation_id": "test-dispatcher",
+  "metadata": {
+    "priority": "low"
+  },
+  "payload": {
+    "worker_id": "test-002",
+    "heartbeat_time": "2025-12-01T22:55:09Z"
+  }
+}

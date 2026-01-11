@@ -1,0 +1,13 @@
+{
+  "event_id": "evt_20251201_165511_testfail",
+  "event_type": "task.failed",
+  "timestamp": "2025-12-01T22:55:11+0000",
+  "source": "test-task-handler",
+  "correlation_id": "test-task-failure-001",
+  "payload": {
+    "task_id": "test-task-failure-001",
+    "worker_id": "test-worker-003",
+    "error_type": "timeout",
+    "error_message": "Task exceeded timeout threshold"
+  }
+}

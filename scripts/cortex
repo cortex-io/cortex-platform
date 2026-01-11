@@ -1,0 +1,364 @@
+#!/usr/bin/env node
+/**
+ * Cortex 2.0 - Main CLI
+ *
+ * Usage:
+ *   cortex start          - Start all services
+ *   cortex stop           - Stop all services
+ *   cortex status         - Show system status
+ *   cortex submit <task>  - Submit a task
+ *   cortex scale <n>      - Scale worker pool
+ *   cortex metrics        - Show detailed metrics
+ */
+
+'use strict';
+
+const path = require('path');
+
+// Change to project root
+process.chdir(path.resolve(__dirname, '..'));
+
+const { CortexCore, startCortex } = require('../lib/cortex-core');
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const command = args[0] || 'help';
+
+// ANSI colors
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  dim: '\x1b[2m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  red: '\x1b[31m',
+  cyan: '\x1b[36m'
+};
+
+function log(msg, color = '') {
+  console.log(`${color}${msg}${colors.reset}`);
+}
+
+function banner() {
+  console.log(`
+${colors.cyan}${colors.bright}
+   ██████╗ ██████╗ ██████╗ ████████╗███████╗██╗  ██╗    ██████╗    ██████╗
+  ██╔════╝██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝╚██╗██╔╝    ╚════██╗  ██╔═████╗
+  ██║     ██║   ██║██████╔╝   ██║   █████╗   ╚███╔╝      █████╔╝  ██║██╔██║
+  ██║     ██║   ██║██╔══██╗   ██║   ██╔══╝   ██╔██╗     ██╔═══╝   ████╔╝██║
+  ╚██████╗╚██████╔╝██║  ██║   ██║   ███████╗██╔╝ ██╗    ███████╗  ╚██████╔╝
+   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝   ╚═════╝
+${colors.reset}
+  ${colors.dim}Async Coordination • Worker Pools • ML Scheduling${colors.reset}
+`);
+}
+
+function help() {
+  banner();
+  console.log(`
+${colors.bright}USAGE:${colors.reset}
+  cortex <command> [options]
+
+${colors.bright}COMMANDS:${colors.reset}
+  ${colors.green}start${colors.reset}              Start Cortex 2.0 services
+  ${colors.green}stop${colors.reset}               Stop all services
+  ${colors.green}status${colors.reset}             Show system status
+  ${colors.green}metrics${colors.reset}            Show detailed metrics
+  ${colors.green}submit${colors.reset} <type>      Submit a task
+  ${colors.green}scale${colors.reset} <n>          Scale worker pool to n workers
+  ${colors.green}health${colors.reset}             Health check
+  ${colors.green}demo${colors.reset}               Run interactive demo
+
+${colors.bright}OPTIONS:${colors.reset}
+  --workers=N        Number of workers (default: 20)
+  --port=N           HTTP port (default: 9500)
+  --memory=N         Max memory in MB (default: 12288)
+  --verbose          Verbose output
+
+${colors.bright}EXAMPLES:${colors.reset}
+  cortex start --workers=10
+  cortex submit implementation --payload='{"feature":"auth"}'
+  cortex scale 30
+  cortex metrics --json
+
+${colors.bright}ENVIRONMENT:${colors.reset}
+  CORTEX_WORKERS     Default worker pool size
+  CORTEX_PORT        Default HTTP port
+  CORTEX_MAX_MEMORY  Default max memory (MB)
+`);
+}
+
+async function start() {
+  banner();
+  log('\n🚀 Starting Cortex 2.0...\n', colors.bright);
+
+  const config = {
+    workerPool: {
+      poolSize: parseInt(getArg('workers') || process.env.CORTEX_WORKERS || '20'),
+    },
+    coordination: {
+      httpPort: parseInt(getArg('port') || process.env.CORTEX_PORT || '9500'),
+    },
+    scheduler: {
+      maxMemoryMB: parseInt(getArg('memory') || process.env.CORTEX_MAX_MEMORY || '12288'),
+    }
+  };
+
+  try {
+    const cortex = await startCortex(config);
+
+    // Setup graceful shutdown
+    process.on('SIGINT', async () => {
+      log('\n\n⏹️  Received SIGINT, shutting down...', colors.yellow);
+      await cortex.shutdown(true);
+      process.exit(0);
+    });
+
+    process.on('SIGTERM', async () => {
+      log('\n\n⏹️  Received SIGTERM, shutting down...', colors.yellow);
+      await cortex.shutdown(true);
+      process.exit(0);
+    });
+
+    // Print status
+    log('\n✅ Cortex 2.0 is running!\n', colors.green);
+    printStatus(cortex.getStatus());
+
+    log(`\n${colors.dim}Press Ctrl+C to stop${colors.reset}\n`);
+
+    // Keep process running
+    setInterval(() => {
+      // Heartbeat - keep process alive
+    }, 10000);
+
+  } catch (error) {
+    log(`\n❌ Failed to start: ${error.message}`, colors.red);
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+async function status() {
+  try {
+    const response = await fetch('http://localhost:9500/api/state');
+    const state = await response.json();
+
+    banner();
+    log('\n📊 System Status\n', colors.bright);
+
+    console.log(`  ${colors.green}●${colors.reset} Coordination Daemon: ${colors.green}running${colors.reset}`);
+    console.log(`    └─ Workers: ${state.workers?.length || 0}`);
+    console.log(`    └─ Tasks: ${Object.keys(state.tasks || {}).length}`);
+
+  } catch (error) {
+    banner();
+    log('\n📊 System Status\n', colors.bright);
+    log(`  ${colors.red}●${colors.reset} Cortex is not running`, colors.red);
+    log(`\n  Start with: ${colors.cyan}cortex start${colors.reset}`);
+  }
+}
+
+async function metrics() {
+  try {
+    const response = await fetch('http://localhost:9500/api/metrics');
+    const metrics = await response.json();
+
+    if (getArg('json')) {
+      console.log(JSON.stringify(metrics, null, 2));
+    } else {
+      banner();
+      log('\n📈 Metrics\n', colors.bright);
+      console.log(formatMetrics(metrics));
+    }
+  } catch (error) {
+    log('❌ Could not fetch metrics. Is Cortex running?', colors.red);
+  }
+}
+
+async function submit() {
+  const taskType = args[1] || 'general';
+  const payload = getArg('payload') ? JSON.parse(getArg('payload')) : {};
+
+  try {
+    const response = await fetch('http://localhost:9500/api/tasks/assign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        taskId: `task-${Date.now()}`,
+        type: taskType,
+        payload
+      })
+    });
+
+    const result = await response.json();
+    log(`\n✅ Task submitted: ${result.taskId || 'unknown'}`, colors.green);
+    console.log(JSON.stringify(result, null, 2));
+
+  } catch (error) {
+    log('❌ Could not submit task. Is Cortex running?', colors.red);
+  }
+}
+
+async function scale() {
+  const targetSize = parseInt(args[1]);
+
+  if (isNaN(targetSize) || targetSize < 1) {
+    log('❌ Please specify a valid number of workers', colors.red);
+    return;
+  }
+
+  log(`\n⚖️ Scaling worker pool to ${targetSize} workers...`, colors.yellow);
+
+  // This would need the Cortex instance - for now show message
+  log(`\n${colors.dim}Note: Use the running Cortex API to scale${colors.reset}`);
+  log(`  curl -X POST http://localhost:9500/api/scale -d '{"size":${targetSize}}'`);
+}
+
+async function health() {
+  try {
+    const response = await fetch('http://localhost:9500/health');
+    const health = await response.json();
+
+    if (health.status === 'ok') {
+      log('✅ Cortex is healthy', colors.green);
+    } else {
+      log('⚠️ Cortex has issues', colors.yellow);
+    }
+    console.log(JSON.stringify(health, null, 2));
+
+  } catch (error) {
+    log('❌ Health check failed. Is Cortex running?', colors.red);
+  }
+}
+
+async function demo() {
+  banner();
+  log('\n🎮 Interactive Demo\n', colors.bright);
+
+  log('This demo will:', colors.dim);
+  log('  1. Start Cortex 2.0 with 5 workers');
+  log('  2. Submit 10 test tasks');
+  log('  3. Show real-time metrics');
+  log('  4. Demonstrate ML predictions');
+  log('');
+
+  const readline = require('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(`${colors.yellow}Press Enter to start demo...${colors.reset}`, async () => {
+    rl.close();
+
+    log('\n📦 Starting Cortex with demo config...', colors.cyan);
+
+    try {
+      const cortex = await startCortex({
+        workerPool: { poolSize: 5 },
+        scheduler: { maxMemoryMB: 8192 }
+      });
+
+      log('\n📝 Submitting 10 test tasks...', colors.cyan);
+
+      const taskTypes = ['implementation', 'security', 'documentation', 'testing', 'review'];
+
+      for (let i = 0; i < 10; i++) {
+        const type = taskTypes[i % taskTypes.length];
+        const result = await cortex.submitTask({
+          type,
+          payload: { demoTask: i + 1 }
+        });
+
+        const statusIcon = result.success ? '✓' : '✗';
+        const statusColor = result.success ? colors.green : colors.red;
+        log(`  ${statusColor}${statusIcon}${colors.reset} Task ${i + 1}: ${type} (${result.durationMs}ms)`);
+
+        await new Promise(r => setTimeout(r, 500));
+      }
+
+      log('\n📊 Final Metrics:', colors.cyan);
+      const status = cortex.getStatus();
+      printStatus(status);
+
+      log('\n🎉 Demo complete!', colors.green);
+
+      await cortex.shutdown();
+
+    } catch (error) {
+      log(`\n❌ Demo failed: ${error.message}`, colors.red);
+    }
+  });
+}
+
+function printStatus(status) {
+  console.log(`
+  ${colors.bright}Components:${colors.reset}
+    Coordinator:  ${status.components?.coordinator === 'running' ? colors.green + '●' : colors.red + '○'} ${status.components?.coordinator || 'unknown'}${colors.reset}
+    Worker Pool:  ${status.components?.workerPool === 'running' ? colors.green + '●' : colors.red + '○'} ${status.components?.workerPool || 'unknown'}${colors.reset}
+    Scheduler:    ${status.components?.scheduler === 'running' ? colors.green + '●' : colors.red + '○'} ${status.components?.scheduler || 'unknown'}${colors.reset}
+
+  ${colors.bright}Tasks:${colors.reset}
+    Active:     ${status.tasks?.active || 0}
+    Completed:  ${status.tasks?.completed || 0}
+    Failed:     ${status.tasks?.failed || 0}
+    Rejected:   ${status.tasks?.rejected || 0}
+
+  ${colors.bright}Performance:${colors.reset}
+    Avg Latency:  ${status.performance?.avgLatencyMs || 0}ms
+    Throughput:   ${status.performance?.throughput || '0 tasks/min'}
+    Uptime:       ${status.uptimeFormatted || '0s'}
+`);
+}
+
+function formatMetrics(metrics) {
+  return JSON.stringify(metrics, null, 2);
+}
+
+function getArg(name) {
+  const prefix = `--${name}=`;
+  const arg = args.find(a => a.startsWith(prefix));
+  return arg ? arg.slice(prefix.length) : null;
+}
+
+// Main command router
+async function main() {
+  switch (command) {
+    case 'start':
+      await start();
+      break;
+    case 'stop':
+      log('Use Ctrl+C or send SIGTERM to stop Cortex', colors.yellow);
+      break;
+    case 'status':
+      await status();
+      break;
+    case 'metrics':
+      await metrics();
+      break;
+    case 'submit':
+      await submit();
+      break;
+    case 'scale':
+      await scale();
+      break;
+    case 'health':
+      await health();
+      break;
+    case 'demo':
+      await demo();
+      break;
+    case 'help':
+    case '--help':
+    case '-h':
+    default:
+      help();
+      break;
+  }
+}
+
+main().catch(error => {
+  log(`\n❌ Error: ${error.message}`, colors.red);
+  process.exit(1);
+});

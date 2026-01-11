@@ -1,0 +1,170 @@
+{
+  "$schema": "../schemas/utility-weights.schema.json",
+  "version": "1.0.0",
+  "description": "Multi-objective utility weights for master agent routing (Week 4)",
+  "default_weights": {
+    "speed": 0.25,
+    "quality": 0.35,
+    "cost": 0.20,
+    "success_rate": 0.20
+  },
+  "task_type_profiles": {
+    "security-scan": {
+      "speed": 0.15,
+      "quality": 0.45,
+      "cost": 0.10,
+      "success_rate": 0.30,
+      "rationale": "Security requires high quality and reliability"
+    },
+    "security-fix": {
+      "speed": 0.20,
+      "quality": 0.45,
+      "cost": 0.10,
+      "success_rate": 0.25,
+      "rationale": "Security fixes prioritize correctness"
+    },
+    "development": {
+      "speed": 0.30,
+      "quality": 0.35,
+      "cost": 0.10,
+      "success_rate": 0.25,
+      "rationale": "Development balances speed and quality"
+    },
+    "implementation": {
+      "speed": 0.30,
+      "quality": 0.35,
+      "cost": 0.10,
+      "success_rate": 0.25,
+      "rationale": "Implementation balances delivery speed with quality"
+    },
+    "analysis": {
+      "speed": 0.15,
+      "quality": 0.50,
+      "cost": 0.10,
+      "success_rate": 0.25,
+      "rationale": "Analysis prioritizes thoroughness and accuracy"
+    },
+    "documentation": {
+      "speed": 0.20,
+      "quality": 0.50,
+      "cost": 0.10,
+      "success_rate": 0.20,
+      "rationale": "Documentation prioritizes clarity and completeness"
+    },
+    "testing": {
+      "speed": 0.25,
+      "quality": 0.40,
+      "cost": 0.15,
+      "success_rate": 0.20,
+      "rationale": "Testing balances coverage with efficiency"
+    },
+    "refactoring": {
+      "speed": 0.20,
+      "quality": 0.45,
+      "cost": 0.15,
+      "success_rate": 0.20,
+      "rationale": "Refactoring prioritizes code quality"
+    }
+  },
+  "priority_adjustments": {
+    "critical": {
+      "quality_multiplier": 1.5,
+      "success_rate_multiplier": 1.3,
+      "cost_multiplier": 0.5,
+      "rationale": "Critical tasks sacrifice cost efficiency for quality and reliability"
+    },
+    "high": {
+      "quality_multiplier": 1.2,
+      "success_rate_multiplier": 1.1,
+      "cost_multiplier": 0.8,
+      "rationale": "High priority tasks slightly increase quality focus"
+    },
+    "medium": {
+      "quality_multiplier": 1.0,
+      "success_rate_multiplier": 1.0,
+      "cost_multiplier": 1.0,
+      "rationale": "Medium priority uses baseline weights"
+    },
+    "low": {
+      "quality_multiplier": 0.9,
+      "success_rate_multiplier": 0.9,
+      "cost_multiplier": 1.3,
+      "rationale": "Low priority tasks increase cost efficiency"
+    }
+  },
+  "complexity_adjustments": {
+    "very-high": {
+      "quality_multiplier": 1.5,
+      "success_rate_multiplier": 1.4,
+      "speed_multiplier": 0.8,
+      "rationale": "Very high complexity requires extra quality focus"
+    },
+    "high": {
+      "quality_multiplier": 1.3,
+      "success_rate_multiplier": 1.2,
+      "speed_multiplier": 0.9,
+      "rationale": "High complexity increases quality importance"
+    },
+    "medium": {
+      "quality_multiplier": 1.0,
+      "success_rate_multiplier": 1.0,
+      "speed_multiplier": 1.0,
+      "rationale": "Medium complexity uses baseline weights"
+    },
+    "low": {
+      "quality_multiplier": 0.9,
+      "success_rate_multiplier": 0.9,
+      "speed_multiplier": 1.2,
+      "rationale": "Low complexity can prioritize speed"
+    }
+  },
+  "master_baselines": {
+    "coordinator-master": {
+      "speed": 0.80,
+      "quality": 0.75,
+      "cost": 0.85,
+      "success_rate": 0.90,
+      "specialty": "Task routing and coordination"
+    },
+    "security-master": {
+      "speed": 0.70,
+      "quality": 0.95,
+      "cost": 0.70,
+      "success_rate": 0.85,
+      "specialty": "Security scanning and vulnerability management"
+    },
+    "development-master": {
+      "speed": 0.75,
+      "quality": 0.85,
+      "cost": 0.75,
+      "success_rate": 0.88,
+      "specialty": "Feature development and implementation"
+    },
+    "inventory-master": {
+      "speed": 0.90,
+      "quality": 0.80,
+      "cost": 0.90,
+      "success_rate": 0.92,
+      "specialty": "Repository management and documentation"
+    },
+    "cicd-master": {
+      "speed": 0.85,
+      "quality": 0.90,
+      "cost": 0.80,
+      "success_rate": 0.91,
+      "specialty": "CI/CD pipeline and testing"
+    }
+  },
+  "learning_parameters": {
+    "exponential_moving_average_alpha": 0.2,
+    "minimum_samples_for_adjustment": 3,
+    "max_adjustment_magnitude": 0.2,
+    "performance_decay_days": 30
+  },
+  "metadata": {
+    "created_at": "2025-11-19T15:55:00Z",
+    "created_by": "cortex meta-agent",
+    "week": 4,
+    "version": "1.0.0"
+  }
+}

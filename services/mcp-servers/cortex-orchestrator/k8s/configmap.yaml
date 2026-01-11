@@ -1,0 +1,205 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cortex-orchestrator-config
+  namespace: cortex-system
+  labels:
+    app: cortex-orchestrator
+    component: orchestration
+data:
+  config.yaml: |
+    # Cortex Orchestrator Configuration
+
+    # Dynamic Pod Limiter Settings
+    limiter:
+      # Headroom percentages (reserve for system stability)
+      cpu_headroom_percent: 30        # Reserve 30% CPU
+      memory_headroom_percent: 30     # Reserve 30% memory
+
+      # Safety rails
+      absolute_min_pods: 5            # Never go below 5 pods
+      absolute_max_pods: 500          # Never exceed 500 pods
+
+      # Agent resource profiles (CPU in millicores, memory in MB)
+      agent_profiles:
+        # Master agents (coordinator, security, etc.)
+        coordinator_master:
+          cpu_millicores: 500
+          memory_mb: 512
+
+        security_master:
+          cpu_millicores: 400
+          memory_mb: 384
+
+        development_master:
+          cpu_millicores: 800
+          memory_mb: 1024
+
+        cicd_master:
+          cpu_millicores: 600
+          memory_mb: 768
+
+        inventory_master:
+          cpu_millicores: 300
+          memory_mb: 256
+
+        # Standard agents
+        code_agent:
+          cpu_millicores: 400
+          memory_mb: 512
+
+        test_agent:
+          cpu_millicores: 300
+          memory_mb: 384
+
+        build_agent:
+          cpu_millicores: 1000
+          memory_mb: 2048
+
+        deploy_agent:
+          cpu_millicores: 200
+          memory_mb: 256
+
+        monitor_agent:
+          cpu_millicores: 150
+          memory_mb: 192
+
+        # Default profile (for unknown types)
+        default:
+          cpu_millicores: 200
+          memory_mb: 256
+
+    # Spawn Modulator Settings
+    modulator:
+      # Base spawn rate (pods per second)
+      base_spawn_rate: 10
+
+      # Max pending queue depth
+      max_pending_queue: 100
+
+      # Backpressure thresholds
+      backpressure:
+        # CPU headroom target (%)
+        cpu_headroom_target: 30
+
+        # Max pending pods before throttle
+        max_pending_pods: 50
+
+        # Failure count thresholds
+        failure_threshold_moderate: 1   # 1+ failures = 70% rate
+        failure_threshold_aggressive: 5  # 5+ failures = 30% rate
+
+        # API latency thresholds (ms)
+        api_latency_elevated: 200       # >200ms = 80% rate
+        api_latency_high: 500           # >500ms = 50% rate
+
+      # Spawn rate floor (never go below this)
+      min_spawn_rate: 0.5  # 0.5 pods/second minimum
+
+    # Stuck Pod Detector Settings
+    detector:
+      # Liveness check interval (seconds)
+      liveness_check_interval: 60
+
+      # Stuck score threshold (0.0-1.0)
+      stuck_threshold: 0.4
+
+      # Stuck timeout before swap (seconds)
+      stuck_timeout: 300  # 5 minutes
+
+      # Signal weights (must sum to 1.0)
+      signal_weights:
+        k8s_ready: 0.20           # K8s Ready condition
+        recent_logs: 0.20         # Log output in last 5min
+        cpu_activity: 0.15        # CPU usage >1m
+        network_activity: 0.15    # Network traffic
+        task_progress: 0.30       # Commit-relay progress (most important)
+
+      # Task progress timeout (seconds)
+      task_progress_timeout: 300  # 5 minutes without action = stuck
+
+    # Pod Swapper Settings
+    swapper:
+      # Max swap retries before escalation
+      max_swap_retries: 2
+
+      # Pod deletion grace period (seconds)
+      grace_period: 10
+
+      # Swap loop detection window (minutes)
+      swap_loop_window: 5
+
+      # State capture timeout (seconds)
+      state_capture_timeout: 5
+
+      # Swap history size
+      max_swap_history: 100
+
+    # Monitoring Settings
+    monitoring:
+      # Background monitoring interval (seconds)
+      monitor_interval: 60
+
+      # Auto-swap stuck pods after N seconds
+      auto_swap_threshold: 300  # 5 minutes
+
+      # Health assessment thresholds
+      health:
+        # Capacity utilization
+        capacity_critical: 0.95   # >95% = unhealthy
+        capacity_warning: 0.85    # >85% = degraded
+
+        # Stuck pod counts
+        stuck_pods_critical: 5    # >5 stuck = unhealthy
+        stuck_pods_warning: 3     # >3 stuck = degraded
+
+        # Stability factor
+        stability_critical: 0.7   # <0.7 = degraded
+
+    # Integration Settings
+    integration:
+      # Awareness MCP server
+      awareness:
+        url: "http://cortex-awareness.cortex-system.svc.cluster.local:8080"
+        timeout: 5
+        retry_attempts: 3
+
+      # Commit-relay (optional)
+      commit_relay:
+        enabled: true
+        url: "http://commit-relay.cortex-system.svc.cluster.local:8000"
+        timeout: 3
+        retry_attempts: 2
+
+      # Kubernetes API
+      kubernetes:
+        in_cluster: true
+        timeout: 10
+        retry_attempts: 3
+
+    # Observability Settings
+    observability:
+      # Prometheus metrics
+      prometheus:
+        enabled: true
+        port: 9090
+        path: "/metrics"
+
+      # Logging
+      logging:
+        level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+        format: "json"  # json, text
+
+        # Structured fields
+        include_fields:
+          - timestamp
+          - level
+          - pod_name
+          - component
+          - event_type
+          - message
+
+      # Tracing (future)
+      tracing:
+        enabled: false
+        endpoint: ""

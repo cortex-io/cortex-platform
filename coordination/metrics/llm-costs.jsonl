@@ -1,0 +1,4 @@
+# LLM Cost Tracking Log
+# Format: JSON Lines (one JSON object per line)
+# Fields: timestamp, task_id, task_type, model, provider, tokens, cost, cost_breakdown, latency_ms, success
+# Created: 2025-11-23

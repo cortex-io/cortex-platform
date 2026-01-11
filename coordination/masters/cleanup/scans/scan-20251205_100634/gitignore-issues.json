@@ -1,0 +1,35 @@
+{
+  "scan_type": "gitignore_issues",
+  "timestamp": "2025-12-05T16:11:05Z",
+  "count": 7,
+  "issues": [
+    {
+      "file": "coordination/events/system-events.jsonl",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/events/worker-events.jsonl",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/metrics/health-alert-stats.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/metrics/learning-stats.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/metrics/routing-stats.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/metrics/security-stats.json",
+      "issue": "ignored_but_not_in_gitignore"
+    },
+    {
+      "file": "coordination/metrics/worker-performance.jsonl",
+      "issue": "ignored_but_not_in_gitignore"
+    }
+  ]
+}

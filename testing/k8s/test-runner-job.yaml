@@ -1,0 +1,196 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cortex-unit-tests-js
+  namespace: cortex-test
+  labels:
+    test-type: unit
+    language: javascript
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test-runner
+          image: node:20-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cd /tests
+              npm ci
+              npm test -- --coverage --ci
+          volumeMounts:
+            - name: test-code
+              mountPath: /tests
+            - name: test-results
+              mountPath: /tests/coverage
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+      volumes:
+        - name: test-code
+          configMap:
+            name: unit-test-code-js
+        - name: test-results
+          persistentVolumeClaim:
+            claimName: test-results-pvc
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cortex-unit-tests-python
+  namespace: cortex-test
+  labels:
+    test-type: unit
+    language: python
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test-runner
+          image: python:3.11-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cd /tests
+              pip install -r requirements.txt
+              pytest --cov --cov-report=html --cov-report=xml
+          volumeMounts:
+            - name: test-code
+              mountPath: /tests
+            - name: test-results
+              mountPath: /tests/coverage
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+      volumes:
+        - name: test-code
+          configMap:
+            name: unit-test-code-python
+        - name: test-results
+          persistentVolumeClaim:
+            claimName: test-results-pvc
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cortex-integration-tests
+  namespace: cortex-test
+  labels:
+    test-type: integration
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test-runner
+          image: node:20-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cd /tests
+              npm ci
+              npm test -- --coverage --ci
+          env:
+            - name: REDIS_HOST
+              value: "test-redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: POSTGRES_HOST
+              value: "test-postgres"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "cortex_test"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: test-code
+              mountPath: /tests
+            - name: test-results
+              mountPath: /tests/coverage
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+      volumes:
+        - name: test-code
+          configMap:
+            name: integration-test-code
+        - name: test-results
+          persistentVolumeClaim:
+            claimName: test-results-pvc
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-results-pvc
+  namespace: cortex-test
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cortex-scheduled-tests
+  namespace: cortex-test
+spec:
+  schedule: "0 2 * * *"  # Run at 2 AM daily
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: test-runner
+              image: node:20-alpine
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  echo "Running scheduled test suite"
+                  cd /tests
+                  npm ci
+                  npm test -- --coverage --ci
+                  echo "Tests completed"
+              volumeMounts:
+                - name: test-code
+                  mountPath: /tests
+                - name: test-results
+                  mountPath: /tests/coverage
+          volumes:
+            - name: test-code
+              configMap:
+                name: unit-test-code-js
+            - name: test-results
+              persistentVolumeClaim:
+                claimName: test-results-pvc

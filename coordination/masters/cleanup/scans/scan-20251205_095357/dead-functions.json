@@ -1,0 +1,23 @@
+{
+  "scan_type": "dead_functions",
+  "timestamp": "2025-12-05T15:57:56Z",
+  "count": 4,
+  "functions": [
+    {
+      "file": "data-intelligence/ai-agents/deploy.sh",
+      "function": "_1"
+    },
+    {
+      "file": "data-intelligence/ai-agents/deploy.sh",
+      "function": "_2"
+    },
+    {
+      "file": "data-intelligence/ai-agents/deploy.sh",
+      "function": "_3"
+    },
+    {
+      "file": "data-intelligence/ai-agents/deploy.sh",
+      "function": "_4"
+    }
+  ]
+}

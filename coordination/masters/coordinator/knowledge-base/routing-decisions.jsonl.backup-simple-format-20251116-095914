@@ -1,0 +1,159 @@
+{"task_id":"task-014","routed_to":"development-master","rule_used":"code-development","pattern_matched":"implement|develop|code|feature|refactor","confidence":0.90,"timestamp":"2025-11-04T15:54:53Z","outcome":"assigned","reasoning":"Task involves implementing dashboard optimizations, refactoring file watching, and feature development (WebSocket push, event buffering, caching)"}
+{"task_id":"task-015","task_title":"Fix dashboard metric accuracy - active workers, success rate, and tasks in progress","task_type":"development","routed_to":"development-master","rule_used":"code-development","pattern_matched":"implement|develop|code|feature|bug.*fix|refactor","confidence":0.90,"priority":"high","timestamp":"2025-11-04T16:11:56Z","reasoning":"Task involves fixing and developing dashboard features - clear match for development pattern. Keywords: fix, dashboard, metric accuracy","outcome":"pending"}
+{"task_id":"task-016","task_title":"Redesign Token Budget card with hybrid multi-level visualization","task_type":"development","routed_to":"development-master","rule_used":"code-development","confidence":0.90,"keywords_matched":["redesign","visualization","UI/UX","frontend"],"timestamp":"2025-11-04T16:48:37Z","priority":"high","repository":"ry-ops/commit-relay","outcome":"assigned"}
+{"task_id":"task-017","title":"Implement CI/CD Agent and Multi-Workforce Streams Architecture","routed_to":"development-master","rule_used":"code-development","pattern_matched":"implement|develop|architecture|feature","confidence":0.90,"priority":"critical","reasoning":"Major architectural implementation requiring development expertise. Keywords: implement, develop, architecture. Involves creating new agents, stream management, worker allocation algorithms. Development-master has proven track record with large-scale features (task-009 dashboard). Not security-focused (no CVEs/vulnerabilities) and not inventory work (active development vs documentation).","timestamp":"2025-11-04T17:50:00Z","estimated_tokens":80000,"outcome":"pending"}
+{"task_id":"task-018","task_title":"Merge tasks into events feed and reorganize dashboard overview","task_type":"development","routed_to":"development-master","rule_used":"code-development","pattern_matched":"implement|develop|code|feature|refactor","confidence":0.90,"priority":"high","reasoning":"Dashboard UI/UX restructuring task. Keywords: merge, reorganize, UI restructuring, event feed consolidation. Involves frontend (dashboard-v2.js, index.html) and backend (server/index.js) modifications. Clear development pattern match with event generation logic and WebSocket integration requirements.","timestamp":"2025-11-04T18:30:00Z","outcome":"assigned","repository":"ry-ops/commit-relay"}
+{"task_id":"task-019","task_title":"Implement CI/CD-managed dashboard data flow architecture","task_type":"development","routed_to":"development-master","rule_used":"code-development","pattern_matched":"implement|develop|code|feature|refactor|architecture","confidence":0.90,"priority":"high","reasoning":"Architectural development work requiring code implementation. Task involves: (1) Creating dashboard-update-worker template, (2) Modifying CI/CD master agent definition, (3) Updating specialist master agents, (4) Implementing data flow architecture, (5) Worker coordination logic. Keywords: implement, architecture, development, worker creation. Not security-focused (no CVEs/vulnerabilities) and not inventory work (active development vs documentation). Development-master has proven expertise with multi-agent architecture (task-009, task-017 completed successfully).","timestamp":"2025-11-04T17:34:55Z","outcome":"assigned","repository":"ry-ops/commit-relay","estimated_effort":"LARGE","estimated_duration":"2-3 hours","handoff_id":"coord-to-development-B1034580","related_tasks":["task-017","task-018"]}
+{"task_id":"task-1762342905","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-018","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-1762342905","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-019","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-020","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-021","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-05T11:42:29Z"}
+{"task_id":"task-022","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-05T11:42:30Z"}
+{"task_id":"task-023","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T11:42:30Z"}
+{"task_id":"task-024","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T11:42:30Z"}
+{"task_id":"task-1762342906","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T12:14:36Z"}
+{"task_id":"task-1762342907","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T12:14:37Z"}
+{"task_id":"task-1762342908","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T12:14:37Z"}
+{"task_id":"task-1762342909","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T12:14:37Z"}
+{"task_id":"task-1762342910","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T16:13:47Z"}
+{"task_id":"task-1762342911","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T16:34:22Z"}
+{"task_id":"task-1762342912","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T16:41:20Z"}
+{"task_id":"task-1762342913","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-05T16:44:21Z"}
+{"task_id":"task-1762342914","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T16:48:58Z"}
+{"task_id":"task-1762342915","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T17:02:02Z"}
+{"task_id":"task-1762342916","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T17:02:03Z"}
+{"task_id":"task-1762342917","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T17:02:03Z"}
+{"task_id":"task-1762342918","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T17:03:36Z"}
+{"task_id":"task-1762366072","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-05T19:09:36Z"}
+{"task_id":"task-1762366073","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-06T16:05:11Z"}
+{"task_id":"test-task-002","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.09","strategy":"single_expert_low_confidence","timestamp":"2025-11-07T20:18:32-0600"}
+{"task_id":"task-003","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.06","strategy":"single_expert_low_confidence","timestamp":"2025-11-07T20:18:33-0600"}
+{"task_id":"task-1762553420","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.03","strategy":"single_expert_low_confidence","timestamp":"2025-11-07T20:18:33-0600"}
+{"task_id":"task-1762553421","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.03","strategy":"single_expert_low_confidence","timestamp":"2025-11-07T20:18:34-0600"}
+{"task_id":"task-1762553422","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:39:33-0600"}
+{"task_id":"task-1762553423","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:39:34-0600"}
+{"task_id":"task-1762553424","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:39:34-0600"}
+{"task_id":"task-1762553425","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:44:50-0600"}
+{"task_id":"task-1762553426","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:44:51-0600"}
+{"task_id":"task-1762553427","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:44:51-0600"}
+{"task_id":"task-1762553428","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:44:52-0600"}
+{"task_id":"task-1762553429","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:44:52-0600"}
+{"task_id":"task-1762553430","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T04:49:17-0600"}
+{"task_id":"task-1762553431","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T08:29:08-0600"}
+{"task_id":"task-1762553432","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T08:29:08-0600"}
+{"task_id":"task-1762553433","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T08:29:09-0600"}
+{"task_id":"task-1762553434","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T10:41:47-0600"}
+{"task_id":"task-1762553435","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T10:57:41-0600"}
+{"task_id":"task-1762553436","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:00:53-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-4130b075","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:21-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-c0a4d2d1","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:21-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-578b7e04","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:22-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-d03c64a3","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:22-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-67081586","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:23-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626013-786cc0fa","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:24-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-43c88d46","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:24-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-ae2a8949","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:25-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-7b06116b","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:25-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-b63efc1b","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:26-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-271c79ce","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:26-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626228-a4d79b93","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:26:27-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-0922fb5a","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:08-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-f4171764","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-41391183","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:10-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-db0eb0ae","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:10-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-e9d2f359","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:11-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626428-0f64f3ea","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:11-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-aa30ca25","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:12-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-28b1a031","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:12-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-7728f5cb","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:13-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-48fe8ed1","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:13-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-42745965","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:14-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626495-0ffc35ec","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:29:14-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-00728032","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:06-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-ede2eb9a","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:07-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-d3baf6b1","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:07-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-1f8a4f39","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:08-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-e32e4e94","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626673-c264c1c6","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:32:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-50a7ec23","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:40-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-8e44f42f","routed_to":"security","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:41-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-daf73212","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:42-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-6a084ece","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:42-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-b298c5c1","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:43-0600"}
+{"task_id":"moe-test-ddqd-v5-1762626887-42d13af1","routed_to":"inventory","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T12:35:43-0600"}
+{"task_id":"task-1762553437","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T14:18:50-0600"}
+{"task_id":"task-1762553438","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-08T14:43:23-0600"}
+{"task_id":"task-1762553439","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:38-0600"}
+{"task_id":"task-1762553440","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:39-0600"}
+{"task_id":"task-1762553441","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:39-0600"}
+{"task_id":"task-1762553442","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:40-0600"}
+{"task_id":"task-1762553443","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:40-0600"}
+{"task_id":"task-1762553444","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T04:33:41-0600"}
+{"task_id":"task-1762553439","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:49-0600"}
+{"task_id":"task-1762553440","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:49-0600"}
+{"task_id":"task-1762553441","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:50-0600"}
+{"task_id":"task-1762553442","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:51-0600"}
+{"task_id":"task-1762553443","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:51-0600"}
+{"task_id":"task-1762553444","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T06:08:52-0600"}
+{"task_id":"task-1762553445","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T08:26:22-0600"}
+{"task_id":"task-1762553453","routed_to":"development","rule_used":"moe-confidence-based","confidence":"0.95","strategy":"single_expert","timestamp":"2025-11-09T14:12:22-0600"}
+{"task_id":"task-1762553454","task_title":"PRIORITY 1 - HIGH Impact: Implement Automatic JSON Validation for dashboard-events.jsonl","task_type":"development","routed_to":"development","rule_used":"code-development","pattern_matched":"implement","confidence":0.95,"priority":"high","urgency":"immediate","impact":"high","reasoning":"Critical infrastructure stability task. Keywords: implement, automatic validation, JSON validation. Task involves implementing validation layer with jq, adding JSON repair utilities, and implementing validation hooks. Pattern match on implement keyword with high confidence. Priority 1 designation indicates immediate attention required for dashboard reliability and data integrity.","timestamp":"2025-11-11T14:12:26Z","outcome":"assigned","repository":"ry-ops/commit-relay","handoff_id":"coord-to-development-85FFD054-D57F-4E0C-B650-F9448FFEF19C","routing_strategy":"single_expert"}
+{"task_id":"task-1762553455","title":"Implement Circuit Breaker Pattern for rate limiting resilience","routed_to":"development","rule_used":"code-development","pattern_matched":"implement","confidence":0.95,"priority":"high","timestamp":"2025-11-11T14:00:00Z","routing_strategy":"single_expert","handoff_id":"coord-to-development-6F13BF59-D481-4E7A-A15C-7B711809C30F"}
+{"task_id":"task-1762553456","task_title":"Test MoE with Governance Controls","routed_to":"development","rule_used":"code-development","routing_reason":"Development task for testing governance framework","priority":"high","confidence":0.95,"timestamp":"2025-11-11T15:01:07Z","handoff_id":"coord-to-development-9CEA5FE1-DC58-40EB-B048-2841FA00853F","session_id":"CE51B6D2-1BF9-4EF9-B147-EC76CC3BA2D8"}
+{"task_id":"task-1762553457","title":"PRIORITY 4: Fix PM Daemon - Investigate and resolve PM daemon stability issues","routed_to":"development","rule_used":"code-development-bug-fix","routing_pattern":"implement|develop|code|feature|bug.*fix|refactor","routing_confidence":"0.95","routing_strategy":"single_expert","priority":"high","timestamp":"2025-11-11T15:13:34Z","handoff_id":"coord-to-development-744ADC29-E9EA-4DDB-BD73-7B3448F8713D","outcome":"pending"}
+{"task_id":"task-1762553458","title":"System Optimization - Clean up and optimize commit-relay system","routed_to":"development","rule_used":"code-development","routing_pattern":"implement|develop|code|feature|bug.*fix|refactor","confidence":0.92,"priority":"medium","timestamp":"2025-11-11T15:31:42Z","outcome":"pending","rationale":"System optimization task involving code cleanup, refactoring, log management, and documentation updates"}
+{"task_id":"task-1762553459","title":"PROMPT ENGINEERING UPGRADE - Phase 1: Contract Definition","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T16:10:05Z","confidence":0.95,"priority":"high","human_override":true,"architectural":true,"outcome":"pending"}
+{"task_id":"task-1762553464","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T16:51:41Z","outcome":"pending","priority":"critical","routing_confidence":0.95,"routing_strategy":"pattern_match_development","task_type":"feature","task_title":"GOVERNANCE UPGRADE - Phase 1: Unified Data & AI Catalog"}
+{"task_id":"task-1762553465","routed_to":"development","rule_used":"governance-implementation-critical","timestamp":"2025-11-11T14:09:00Z","outcome":"pending","priority":"critical","confidence":0.98,"pattern_matched":"implement|governance|access.*control","user_requested":true,"phase":"2","builds_on":"task-1762553464"}
+{"task_id":"task-1762553460","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T11:42:14-0600"}
+{"task_id":"task-1762553461","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T11:42:14-0600"}
+{"task_id":"task-1762553462","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T11:42:14-0600"}
+{"task_id":"task-1762553463","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T11:42:14-0600"}
+{"task_id":"task-1762553466","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T11:43:04-0600"}
+{"task_id":"task-1762553467","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T12:10:29-0600"}
+{"task_id":"task-1762553468","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T12:10:29-0600"}
+{"task_id":"task-1762553469","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T12:10:29-0600"}
+{"task_id":"task-1762893199","routed_to":"development","rule_used":"","timestamp":"2025-11-11T14:34:07-0600"}
+{"task_id":"task-1762893929","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T14:45:40-0600"}
+{"task_id":"task-1762894381","routed_to":"development","rule_used":"","timestamp":"2025-11-11T14:53:16-0600"}
+{"task_id":"task-1762894589","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T14:56:53-0600"}
+{"task_id":"task-1762896271","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T15:25:24-0600"}
+{"task_id":"task-1762896847","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T15:34:21-0600"}
+{"task_id":"task-1762553466","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T16:35:27-0600"}
+{"task_id":"task-1762553467","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-11T16:35:27-0600"}
+{"task_id":"task-1762553468","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T16:35:27-0600"}
+{"task_id":"task-1762553469","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-11T16:35:28-0600"}
+{"task_id":"task-1762961220","routed_to":"development","rule_used":"code-development","pattern_matched":"bug.*fix|script debugging","confidence":0.95,"priority":"critical","reasoning":"Script debugging and bug investigation requires development expertise","timestamp":"2025-11-12T15:38:13Z","outcome":"pending"}
+{"task_id":"task-1762553466","title":"GOVERNANCE UPGRADE - Phase 3: Automated Data Lineage & Audit Trails","routed_to":"security","rule_used":"security-scan","pattern_matched":"audit","confidence":0.95,"timestamp":"2025-11-12T16:20:00Z","retry_attempt":2,"previous_failure":"launcher_bug_task_context_injection_failure","outcome":"pending"}
+{"task_id":"task-1762553467","title":"GOVERNANCE UPGRADE - Phase 4: AI-Powered Monitoring & Quality Assurance","routed_to":"development","rule_used":"code-development","pattern_matched":"implement","confidence":0.90,"timestamp":"2025-11-12T16:20:00Z","retry_attempt":2,"previous_failure":"launcher_bug_task_context_injection_failure","outcome":"pending"}
+{"task_id":"task-1762553468","title":"GOVERNANCE UPGRADE - Phase 5: Compliance Automation & Reporting","routed_to":"development","rule_used":"code-development","pattern_matched":"implement","confidence":0.90,"timestamp":"2025-11-12T16:20:00Z","retry_attempt":2,"previous_failure":"launcher_bug_task_context_injection_failure","outcome":"pending"}
+{"task_id":"task-1762553469","title":"GOVERNANCE UPGRADE - Phase 6: Governance Metrics & Continuous Improvement","routed_to":"development","rule_used":"code-development","pattern_matched":"implement","confidence":0.90,"timestamp":"2025-11-12T16:20:00Z","retry_attempt":2,"previous_failure":"launcher_bug_task_context_injection_failure","outcome":"pending"}
+{"task_id":"moe-test-ddqd-v5-1763246282-ff986227","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-15T16:38:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246282-e8e7046a","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:38:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246282-579254c4","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:38:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246282-bb67152d","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:38:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246282-6b53d344","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:38:57-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246822-8c0d2292","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:47:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246822-1d954f50","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:47:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246822-33348243","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:47:56-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246973-121f1b91","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-15T16:50:27-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246973-15a1b47e","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:50:27-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246973-276431e6","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:50:27-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246973-f7fc82bc","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:50:27-0600"}
+{"task_id":"moe-test-ddqd-v5-1763246973-4324258d","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:50:28-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-d2866cf8","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-15T16:53:51-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-0adcd7ae","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-15T16:53:51-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-831aecfc","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:53:51-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-947f1b05","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T16:53:51-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-2f51d7f6","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:53:52-0600"}
+{"task_id":"moe-test-ddqd-v5-1763247177-f8d7e80e","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T16:53:52-0600"}
+{"task_id":"moe-test-ddqd-v5-1763253547-a31c8ce5","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-15T18:40:00-0600"}
+{"task_id":"moe-test-ddqd-v5-1763253547-8eb95615","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T18:40:00-0600"}
+{"task_id":"moe-test-ddqd-v5-1763253547-d540bbda","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-15T18:40:01-0600"}
+{"task_id":"moe-test-ddqd-v5-1763307968-c38fab2c","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-16T09:47:01-0600"}
+{"task_id":"moe-test-ddqd-v5-1763307968-bb0f7015","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-16T09:47:02-0600"}
+{"task_id":"moe-test-ddqd-v5-1763307968-d1622fb0","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-16T09:47:02-0600"}
+{"task_id":"moe-test-ddqd-v5-1763307968-9c6e2cb8","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T09:47:02-0600"}
+{"task_id":"moe-test-ddqd-v5-1763307968-68caa71b","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T09:47:03-0600"}

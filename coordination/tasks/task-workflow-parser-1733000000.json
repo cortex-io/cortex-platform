@@ -1,0 +1,49 @@
+{
+  "task_id": "task-workflow-parser-1733000000",
+  "description": "Implement YAML workflow parser that converts workflow definitions to execution plans with dependency analysis",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:00Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/parser.sh",
+    "dependencies": [],
+    "estimated_duration_minutes": 60
+  },
+  "requirements": {
+    "inputs": [
+      "coordination/workflows/security-audit.yaml",
+      "coordination/workflows/code-review.yaml",
+      "coordination/workflows/conditional-deploy.yaml"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/parser.sh"
+    ],
+    "validation": [
+      "Parse all existing YAML workflows successfully",
+      "Extract steps, inputs, outputs, triggers",
+      "Validate YAML schema",
+      "Handle malformed YAML gracefully"
+    ],
+    "features": [
+      "Load YAML workflow file",
+      "Extract workflow metadata (name, version, description)",
+      "Parse inputs with type validation",
+      "Parse steps with all action types (bash, delegate, http_request, aggregate)",
+      "Extract dependencies (depends_on)",
+      "Parse conditions for conditional execution",
+      "Extract triggers (manual, schedule, webhook, event)",
+      "Parse outputs and output templates",
+      "Parse on_failure handlers",
+      "Export as JSON execution plan"
+    ]
+  },
+  "acceptance_criteria": [
+    "Parser successfully loads security-audit.yaml",
+    "Outputs valid JSON execution plan",
+    "Handles missing fields with defaults",
+    "Provides clear error messages for invalid YAML",
+    "Includes unit tests for parser functions"
+  ]
+}

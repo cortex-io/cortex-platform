@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-07T21:35:00Z",
+  "active_tasks": [],
+  "task_index": {},
+  "metadata": {
+    "total_active": 0,
+    "by_expert": {
+      "development": 0,
+      "security": 0,
+      "inventory": 0
+    },
+    "by_priority": {
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  }
+}

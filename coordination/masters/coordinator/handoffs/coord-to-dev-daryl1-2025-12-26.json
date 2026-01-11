@@ -1,0 +1,53 @@
+{
+  "handoff_id": "coord-to-dev-daryl1-2025-12-26T150705Z",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "daryl-1-grafana-dashboards",
+  "priority": "high",
+  "task_data": {
+    "title": "Create Missing Grafana Dashboards",
+    "type": "development",
+    "description": "Create k3s and Sandfly Grafana dashboards as ConfigMaps",
+    "complexity": 7,
+    "requirements": [
+      "Create grafana-dashboard-k3s ConfigMap with comprehensive k3s cluster metrics",
+      "Create grafana-dashboard-sandfly ConfigMap with security alert metrics",
+      "Use existing Cloudflare dashboard as template (grafana-dashboard-cloudflare)",
+      "Ensure dashboards auto-import via Grafana sidecar",
+      "Apply ConfigMaps to monitoring namespace",
+      "Verify dashboards appear in Grafana UI"
+    ],
+    "context": {
+      "existing_dashboard": "grafana-dashboard-cloudflare ConfigMap in monitoring namespace",
+      "grafana_endpoint": "10.88.145.202:80 (LoadBalancer)",
+      "namespace": "monitoring",
+      "cluster": "k3s production cluster",
+      "pattern": "Create ConfigMaps with dashboard JSON, apply to monitoring namespace"
+    },
+    "deliverables": [
+      "/Users/ryandahlberg/Projects/cortex/k3s-deployments/monitoring/dashboards/k3s-dashboard.yaml",
+      "/Users/ryandahlberg/Projects/cortex/k3s-deployments/monitoring/dashboards/sandfly-dashboard.yaml",
+      "Applied ConfigMaps to k3s cluster",
+      "Verified dashboards in Grafana UI"
+    ],
+    "test_criteria": [
+      "k3s dashboard displays cluster metrics (nodes, pods, resources)",
+      "Sandfly dashboard displays security alerts",
+      "Dashboards auto-import on Grafana restart",
+      "ConfigMaps properly labeled for sidecar discovery"
+    ],
+    "reference_files": [
+      "Existing grafana-dashboard-cloudflare ConfigMap"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development pattern match (create, implement, code)",
+    "routing_confidence": 0.90,
+    "priority": "high",
+    "expected_outcome": "Two new Grafana dashboards deployed and accessible",
+    "blocking_for": ["daryl-2-dashy-config"],
+    "dependencies": ["daryl-4-monitoring-access"]
+  },
+  "created_at": "2025-12-26T15:07:05Z",
+  "status": "pending_pickup"
+}

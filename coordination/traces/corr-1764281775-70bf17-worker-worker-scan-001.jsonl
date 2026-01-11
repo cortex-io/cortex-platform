@@ -1,0 +1,8 @@
+
+{"correlation_id":"corr-1764281775-70bf17-worker-worker-scan-001","span_id":"span-1764281775156-d6d3-001","parent_span_id":"corr-1764281775-433e01-coordinator","timestamp":"2025-11-27T16:16:15-06:00","event_type":"worker_event","event_data":{},"process_id":"34406","hostname":"Ryans-Mini-3.localdomain"}
+
+
+
+
+{"correlation_id":"corr-1764281775-70bf17-worker-worker-scan-001","span_id":"span-1764281775156-d6d3-001","parent_span_id":"corr-1764281775-433e01-coordinator","timestamp":"2025-11-27T16:16:16-06:00","event_type":"worker_event","event_data":{},"process_id":"34406","hostname":"Ryans-Mini-3.localdomain"}
+{"correlation_id":"corr-1764281775-70bf17-worker-worker-scan-001","span_id":"span-1764281775156-d6d3-001","parent_span_id":"corr-1764281775-433e01-coordinator","timestamp":"2025-11-27T16:16:16-06:00","event_type":"span_completion","event_data":{},"process_id":"34406","hostname":"Ryans-Mini-3.localdomain"}

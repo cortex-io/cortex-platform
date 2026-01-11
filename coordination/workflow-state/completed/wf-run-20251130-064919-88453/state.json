@@ -1,0 +1,29 @@
+{
+  "workflow_run_id": "wf-run-20251130-064919-88453",
+  "workflow_name": "test-hello",
+  "status": "completed",
+  "started_at": "2025-11-30T12:49:19Z",
+  "updated_at": "2025-11-30T12:49:19Z",
+  "current_execution_group": 1,
+  "total_execution_groups": 0,
+  "inputs": {
+    "name": "World"
+  },
+  "steps": {
+    "greet": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:49:19Z",
+      "completed_at": "2025-11-30T12:49:19Z",
+      "outputs": {
+        "stdout": "Hello, World!"
+      }
+    }
+  },
+  "outputs": {
+    "greet": {
+      "stdout": "Hello, World!"
+    }
+  },
+  "completed_at": "2025-11-30T12:49:19Z"
+}

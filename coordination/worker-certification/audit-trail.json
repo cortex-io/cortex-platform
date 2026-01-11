@@ -1,0 +1,884 @@
+{
+  "audit_trail_config": {
+    "version": "1.0.0",
+    "enabled": true,
+    "description": "Enterprise-grade audit trail configuration for Cortex operations",
+    "updated_at": "2025-12-09T00:00:00Z"
+  },
+
+  "log_event_types": {
+    "agent_lifecycle": {
+      "category": "agent",
+      "events": {
+        "agent.master.spawned": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Master agent initialized",
+          "required_fields": ["actor.agent_id", "operation.action", "details.master_type"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.12.4.1"]
+        },
+        "agent.master.terminated": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Master agent shutdown",
+          "required_fields": ["actor.agent_id", "operation.outcome", "details.reason"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.12.4.1"]
+        },
+        "agent.worker.spawned": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Worker agent created",
+          "required_fields": ["actor.agent_id", "context.parent_id", "details.worker_type", "details.token_allocation"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.12.4.1"]
+        },
+        "agent.worker.completed": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Worker task completed",
+          "required_fields": ["actor.agent_id", "operation.outcome", "details.duration_seconds", "details.tokens_used"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.4.1"]
+        },
+        "agent.contractor.invoked": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Contractor specialist invoked",
+          "required_fields": ["actor.agent_id", "details.contractor_type", "details.expertise_area"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.12.4.1"]
+        },
+        "agent.handoff.created": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Inter-master handoff created",
+          "required_fields": ["actor.agent_id", "details.from_master", "details.to_master", "details.task_id"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.4.1"]
+        },
+        "agent.handoff.accepted": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Handoff accepted by receiving master",
+          "required_fields": ["actor.agent_id", "details.handoff_id", "details.from_master"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.4.1"]
+        }
+      }
+    },
+
+    "authentication_authorization": {
+      "category": "auth",
+      "events": {
+        "auth.permit.issued": {
+          "severity": "INFO",
+          "retention_class": "security",
+          "description": "Non-union worker permit issued",
+          "required_fields": ["actor.agent_id", "details.permit_id", "details.permit_type", "details.expiration"],
+          "compliance_tags": ["soc2:cc6.2", "iso27001:a.9.2.1", "gdpr:article30"]
+        },
+        "auth.permit.revoked": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Worker permit revoked",
+          "required_fields": ["actor.agent_id", "details.permit_id", "details.reason"],
+          "compliance_tags": ["soc2:cc6.3", "iso27001:a.9.2.6", "gdpr:article30"]
+        },
+        "auth.certification.verified": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Union certification status verified",
+          "required_fields": ["actor.agent_id", "details.certification_status", "details.verified_by"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.2.1"]
+        },
+        "auth.access.granted": {
+          "severity": "INFO",
+          "retention_class": "security",
+          "description": "Access to resource granted",
+          "required_fields": ["actor.agent_id", "operation.resource", "operation.action"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.2.2", "gdpr:article30"]
+        },
+        "auth.access.denied": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Access to resource denied",
+          "required_fields": ["actor.agent_id", "operation.resource", "operation.reason"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.2.2", "gdpr:article30"]
+        },
+        "auth.session.started": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Agent session initiated",
+          "required_fields": ["actor.agent_id", "actor.session_id", "actor.ip_address"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.2.1"]
+        },
+        "auth.session.expired": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Agent session expired or terminated",
+          "required_fields": ["actor.agent_id", "actor.session_id", "details.duration_seconds"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.2.1"]
+        }
+      }
+    },
+
+    "data_operations": {
+      "category": "data",
+      "events": {
+        "data.file.read": {
+          "severity": "DEBUG",
+          "retention_class": "diagnostic",
+          "description": "File read operation",
+          "required_fields": ["actor.agent_id", "operation.resource", "details.file_size"],
+          "compliance_tags": ["iso27001:a.12.4.1", "gdpr:article30"]
+        },
+        "data.file.write": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "File write operation",
+          "required_fields": ["actor.agent_id", "operation.resource", "details.bytes_written"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.4.1", "gdpr:article30"]
+        },
+        "data.file.delete": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "File deletion operation",
+          "required_fields": ["actor.agent_id", "operation.resource", "details.file_hash"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.4.1", "gdpr:article17"]
+        },
+        "data.config.changed": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "System configuration modified",
+          "required_fields": ["actor.agent_id", "operation.resource", "details.config_key", "details.previous_value"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.1.2", "gdpr:article32"]
+        },
+        "data.secret.accessed": {
+          "severity": "SECURITY",
+          "retention_class": "security",
+          "description": "Secret or credential accessed",
+          "required_fields": ["actor.agent_id", "operation.resource", "details.secret_type"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.9.4.1", "gdpr:article32"]
+        },
+        "data.export.initiated": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Data export operation started",
+          "required_fields": ["actor.agent_id", "details.export_destination", "details.data_type", "details.record_count"],
+          "compliance_tags": ["soc2:cc6.1", "iso27001:a.13.2.1", "gdpr:article15"]
+        },
+        "data.backup.created": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Backup created successfully",
+          "required_fields": ["operation.resource", "details.backup_id", "details.backup_size", "details.backup_type"],
+          "compliance_tags": ["soc2:cc7.4", "iso27001:a.12.3.1"]
+        }
+      }
+    },
+
+    "system_operations": {
+      "category": "system",
+      "events": {
+        "system.process.executed": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "System process executed",
+          "required_fields": ["actor.agent_id", "details.command", "details.exit_code"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.12.4.3"]
+        },
+        "system.api.called": {
+          "severity": "DEBUG",
+          "retention_class": "diagnostic",
+          "description": "External API called",
+          "required_fields": ["actor.agent_id", "details.api_endpoint", "details.http_method", "details.response_code"],
+          "compliance_tags": ["iso27001:a.13.1.1", "gdpr:article30"]
+        },
+        "system.service.started": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "System service started",
+          "required_fields": ["operation.resource", "details.service_name"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.12.1.1"]
+        },
+        "system.service.stopped": {
+          "severity": "WARN",
+          "retention_class": "operational",
+          "description": "System service stopped",
+          "required_fields": ["operation.resource", "details.service_name", "details.reason"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.12.1.1"]
+        },
+        "system.resource.allocated": {
+          "severity": "DEBUG",
+          "retention_class": "diagnostic",
+          "description": "System resources allocated",
+          "required_fields": ["actor.agent_id", "details.resource_type", "details.amount"],
+          "compliance_tags": ["iso27001:a.12.1.3"]
+        },
+        "system.resource.exhausted": {
+          "severity": "CRITICAL",
+          "retention_class": "security",
+          "description": "System resource exhausted",
+          "required_fields": ["details.resource_type", "details.threshold", "details.current_usage"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.12.1.3", "gdpr:article32"]
+        },
+        "system.disaster_recovery": {
+          "severity": "CRITICAL",
+          "retention_class": "security",
+          "description": "Disaster recovery procedure executed",
+          "required_fields": ["actor.agent_id", "details.recovery_point", "details.backup_id", "operation.outcome"],
+          "compliance_tags": ["soc2:cc7.4", "iso27001:a.17.1.1"]
+        }
+      }
+    },
+
+    "security_events": {
+      "category": "security",
+      "events": {
+        "security.vulnerability.detected": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Security vulnerability identified",
+          "required_fields": ["details.vulnerability_id", "details.severity", "details.affected_component"],
+          "compliance_tags": ["soc2:cc7.1", "iso27001:a.12.6.1", "gdpr:article32"]
+        },
+        "security.intrusion.attempted": {
+          "severity": "CRITICAL",
+          "retention_class": "security",
+          "description": "Intrusion attempt detected",
+          "required_fields": ["actor.ip_address", "details.attack_type", "details.target_resource"],
+          "compliance_tags": ["soc2:cc7.3", "iso27001:a.16.1.4", "gdpr:article33"]
+        },
+        "security.policy.violated": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Security policy violation",
+          "required_fields": ["actor.agent_id", "details.policy_name", "details.violation_type"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.18.1.1"]
+        },
+        "security.scan.completed": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Security scan completed",
+          "required_fields": ["details.scan_type", "details.vulnerabilities_found", "details.scan_duration"],
+          "compliance_tags": ["soc2:cc7.1", "iso27001:a.12.6.1"]
+        },
+        "security.patch.applied": {
+          "severity": "INFO",
+          "retention_class": "operational",
+          "description": "Security patch applied",
+          "required_fields": ["details.patch_id", "details.affected_component", "operation.outcome"],
+          "compliance_tags": ["soc2:cc8.1", "iso27001:a.12.6.1"]
+        },
+        "security.anomaly.detected": {
+          "severity": "WARN",
+          "retention_class": "security",
+          "description": "Anomalous behavior detected",
+          "required_fields": ["actor.agent_id", "details.anomaly_type", "details.anomaly_score"],
+          "compliance_tags": ["soc2:cc7.2", "iso27001:a.16.1.4", "gdpr:article32"]
+        }
+      }
+    },
+
+    "compliance_events": {
+      "category": "compliance",
+      "events": {
+        "compliance.report.generated": {
+          "severity": "INFO",
+          "retention_class": "regulatory",
+          "description": "Compliance report generated",
+          "required_fields": ["details.report_type", "details.period_start", "details.period_end"],
+          "compliance_tags": ["soc2:cc4.1", "iso27001:a.18.1.5"]
+        },
+        "compliance.audit.requested": {
+          "severity": "INFO",
+          "retention_class": "regulatory",
+          "description": "Compliance audit requested",
+          "required_fields": ["actor.user_id", "details.audit_scope", "details.audit_type"],
+          "compliance_tags": ["soc2:cc4.1", "iso27001:a.18.1.5"]
+        },
+        "compliance.retention.applied": {
+          "severity": "INFO",
+          "retention_class": "regulatory",
+          "description": "Retention policy applied to data",
+          "required_fields": ["operation.resource", "details.retention_class", "details.retention_days"],
+          "compliance_tags": ["soc2:cc6.5", "iso27001:a.11.2.7", "gdpr:article17"]
+        },
+        "compliance.deletion.executed": {
+          "severity": "WARN",
+          "retention_class": "regulatory",
+          "description": "Data permanently deleted per retention policy",
+          "required_fields": ["operation.resource", "details.deletion_reason", "details.record_count"],
+          "compliance_tags": ["soc2:cc6.5", "iso27001:a.11.2.7", "gdpr:article17"]
+        }
+      }
+    }
+  },
+
+  "retention_rules": [
+    {
+      "rule_id": "operational-default",
+      "name": "Operational Logs - Default",
+      "retention_class": "operational",
+      "event_types": ["agent.*", "system.*"],
+      "severity": ["DEBUG", "INFO", "WARN"],
+      "retention_days": 90,
+      "storage_tiers": [
+        {
+          "tier": "active",
+          "start_day": 0,
+          "end_day": 90,
+          "storage_type": "ssd",
+          "compression": false,
+          "encryption": "at_rest"
+        }
+      ],
+      "deletion_policy": "automatic",
+      "compliance_frameworks": []
+    },
+    {
+      "rule_id": "security-events",
+      "name": "Security Events - Extended Retention",
+      "retention_class": "security",
+      "event_types": ["security.*", "auth.*"],
+      "severity": ["WARN", "ERROR", "CRITICAL", "SECURITY"],
+      "retention_days": 2555,
+      "storage_tiers": [
+        {
+          "tier": "active",
+          "start_day": 0,
+          "end_day": 90,
+          "storage_type": "ssd",
+          "compression": false,
+          "encryption": "at_rest"
+        },
+        {
+          "tier": "warm",
+          "start_day": 91,
+          "end_day": 365,
+          "storage_type": "hdd",
+          "compression": "gzip",
+          "encryption": "at_rest"
+        },
+        {
+          "tier": "cold",
+          "start_day": 366,
+          "end_day": 2555,
+          "storage_type": "s3",
+          "compression": "gzip",
+          "encryption": "aes256"
+        }
+      ],
+      "deletion_policy": "manual_approval_required",
+      "compliance_frameworks": ["soc2", "iso27001", "gdpr"]
+    },
+    {
+      "rule_id": "regulatory-compliance",
+      "name": "Regulatory Compliance - 7 Years",
+      "retention_class": "regulatory",
+      "event_types": ["compliance.*", "data.config.changed", "auth.permit.*"],
+      "severity": ["INFO", "WARN", "ERROR"],
+      "retention_days": 2555,
+      "storage_tiers": [
+        {
+          "tier": "active",
+          "start_day": 0,
+          "end_day": 90,
+          "storage_type": "ssd",
+          "compression": false,
+          "encryption": "at_rest"
+        },
+        {
+          "tier": "warm",
+          "start_day": 91,
+          "end_day": 365,
+          "storage_type": "hdd",
+          "compression": "gzip",
+          "encryption": "at_rest"
+        },
+        {
+          "tier": "cold",
+          "start_day": 366,
+          "end_day": 2555,
+          "storage_type": "s3",
+          "compression": "gzip",
+          "encryption": "aes256"
+        }
+      ],
+      "deletion_policy": "automatic_with_audit",
+      "compliance_frameworks": ["soc2", "iso27001"]
+    },
+    {
+      "rule_id": "diagnostic-logs",
+      "name": "Diagnostic Logs - Short Retention",
+      "retention_class": "diagnostic",
+      "event_types": ["system.api.called", "data.file.read", "system.resource.allocated"],
+      "severity": ["DEBUG"],
+      "retention_days": 30,
+      "storage_tiers": [
+        {
+          "tier": "active",
+          "start_day": 0,
+          "end_day": 30,
+          "storage_type": "ssd",
+          "compression": false,
+          "encryption": "at_rest"
+        }
+      ],
+      "deletion_policy": "automatic",
+      "compliance_frameworks": []
+    },
+    {
+      "rule_id": "financial-transactions",
+      "name": "Financial Transactions - 7 Years",
+      "retention_class": "financial",
+      "event_types": ["data.financial.*"],
+      "severity": ["INFO", "WARN", "ERROR"],
+      "retention_days": 2555,
+      "storage_tiers": [
+        {
+          "tier": "active",
+          "start_day": 0,
+          "end_day": 90,
+          "storage_type": "ssd",
+          "compression": false,
+          "encryption": "at_rest"
+        },
+        {
+          "tier": "warm",
+          "start_day": 91,
+          "end_day": 365,
+          "storage_type": "hdd",
+          "compression": "gzip",
+          "encryption": "aes256"
+        },
+        {
+          "tier": "cold",
+          "start_day": 366,
+          "end_day": 2555,
+          "storage_type": "s3",
+          "compression": "gzip",
+          "encryption": "aes256"
+        }
+      ],
+      "deletion_policy": "manual_approval_required",
+      "compliance_frameworks": ["sox", "pci_dss"]
+    },
+    {
+      "rule_id": "legal-hold",
+      "name": "Legal Hold - Indefinite Retention",
+      "retention_class": "legal_hold",
+      "event_types": ["*"],
+      "severity": ["*"],
+      "retention_days": -1,
+      "storage_tiers": [
+        {
+          "tier": "cold",
+          "start_day": 0,
+          "end_day": -1,
+          "storage_type": "s3_glacier",
+          "compression": "gzip",
+          "encryption": "aes256"
+        }
+      ],
+      "deletion_policy": "never",
+      "compliance_frameworks": ["legal"]
+    }
+  ],
+
+  "compliance_mappings": {
+    "soc2": {
+      "framework": "SOC 2 Type II",
+      "version": "2017 Trust Services Criteria",
+      "controls": {
+        "CC6.1": {
+          "name": "Logical and Physical Access Controls",
+          "description": "Implements logical access security measures to protect information assets",
+          "event_types": ["auth.access.granted", "auth.access.denied", "auth.session.*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC6.2": {
+          "name": "Prior to Issuing System Credentials",
+          "description": "Prior to issuing system credentials and granting system access",
+          "event_types": ["auth.permit.issued", "auth.certification.verified"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC6.3": {
+          "name": "Removes Access When Appropriate",
+          "description": "Removes entity access when appropriate",
+          "event_types": ["auth.permit.revoked", "auth.access.denied"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC7.2": {
+          "name": "System Monitoring",
+          "description": "Monitors system components and the operation of those components",
+          "event_types": ["system.*", "security.*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC7.3": {
+          "name": "Incident Response",
+          "description": "Evaluates security events to determine whether they could or have resulted in a failure",
+          "event_types": ["security.intrusion.*", "security.anomaly.detected"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC7.4": {
+          "name": "Backup and Recovery",
+          "description": "Identifies and responds to system failures",
+          "event_types": ["data.backup.created", "system.disaster_recovery"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "CC8.1": {
+          "name": "Change Management",
+          "description": "Authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes",
+          "event_types": ["data.config.changed", "security.patch.applied", "agent.handoff.*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        }
+      }
+    },
+    "iso27001": {
+      "framework": "ISO/IEC 27001:2022",
+      "version": "2022",
+      "controls": {
+        "A.9.2.1": {
+          "name": "User Registration and De-registration",
+          "description": "A formal user registration and de-registration process",
+          "event_types": ["auth.permit.issued", "auth.permit.revoked"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.9.2.2": {
+          "name": "User Access Provisioning",
+          "description": "A formal user access provisioning process",
+          "event_types": ["auth.access.granted", "auth.access.denied"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.9.2.6": {
+          "name": "Removal or Adjustment of Access Rights",
+          "description": "Access rights removed upon termination",
+          "event_types": ["auth.permit.revoked", "auth.session.expired"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.12.4.1": {
+          "name": "Event Logging",
+          "description": "Event logs recording user activities shall be produced",
+          "event_types": ["*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.12.4.2": {
+          "name": "Protection of Log Information",
+          "description": "Logging facilities and log information shall be protected",
+          "event_types": ["data.file.write", "data.file.delete"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.12.4.3": {
+          "name": "Administrator and Operator Logs",
+          "description": "System administrator and operator activities shall be logged",
+          "event_types": ["system.process.executed", "data.config.changed"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "A.16.1.4": {
+          "name": "Assessment of and Decision on Information Security Events",
+          "description": "Information security events shall be assessed",
+          "event_types": ["security.*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        }
+      }
+    },
+    "gdpr": {
+      "framework": "General Data Protection Regulation",
+      "version": "EU 2016/679",
+      "articles": {
+        "article_15": {
+          "name": "Right of Access by the Data Subject",
+          "description": "Data subject has right to access their personal data",
+          "event_types": ["data.export.initiated"],
+          "reporting_required": true,
+          "evidence_retention_days": 365
+        },
+        "article_17": {
+          "name": "Right to Erasure (Right to be Forgotten)",
+          "description": "Data subject has right to erasure of personal data",
+          "event_types": ["data.file.delete", "compliance.deletion.executed"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "article_30": {
+          "name": "Records of Processing Activities",
+          "description": "Maintain records of processing activities",
+          "event_types": ["data.*", "auth.*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "article_32": {
+          "name": "Security of Processing",
+          "description": "Implement appropriate technical and organizational measures",
+          "event_types": ["security.*", "data.config.changed"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "article_33": {
+          "name": "Notification of a Personal Data Breach",
+          "description": "Notify supervisory authority of breach within 72 hours",
+          "event_types": ["security.intrusion.attempted", "data.export.initiated"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555,
+          "notification_window_hours": 72
+        }
+      }
+    },
+    "hipaa": {
+      "framework": "Health Insurance Portability and Accountability Act",
+      "version": "1996 (as amended)",
+      "safeguards": {
+        "access_control": {
+          "name": "Access Control (164.312(a)(1))",
+          "description": "Implement technical policies and procedures for electronic information systems",
+          "event_types": ["auth.access.granted", "auth.access.denied"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "audit_controls": {
+          "name": "Audit Controls (164.312(b))",
+          "description": "Implement hardware, software, and/or procedural mechanisms that record and examine activity",
+          "event_types": ["*"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        },
+        "integrity": {
+          "name": "Integrity (164.312(c)(1))",
+          "description": "Implement policies and procedures to protect ePHI from improper alteration or destruction",
+          "event_types": ["data.file.write", "data.file.delete", "data.config.changed"],
+          "reporting_required": true,
+          "evidence_retention_days": 2555
+        }
+      }
+    }
+  },
+
+  "anomaly_detection_rules": [
+    {
+      "rule_id": "high-auth-failure-rate",
+      "name": "High Authentication Failure Rate",
+      "description": "Detect actors with unusually high authentication failure rates",
+      "enabled": true,
+      "severity": "WARN",
+      "event_types": ["auth.access.denied", "auth.permit.revoked"],
+      "threshold": {
+        "failure_rate_percent": 5,
+        "minimum_attempts": 5,
+        "time_window_minutes": 60
+      },
+      "actions": ["alert_security_team", "log_anomaly"]
+    },
+    {
+      "rule_id": "unusual-resource-access",
+      "name": "Unusual Resource Access Pattern",
+      "description": "Detect access to resources not previously accessed",
+      "enabled": true,
+      "severity": "INFO",
+      "event_types": ["data.file.read", "data.file.write", "system.api.called"],
+      "threshold": {
+        "new_resources_count": 1,
+        "baseline_learning_days": 7
+      },
+      "actions": ["log_anomaly"]
+    },
+    {
+      "rule_id": "token-exhaustion",
+      "name": "Token Budget Exhaustion",
+      "description": "Detect workers approaching or exceeding token budgets",
+      "enabled": true,
+      "severity": "WARN",
+      "event_types": ["agent.worker.spawned", "agent.worker.completed"],
+      "threshold": {
+        "token_usage_percent": 90
+      },
+      "actions": ["alert_master", "log_anomaly"]
+    },
+    {
+      "rule_id": "unusual-timing",
+      "name": "Activity During Unusual Hours",
+      "description": "Detect significant activity during off-hours",
+      "enabled": true,
+      "severity": "INFO",
+      "event_types": ["*"],
+      "threshold": {
+        "unusual_hours_utc": [0, 1, 2, 3, 4, 5],
+        "exclude_event_types": ["system.monitoring"]
+      },
+      "actions": ["log_anomaly"]
+    },
+    {
+      "rule_id": "privilege-escalation",
+      "name": "Privilege Escalation Detection",
+      "description": "Detect unauthorized privilege escalation attempts",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "event_types": ["auth.permit.issued", "auth.certification.verified"],
+      "threshold": {
+        "from_certification": "non_union",
+        "to_certification": "union",
+        "unauthorized": true
+      },
+      "actions": ["alert_security_team", "block_action", "log_anomaly"]
+    },
+    {
+      "rule_id": "data-exfiltration",
+      "name": "Potential Data Exfiltration",
+      "description": "Detect unusual data export patterns",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "event_types": ["data.export.initiated", "data.file.read"],
+      "threshold": {
+        "export_size_mb": 100,
+        "export_rate_per_hour": 10,
+        "sensitive_data": true
+      },
+      "actions": ["alert_security_team", "block_action", "log_anomaly"]
+    },
+    {
+      "rule_id": "resource-exhaustion",
+      "name": "System Resource Exhaustion",
+      "description": "Detect system resource exhaustion events",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "event_types": ["system.resource.exhausted"],
+      "threshold": {
+        "resource_usage_percent": 90
+      },
+      "actions": ["alert_operations_team", "trigger_scaling", "log_anomaly"]
+    }
+  ],
+
+  "integrity_verification": {
+    "enabled": true,
+    "signature_algorithm": "HMAC-SHA256",
+    "chain_verification": true,
+    "merkle_tree_enabled": true,
+    "verification_schedule": {
+      "realtime": {
+        "enabled": true,
+        "description": "Verify each event as it's written"
+      },
+      "hourly": {
+        "enabled": true,
+        "description": "Verify hourly log file integrity",
+        "schedule": "0 * * * *"
+      },
+      "daily": {
+        "enabled": true,
+        "description": "Comprehensive daily chain verification",
+        "schedule": "0 3 * * *"
+      }
+    },
+    "key_rotation": {
+      "enabled": true,
+      "rotation_period_days": 365,
+      "overlap_period_days": 30
+    }
+  },
+
+  "backup_configuration": {
+    "enabled": true,
+    "strategy": "3-2-1",
+    "schedules": {
+      "incremental": {
+        "frequency": "hourly",
+        "retention_days": 7,
+        "type": "rsync_incremental"
+      },
+      "daily": {
+        "frequency": "daily",
+        "time": "02:00 UTC",
+        "retention_days": 30,
+        "type": "full_encrypted"
+      },
+      "weekly": {
+        "frequency": "weekly",
+        "day": "Sunday",
+        "time": "03:00 UTC",
+        "retention_days": 90,
+        "type": "full_encrypted_offsite"
+      },
+      "monthly": {
+        "frequency": "monthly",
+        "day": 1,
+        "time": "04:00 UTC",
+        "retention_days": 2555,
+        "type": "archive_encrypted_offsite"
+      }
+    },
+    "encryption": {
+      "algorithm": "AES-256-CBC",
+      "key_derivation": "PBKDF2"
+    },
+    "verification": {
+      "enabled": true,
+      "verify_after_backup": true,
+      "random_restore_test_frequency_days": 30
+    }
+  },
+
+  "streaming_configuration": {
+    "enabled": true,
+    "protocols": ["websocket", "sse", "grpc"],
+    "websocket": {
+      "enabled": true,
+      "port": 8080,
+      "authentication_required": true,
+      "max_connections": 100
+    },
+    "siem_integration": {
+      "enabled": false,
+      "endpoint": "https://siem.cortex.local:8088/services/collector",
+      "format": "splunk_hec",
+      "batch_size": 100,
+      "flush_interval_seconds": 60
+    },
+    "dashboard_integration": {
+      "enabled": true,
+      "endpoint": "http://localhost:3000",
+      "real_time_events": true,
+      "event_filter": {
+        "severity": ["WARN", "ERROR", "CRITICAL", "SECURITY"]
+      }
+    }
+  },
+
+  "query_interface": {
+    "enabled": true,
+    "default_limit": 1000,
+    "max_limit": 10000,
+    "query_timeout_seconds": 30,
+    "caching": {
+      "enabled": true,
+      "ttl_seconds": 300
+    },
+    "predefined_queries": {
+      "security_incidents": {
+        "event_types": ["security.*"],
+        "severity": ["WARN", "ERROR", "CRITICAL", "SECURITY"],
+        "time_range": "last_24h"
+      },
+      "failed_authentications": {
+        "event_types": ["auth.access.denied", "auth.permit.revoked"],
+        "operation_outcome": "failure"
+      },
+      "privileged_access": {
+        "actor_certification": "union",
+        "event_types": ["data.config.changed", "system.process.executed"]
+      },
+      "data_modifications": {
+        "event_types": ["data.file.write", "data.file.delete", "data.config.changed"]
+      }
+    }
+  }
+}

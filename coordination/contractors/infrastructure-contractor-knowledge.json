@@ -1,0 +1,987 @@
+{
+  "knowledge_base": {
+    "name": "Infrastructure Contractor Knowledge Base",
+    "version": "1.0.0",
+    "contractor": "infrastructure-contractor",
+    "last_updated": "2025-12-09T00:00:00Z",
+    "description": "Curated knowledge for infrastructure provisioning and management across Proxmox, UniFi, and Cloudflare"
+  },
+  "vm_templates": {
+    "sizing_recommendations": {
+      "tiny": {
+        "name": "Tiny VM",
+        "cpu": 1,
+        "ram_mb": 2048,
+        "disk_gb": 32,
+        "use_cases": [
+          "DNS servers",
+          "Monitoring agents",
+          "Log forwarders",
+          "Single-purpose utilities"
+        ],
+        "cost_profile": "minimal",
+        "notes": "For lightweight services with minimal resource requirements"
+      },
+      "small": {
+        "name": "Small VM",
+        "cpu": 2,
+        "ram_mb": 4096,
+        "disk_gb": 50,
+        "use_cases": [
+          "Development servers",
+          "Testing environments",
+          "Small web applications",
+          "Reverse proxies",
+          "Cache servers"
+        ],
+        "cost_profile": "low",
+        "notes": "Suitable for non-production workloads and small services"
+      },
+      "medium": {
+        "name": "Medium VM",
+        "cpu": 4,
+        "ram_mb": 8192,
+        "disk_gb": 100,
+        "use_cases": [
+          "Production web servers",
+          "API services",
+          "Application servers",
+          "Small databases",
+          "CI/CD runners"
+        ],
+        "cost_profile": "moderate",
+        "notes": "Standard production workload size, good balance of resources"
+      },
+      "large": {
+        "name": "Large VM",
+        "cpu": 8,
+        "ram_mb": 16384,
+        "disk_gb": 200,
+        "use_cases": [
+          "Large databases (PostgreSQL, MySQL)",
+          "Data processing",
+          "Analytics workloads",
+          "Containerized workloads (Docker, K8s nodes)",
+          "High-traffic web applications"
+        ],
+        "cost_profile": "high",
+        "notes": "For resource-intensive production workloads"
+      },
+      "xlarge": {
+        "name": "Extra Large VM",
+        "cpu": 16,
+        "ram_mb": 32768,
+        "disk_gb": 500,
+        "use_cases": [
+          "Machine learning workloads",
+          "Large-scale databases",
+          "Data warehouses",
+          "Virtualization hosts",
+          "High-performance computing"
+        ],
+        "cost_profile": "premium",
+        "notes": "For demanding workloads requiring significant compute resources"
+      }
+    },
+    "os_templates": {
+      "ubuntu-2204": {
+        "name": "Ubuntu 22.04 LTS",
+        "template_id": "template-ubuntu-2204",
+        "os_family": "debian",
+        "recommended_for": [
+          "General purpose servers",
+          "Web applications",
+          "Containerized workloads",
+          "Development environments"
+        ],
+        "default_packages": [
+          "openssh-server",
+          "cloud-init",
+          "qemu-guest-agent"
+        ],
+        "support_until": "2027-04"
+      },
+      "ubuntu-2404": {
+        "name": "Ubuntu 24.04 LTS",
+        "template_id": "template-ubuntu-2404",
+        "os_family": "debian",
+        "recommended_for": [
+          "Latest Ubuntu features",
+          "Long-term deployments",
+          "Modern application stacks"
+        ],
+        "default_packages": [
+          "openssh-server",
+          "cloud-init",
+          "qemu-guest-agent"
+        ],
+        "support_until": "2029-04"
+      },
+      "debian-12": {
+        "name": "Debian 12 (Bookworm)",
+        "template_id": "template-debian-12",
+        "os_family": "debian",
+        "recommended_for": [
+          "Stable production servers",
+          "Security-focused deployments",
+          "Minimal attack surface"
+        ],
+        "default_packages": [
+          "openssh-server",
+          "cloud-init",
+          "qemu-guest-agent"
+        ],
+        "support_until": "2028-06"
+      },
+      "rocky-9": {
+        "name": "Rocky Linux 9",
+        "template_id": "template-rocky-9",
+        "os_family": "rhel",
+        "recommended_for": [
+          "Enterprise applications",
+          "RHEL-compatible workloads",
+          "SELinux environments"
+        ],
+        "default_packages": [
+          "openssh-server",
+          "cloud-init",
+          "qemu-guest-agent"
+        ],
+        "support_until": "2032-05"
+      },
+      "alpine-3": {
+        "name": "Alpine Linux 3",
+        "template_id": "template-alpine-3",
+        "os_family": "alpine",
+        "recommended_for": [
+          "Minimal containers",
+          "Edge computing",
+          "Resource-constrained environments",
+          "Security-focused deployments"
+        ],
+        "default_packages": [
+          "openssh",
+          "cloud-init",
+          "qemu-guest-agent"
+        ],
+        "support_until": "2026-05"
+      }
+    },
+    "storage_recommendations": {
+      "system_disk": {
+        "min_size_gb": 32,
+        "recommended_size_gb": 50,
+        "type": "SSD",
+        "notes": "For OS and system files"
+      },
+      "application_disk": {
+        "min_size_gb": 50,
+        "recommended_size_gb": 100,
+        "type": "SSD",
+        "notes": "For application code and ephemeral data"
+      },
+      "database_disk": {
+        "min_size_gb": 100,
+        "recommended_size_gb": 200,
+        "type": "NVMe",
+        "notes": "High IOPS storage for databases"
+      },
+      "archive_disk": {
+        "min_size_gb": 500,
+        "recommended_size_gb": 1000,
+        "type": "HDD",
+        "notes": "Cost-effective storage for backups and archives"
+      }
+    }
+  },
+  "network_patterns": {
+    "vlan_configurations": {
+      "vlan_10_management": {
+        "vlan_id": 10,
+        "name": "management",
+        "subnet": "10.10.0.0/24",
+        "gateway": "10.10.0.1",
+        "dhcp_range": "10.10.0.100-10.10.0.200",
+        "purpose": "Infrastructure management (Proxmox, UniFi, switches, routers)",
+        "security_level": "critical",
+        "internet_access": "restricted",
+        "notes": "Strict access control, SSH only from admin workstations"
+      },
+      "vlan_20_servers": {
+        "vlan_id": 20,
+        "name": "app-servers",
+        "subnet": "10.20.0.0/24",
+        "gateway": "10.20.0.1",
+        "dhcp_range": "10.20.0.100-10.20.0.200",
+        "purpose": "Production application servers",
+        "security_level": "high",
+        "internet_access": "via_nat",
+        "notes": "Firewall rules by service, monitoring required"
+      },
+      "vlan_30_databases": {
+        "vlan_id": 30,
+        "name": "databases",
+        "subnet": "10.30.0.0/24",
+        "gateway": "10.30.0.1",
+        "dhcp_range": "10.30.0.100-10.30.0.200",
+        "purpose": "Database servers",
+        "security_level": "critical",
+        "internet_access": "none",
+        "notes": "Only accessible from app servers, no direct internet"
+      },
+      "vlan_40_development": {
+        "vlan_id": 40,
+        "name": "development",
+        "subnet": "10.40.0.0/24",
+        "gateway": "10.40.0.1",
+        "dhcp_range": "10.40.0.100-10.40.0.200",
+        "purpose": "Development and testing VMs",
+        "security_level": "medium",
+        "internet_access": "limited",
+        "notes": "Isolated from production, limited internet via proxy"
+      },
+      "vlan_50_guest": {
+        "vlan_id": 50,
+        "name": "guest",
+        "subnet": "10.50.0.0/24",
+        "gateway": "10.50.0.1",
+        "dhcp_range": "10.50.0.100-10.50.0.250",
+        "purpose": "Guest WiFi and untrusted devices",
+        "security_level": "low",
+        "internet_access": "full",
+        "notes": "Internet only, no LAN access, client isolation enabled"
+      },
+      "vlan_60_iot": {
+        "vlan_id": 60,
+        "name": "iot",
+        "subnet": "10.60.0.0/24",
+        "gateway": "10.60.0.1",
+        "dhcp_range": "10.60.0.100-10.60.0.250",
+        "purpose": "IoT devices and smart home equipment",
+        "security_level": "low",
+        "internet_access": "limited",
+        "notes": "No access to other VLANs except specific services"
+      },
+      "vlan_70_monitoring": {
+        "vlan_id": 70,
+        "name": "monitoring",
+        "subnet": "10.70.0.0/24",
+        "gateway": "10.70.0.1",
+        "dhcp_range": "10.70.0.100-10.70.0.200",
+        "purpose": "Monitoring, logging, and observability systems",
+        "security_level": "high",
+        "internet_access": "via_nat",
+        "notes": "Can reach all VLANs for monitoring, time-series data storage"
+      }
+    },
+    "subnet_sizing": {
+      "slash_24": {
+        "cidr": "/24",
+        "usable_ips": 254,
+        "recommended_for": [
+          "Small to medium networks",
+          "Single-purpose VLANs",
+          "Standard deployments"
+        ]
+      },
+      "slash_23": {
+        "cidr": "/23",
+        "usable_ips": 510,
+        "recommended_for": [
+          "Large server environments",
+          "Growth-expected networks",
+          "Multi-tenant deployments"
+        ]
+      },
+      "slash_25": {
+        "cidr": "/25",
+        "usable_ips": 126,
+        "recommended_for": [
+          "Small dedicated networks",
+          "Isolated test environments",
+          "Point-to-point links"
+        ]
+      }
+    }
+  },
+  "firewall_templates": {
+    "ssh_access_rules": {
+      "ssh_from_management": {
+        "name": "Allow SSH from Management",
+        "description": "Allow SSH access from management VLAN to servers",
+        "source": "10.10.0.0/24",
+        "destination": "any",
+        "port": 22,
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 100,
+        "logging": true
+      },
+      "block_ssh_from_wan": {
+        "name": "Block SSH from WAN",
+        "description": "Prevent direct SSH from internet",
+        "source": "wan",
+        "destination": "any",
+        "port": 22,
+        "protocol": "tcp",
+        "action": "deny",
+        "priority": 50,
+        "logging": true
+      }
+    },
+    "web_server_rules": {
+      "allow_http_https_from_wan": {
+        "name": "Allow HTTP/HTTPS from WAN",
+        "description": "Allow web traffic from internet to web servers",
+        "source": "wan",
+        "destination": "10.20.0.0/24",
+        "ports": [80, 443],
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 200,
+        "logging": false
+      },
+      "allow_http_https_from_lan": {
+        "name": "Allow HTTP/HTTPS from LAN",
+        "description": "Allow web traffic from internal networks",
+        "source": ["10.10.0.0/24", "10.20.0.0/24", "10.40.0.0/24"],
+        "destination": "10.20.0.0/24",
+        "ports": [80, 443],
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 201,
+        "logging": false
+      }
+    },
+    "database_rules": {
+      "allow_postgres_from_apps": {
+        "name": "Allow PostgreSQL from App Servers",
+        "description": "Allow PostgreSQL connections from application servers",
+        "source": "10.20.0.0/24",
+        "destination": "10.30.0.0/24",
+        "port": 5432,
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 300,
+        "logging": true
+      },
+      "allow_mysql_from_apps": {
+        "name": "Allow MySQL from App Servers",
+        "description": "Allow MySQL connections from application servers",
+        "source": "10.20.0.0/24",
+        "destination": "10.30.0.0/24",
+        "port": 3306,
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 301,
+        "logging": true
+      },
+      "block_db_from_wan": {
+        "name": "Block Databases from WAN",
+        "description": "Prevent direct database access from internet",
+        "source": "wan",
+        "destination": "10.30.0.0/24",
+        "ports": [3306, 5432, 27017, 6379],
+        "protocol": "tcp",
+        "action": "deny",
+        "priority": 50,
+        "logging": true
+      }
+    },
+    "isolation_rules": {
+      "block_dev_to_prod": {
+        "name": "Block Development to Production",
+        "description": "Prevent development network from accessing production",
+        "source": "10.40.0.0/24",
+        "destination": ["10.20.0.0/24", "10.30.0.0/24"],
+        "port": "any",
+        "protocol": "any",
+        "action": "deny",
+        "priority": 100,
+        "logging": true
+      },
+      "block_guest_to_lan": {
+        "name": "Block Guest to LAN",
+        "description": "Prevent guest network from accessing internal networks",
+        "source": "10.50.0.0/24",
+        "destination": ["10.10.0.0/24", "10.20.0.0/24", "10.30.0.0/24", "10.40.0.0/24"],
+        "port": "any",
+        "protocol": "any",
+        "action": "deny",
+        "priority": 50,
+        "logging": false
+      },
+      "block_iot_to_lan": {
+        "name": "Block IoT to LAN",
+        "description": "Prevent IoT devices from accessing sensitive networks",
+        "source": "10.60.0.0/24",
+        "destination": ["10.10.0.0/24", "10.20.0.0/24", "10.30.0.0/24"],
+        "port": "any",
+        "protocol": "any",
+        "action": "deny",
+        "priority": 50,
+        "logging": true
+      }
+    },
+    "monitoring_rules": {
+      "allow_monitoring_to_all": {
+        "name": "Allow Monitoring to All VLANs",
+        "description": "Allow monitoring systems to reach all networks",
+        "source": "10.70.0.0/24",
+        "destination": "any",
+        "ports": [22, 161, 9090, 9100, 3000],
+        "protocol": "tcp",
+        "action": "allow",
+        "priority": 150,
+        "logging": false
+      },
+      "allow_syslog_to_monitoring": {
+        "name": "Allow Syslog to Monitoring",
+        "description": "Allow all VLANs to send logs to monitoring",
+        "source": "any",
+        "destination": "10.70.0.0/24",
+        "port": 514,
+        "protocol": "udp",
+        "action": "allow",
+        "priority": 151,
+        "logging": false
+      }
+    },
+    "default_rules": {
+      "allow_established": {
+        "name": "Allow Established Connections",
+        "description": "Allow return traffic for established connections",
+        "source": "any",
+        "destination": "any",
+        "state": "established,related",
+        "action": "allow",
+        "priority": 1,
+        "logging": false
+      },
+      "deny_all": {
+        "name": "Deny All (Default Drop)",
+        "description": "Default deny rule at end of chain",
+        "source": "any",
+        "destination": "any",
+        "port": "any",
+        "protocol": "any",
+        "action": "deny",
+        "priority": 9999,
+        "logging": true,
+        "notes": "Logs all denied traffic for security auditing"
+      }
+    }
+  },
+  "dns_naming_conventions": {
+    "production": {
+      "pattern": "{service}-{env}-{number}.{domain}",
+      "examples": [
+        "web-prod-01.example.com",
+        "api-prod-02.example.com",
+        "db-prod-01.example.com",
+        "cache-prod-03.example.com"
+      ],
+      "rules": [
+        "Use descriptive service names (web, api, db, cache, queue)",
+        "Always include environment (prod)",
+        "Use zero-padded numbers (01, 02, 03)",
+        "Keep names short and memorable"
+      ]
+    },
+    "staging": {
+      "pattern": "{service}-staging-{number}.{domain}",
+      "examples": [
+        "web-staging-01.example.com",
+        "api-staging-01.example.com",
+        "db-staging-01.example.com"
+      ],
+      "rules": [
+        "Mirror production naming with 'staging' environment",
+        "Use same service names as production",
+        "Often single instance (01) unless testing HA"
+      ]
+    },
+    "development": {
+      "pattern": "{service}-dev-{number}.dev.{domain}",
+      "examples": [
+        "web-dev-01.dev.example.com",
+        "api-dev-02.dev.example.com",
+        "db-dev-01.dev.example.com"
+      ],
+      "rules": [
+        "Use 'dev' subdomain for clear separation",
+        "Allow creative service names for experiments",
+        "Can use developer initials (api-dev-john.dev.example.com)"
+      ]
+    },
+    "infrastructure": {
+      "pattern": "{type}-{location}-{number}.infra.{domain}",
+      "examples": [
+        "proxmox-dc1-01.infra.example.com",
+        "unifi-dc1-01.infra.example.com",
+        "switch-dc1-core.infra.example.com",
+        "firewall-dc1-01.infra.example.com"
+      ],
+      "rules": [
+        "Use 'infra' subdomain for infrastructure components",
+        "Include datacenter/location identifier",
+        "Use infrastructure type (proxmox, unifi, switch, firewall)"
+      ]
+    },
+    "internal_services": {
+      "pattern": "{service}.internal.{domain}",
+      "examples": [
+        "grafana.internal.example.com",
+        "prometheus.internal.example.com",
+        "vault.internal.example.com",
+        "gitlab.internal.example.com"
+      ],
+      "rules": [
+        "Use for internal-only services",
+        "No environment suffix (assumed production)",
+        "Service name only, no numbering unless HA"
+      ]
+    },
+    "load_balanced": {
+      "pattern": "{service}.{domain}",
+      "examples": [
+        "api.example.com",
+        "www.example.com",
+        "app.example.com"
+      ],
+      "rules": [
+        "Clean URLs for load-balanced endpoints",
+        "No server numbers (represents pool)",
+        "Use Cloudflare proxy for SSL and load balancing"
+      ]
+    }
+  },
+  "backup_strategies": {
+    "daily_production": {
+      "name": "Daily Production Backups",
+      "schedule": "daily",
+      "time": "02:00",
+      "retention_days": 7,
+      "vm_types": [
+        "production application servers",
+        "production databases",
+        "critical infrastructure"
+      ],
+      "backup_mode": "snapshot",
+      "compression": "lzo",
+      "notes": "Fast snapshots for running VMs, 7-day retention for point-in-time recovery"
+    },
+    "weekly_full": {
+      "name": "Weekly Full Backups",
+      "schedule": "weekly",
+      "day": "sunday",
+      "time": "03:00",
+      "retention_weeks": 4,
+      "vm_types": [
+        "all production VMs",
+        "staging environments",
+        "infrastructure VMs"
+      ],
+      "backup_mode": "stop",
+      "compression": "zstd",
+      "notes": "Full backups with higher compression, monthly retention for long-term recovery"
+    },
+    "monthly_archive": {
+      "name": "Monthly Archive Backups",
+      "schedule": "monthly",
+      "day": 1,
+      "time": "04:00",
+      "retention_months": 12,
+      "vm_types": [
+        "production databases",
+        "critical application servers",
+        "compliance-required systems"
+      ],
+      "backup_mode": "stop",
+      "compression": "zstd",
+      "notes": "Monthly archives for compliance and long-term recovery, stored off-site"
+    },
+    "development_minimal": {
+      "name": "Development Environment Backups",
+      "schedule": "weekly",
+      "day": "friday",
+      "time": "22:00",
+      "retention_weeks": 2,
+      "vm_types": [
+        "development VMs",
+        "testing environments"
+      ],
+      "backup_mode": "snapshot",
+      "compression": "lzo",
+      "notes": "Minimal backups for dev environments, 2-week retention only"
+    }
+  },
+  "infrastructure_patterns": {
+    "three_tier_application": {
+      "name": "Three-Tier Application Stack",
+      "description": "Standard web application with presentation, application, and data tiers",
+      "components": {
+        "web_tier": {
+          "vm_count": 2,
+          "vm_size": "medium",
+          "vlan": "app-servers",
+          "purpose": "Load-balanced web servers",
+          "ports_exposed": [80, 443]
+        },
+        "app_tier": {
+          "vm_count": 2,
+          "vm_size": "medium",
+          "vlan": "app-servers",
+          "purpose": "Application logic servers",
+          "ports_exposed": []
+        },
+        "db_tier": {
+          "vm_count": 1,
+          "vm_size": "large",
+          "vlan": "databases",
+          "purpose": "Primary database server",
+          "ports_exposed": []
+        }
+      },
+      "total_vms": 5,
+      "estimated_setup_time_minutes": 90,
+      "notes": "Add Redis for caching, consider database replication for HA"
+    },
+    "microservices_cluster": {
+      "name": "Microservices Kubernetes Cluster",
+      "description": "Kubernetes cluster for containerized microservices",
+      "components": {
+        "control_plane": {
+          "vm_count": 3,
+          "vm_size": "medium",
+          "vlan": "app-servers",
+          "purpose": "Kubernetes control plane nodes (HA)",
+          "ports_exposed": [6443]
+        },
+        "worker_nodes": {
+          "vm_count": 5,
+          "vm_size": "large",
+          "vlan": "app-servers",
+          "purpose": "Kubernetes worker nodes for workloads",
+          "ports_exposed": [30000-32767]
+        },
+        "storage": {
+          "vm_count": 3,
+          "vm_size": "xlarge",
+          "vlan": "databases",
+          "purpose": "Distributed storage (Ceph/Longhorn)",
+          "ports_exposed": []
+        }
+      },
+      "total_vms": 11,
+      "estimated_setup_time_minutes": 180,
+      "notes": "Consider using Talos MCP for cluster management, integrate with cortex-resource-manager"
+    },
+    "database_cluster_ha": {
+      "name": "High Availability Database Cluster",
+      "description": "PostgreSQL or MySQL cluster with replication and failover",
+      "components": {
+        "primary_db": {
+          "vm_count": 1,
+          "vm_size": "xlarge",
+          "vlan": "databases",
+          "purpose": "Primary database server (write)",
+          "ports_exposed": []
+        },
+        "replica_db": {
+          "vm_count": 2,
+          "vm_size": "large",
+          "vlan": "databases",
+          "purpose": "Read replicas for load distribution",
+          "ports_exposed": []
+        },
+        "proxy": {
+          "vm_count": 1,
+          "vm_size": "small",
+          "vlan": "databases",
+          "purpose": "Connection pooling and load balancing (PgBouncer/ProxySQL)",
+          "ports_exposed": []
+        }
+      },
+      "total_vms": 4,
+      "estimated_setup_time_minutes": 120,
+      "notes": "Configure streaming replication, automated failover with Patroni or similar"
+    },
+    "monitoring_stack": {
+      "name": "Observability and Monitoring Stack",
+      "description": "Prometheus, Grafana, Loki for infrastructure monitoring",
+      "components": {
+        "prometheus": {
+          "vm_count": 1,
+          "vm_size": "medium",
+          "vlan": "monitoring",
+          "purpose": "Metrics collection and storage",
+          "ports_exposed": [9090]
+        },
+        "grafana": {
+          "vm_count": 1,
+          "vm_size": "small",
+          "vlan": "monitoring",
+          "purpose": "Metrics visualization and dashboards",
+          "ports_exposed": [3000]
+        },
+        "loki": {
+          "vm_count": 1,
+          "vm_size": "medium",
+          "vlan": "monitoring",
+          "purpose": "Log aggregation and search",
+          "ports_exposed": [3100]
+        },
+        "alertmanager": {
+          "vm_count": 1,
+          "vm_size": "small",
+          "vlan": "monitoring",
+          "purpose": "Alert routing and notifications",
+          "ports_exposed": [9093]
+        }
+      },
+      "total_vms": 4,
+      "estimated_setup_time_minutes": 75,
+      "notes": "Install node_exporter on all VMs for metrics collection"
+    }
+  },
+  "cloudflare_patterns": {
+    "ssl_configurations": {
+      "full_strict": {
+        "name": "Full (Strict) SSL",
+        "description": "End-to-end encryption with valid certificates",
+        "mode": "full_strict",
+        "use_cases": [
+          "Production applications",
+          "E-commerce",
+          "Sensitive data handling"
+        ],
+        "requirements": [
+          "Valid SSL certificate on origin server",
+          "Certificate matches hostname"
+        ],
+        "recommended": true
+      },
+      "full": {
+        "name": "Full SSL",
+        "description": "End-to-end encryption with self-signed certificates allowed",
+        "mode": "full",
+        "use_cases": [
+          "Internal applications",
+          "Development environments",
+          "Testing"
+        ],
+        "requirements": [
+          "Any SSL certificate on origin server"
+        ],
+        "recommended": false
+      },
+      "flexible": {
+        "name": "Flexible SSL",
+        "description": "HTTPS to Cloudflare, HTTP to origin",
+        "mode": "flexible",
+        "use_cases": [
+          "Legacy applications without SSL support"
+        ],
+        "requirements": [
+          "None (HTTP only to origin)"
+        ],
+        "recommended": false,
+        "security_warning": "Traffic between Cloudflare and origin is unencrypted"
+      }
+    },
+    "caching_strategies": {
+      "static_assets": {
+        "name": "Static Assets Caching",
+        "description": "Aggressive caching for static content",
+        "cache_level": "aggressive",
+        "browser_ttl": 31536000,
+        "edge_ttl": 2592000,
+        "file_types": [
+          "*.css",
+          "*.js",
+          "*.jpg",
+          "*.jpeg",
+          "*.png",
+          "*.gif",
+          "*.svg",
+          "*.woff",
+          "*.woff2"
+        ]
+      },
+      "api_responses": {
+        "name": "API Response Caching",
+        "description": "Short-lived caching for API responses",
+        "cache_level": "standard",
+        "browser_ttl": 0,
+        "edge_ttl": 300,
+        "file_types": [
+          "/api/*/read-only/*"
+        ],
+        "notes": "Only cache GET requests, respect Cache-Control headers"
+      },
+      "dynamic_content": {
+        "name": "Dynamic Content (No Cache)",
+        "description": "Bypass cache for dynamic content",
+        "cache_level": "bypass",
+        "file_types": [
+          "/api/*/",
+          "/admin/*",
+          "/user/*",
+          "*.php"
+        ],
+        "notes": "Always fetch from origin, no caching"
+      }
+    },
+    "tunnel_configurations": {
+      "web_application": {
+        "name": "Web Application Tunnel",
+        "description": "Expose web application through Cloudflare Tunnel",
+        "tunnel_type": "http",
+        "ingress_rules": [
+          {
+            "hostname": "app.example.com",
+            "service": "http://localhost:80"
+          },
+          {
+            "hostname": "api.example.com",
+            "service": "http://localhost:8080"
+          }
+        ],
+        "use_cases": [
+          "Expose internal web apps",
+          "No public IP required",
+          "DDoS protection"
+        ]
+      },
+      "ssh_access": {
+        "name": "SSH Access Tunnel",
+        "description": "Secure SSH access through Cloudflare Tunnel",
+        "tunnel_type": "tcp",
+        "ingress_rules": [
+          {
+            "hostname": "ssh.example.com",
+            "service": "tcp://localhost:22"
+          }
+        ],
+        "use_cases": [
+          "Secure remote access",
+          "No VPN required",
+          "Access logging"
+        ]
+      }
+    }
+  },
+  "cost_optimization": {
+    "resource_rightsizing": {
+      "description": "Regular review and adjustment of VM resources",
+      "actions": [
+        "Monitor CPU and RAM utilization weekly",
+        "Downsize VMs with <30% average utilization",
+        "Upsize VMs with >80% peak utilization",
+        "Consolidate low-traffic services"
+      ],
+      "estimated_savings": "15-30% reduction in resource costs"
+    },
+    "backup_optimization": {
+      "description": "Optimize backup storage and frequency",
+      "actions": [
+        "Reduce dev environment backup frequency",
+        "Implement backup compression (zstd)",
+        "Archive old backups to cheaper storage",
+        "Delete backups for decommissioned VMs"
+      ],
+      "estimated_savings": "20-40% reduction in storage costs"
+    },
+    "network_optimization": {
+      "description": "Reduce bandwidth costs through caching and CDN",
+      "actions": [
+        "Enable Cloudflare caching for static assets",
+        "Use Cloudflare R2 for large file distribution",
+        "Implement image optimization",
+        "Monitor and block abusive traffic"
+      ],
+      "estimated_savings": "30-50% reduction in bandwidth costs"
+    }
+  },
+  "troubleshooting_guides": {
+    "vm_boot_failure": {
+      "issue": "VM fails to boot or becomes unresponsive",
+      "checks": [
+        "Check Proxmox node resource availability (CPU, RAM, disk)",
+        "Verify VM configuration (valid disk, network, CPU settings)",
+        "Review VM console for boot errors",
+        "Check storage availability and accessibility",
+        "Verify qemu-guest-agent is installed"
+      ],
+      "solutions": [
+        "Restart VM from Proxmox interface",
+        "Increase boot delay if storage is slow",
+        "Resize disk if full",
+        "Restore from backup if corrupted"
+      ]
+    },
+    "network_connectivity": {
+      "issue": "VM has no network connectivity",
+      "checks": [
+        "Verify VLAN configuration in UniFi",
+        "Check VM network interface settings in Proxmox",
+        "Confirm DHCP is providing IP addresses",
+        "Review firewall rules in UniFi",
+        "Test connectivity from UniFi controller"
+      ],
+      "solutions": [
+        "Reattach network interface in Proxmox",
+        "Restart networking service on VM",
+        "Check and fix VLAN tagging",
+        "Verify firewall allows required traffic"
+      ]
+    },
+    "dns_resolution": {
+      "issue": "DNS records not resolving correctly",
+      "checks": [
+        "Verify DNS record exists in Cloudflare",
+        "Check DNS propagation status (dig/nslookup)",
+        "Confirm Cloudflare proxy status (orange vs gray cloud)",
+        "Review SSL/TLS settings in Cloudflare",
+        "Check origin server is responding"
+      ],
+      "solutions": [
+        "Wait for DNS propagation (up to 24 hours)",
+        "Clear local DNS cache",
+        "Verify A/AAAA record points to correct IP",
+        "Check origin server SSL certificate"
+      ]
+    }
+  },
+  "security_best_practices": {
+    "hardening_checklist": [
+      "Disable root SSH login (PermitRootLogin no)",
+      "Use SSH keys only (PasswordAuthentication no)",
+      "Configure automatic security updates (unattended-upgrades)",
+      "Enable firewall (ufw or iptables)",
+      "Install fail2ban for brute-force protection",
+      "Set up log forwarding to monitoring VLAN",
+      "Regular backup verification and testing",
+      "Principle of least privilege for all firewall rules",
+      "Network segmentation by purpose and trust level",
+      "Regular security scanning and vulnerability assessment"
+    ],
+    "access_control": [
+      "Use SSH key pairs for all server access",
+      "Implement bastion/jump host for production access",
+      "Rotate API tokens and credentials quarterly",
+      "Use separate credentials for each environment",
+      "Enable MFA for Proxmox, UniFi, and Cloudflare",
+      "Audit access logs regularly",
+      "Remove access for departed team members immediately"
+    ]
+  },
+  "metadata": {
+    "schema_version": "1.0.0",
+    "created_by": "cortex-development-master",
+    "created_at": "2025-12-09T00:00:00Z",
+    "purpose": "Knowledge base for infrastructure-contractor agent to provision and manage infrastructure consistently",
+    "update_frequency": "As infrastructure patterns evolve and new learnings emerge"
+  }
+}

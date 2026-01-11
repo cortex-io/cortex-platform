@@ -1,0 +1,309 @@
+
+{"task_id":"test-jsonl-format-001","timestamp":"2025-11-16T10:00:26-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.99,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.99,"security":0.25,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-677a1c95","timestamp":"2025-11-16T10:01:31-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-ba35d73a","timestamp":"2025-11-16T10:01:32-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-d67fe411","timestamp":"2025-11-16T10:01:32-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-9020d390","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-16T10:01:38-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-ffaee228","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T10:01:39-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-ffaee228","timestamp":"2025-11-16T10:01:38-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-fc5648e2","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T10:01:39-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-fc5648e2","timestamp":"2025-11-16T10:01:39-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"test-system-e2e-001","timestamp":"2025-11-16T10:20:10-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.75,"security":0,"inventory":0}}}
+{"task_id":"test-autonomous-001","timestamp":"2025-11-16T10:33:58-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.75,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-c04d1098","timestamp":"2025-11-16T11:21:04-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-64915431","timestamp":"2025-11-16T11:21:04-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-a4fd140a","timestamp":"2025-11-16T11:21:05-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-946bd71c","timestamp":"2025-11-16T11:21:05-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.74,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.74,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-e8d90c3b","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:21:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1763313616-49ab3207","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:21:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1763313927-023fc33b","timestamp":"2025-11-16T11:26:18-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-b070dcb0","timestamp":"2025-11-16T11:26:18-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-beb20526","timestamp":"2025-11-16T11:26:19-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-333125e5","timestamp":"2025-11-16T11:26:19-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.74,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.74,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-083ec654","timestamp":"2025-11-16T11:26:20-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-02b96c6b","timestamp":"2025-11-16T11:26:20-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-02b96c6b","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:26:20-0600"}
+{"task_id":"task-64915432","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-17T13:15:57-0600"}
+{"task_id":"task-test-001","timestamp":"2025-11-18T14:46:46-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":1.00,"security":0.25,"inventory":0}}}
+{"task_id":"task-test-002","timestamp":"2025-11-18T14:47:00-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.75,"inventory":0}}}
+{"task_id":"task-test-001","timestamp":"2025-11-18T14:50:47-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.87,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.87,"security":0.25,"inventory":0}}}
+{"task_id":"task-dev-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":1.00,"security":0.25,"inventory":0}}}
+{"task_id":"task-sec-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.75,"inventory":0}}}
+{"task_id":"task-inv-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.61}}}
+{"task_id":"task-feat-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.49,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.49,"security":0,"inventory":0}}}
+{"task_id":"task-audit-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"task-conf-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.87,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.87,"security":0.25,"inventory":0}}}
+{"task_id":"task-highconf-001","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"task-preserve-test-1763499050","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.25,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.25,"security":0,"inventory":0}}}
+{"task_id":"task-log-test-1763499050","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.25,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.25,"security":0,"inventory":0}}}
+{"task_id":"cara-security-1763559589","timestamp":"2025-11-19T07:39:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.95,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.45,"security":0.95,"inventory":0}}}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-19T16:30:08Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-19T16:31:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T14:49:29Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T15:49:29Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T19:32:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T20:32:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T10:04:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T16:19:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T17:19:17Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T17:22:44Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T18:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T19:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T20:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T21:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T22:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T23:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T00:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T01:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T02:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T03:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T04:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T05:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T06:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T07:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T08:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T09:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T10:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T11:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T12:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T13:22:50Z",
+  "source": "learner"
+}

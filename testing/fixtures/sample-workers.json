@@ -1,0 +1,72 @@
+[
+  {
+    "worker_id": "worker-001",
+    "worker_type": "feature-implementer",
+    "parent_master": "development",
+    "task_id": "task-002",
+    "status": "ready",
+    "token_allocation": 15000,
+    "tokens_used": 0,
+    "created_at": "2025-11-27T00:00:00Z",
+    "context": {
+      "skills": ["design", "implementation", "testing"],
+      "focus_area": "user_management"
+    }
+  },
+  {
+    "worker_id": "worker-002",
+    "worker_type": "bug-fixer",
+    "parent_master": "development",
+    "task_id": "task-006",
+    "status": "ready",
+    "token_allocation": 10000,
+    "tokens_used": 0,
+    "created_at": "2025-11-27T00:05:00Z",
+    "context": {
+      "skills": ["debugging", "root_cause_analysis", "testing"],
+      "focus_area": "performance"
+    }
+  },
+  {
+    "worker_id": "worker-003",
+    "worker_type": "refactorer",
+    "parent_master": "development",
+    "task_id": "task-005",
+    "status": "ready",
+    "token_allocation": 12000,
+    "tokens_used": 0,
+    "created_at": "2025-11-27T00:10:00Z",
+    "context": {
+      "skills": ["refactoring", "design_patterns", "best_practices"],
+      "focus_area": "code_quality"
+    }
+  },
+  {
+    "worker_id": "worker-004",
+    "worker_type": "optimizer",
+    "parent_master": "development",
+    "task_id": "task-003",
+    "status": "ready",
+    "token_allocation": 10000,
+    "tokens_used": 0,
+    "created_at": "2025-11-27T00:15:00Z",
+    "context": {
+      "skills": ["profiling", "optimization", "benchmarking"],
+      "focus_area": "database"
+    }
+  },
+  {
+    "worker_id": "worker-005",
+    "worker_type": "security-analyst",
+    "parent_master": "security",
+    "task_id": "task-001",
+    "status": "ready",
+    "token_allocation": 12000,
+    "tokens_used": 0,
+    "created_at": "2025-11-27T00:20:00Z",
+    "context": {
+      "skills": ["security_analysis", "vulnerability_assessment", "remediation"],
+      "focus_area": "authentication"
+    }
+  }
+]
