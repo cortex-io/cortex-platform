@@ -1,0 +1,3019 @@
+{
+  "scan_type": "legacy_patterns",
+  "timestamp": "2025-12-05T15:58:31Z",
+  "count": 502,
+  "findings": [
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 183,
+      "pattern": "commit-relay",
+      "description": "File references old project name"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 203,
+      "pattern": "commit-relay",
+      "description": "File references old project name"
+    },
+    {
+      "file": "coordination/prompts/workers/test-worker.md",
+      "line": 275,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/workers/documentation-worker.md",
+      "line": 500,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/workers/pr-worker.md",
+      "line": 316,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/workers/pr-worker.md",
+      "line": 323,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/workers/implementation-worker.md",
+      "line": 368,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 280,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 321,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 333,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 354,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 397,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 654,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 184,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/REMEDIATION-COMPLETE-20251125.md",
+      "line": 16,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/REMEDIATION-COMPLETE-20251125.md",
+      "line": 17,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/REMEDIATION-COMPLETE-20251125.md",
+      "line": 18,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/REMEDIATION-COMPLETE-20251125.md",
+      "line": 19,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 32,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 57,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 58,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 59,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 60,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 61,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 62,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 63,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 64,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 65,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/STATUS-REPORT-20251125.md",
+      "line": 236,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/SECURITY-REMEDIATION-PLAN.md",
+      "line": 21,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/SECURITY-REMEDIATION-PLAN.md",
+      "line": 22,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/SECURITY-REMEDIATION-PLAN.md",
+      "line": 23,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/SECURITY-REMEDIATION-PLAN.md",
+      "line": 24,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/SECURITY-REMEDIATION-PLAN.md",
+      "line": 25,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "security/CVE-AUTOMATION-ENHANCEMENT-PLAN.md",
+      "line": 539,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "QUICK-START.md",
+      "line": 17,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "QUICK-START.md",
+      "line": 51,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 27,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 41,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 52,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 118,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 134,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 137,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 146,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 150,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/logs/workers/2025-11-25/worker-implementation-039/implementation-report.md",
+      "line": 153,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 317,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 358,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 370,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 391,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 434,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 691,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/test-worker.md",
+      "line": 275,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/scan-worker-v2.md",
+      "line": 311,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/scan-worker-v2.md",
+      "line": 379,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/fix-worker-v2.md",
+      "line": 351,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/documentation-worker.md",
+      "line": 500,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/analysis-worker-v2.md",
+      "line": 125,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/pr-worker.md",
+      "line": 316,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/pr-worker.md",
+      "line": 323,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/implementation-worker.md",
+      "line": 368,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/pr-worker-v2.md",
+      "line": 515,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/pr-worker-v2.md",
+      "line": 518,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/documentation-worker-v2.md",
+      "line": 671,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/workers/test-worker-v2.md",
+      "line": 478,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/development.md",
+      "line": 137,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/prompts/security.md",
+      "line": 212,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/workers/worker-scan-038/results/vulnerability_list.md",
+      "line": 44,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/workers/worker-scan-037/results/vulnerability_list.md",
+      "line": 125,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/workers/worker-scan-037/results/dependency_report.md",
+      "line": 13,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "agents/workers/worker-scan-037/results/dependency_report.md",
+      "line": 30,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PORT-POLICY.md",
+      "line": 114,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/CORTEX-RENAME-STRATEGY.md",
+      "line": 22,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/CORTEX-RENAME-STRATEGY.md",
+      "line": 130,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/CORTEX-RENAME-STRATEGY.md",
+      "line": 137,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 11,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 233,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 251,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 343,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 381,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 399,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 435,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 456,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 459,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 1421,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 1448,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2003,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2026,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2041,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2170,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2189,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2294,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/OPEN-SOURCE-AI-IMPROVEMENTS.md",
+      "line": 2333,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/API-REFERENCE.md",
+      "line": 538,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/API-REFERENCE.md",
+      "line": 539,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/coordination-protocol.md",
+      "line": 289,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/QUICK-START-MONITORING.md",
+      "line": 257,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/QUICK-START-MONITORING.md",
+      "line": 287,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/features/SECURITY-DASHBOARD-FEATURE-REQUEST.md",
+      "line": 58,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/features/SECURITY-DASHBOARD-FEATURE-REQUEST.md",
+      "line": 61,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/features/SECURITY-DASHBOARD-FEATURE-REQUEST.md",
+      "line": 280,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/troubleshooting/common-issues.md",
+      "line": 199,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/troubleshooting/common-issues.md",
+      "line": 271,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/troubleshooting/common-issues.md",
+      "line": 386,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/HYBRID-ROUTING-ARCHITECTURE.md",
+      "line": 702,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/architecture/api-versioning.md",
+      "line": 106,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/architecture/api-versioning.md",
+      "line": 126,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 203,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 278,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 286,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "scripts/security/token-rotation.sh",
+      "line": 111,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "scripts/security/token-rotation.sh",
+      "line": 112,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "scripts/security/token-rotation.sh",
+      "line": 115,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "scripts/cleanup-codebase.sh",
+      "line": 15,
+      "pattern": "api-server",
+      "description": "References removed API server"
+    },
+    {
+      "file": "python-sdk/IMPLEMENTATION_REPORT_TASK_LIFECYCLE.md",
+      "line": 112,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/IMPLEMENTATION_REPORT_TASK_LIFECYCLE.md",
+      "line": 392,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/orchestration/event_stream.py",
+      "line": 40,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/orchestration/event_stream.py",
+      "line": 54,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/orchestration/event_stream.py",
+      "line": 60,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/events/__init__.py",
+      "line": 4,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/events/emitter.py",
+      "line": 3,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/events/emitter.py",
+      "line": 18,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "python-sdk/commit_relay/events/emitter.py",
+      "line": 24,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "line": 39,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/security/dependency-track/README.md",
+      "line": 186,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/security/dependency-track/README.md",
+      "line": 336,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/security/dependency-track/DEPLOYMENT-SUMMARY.md",
+      "line": 135,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/security/dependency-track/DEPLOYMENT-SUMMARY.md",
+      "line": 230,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/security/dependency-track/DEPLOYMENT-SUMMARY.md",
+      "line": 408,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/KNOWN_ISSUES.md",
+      "line": 39,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/KNOWN_ISSUES.md",
+      "line": 69,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/prompts/orchestrator/task-orchestrator.md",
+      "line": 418,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/masters/coordinator/lib/moe-router.sh",
+      "line": 1160,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/masters/coordinator/lib/moe-router.sh",
+      "line": 1249,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 185,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "coordination/moe-insights.md",
+      "line": 397,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "tui/README.md",
+      "line": 94,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "tui/dashboard.js",
+      "line": 38,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": ".claude/agents/cicd-master.md",
+      "line": 515,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": ".claude/agents/commit-relay.md",
+      "line": 184,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/prompts/orchestrator/task-orchestrator.md",
+      "line": 418,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-implementation-047/moe-learning-mastery-report.md",
+      "line": 285,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-037/REPOSITORY_CATALOG.md",
+      "line": 242,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-036/repository-catalog.md",
+      "line": 171,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-scan-057/security-audit-report.md",
+      "line": 189,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 247,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 351,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 371,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 737,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "anthropic-agent-harnesses-analysis.md",
+      "line": 122,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PHASE1-QUICKSTART.md",
+      "line": 402,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 349,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/WORKER-LIFECYCLE.md",
+      "line": 250,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/WORKER-LIFECYCLE.md",
+      "line": 254,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/folder-cleanup-20251130_125317/issues/CONSOLIDATED_ISSUES_2025-11-09.md",
+      "line": 171,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "archives/cleanup-20251130/testing/api/test-schema-validation.js",
+      "line": 106,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/data-quality-issues.md",
+      "line": 54,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/data-quality-issues.md",
+      "line": 225,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/daily-operations.md",
+      "line": 152,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/daily-operations.md",
+      "line": 272,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/performance-troubleshooting.md",
+      "line": 115,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/performance-troubleshooting.md",
+      "line": 146,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 51,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 55,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 60,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 67,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 76,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 95,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 102,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 113,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 147,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 151,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 162,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 176,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 193,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 194,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 197,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 232,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 277,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/observability-debugging.md",
+      "line": 355,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/moe-router-issues.md",
+      "line": 66,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/emergency-recovery.md",
+      "line": 93,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/emergency-recovery.md",
+      "line": 94,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/circuit-breaker-tripped.md",
+      "line": 50,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/circuit-breaker-tripped.md",
+      "line": 54,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/runbooks/worker-lifecycle.md",
+      "line": 354,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 388,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 407,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/QUICK-START.md",
+      "line": 494,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 57,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 295,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 347,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 366,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 379,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/CHEATSHEET.md",
+      "line": 616,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 204,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "README.md",
+      "line": 130,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "testing/integration/json-validation.test.sh",
+      "line": 265,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "testing/api/test-schema-validation.js",
+      "line": 106,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/integration-validator-daemon.sh",
+      "line": 28,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/daemons/threat-intel-daemon.sh",
+      "line": 323,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 197,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 198,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/security/integrated-vulnerability-scan.sh",
+      "line": 156,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/security/dependency-track-webhook-handler.sh",
+      "line": 11,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/system-maintenance.sh",
+      "line": 263,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/system-maintenance.sh",
+      "line": 275,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 32,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/handoff-processor-daemon.sh",
+      "line": 23,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/governance/json-validation-check.sh",
+      "line": 94,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/observability/alerting.sh",
+      "line": 26,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/worker-reflection.sh",
+      "line": 366,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/logging.sh",
+      "line": 112,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/governance/approval-workflow.sh",
+      "line": 532,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/traced-logging.sh",
+      "line": 168,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/lib/remediation/playbook-executor.sh",
+      "line": 212,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/emit-event.sh",
+      "line": 3,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/emit-event.sh",
+      "line": 18,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/emit-event.sh",
+      "line": 44,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/task-orchestrator-daemon.sh",
+      "line": 29,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 40,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 67,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 135,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 174,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 206,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 414,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-system-shutdown.sh",
+      "line": 226,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-security-scan-completed.sh",
+      "line": 265,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-system-startup.sh",
+      "line": 197,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-task-created.sh",
+      "line": 145,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-health-alert.sh",
+      "line": 124,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-learning-model-updated.sh",
+      "line": 168,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-worker-started.sh",
+      "line": 126,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-task-complete.sh",
+      "line": 80,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/on-task-assigned.sh",
+      "line": 180,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLER-QUICK-REFERENCE.md",
+      "line": 83,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/wizards/create-task.sh",
+      "line": 309,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "scripts/coordinator-daemon.sh",
+      "line": 25,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "lib/orchestration/sla-notifier.js",
+      "line": 22,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "lib/governance/catalog-manager.js",
+      "line": 84,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "data-intelligence/schemas/cortex-lakehouse-schema.md",
+      "line": 384,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "data-intelligence/migration/README.md",
+      "line": 67,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "data-intelligence/migration/migrate.py",
+      "line": 227,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "data-intelligence/migration/migrate.py",
+      "line": 228,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "DEPENDENCY-TRACK-DEPLOYMENT.md",
+      "line": 247,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "DEPENDENCY-TRACK-DEPLOYMENT.md",
+      "line": 458,
+      "pattern": "dashboard-events",
+      "description": "References old dashboard events"
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "line": 36,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "line": 99,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "line": 298,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/worker-specs/README.md",
+      "line": 156,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/workers/scan-worker.md",
+      "line": 454,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/workers/catalog-worker.md",
+      "line": 313,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/workers/catalog-worker.md",
+      "line": 316,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/inventory.md",
+      "line": 35,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/inventory.md",
+      "line": 323,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/inventory.md",
+      "line": 329,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/coordinator.md",
+      "line": 196,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/coordinator.md",
+      "line": 259,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/coordinator.md",
+      "line": 371,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 215,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/development.md",
+      "line": 220,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/security.md",
+      "line": 203,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/prompts/masters/security.md",
+      "line": 208,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 186,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/moe-insights.md",
+      "line": 420,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/moe-learning-mastery-report.md",
+      "line": 106,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "tui/README.md",
+      "line": 91,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "tui/chat.js",
+      "line": 208,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "tui/dashboard.js",
+      "line": 35,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "tui/test-tui.sh",
+      "line": 59,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "mcp-server/tools/index.js",
+      "line": 203,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "mcp-server/tools/index.js",
+      "line": 251,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "mcp-server/resources/index.js",
+      "line": 102,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": ".claude/agents/cicd-master.md",
+      "line": 518,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 252,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/development-master.md",
+      "line": 257,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/coordinator-master.md",
+      "line": 196,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/coordinator-master.md",
+      "line": 259,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/coordinator-master.md",
+      "line": 371,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/workers/scan-worker.md",
+      "line": 454,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/workers/catalog-worker.md",
+      "line": 313,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/workers/catalog-worker.md",
+      "line": 316,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/observers/git-ops.md",
+      "line": 143,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/observers/git-ops.md",
+      "line": 147,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/security-master.md",
+      "line": 229,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/security-master.md",
+      "line": 234,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/inventory-master.md",
+      "line": 35,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/inventory-master.md",
+      "line": 378,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/prompts/inventory-master.md",
+      "line": 384,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/zombies/worker-implementation-016/completion-report.md",
+      "line": 17,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/zombies/worker-implementation-016/completion-report.md",
+      "line": 40,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/zombies/worker-implementation-016/completion-report.md",
+      "line": 57,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/worker-documentation-037/REPOSITORY_CATALOG.md",
+      "line": 237,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/worker-documentation-036/repository-catalog.md",
+      "line": 166,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 244,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "agents/workers/worker-documentation-033/repository-catalog.md",
+      "line": 363,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "anthropic-agent-harnesses-analysis.md",
+      "line": 166,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/improvement-phase-strategy.md",
+      "line": 65,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PHASE1-QUICKSTART.md",
+      "line": 67,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PHASE1-QUICKSTART.md",
+      "line": 243,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PHASE1-QUICKSTART.md",
+      "line": 372,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/PHASE1-QUICKSTART.md",
+      "line": 406,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 99,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 106,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 291,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 421,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/RUNBOOKS.md",
+      "line": 513,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/phase1-parallel-implementation.md",
+      "line": 400,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/WORKER-LIFECYCLE.md",
+      "line": 88,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/docs-cleanup-20251130/docs/WORKER-LIFECYCLE.md",
+      "line": 356,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/folder-cleanup-20251130_125317/issues/CONSOLIDATED_ISSUES_2025-11-09.md",
+      "line": 126,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "archives/folder-cleanup-20251130_125317/issues/CONSOLIDATED_ISSUES_2025-11-09.md",
+      "line": 174,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/master-worker-architecture.md",
+      "line": 89,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/master-worker-architecture.md",
+      "line": 427,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/master-worker-architecture.md",
+      "line": 560,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/master-worker-architecture.md",
+      "line": 641,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/master-worker-architecture.md",
+      "line": 845,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/troubleshooting/common-issues.md",
+      "line": 142,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/operations/backup-recovery.md",
+      "line": 20,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/operations/worker-health-monitoring.md",
+      "line": 24,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/phase-strategy-roadmap.md",
+      "line": 360,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/automation-architecture.md",
+      "line": 274,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/automation-architecture.md",
+      "line": 1440,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "docs/cleanup-master.md",
+      "line": 204,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "blog-posts/eui-dashboard-inception-mode.md",
+      "line": 67,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "README.md",
+      "line": 120,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "README.md",
+      "line": 127,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "HANDLER-IMPLEMENTATION-SUMMARY.md",
+      "line": 199,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 46,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 64,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 83,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "eui-dashboard/server/index.js",
+      "line": 101,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/cleanup-zombie-workers.sh",
+      "line": 9,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/daemons/security-scan-daemon.sh",
+      "line": 57,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/daemons/backup-daemon.sh",
+      "line": 61,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 360,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 638,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 664,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 666,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 11,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 30,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 243,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 254,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 257,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 269,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-cleanup-cron.sh",
+      "line": 279,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/examples/observability/phase3-demo.sh",
+      "line": 85,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/spawn-observability-workers.sh",
+      "line": 198,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/init-common.sh",
+      "line": 210,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/predictive-scaler.sh",
+      "line": 12,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/worker-health-monitor.sh",
+      "line": 13,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/coordination.sh",
+      "line": 91,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/coordination.sh",
+      "line": 136,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/sync-worker-metrics.sh",
+      "line": 2,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/sync-worker-metrics.sh",
+      "line": 6,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/sync-worker-metrics.sh",
+      "line": 16,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/trace-correlator.sh",
+      "line": 14,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/lib/remediation/playbook-executor.sh",
+      "line": 246,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-worker-complete.sh",
+      "line": 86,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 64,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 89,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLERS-SUMMARY.md",
+      "line": 156,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-system-shutdown.sh",
+      "line": 58,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-system-shutdown.sh",
+      "line": 123,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-worker-failed.sh",
+      "line": 57,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-worker-started.sh",
+      "line": 54,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-worker-heartbeat.sh",
+      "line": 49,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/on-task-assigned.sh",
+      "line": 82,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/events/handlers/HANDLER-QUICK-REFERENCE.md",
+      "line": 72,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/test-core-foundation.sh",
+      "line": 232,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/observers/run-git-ops.sh",
+      "line": 86,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 33,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 46,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 53,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 60,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 69,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 77,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 116,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 117,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 123,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "scripts/worker-status.sh",
+      "line": 146,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "lib/governance/catalog-manager.js",
+      "line": 82,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "react-grab-analysis.md",
+      "line": 50,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "CORE-PRINCIPLES.md",
+      "line": 829,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "autonomous-coding-quickstart-analysis.md",
+      "line": 243,
+      "pattern": "worker-pool.json",
+      "description": "References old worker pool system"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 187,
+      "pattern": "TODO.*remove",
+      "description": "TODO comments about removal"
+    },
+    {
+      "file": "eui-dashboard/dist/assets/index-CzLOni_-.js",
+      "line": 1007,
+      "pattern": "TODO.*remove",
+      "description": "TODO comments about removal"
+    },
+    {
+      "file": "eui-dashboard/dist/assets/index-CzLOni_-.js",
+      "line": 1009,
+      "pattern": "TODO.*remove",
+      "description": "TODO comments about removal"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 27,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 35,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 47,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 55,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 63,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 75,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 83,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 91,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 103,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 111,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 123,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 131,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 140,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 152,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 160,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 168,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 181,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 186,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 227,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 390,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 403,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "DAEMON-DECOMMISSION-REPORT.md",
+      "line": 426,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "coordination/masters/cleanup/lib/analyzer.sh",
+      "line": 188,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/security-scan-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/security-scan-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/security-scan-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/security-scan-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/QUICK-REFERENCE.md",
+      "line": 51,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/stop-all-daemons.sh",
+      "line": 160,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/threat-intel-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/threat-intel-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/threat-intel-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/threat-intel-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/worker-restart-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/worker-restart-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/worker-restart-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/worker-restart-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/moe-learning-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/moe-learning-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/moe-learning-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/moe-learning-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/anomaly-detector-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/backup-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/backup-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/backup-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/backup-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/ingestion-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/ingestion-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/ingestion-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/ingestion-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/metrics-aggregator-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/metrics-aggregator-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/metrics-aggregator-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/metrics-aggregator-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/freshness-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/freshness-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/freshness-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/freshness-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/cleanup-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/cleanup-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/cleanup-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/cleanup-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/observability-hub-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/observability-hub-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/observability-hub-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/observability-hub-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-learning-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-learning-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-learning-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-learning-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/heartbeat-monitor-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/heartbeat-monitor-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/heartbeat-monitor-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-fix-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-fix-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-fix-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/auto-fix-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/workflow-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/failure-pattern-daemon.sh",
+      "line": 5,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/failure-pattern-daemon.sh",
+      "line": 6,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/failure-pattern-daemon.sh",
+      "line": 9,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/failure-pattern-daemon.sh",
+      "line": 19,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 3,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 26,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 33,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 42,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 49,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 56,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 65,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 72,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 79,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 88,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 95,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 104,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 111,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 118,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 127,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 134,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/daemons/DEPRECATED.md",
+      "line": 141,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 60,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 77,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/spawn-worker.sh",
+      "line": 140,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/remove-token-limits.sh",
+      "line": 147,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/add-daemon-deprecations.sh",
+      "line": 23,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/add-daemon-deprecations.sh",
+      "line": 24,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/add-daemon-deprecations.sh",
+      "line": 27,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/add-daemon-deprecations.sh",
+      "line": 37,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    },
+    {
+      "file": "scripts/add-daemon-deprecations.sh",
+      "line": 79,
+      "pattern": "DEPRECATED",
+      "description": "Deprecated code markers"
+    }
+  ]
+}

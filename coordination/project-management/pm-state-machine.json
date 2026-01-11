@@ -1,0 +1,1373 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "PM State Machine Configuration",
+  "description": "State machine definition for PM-managed projects in Cortex automation system",
+  "version": "1.0.0",
+  "states": [
+    {
+      "state_id": "INITIATED",
+      "state_name": "Initiated",
+      "description": "Project spawned, PM agent created, initial setup in progress",
+      "state_type": "entry",
+      "icon": "🚀",
+      "color": "#95a5a6",
+      "typical_duration_minutes": 10,
+      "token_allocation_percentage": 2,
+      "entry_conditions": [
+        "Coordinator master creates PM spawn request",
+        "PM agent receives spawn notification",
+        "Project ID assigned"
+      ],
+      "responsibilities": [
+        "Create project directory structure",
+        "Initialize project state file from template",
+        "Load PM template and playbook",
+        "Identify divisions involved",
+        "Set up handoff directories"
+      ],
+      "success_criteria": [
+        "Project directory created",
+        "Project state file initialized",
+        "PM ready to begin planning"
+      ],
+      "exit_conditions": [
+        "All project directories created",
+        "Project metadata populated",
+        "PM acknowledges ready status to coordinator"
+      ],
+      "valid_transitions": ["PLANNING", "FAILED"],
+      "checkpoints": ["CP-INIT-01"],
+      "sub_states": []
+    },
+    {
+      "state_id": "PLANNING",
+      "state_name": "Planning",
+      "description": "Requirements analysis, task breakdown, dependency mapping, resource allocation",
+      "state_type": "planning",
+      "icon": "📋",
+      "color": "#3498db",
+      "typical_duration_minutes": 45,
+      "token_allocation_percentage": 5,
+      "entry_conditions": [
+        "Project state = INITIATED",
+        "PM agent ready",
+        "Project objective defined"
+      ],
+      "responsibilities": [
+        "Break down project objective into phases",
+        "Define tasks with acceptance criteria",
+        "Map dependencies between tasks",
+        "Allocate token budget across tasks and phases",
+        "Identify and document risks",
+        "Create milestone schedule",
+        "Notify all divisions of upcoming work"
+      ],
+      "success_criteria": [
+        "All tasks defined with acceptance criteria",
+        "Dependencies mapped in dependency graph",
+        "Token allocation approved (within budget)",
+        "Risk register initialized",
+        "All divisions notified"
+      ],
+      "exit_conditions": [
+        "Detailed task breakdown complete",
+        "Resource allocation approved",
+        "Dependency map validated",
+        "At least one task ready to execute (no blocking dependencies)"
+      ],
+      "valid_transitions": ["EXECUTING", "INITIATED", "FAILED"],
+      "checkpoints": ["CP-PLAN-01", "CP-PLAN-02", "CP-PLAN-03"],
+      "sub_states": []
+    },
+    {
+      "state_id": "EXECUTING",
+      "state_name": "Executing",
+      "description": "Active task execution, division coordination, progress monitoring",
+      "state_type": "active",
+      "icon": "⚙️",
+      "color": "#2ecc71",
+      "typical_duration_minutes": 300,
+      "token_allocation_percentage": 75,
+      "entry_conditions": [
+        "Project state = PLANNING",
+        "All planning checkpoints passed",
+        "At least one task ready to execute"
+      ],
+      "responsibilities": [
+        "Issue task handoffs to divisions",
+        "Monitor task progress continuously",
+        "Track milestone completion",
+        "Manage blockers and dependencies",
+        "Update project state after each event",
+        "Provide status updates every 30 minutes",
+        "Enforce quality gates",
+        "Reallocate resources as needed",
+        "Escalate critical issues"
+      ],
+      "success_criteria": [
+        "All tasks completed successfully",
+        "All deliverables received and validated",
+        "All milestones achieved",
+        "Quality gates passed",
+        "No critical blockers remaining"
+      ],
+      "exit_conditions": [
+        "100% of tasks status = completed",
+        "All acceptance criteria met",
+        "All division handoffs returned with deliverables",
+        "Resource utilization within budget (+10% tolerance)"
+      ],
+      "valid_transitions": ["VALIDATING", "PLANNING", "FAILED"],
+      "checkpoints": ["CP-EXEC-01", "CP-EXEC-02", "CP-EXEC-03", "CP-EXEC-04"],
+      "sub_states": [
+        {
+          "sub_state_id": "EXECUTING.ACTIVE",
+          "name": "Active",
+          "description": "Tasks in progress, normal operation",
+          "icon": "✅",
+          "color": "#2ecc71"
+        },
+        {
+          "sub_state_id": "EXECUTING.BLOCKED",
+          "name": "Blocked",
+          "description": "One or more tasks blocked, resolution in progress",
+          "icon": "🚧",
+          "color": "#e67e22"
+        },
+        {
+          "sub_state_id": "EXECUTING.AT_RISK",
+          "name": "At Risk",
+          "description": "Timeline or resources at risk, mitigation active",
+          "icon": "⚠️",
+          "color": "#f39c12"
+        },
+        {
+          "sub_state_id": "EXECUTING.RECOVERING",
+          "name": "Recovering",
+          "description": "Recovering from blocker or failed task",
+          "icon": "🔄",
+          "color": "#9b59b6"
+        }
+      ]
+    },
+    {
+      "state_id": "VALIDATING",
+      "state_name": "Validating",
+      "description": "Final validation of deliverables, success criteria, and project outcomes",
+      "state_type": "validation",
+      "icon": "✔️",
+      "color": "#9b59b6",
+      "typical_duration_minutes": 20,
+      "token_allocation_percentage": 8,
+      "entry_conditions": [
+        "Project state = EXECUTING",
+        "All tasks status = completed",
+        "All deliverables received"
+      ],
+      "responsibilities": [
+        "Validate each success criterion",
+        "Run final quality checks",
+        "Verify all deliverables present and complete",
+        "Check documentation completeness",
+        "Validate resource usage within budget",
+        "Identify any gaps or issues"
+      ],
+      "success_criteria": [
+        "All success criteria validated (weighted score >= 80%)",
+        "All deliverables meet specifications",
+        "Documentation complete",
+        "No critical issues outstanding"
+      ],
+      "exit_conditions": [
+        "Success criteria score >= minimum_success_score (typically 80%)",
+        "All deliverables validated",
+        "No blocking issues"
+      ],
+      "valid_transitions": ["COMPLETE", "EXECUTING", "FAILED"],
+      "checkpoints": ["CP-VAL-01", "CP-VAL-02", "CP-VAL-03"],
+      "sub_states": []
+    },
+    {
+      "state_id": "COMPLETE",
+      "state_name": "Complete",
+      "description": "Project successfully completed, closure activities, knowledge capture",
+      "state_type": "terminal_success",
+      "icon": "🎉",
+      "color": "#27ae60",
+      "typical_duration_minutes": 20,
+      "token_allocation_percentage": 7,
+      "entry_conditions": [
+        "Project state = VALIDATING",
+        "All validation checkpoints passed",
+        "Success criteria met"
+      ],
+      "responsibilities": [
+        "Create project completion report",
+        "Document lessons learned",
+        "Update knowledge base with patterns and outcomes",
+        "Archive project artifacts",
+        "Report final status to coordinator",
+        "Clean up handoff directories",
+        "Mark project state as completed",
+        "Self-terminate PM agent"
+      ],
+      "success_criteria": [
+        "Completion report created",
+        "Lessons learned documented",
+        "Knowledge base updated",
+        "Artifacts archived",
+        "Final status reported"
+      ],
+      "exit_conditions": [
+        "All closure deliverables complete",
+        "Coordinator acknowledges completion",
+        "PM agent ready to terminate"
+      ],
+      "valid_transitions": [],
+      "checkpoints": ["CP-COMPLETE-01", "CP-COMPLETE-02"],
+      "sub_states": []
+    },
+    {
+      "state_id": "FAILED",
+      "state_name": "Failed",
+      "description": "Project failed to complete successfully, post-mortem and cleanup",
+      "state_type": "terminal_failure",
+      "icon": "❌",
+      "color": "#e74c3c",
+      "typical_duration_minutes": 20,
+      "token_allocation_percentage": 3,
+      "entry_conditions": [
+        "Critical failure from any state",
+        "Unable to meet minimum success criteria",
+        "Resource exhaustion with work incomplete",
+        "Unrecoverable blocker"
+      ],
+      "responsibilities": [
+        "Document failure reason",
+        "Create incident report",
+        "Capture partial deliverables",
+        "Document lessons learned (especially failures)",
+        "Identify root cause",
+        "Recommend remediation or retry strategy",
+        "Archive partial work",
+        "Report failure to coordinator",
+        "Self-terminate PM agent"
+      ],
+      "success_criteria": [
+        "Failure documented with root cause",
+        "Incident report created",
+        "Lessons learned captured",
+        "Partial work archived",
+        "Coordinator notified"
+      ],
+      "exit_conditions": [
+        "Failure documentation complete",
+        "Coordinator acknowledges failure",
+        "PM agent ready to terminate"
+      ],
+      "valid_transitions": [],
+      "checkpoints": ["CP-FAIL-01", "CP-FAIL-02"],
+      "sub_states": []
+    }
+  ],
+  "transition_rules": [
+    {
+      "rule_id": "TR-01",
+      "from_state": "INITIATED",
+      "to_state": "PLANNING",
+      "transition_type": "forward",
+      "allowed": true,
+      "requirements": [
+        "All checkpoints in INITIATED state passed",
+        "Project directory structure created",
+        "PM agent ready"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-02",
+      "from_state": "INITIATED",
+      "to_state": "FAILED",
+      "transition_type": "failure",
+      "allowed": true,
+      "requirements": [
+        "Critical setup failure",
+        "Insufficient resources",
+        "Invalid project configuration"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-03",
+      "from_state": "PLANNING",
+      "to_state": "EXECUTING",
+      "transition_type": "forward",
+      "allowed": true,
+      "requirements": [
+        "All planning checkpoints passed",
+        "Task breakdown complete",
+        "Dependencies validated",
+        "At least one task ready to execute"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-04",
+      "from_state": "PLANNING",
+      "to_state": "INITIATED",
+      "transition_type": "rollback",
+      "allowed": true,
+      "requirements": [
+        "Plan rejected",
+        "Re-scoping needed",
+        "Rollback reason documented"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-05",
+      "from_state": "PLANNING",
+      "to_state": "FAILED",
+      "transition_type": "failure",
+      "allowed": true,
+      "requirements": [
+        "Planning not viable",
+        "Budget insufficient",
+        "Critical resources unavailable"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-06",
+      "from_state": "EXECUTING",
+      "to_state": "VALIDATING",
+      "transition_type": "forward",
+      "allowed": true,
+      "requirements": [
+        "All tasks completed",
+        "All deliverables received",
+        "Quality gates passed",
+        "No critical blockers"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-07",
+      "from_state": "EXECUTING",
+      "to_state": "PLANNING",
+      "transition_type": "rollback",
+      "allowed": true,
+      "requirements": [
+        "Major scope change",
+        "Re-planning needed",
+        "Coordinator approval obtained"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-08",
+      "from_state": "EXECUTING",
+      "to_state": "FAILED",
+      "transition_type": "failure",
+      "allowed": true,
+      "requirements": [
+        "Critical failure unrecoverable",
+        "Resource exhaustion",
+        "Unresolved blocker >2 hours"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-09",
+      "from_state": "VALIDATING",
+      "to_state": "COMPLETE",
+      "transition_type": "forward",
+      "allowed": true,
+      "requirements": [
+        "All success criteria met",
+        "Weighted score >= minimum threshold",
+        "All deliverables validated"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-10",
+      "from_state": "VALIDATING",
+      "to_state": "EXECUTING",
+      "transition_type": "rollback",
+      "allowed": true,
+      "requirements": [
+        "Validation failed",
+        "Remediation tasks defined",
+        "Resources available for fixes"
+      ],
+      "validation_required": true
+    },
+    {
+      "rule_id": "TR-11",
+      "from_state": "VALIDATING",
+      "to_state": "FAILED",
+      "transition_type": "failure",
+      "allowed": true,
+      "requirements": [
+        "Validation failed critically",
+        "Cannot remediate",
+        "Success criteria unachievable"
+      ],
+      "validation_required": true
+    }
+  ],
+  "checkpoints": [
+    {
+      "checkpoint_id": "CP-INIT-01",
+      "checkpoint_name": "Initialization Complete",
+      "state": "INITIATED",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "project_directory_exists",
+          "description": "Project directory structure created",
+          "validation_method": "file_system_check",
+          "severity": "critical"
+        },
+        {
+          "criterion": "state_file_initialized",
+          "description": "Project state file created from template",
+          "validation_method": "file_exists_and_valid_json",
+          "severity": "critical"
+        },
+        {
+          "criterion": "divisions_identified",
+          "description": "All required divisions identified",
+          "validation_method": "divisions_list_not_empty",
+          "severity": "critical"
+        }
+      ],
+      "failure_action": "transition_to_failed",
+      "success_action": "allow_transition_to_planning"
+    },
+    {
+      "checkpoint_id": "CP-PLAN-01",
+      "checkpoint_name": "Task Breakdown Completeness",
+      "state": "PLANNING",
+      "frequency": "once_at_state_exit",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "all_divisions_have_tasks",
+          "description": "All divisions assigned at least one task",
+          "validation_method": "check_task_distribution",
+          "severity": "warning"
+        },
+        {
+          "criterion": "all_tasks_have_acceptance_criteria",
+          "description": "Each task has defined acceptance criteria",
+          "validation_method": "check_acceptance_criteria_present",
+          "severity": "critical"
+        },
+        {
+          "criterion": "token_allocation_within_budget",
+          "description": "Sum of task allocations <= total budget",
+          "validation_method": "sum_allocations_compare_budget",
+          "severity": "critical"
+        }
+      ],
+      "failure_action": "block_transition",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-PLAN-02",
+      "checkpoint_name": "Dependency Validation",
+      "state": "PLANNING",
+      "frequency": "once_at_state_exit",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "no_circular_dependencies",
+          "description": "Dependency graph has no cycles",
+          "validation_method": "graph_cycle_detection",
+          "severity": "critical"
+        },
+        {
+          "criterion": "at_least_one_ready_task",
+          "description": "At least one task can start immediately",
+          "validation_method": "check_for_dependency_free_tasks",
+          "severity": "critical"
+        },
+        {
+          "criterion": "critical_path_identified",
+          "description": "Critical path through dependencies identified",
+          "validation_method": "critical_path_algorithm",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "block_transition",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-PLAN-03",
+      "checkpoint_name": "Risk Assessment",
+      "state": "PLANNING",
+      "frequency": "once_at_state_exit",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "high_risks_have_mitigation",
+          "description": "All high/critical risks have mitigation strategies",
+          "validation_method": "check_risk_mitigation_strategies",
+          "severity": "critical"
+        },
+        {
+          "criterion": "risk_owners_assigned",
+          "description": "All risks have assigned owners",
+          "validation_method": "check_risk_owners",
+          "severity": "warning"
+        },
+        {
+          "criterion": "monitoring_frequency_defined",
+          "description": "Risk monitoring frequency defined",
+          "validation_method": "check_monitoring_frequency",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "escalate_if_critical",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-EXEC-01",
+      "checkpoint_name": "Progress Tracking",
+      "state": "EXECUTING",
+      "frequency": "every_status_update",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "schedule_performance",
+          "description": "Tasks completed >= timeline percentage - 10%",
+          "validation_method": "calculate_spi",
+          "severity": "warning",
+          "threshold": {
+            "warning": "SPI < 0.9",
+            "critical": "SPI < 0.7"
+          }
+        },
+        {
+          "criterion": "cost_performance",
+          "description": "Token burn rate <= allocation rate + 20%",
+          "validation_method": "calculate_cpi",
+          "severity": "warning",
+          "threshold": {
+            "warning": "CPI < 0.9",
+            "critical": "CPI < 0.8"
+          }
+        },
+        {
+          "criterion": "milestone_achievement",
+          "description": "Milestones completed on schedule",
+          "validation_method": "check_milestone_status",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "escalate_if_critical",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-EXEC-02",
+      "checkpoint_name": "Blocker Management",
+      "state": "EXECUTING",
+      "frequency": "every_status_update",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "no_long_blockers",
+          "description": "No blocker unresolved >30 minutes",
+          "validation_method": "check_blocker_duration",
+          "severity": "critical"
+        },
+        {
+          "criterion": "critical_path_not_blocked",
+          "description": "Critical path tasks not blocked",
+          "validation_method": "check_critical_path_blockers",
+          "severity": "critical"
+        },
+        {
+          "criterion": "escalations_responded",
+          "description": "Escalations responded to within SLA",
+          "validation_method": "check_escalation_response_time",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "escalate_immediately",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-EXEC-03",
+      "checkpoint_name": "Quality Enforcement",
+      "state": "EXECUTING",
+      "frequency": "on_task_completion",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "acceptance_criteria_met",
+          "description": "Deliverables meet acceptance criteria",
+          "validation_method": "validate_acceptance_criteria",
+          "severity": "critical"
+        },
+        {
+          "criterion": "no_gates_bypassed",
+          "description": "No quality gates bypassed",
+          "validation_method": "check_quality_gate_compliance",
+          "severity": "critical"
+        },
+        {
+          "criterion": "rework_rate_acceptable",
+          "description": "Rework rate <20%",
+          "validation_method": "calculate_rework_rate",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "reject_deliverable",
+      "success_action": "accept_deliverable"
+    },
+    {
+      "checkpoint_id": "CP-EXEC-04",
+      "checkpoint_name": "Resource Tracking",
+      "state": "EXECUTING",
+      "frequency": "every_status_update",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "token_usage_safe",
+          "description": "Token usage <90% of allocation",
+          "validation_method": "check_token_usage_percentage",
+          "severity": "critical",
+          "threshold": {
+            "warning": ">80%",
+            "critical": ">90%"
+          }
+        },
+        {
+          "criterion": "reserve_buffer_maintained",
+          "description": "Reserve buffer 10-20% maintained",
+          "validation_method": "check_reserve_balance",
+          "severity": "warning"
+        },
+        {
+          "criterion": "division_capacity_ok",
+          "description": "No division over-allocated",
+          "validation_method": "check_division_capacity",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "request_extension_or_reduce_scope",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-VAL-01",
+      "checkpoint_name": "Success Criteria Validation",
+      "state": "VALIDATING",
+      "frequency": "once_per_criterion",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "all_criteria_evaluated",
+          "description": "Each criterion status = passed or waived",
+          "validation_method": "check_criterion_status",
+          "severity": "critical"
+        },
+        {
+          "criterion": "weighted_score_calculated",
+          "description": "Weighted score calculated correctly",
+          "validation_method": "calculate_weighted_score",
+          "severity": "critical"
+        },
+        {
+          "criterion": "score_meets_threshold",
+          "description": "Score >= minimum threshold (80%)",
+          "validation_method": "compare_score_to_threshold",
+          "severity": "critical"
+        }
+      ],
+      "failure_action": "rollback_to_executing_for_remediation",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-VAL-02",
+      "checkpoint_name": "Deliverable Completeness",
+      "state": "VALIDATING",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "all_deliverables_present",
+          "description": "All expected deliverables present",
+          "validation_method": "check_deliverable_list",
+          "severity": "critical"
+        },
+        {
+          "criterion": "deliverables_meet_specs",
+          "description": "Deliverables meet specifications",
+          "validation_method": "validate_deliverable_quality",
+          "severity": "critical"
+        },
+        {
+          "criterion": "documentation_complete",
+          "description": "Documentation complete",
+          "validation_method": "check_documentation_completeness",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "identify_gaps_create_remediation_tasks",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-VAL-03",
+      "checkpoint_name": "Resource Compliance",
+      "state": "VALIDATING",
+      "frequency": "once_at_state_entry",
+      "mandatory": false,
+      "validation_criteria": [
+        {
+          "criterion": "token_budget_compliance",
+          "description": "Token usage <= budget + 10%",
+          "validation_method": "check_final_token_usage",
+          "severity": "warning"
+        },
+        {
+          "criterion": "time_budget_compliance",
+          "description": "Time spent <= estimated + 20%",
+          "validation_method": "check_final_time_usage",
+          "severity": "warning"
+        },
+        {
+          "criterion": "no_division_overutilized",
+          "description": "No division significantly over-utilized",
+          "validation_method": "check_division_utilization",
+          "severity": "info"
+        }
+      ],
+      "failure_action": "document_variance",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-COMPLETE-01",
+      "checkpoint_name": "Documentation Completeness",
+      "state": "COMPLETE",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "completion_report_generated",
+          "description": "Completion report exists",
+          "validation_method": "check_completion_report_exists",
+          "severity": "critical"
+        },
+        {
+          "criterion": "lessons_learned_captured",
+          "description": "Lessons learned documented",
+          "validation_method": "check_lessons_learned_count",
+          "severity": "critical"
+        },
+        {
+          "criterion": "knowledge_base_updated",
+          "description": "Knowledge base entries created",
+          "validation_method": "verify_kb_updates",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "block_termination",
+      "success_action": "allow_termination"
+    },
+    {
+      "checkpoint_id": "CP-COMPLETE-02",
+      "checkpoint_name": "Archival",
+      "state": "COMPLETE",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "artifacts_archived",
+          "description": "All artifacts archived correctly",
+          "validation_method": "check_artifact_archive",
+          "severity": "critical"
+        },
+        {
+          "criterion": "state_file_finalized",
+          "description": "Project state file finalized",
+          "validation_method": "check_state_finalized",
+          "severity": "critical"
+        },
+        {
+          "criterion": "handoffs_cleaned",
+          "description": "Handoff directories cleaned",
+          "validation_method": "check_handoff_cleanup",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "complete_cleanup",
+      "success_action": "allow_termination"
+    },
+    {
+      "checkpoint_id": "CP-FAIL-01",
+      "checkpoint_name": "Incident Documentation",
+      "state": "FAILED",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "failure_reason_documented",
+          "description": "Failure reason clearly documented",
+          "validation_method": "check_failure_documentation",
+          "severity": "critical"
+        },
+        {
+          "criterion": "root_cause_identified",
+          "description": "Root cause analysis completed",
+          "validation_method": "check_root_cause_analysis",
+          "severity": "critical"
+        },
+        {
+          "criterion": "timeline_captured",
+          "description": "Timeline of events documented",
+          "validation_method": "check_event_timeline",
+          "severity": "warning"
+        }
+      ],
+      "failure_action": "escalate_documentation_incomplete",
+      "success_action": "continue"
+    },
+    {
+      "checkpoint_id": "CP-FAIL-02",
+      "checkpoint_name": "Recovery Plan",
+      "state": "FAILED",
+      "frequency": "once_at_state_entry",
+      "mandatory": true,
+      "validation_criteria": [
+        {
+          "criterion": "partial_deliverables_identified",
+          "description": "Partial work identified and archived",
+          "validation_method": "check_partial_deliverables",
+          "severity": "warning"
+        },
+        {
+          "criterion": "retry_strategy_recommended",
+          "description": "Retry or remediation strategy documented",
+          "validation_method": "check_retry_strategy",
+          "severity": "critical"
+        },
+        {
+          "criterion": "lessons_captured",
+          "description": "Failure lessons documented for future",
+          "validation_method": "check_failure_lessons",
+          "severity": "critical"
+        }
+      ],
+      "failure_action": "document_incomplete",
+      "success_action": "allow_termination"
+    }
+  ],
+  "rollback_triggers": [
+    {
+      "trigger_id": "RB-01",
+      "trigger_name": "Validation Failure",
+      "from_state": "VALIDATING",
+      "to_state": "EXECUTING",
+      "condition": "Success criteria score < minimum_success_score",
+      "severity": "high",
+      "procedure": [
+        "Identify failed criteria",
+        "Assess if remediation is feasible",
+        "Create remediation tasks if feasible",
+        "Allocate resources from reserve",
+        "Rollback to EXECUTING state",
+        "Execute remediation tasks",
+        "Return to VALIDATING state"
+      ],
+      "feasibility_check": {
+        "tokens_available_in_reserve": ">= estimated_remediation_cost",
+        "remediation_time_acceptable": "<= 2 hours",
+        "fixes_achievable": "high_confidence"
+      },
+      "fallback_if_not_feasible": "transition_to_failed"
+    },
+    {
+      "trigger_id": "RB-02",
+      "trigger_name": "Scope Change",
+      "from_state": "EXECUTING",
+      "to_state": "PLANNING",
+      "condition": "Major scope change with >30% impact on work",
+      "severity": "high",
+      "procedure": [
+        "Document scope change request",
+        "Assess impact on current plan",
+        "Pause current execution",
+        "Rollback to PLANNING state",
+        "Re-plan with new scope",
+        "Get coordinator approval",
+        "Resume execution with updated plan"
+      ],
+      "approval_required": true,
+      "approval_from": "coordinator",
+      "fallback_if_not_approved": "continue_with_original_scope_or_fail"
+    },
+    {
+      "trigger_id": "RB-03",
+      "trigger_name": "Resource Exhaustion",
+      "from_state": "EXECUTING",
+      "to_state": "PLANNING or FAILED",
+      "condition": "Token usage >90% with work >20% incomplete",
+      "severity": "critical",
+      "procedure": [
+        "Assess remaining work",
+        "Calculate tokens needed to complete",
+        "If extension <20% of budget: request extension",
+        "If approved: continue",
+        "If denied: evaluate scope reduction or rollback",
+        "If extension >20%: escalate or transition to FAILED"
+      ],
+      "extension_threshold_percentage": 20,
+      "escalation_required": true,
+      "fallback_options": [
+        "Reduce scope",
+        "Rollback to planning for optimization",
+        "Transition to failed with partial deliverables"
+      ]
+    },
+    {
+      "trigger_id": "RB-04",
+      "trigger_name": "Critical Blocker",
+      "from_state": "EXECUTING",
+      "to_state": "PLANNING or FAILED",
+      "condition": "Task blocked >1 hour on critical path",
+      "severity": "critical",
+      "procedure": [
+        "Assess blocker severity and impact",
+        "Attempt resolution within 30 minutes",
+        "If unresolved: escalate to coordinator",
+        "Evaluate workarounds",
+        "Consider rollback to re-plan if blocker >2 hours",
+        "Transition to FAILED if unrecoverable"
+      ],
+      "time_thresholds": {
+        "initial_resolution_attempt": "30 minutes",
+        "escalation": "60 minutes",
+        "mandatory_decision": "120 minutes"
+      },
+      "escalation_levels": [
+        "PM self-resolution (0-30 min)",
+        "Division master (30-60 min)",
+        "Coordinator (60-120 min)",
+        "Consider failure (>120 min)"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "metric_id": "M-01",
+      "metric_name": "Schedule Performance Index (SPI)",
+      "description": "Ratio of tasks completed to tasks planned at current timeline point",
+      "formula": "tasks_completed / tasks_planned_by_now",
+      "collection_frequency": "every_status_update",
+      "states_applicable": ["EXECUTING"],
+      "interpretation": {
+        "excellent": ">= 1.2",
+        "good": ">= 1.0",
+        "acceptable": ">= 0.9",
+        "at_risk": ">= 0.7",
+        "critical": "< 0.7"
+      }
+    },
+    {
+      "metric_id": "M-02",
+      "metric_name": "Cost Performance Index (CPI)",
+      "description": "Ratio of budgeted tokens to actual tokens used",
+      "formula": "token_budget_allocation / tokens_used",
+      "collection_frequency": "every_status_update",
+      "states_applicable": ["EXECUTING"],
+      "interpretation": {
+        "excellent": ">= 1.2",
+        "good": ">= 1.0",
+        "acceptable": ">= 0.9",
+        "at_risk": ">= 0.8",
+        "critical": "< 0.8"
+      }
+    },
+    {
+      "metric_id": "M-03",
+      "metric_name": "Milestone Achievement Rate (MAR)",
+      "description": "Ratio of milestones completed to milestones planned at current point",
+      "formula": "milestones_completed / milestones_planned_by_now",
+      "collection_frequency": "on_milestone_events",
+      "states_applicable": ["EXECUTING", "VALIDATING"],
+      "interpretation": {
+        "excellent": ">= 1.0",
+        "good": ">= 0.8",
+        "at_risk": ">= 0.6",
+        "critical": "< 0.6"
+      }
+    },
+    {
+      "metric_id": "M-04",
+      "metric_name": "Quality Gate Pass Rate (QGPR)",
+      "description": "Percentage of quality gates passed",
+      "formula": "quality_gates_passed / quality_gates_evaluated",
+      "collection_frequency": "on_quality_gate_events",
+      "states_applicable": ["EXECUTING", "VALIDATING"],
+      "interpretation": {
+        "excellent": ">= 0.95",
+        "good": ">= 0.85",
+        "acceptable": ">= 0.75",
+        "at_risk": ">= 0.60",
+        "critical": "< 0.60"
+      }
+    },
+    {
+      "metric_id": "M-05",
+      "metric_name": "Blocker Resolution Time (BRT)",
+      "description": "Average time to resolve blockers",
+      "formula": "sum(blocker_resolution_times) / count(blockers_resolved)",
+      "collection_frequency": "on_blocker_resolution",
+      "states_applicable": ["EXECUTING"],
+      "sla_target": "30 minutes",
+      "interpretation": {
+        "excellent": "<= 15 min",
+        "good": "<= 30 min",
+        "acceptable": "<= 45 min",
+        "at_risk": "<= 60 min",
+        "critical": "> 60 min"
+      }
+    },
+    {
+      "metric_id": "M-06",
+      "metric_name": "Division Response Time (DRT)",
+      "description": "Average time for divisions to acknowledge and complete tasks",
+      "formula": "avg(task_completion_time - task_assigned_time)",
+      "collection_frequency": "on_task_completion",
+      "states_applicable": ["EXECUTING"],
+      "interpretation": {
+        "excellent": "<= estimated_time * 0.8",
+        "good": "<= estimated_time * 1.0",
+        "acceptable": "<= estimated_time * 1.2",
+        "at_risk": "<= estimated_time * 1.5",
+        "critical": "> estimated_time * 1.5"
+      }
+    },
+    {
+      "metric_id": "M-07",
+      "metric_name": "Rework Rate",
+      "description": "Percentage of tasks requiring rework due to quality issues",
+      "formula": "tasks_requiring_rework / tasks_completed",
+      "collection_frequency": "on_task_completion",
+      "states_applicable": ["EXECUTING"],
+      "acceptable_threshold": "20%",
+      "interpretation": {
+        "excellent": "<= 5%",
+        "good": "<= 10%",
+        "acceptable": "<= 20%",
+        "at_risk": "<= 30%",
+        "critical": "> 30%"
+      }
+    }
+  ],
+  "escalation_levels": [
+    {
+      "level": 1,
+      "level_name": "PM Self-Resolution",
+      "time_range": "0-30 minutes",
+      "actions": [
+        "Assess blocker severity",
+        "Attempt quick resolution",
+        "Contact blocking division directly",
+        "Evaluate workarounds",
+        "Reallocate resources if needed"
+      ],
+      "escalate_if": "Blocker unresolved after 30 minutes",
+      "authority": "PM can resolve without escalation"
+    },
+    {
+      "level": 2,
+      "level_name": "Division Master Escalation",
+      "time_range": "30-60 minutes",
+      "actions": [
+        "Escalate to division master",
+        "Request prioritization",
+        "Provide additional resources",
+        "Evaluate alternative approaches",
+        "Update risk register"
+      ],
+      "escalate_if": "Blocker unresolved after 60 minutes OR critical blocker",
+      "authority": "Division master can reprioritize or reallocate"
+    },
+    {
+      "level": 3,
+      "level_name": "Coordinator Master Escalation",
+      "time_range": "60-120 minutes",
+      "actions": [
+        "Escalate to coordinator master",
+        "Provide full context and impact analysis",
+        "Request architectural decision if needed",
+        "Request cross-division coordination",
+        "Consider scope changes"
+      ],
+      "escalate_if": "Blocker unresolved after 120 minutes OR project-threatening",
+      "authority": "Coordinator can make architectural decisions, approve scope changes"
+    },
+    {
+      "level": 4,
+      "level_name": "Meta-Agent Escalation",
+      "time_range": ">120 minutes",
+      "actions": [
+        "Escalate to cortex meta-agent",
+        "Request system-level intervention",
+        "Consider project suspension",
+        "Evaluate alternative strategies"
+      ],
+      "escalate_if": "Project failure imminent, system-level intervention needed",
+      "authority": "Meta-agent can suspend project, request external intervention"
+    }
+  ],
+  "escalation_decision_matrix": [
+    {
+      "blocker_type": "dependency",
+      "severity": "low",
+      "time_blocked_minutes": 30,
+      "escalation_level": 1,
+      "action": "PM self-resolve"
+    },
+    {
+      "blocker_type": "dependency",
+      "severity": "medium",
+      "time_blocked_minutes": 60,
+      "escalation_level": 2,
+      "action": "Division master"
+    },
+    {
+      "blocker_type": "dependency",
+      "severity": "high",
+      "time_blocked_minutes": 90,
+      "escalation_level": 3,
+      "action": "Coordinator"
+    },
+    {
+      "blocker_type": "dependency",
+      "severity": "critical",
+      "time_blocked_minutes": 120,
+      "escalation_level": 4,
+      "action": "Meta-agent"
+    },
+    {
+      "blocker_type": "resource",
+      "severity": "any",
+      "time_blocked_minutes": 0,
+      "escalation_level": 3,
+      "action": "Coordinator (immediate for resource issues)"
+    },
+    {
+      "blocker_type": "technical",
+      "severity": "low",
+      "time_blocked_minutes": 60,
+      "escalation_level": 2,
+      "action": "Division master"
+    },
+    {
+      "blocker_type": "technical",
+      "severity": "high",
+      "time_blocked_minutes": 0,
+      "escalation_level": 3,
+      "action": "Coordinator (immediate for high severity)"
+    },
+    {
+      "blocker_type": "external",
+      "severity": "any",
+      "time_blocked_minutes": 0,
+      "escalation_level": 3,
+      "action": "Coordinator (immediate for external dependencies)"
+    }
+  ],
+  "resource_reallocation_rules": [
+    {
+      "rule_id": "RR-01",
+      "rule_name": "Reallocate from Completed Phases",
+      "trigger": "Phase completes under budget",
+      "procedure": [
+        "Calculate tokens saved in completed phase",
+        "Add to reserve pool",
+        "Document reallocation"
+      ],
+      "constraints": [
+        "Maintain minimum 5% reserve",
+        "Document all reallocations"
+      ]
+    },
+    {
+      "rule_id": "RR-02",
+      "rule_name": "Reallocate from Low to High Priority",
+      "trigger": "Critical task needs more resources",
+      "procedure": [
+        "Identify low-priority tasks",
+        "Evaluate scope reduction options",
+        "Reallocate tokens to critical task",
+        "Update task expectations"
+      ],
+      "constraints": [
+        "Don't reduce task below 50% of estimate",
+        "Get coordinator approval if >20% of budget"
+      ]
+    },
+    {
+      "rule_id": "RR-03",
+      "rule_name": "Borrow from Reserve Pool",
+      "trigger": "Unexpected work requires additional resources",
+      "procedure": [
+        "Assess reserve pool balance",
+        "Allocate from reserve to task",
+        "Update reserve tracking"
+      ],
+      "constraints": [
+        "Always maintain 5% minimum reserve",
+        "Escalate if reserve drops below threshold"
+      ]
+    }
+  ],
+  "execution_patterns": [
+    {
+      "pattern_id": "EP-01",
+      "pattern_name": "Parallel Execution",
+      "description": "Execute independent tasks simultaneously across divisions",
+      "when_to_use": [
+        "Tasks have no dependencies",
+        "Different divisions work independently",
+        "Objective is to minimize timeline"
+      ],
+      "benefits": [
+        "Compressed schedule",
+        "Maximum throughput",
+        "Division parallelism"
+      ],
+      "risks": [
+        "Integration issues",
+        "Resource contention",
+        "Coordination overhead"
+      ]
+    },
+    {
+      "pattern_id": "EP-02",
+      "pattern_name": "Sequential Execution",
+      "description": "Execute tasks in strict order based on dependencies",
+      "when_to_use": [
+        "Tasks have strict dependencies",
+        "Output of one task feeds next",
+        "Quality gates between tasks"
+      ],
+      "benefits": [
+        "Clear dependencies",
+        "Early error detection",
+        "Incremental validation"
+      ],
+      "risks": [
+        "Longer timeline",
+        "Delays cascade",
+        "Division idle time"
+      ]
+    },
+    {
+      "pattern_id": "EP-03",
+      "pattern_name": "Wave-Based Execution",
+      "description": "Execute in waves with parallel tasks within waves, sequential between waves",
+      "when_to_use": [
+        "Mix of dependent and independent work",
+        "Multiple iterations or environments",
+        "Balance of speed and quality needed"
+      ],
+      "benefits": [
+        "Balances speed and validation",
+        "Learning from each wave",
+        "Progressive deployment"
+      ],
+      "risks": [
+        "Wave boundaries may be artificial",
+        "Some efficiency loss vs full parallel"
+      ]
+    }
+  ],
+  "dependency_types": [
+    {
+      "type_id": "DT-01",
+      "type_name": "Blocking (Hard) Dependency",
+      "symbol": "→",
+      "description": "Task B cannot start until Task A is 100% complete",
+      "handling": "Strict sequencing, block dependent task until prerequisite complete"
+    },
+    {
+      "type_id": "DT-02",
+      "type_name": "Soft Dependency",
+      "symbol": "⇢",
+      "description": "Task B can start but may need adjustment based on Task A",
+      "handling": "Allow parallel work with coordination, iterate as needed"
+    },
+    {
+      "type_id": "DT-03",
+      "type_name": "External Dependency",
+      "symbol": "[EXT]",
+      "description": "Task depends on external system or approval outside PM control",
+      "handling": "Monitor external status, escalate delays immediately, have contingency plan"
+    }
+  ],
+  "completion_criteria": {
+    "INITIATED_to_PLANNING": [
+      "Project directory created",
+      "Project state file initialized from template",
+      "PM agent loaded template and playbook",
+      "All divisions identified",
+      "Handoff directories created",
+      "PM reports ready status to coordinator"
+    ],
+    "PLANNING_to_EXECUTING": [
+      "All tasks defined with acceptance criteria",
+      "Dependencies mapped (no circular dependencies)",
+      "Token allocation sums to <= total budget",
+      "All divisions notified of upcoming tasks",
+      "Risk register initialized with mitigation strategies",
+      "At least one task ready to execute",
+      "Milestone schedule created"
+    ],
+    "EXECUTING_to_VALIDATING": [
+      "All tasks status = completed",
+      "All deliverables received and logged",
+      "All quality gates passed",
+      "No critical blockers remaining",
+      "All milestones achieved",
+      "Resource usage within budget (+10% tolerance)"
+    ],
+    "VALIDATING_to_COMPLETE": [
+      "All success criteria validated",
+      "Success criteria weighted score >= minimum_success_score",
+      "All deliverables validated and archived",
+      "Documentation complete",
+      "No critical issues outstanding",
+      "Final metrics calculated"
+    ],
+    "COMPLETE_final": [
+      "Project completion report created",
+      "Lessons learned documented",
+      "Knowledge base updated",
+      "All artifacts archived",
+      "Final status reported to coordinator",
+      "Handoff directories cleaned",
+      "PM agent ready to terminate"
+    ]
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created_at": "2025-12-09T00:00:00Z",
+    "last_updated": "2025-12-09T00:00:00Z",
+    "maintained_by": "Cortex Development Master",
+    "schema_url": "coordination/project-management/pm-state-machine.json",
+    "related_documentation": [
+      "coordination/project-management/pm-state-machine.md",
+      "coordination/project-management/pm-template.md",
+      "coordination/project-management/pm-playbook.md",
+      "coordination/project-management/project-template.json"
+    ]
+  }
+}

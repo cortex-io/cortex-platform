@@ -1,0 +1,8 @@
+{
+  "task_id": "task-prompt-builder",
+  "description": "Create scripts/lib/prompt-builder.sh implementing the 9-step prompt engineering framework",
+  "phase": "phase2-quality-validation",
+  "priority": "high",
+  "created_at": "2025-11-30T08:40:00-06:00",
+  "status": "pending"
+}

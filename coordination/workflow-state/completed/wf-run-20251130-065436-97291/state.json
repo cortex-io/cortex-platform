@@ -1,0 +1,29 @@
+{
+  "workflow_run_id": "wf-run-20251130-065436-97291",
+  "workflow_name": "test-hello",
+  "status": "completed",
+  "started_at": "2025-11-30T12:54:36Z",
+  "updated_at": "2025-11-30T12:54:36Z",
+  "current_execution_group": 1,
+  "total_execution_groups": 0,
+  "inputs": {
+    "name": "DebugCat"
+  },
+  "steps": {
+    "greet": {
+      "status": "completed",
+      "retry_count": 0,
+      "started_at": "2025-11-30T12:54:36Z",
+      "completed_at": "2025-11-30T12:54:36Z",
+      "outputs": {
+        "stdout": "Hello, DebugCat!"
+      }
+    }
+  },
+  "outputs": {
+    "greet": {
+      "stdout": "Hello, DebugCat!"
+    }
+  },
+  "completed_at": "2025-11-30T12:54:36Z"
+}

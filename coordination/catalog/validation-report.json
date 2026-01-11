@@ -1,0 +1,153 @@
+{
+  "generated_at": "2025-11-28T01:51:31-0600",
+  "total_assets": 42,
+  "critical_assets": 1,
+  "assets_requiring_validation": 24,
+  "assets_with_schemas": 1,
+  "validation_checklist": [
+    {
+      "asset_id": "agent-message-spec",
+      "file_path": "coordination/schemas/agent-message-spec.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "bug-fix-strategy.schema",
+      "file_path": "coordination/schemas/bug-fix-strategy.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "handoff.schema",
+      "file_path": "coordination/schemas/handoff.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "health-alert.schema",
+      "file_path": "coordination/schemas/health-alert.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "implementation-pattern.schema",
+      "file_path": "coordination/schemas/implementation-pattern.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "master-state.schema",
+      "file_path": "coordination/schemas/master-state.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "moe-routing-event.schema",
+      "file_path": "coordination/schemas/moe-routing-event.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "orchestrator-state.schema",
+      "file_path": "coordination/schemas/orchestrator-state.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "pm-activity.schema",
+      "file_path": "coordination/schemas/pm-activity.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "pm-state.schema",
+      "file_path": "coordination/schemas/pm-state.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "pool-state.schema",
+      "file_path": "coordination/schemas/pool-state.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "routing-decision",
+      "file_path": "coordination/schemas/routing-decision.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "routing-decision.schema",
+      "file_path": "coordination/schemas/routing-decision.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "security-vulnerability.schema",
+      "file_path": "coordination/schemas/security-vulnerability.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "task-lineage.schema",
+      "file_path": "coordination/schemas/task-lineage.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "task-patterns.schema",
+      "file_path": "coordination/schemas/task-patterns.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "task-queue-entry.schema",
+      "file_path": "coordination/schemas/task-queue-entry.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "task-queue.schema",
+      "file_path": "coordination/schemas/task-queue.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "task-spec",
+      "file_path": "coordination/schemas/task-spec.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "worker-goal-spec",
+      "file_path": "coordination/schemas/worker-goal-spec.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "worker-spec",
+      "file_path": "coordination/schemas/worker-spec.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "worker-spec.schema",
+      "file_path": "coordination/schemas/worker-spec.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "workforce-streams.schema",
+      "file_path": "coordination/schemas/workforce-streams.schema.json",
+      "schema": null,
+      "owner": "platform"
+    },
+    {
+      "asset_id": "routing-config",
+      "file_path": "coordination/routing/config.json",
+      "schema": "routing-config.schema.json",
+      "owner": "coordinator-master"
+    }
+  ]
+}

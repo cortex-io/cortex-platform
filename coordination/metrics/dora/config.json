@@ -1,0 +1,68 @@
+{
+  "lookback_windows": {
+    "default_days": 30,
+    "available": [7, 30, 60, 90, 365],
+    "trend_comparison_days": 90
+  },
+  "thresholds": {
+    "deployment_frequency": {
+      "elite": {"per_day": 1.0, "description": "Multiple deployments per day"},
+      "high": {"per_day": 0.14, "description": "Once per week"},
+      "medium": {"per_day": 0.033, "description": "Once per month"},
+      "low": {"per_day": 0.0, "description": "Less than once per month"}
+    },
+    "lead_time": {
+      "elite": {"minutes": 60, "description": "Less than 1 hour"},
+      "high": {"minutes": 1440, "description": "Less than 1 day"},
+      "medium": {"minutes": 10080, "description": "Less than 1 week"},
+      "low": {"minutes": 43200, "description": "More than 1 week"}
+    },
+    "mttr": {
+      "elite": {"minutes": 60, "description": "Less than 1 hour"},
+      "high": {"minutes": 1440, "description": "Less than 1 day"},
+      "medium": {"minutes": 10080, "description": "Less than 1 week"},
+      "low": {"minutes": 43200, "description": "More than 1 week"}
+    },
+    "change_failure_rate": {
+      "elite": {"percent": 5, "description": "0-5%"},
+      "high": {"percent": 10, "description": "5-10%"},
+      "medium": {"percent": 15, "description": "10-15%"},
+      "low": {"percent": 100, "description": "15%+"}
+    }
+  },
+  "alert_conditions": {
+    "deployment_frequency_drop": {
+      "enabled": true,
+      "threshold_percent": 50,
+      "description": "Alert if deployment frequency drops >50% from baseline"
+    },
+    "lead_time_increase": {
+      "enabled": true,
+      "threshold_percent": 100,
+      "description": "Alert if lead time doubles from baseline"
+    },
+    "mttr_increase": {
+      "enabled": true,
+      "threshold_percent": 100,
+      "description": "Alert if MTTR doubles from baseline"
+    },
+    "failure_rate_increase": {
+      "enabled": true,
+      "threshold_percent": 50,
+      "description": "Alert if failure rate increases >50% from baseline"
+    },
+    "degradation_window_days": 7
+  },
+  "aggregation": {
+    "time_periods": ["daily", "weekly", "monthly"],
+    "rolling_averages": [7, 30, 90],
+    "master_breakdown": true,
+    "task_type_breakdown": true
+  },
+  "data_sources": {
+    "tasks": "coordination/tasks/",
+    "worker_pool": "coordination/worker-pool.json",
+    "metrics": "coordination/metrics/",
+    "otel_traces": "coordination/observability/traces/"
+  }
+}

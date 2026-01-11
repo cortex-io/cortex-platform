@@ -1,0 +1,1041 @@
+{
+  "contractor_id": "talos-contractor",
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "knowledge_domains": [
+    "kubernetes",
+    "talos_linux",
+    "cluster_management",
+    "container_orchestration",
+    "cloud_native"
+  ],
+
+  "cluster_sizing_recommendations": {
+    "small_dev": {
+      "description": "Single-node development cluster",
+      "node_count": 1,
+      "node_roles": {
+        "controlplane": 1,
+        "worker": 0
+      },
+      "resources_per_node": {
+        "cpu_cores": 4,
+        "memory_gb": 8,
+        "storage_gb": 100
+      },
+      "use_cases": [
+        "Local development",
+        "CI/CD testing",
+        "Learning Kubernetes"
+      ],
+      "limitations": [
+        "No high availability",
+        "Single point of failure",
+        "Not suitable for production"
+      ],
+      "estimated_pod_capacity": 110
+    },
+
+    "small_prod": {
+      "description": "Small production cluster with basic HA",
+      "node_count": 6,
+      "node_roles": {
+        "controlplane": 3,
+        "worker": 3
+      },
+      "resources_per_node": {
+        "controlplane": {
+          "cpu_cores": 4,
+          "memory_gb": 8,
+          "storage_gb": 100
+        },
+        "worker": {
+          "cpu_cores": 4,
+          "memory_gb": 16,
+          "storage_gb": 200
+        }
+      },
+      "use_cases": [
+        "Small production workloads",
+        "Microservices (5-15 services)",
+        "Staging environments"
+      ],
+      "estimated_pod_capacity": 330,
+      "cost_considerations": "Balanced between HA and resource cost"
+    },
+
+    "medium_prod": {
+      "description": "Medium production cluster for growing workloads",
+      "node_count": 12,
+      "node_roles": {
+        "controlplane": 3,
+        "worker": 9
+      },
+      "resources_per_node": {
+        "controlplane": {
+          "cpu_cores": 4,
+          "memory_gb": 16,
+          "storage_gb": 200
+        },
+        "worker": {
+          "cpu_cores": 8,
+          "memory_gb": 32,
+          "storage_gb": 500
+        }
+      },
+      "use_cases": [
+        "Production workloads with multiple teams",
+        "Microservices (15-50 services)",
+        "Data processing pipelines"
+      ],
+      "estimated_pod_capacity": 990,
+      "cost_considerations": "Higher resource allocation for production stability"
+    },
+
+    "large_prod": {
+      "description": "Large production cluster for enterprise workloads",
+      "node_count": 30,
+      "node_roles": {
+        "controlplane": 5,
+        "worker": 25
+      },
+      "resources_per_node": {
+        "controlplane": {
+          "cpu_cores": 8,
+          "memory_gb": 32,
+          "storage_gb": 500
+        },
+        "worker": {
+          "cpu_cores": 16,
+          "memory_gb": 64,
+          "storage_gb": 1000
+        }
+      },
+      "use_cases": [
+        "Enterprise production workloads",
+        "Multi-tenant platforms",
+        "Large-scale microservices (50+ services)"
+      ],
+      "estimated_pod_capacity": 2750,
+      "additional_considerations": [
+        "Dedicated control plane nodes",
+        "Node pools for different workload types",
+        "Advanced monitoring and observability"
+      ]
+    },
+
+    "edge": {
+      "description": "Edge computing cluster for remote locations",
+      "node_count": 3,
+      "node_roles": {
+        "controlplane": 1,
+        "worker": 2
+      },
+      "resources_per_node": {
+        "cpu_cores": 2,
+        "memory_gb": 4,
+        "storage_gb": 50
+      },
+      "architecture": "arm64 or x86_64",
+      "use_cases": [
+        "IoT edge processing",
+        "Remote site deployments",
+        "Retail/branch locations"
+      ],
+      "estimated_pod_capacity": 100,
+      "special_considerations": [
+        "Limited resources",
+        "Network latency to central management",
+        "Power efficiency requirements"
+      ]
+    }
+  },
+
+  "node_role_configurations": {
+    "controlplane": {
+      "description": "Runs Kubernetes control plane components",
+      "components": [
+        "kube-apiserver",
+        "kube-controller-manager",
+        "kube-scheduler",
+        "etcd"
+      ],
+      "resource_overhead": {
+        "cpu_cores": 2,
+        "memory_gb": 4,
+        "description": "Minimum resources consumed by control plane components"
+      },
+      "taint_configuration": {
+        "default": "node-role.kubernetes.io/control-plane:NoSchedule",
+        "description": "Prevents workload pods from scheduling on control plane by default"
+      },
+      "recommendations": [
+        "Use odd number of nodes for etcd quorum (3, 5, 7)",
+        "Deploy across availability zones for resilience",
+        "Use SSD storage for etcd performance",
+        "Monitor etcd database size and latency"
+      ],
+      "anti_patterns": [
+        "Running workloads on control plane in production",
+        "Using slow/network storage for etcd",
+        "Single control plane node in production"
+      ]
+    },
+
+    "worker": {
+      "description": "Runs application workloads",
+      "components": [
+        "kubelet",
+        "kube-proxy",
+        "container-runtime (containerd)"
+      ],
+      "resource_allocation": {
+        "system_reserved": {
+          "cpu": "100m",
+          "memory": "1Gi",
+          "description": "Reserved for OS and system daemons"
+        },
+        "kube_reserved": {
+          "cpu": "100m",
+          "memory": "1Gi",
+          "description": "Reserved for Kubernetes components"
+        },
+        "eviction_threshold": {
+          "memory_available": "500Mi",
+          "nodefs_available": "10%",
+          "description": "Triggers pod eviction to prevent node failure"
+        }
+      },
+      "pod_density": {
+        "default_max_pods": 110,
+        "recommended_max_pods": 100,
+        "factors_affecting_density": [
+          "Available IPs in pod CIDR",
+          "Node resources (CPU, memory)",
+          "Storage I/O capacity",
+          "Network bandwidth"
+        ]
+      },
+      "node_labels": {
+        "common_labels": [
+          "node.kubernetes.io/instance-type",
+          "topology.kubernetes.io/zone",
+          "workload-type",
+          "node-pool"
+        ],
+        "usage": "For pod scheduling decisions and node selection"
+      }
+    },
+
+    "init": {
+      "description": "First control plane node that bootstraps etcd",
+      "bootstrap_process": [
+        "Generate machine configs",
+        "Apply controlplane config to init node",
+        "Run 'talosctl bootstrap' on init node",
+        "Wait for Kubernetes API to be available",
+        "Apply configs to additional control plane nodes",
+        "Apply configs to worker nodes"
+      ],
+      "important_notes": [
+        "Only bootstrap once during cluster creation",
+        "Init node becomes regular control plane after bootstrap",
+        "Bootstrapping creates initial etcd member"
+      ]
+    }
+  },
+
+  "common_workload_patterns": {
+    "stateless_web_apps": {
+      "description": "Web applications without persistent state",
+      "deployment_pattern": "Deployment with HorizontalPodAutoscaler",
+      "replicas": {
+        "minimum": 2,
+        "recommended": 3,
+        "reason": "High availability and rolling updates"
+      },
+      "resource_requests": {
+        "cpu": "100m-500m",
+        "memory": "256Mi-1Gi"
+      },
+      "networking": {
+        "service_type": "ClusterIP",
+        "ingress": "Required for external access",
+        "load_balancing": "Round-robin across pods"
+      },
+      "example_workloads": [
+        "REST APIs",
+        "Frontend SPAs",
+        "Backend microservices"
+      ]
+    },
+
+    "stateful_databases": {
+      "description": "Databases requiring persistent storage",
+      "deployment_pattern": "StatefulSet with PersistentVolumeClaims",
+      "replicas": {
+        "minimum": 1,
+        "recommended": 3,
+        "reason": "Data replication and high availability"
+      },
+      "storage_requirements": {
+        "storage_class": "Required (e.g., longhorn, nfs-client)",
+        "access_mode": "ReadWriteOnce",
+        "backup_strategy": "Essential - regular snapshots"
+      },
+      "resource_considerations": {
+        "cpu": "1-4 cores per replica",
+        "memory": "2-8Gi per replica",
+        "storage": "SSD for performance"
+      },
+      "example_workloads": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis"
+      ]
+    },
+
+    "batch_jobs": {
+      "description": "One-time or scheduled tasks",
+      "deployment_pattern": "Job or CronJob",
+      "configuration": {
+        "completions": 1,
+        "parallelism": "1-10 depending on task",
+        "backoff_limit": 3,
+        "ttl_seconds_after_finished": 3600
+      },
+      "resource_considerations": {
+        "resource_limits": "Important to prevent resource exhaustion",
+        "timeout": "Set activeDeadlineSeconds to prevent runaway jobs"
+      },
+      "use_cases": [
+        "Data processing",
+        "Database migrations",
+        "Backup jobs",
+        "Scheduled reports"
+      ]
+    },
+
+    "daemonsets": {
+      "description": "Pods running on every node",
+      "deployment_pattern": "DaemonSet",
+      "typical_use_cases": [
+        "Log collectors (Fluent Bit)",
+        "Monitoring agents (Node Exporter)",
+        "Network plugins (CNI)",
+        "Storage plugins (CSI node driver)"
+      ],
+      "resource_considerations": {
+        "cpu": "50m-200m per node",
+        "memory": "100Mi-500Mi per node",
+        "note": "Multiplied by node count"
+      },
+      "node_selection": {
+        "node_selector": "Can target specific node types",
+        "tolerations": "Often need to run on control plane nodes"
+      }
+    }
+  },
+
+  "storage_configurations": {
+    "longhorn": {
+      "description": "Cloud-native distributed block storage for Kubernetes",
+      "type": "Distributed block storage",
+      "requirements": {
+        "minimum_nodes": 3,
+        "disk_per_node": "Additional disk or partition recommended",
+        "memory_per_node": "500Mi minimum",
+        "open_iscsi": "Required on all nodes"
+      },
+      "features": [
+        "Built-in replication (configurable)",
+        "Snapshots and backups",
+        "Disaster recovery",
+        "Volume expansion",
+        "ReadWriteOnce and ReadWriteMany support"
+      ],
+      "performance": {
+        "iops": "Good (depends on underlying disk)",
+        "latency": "Low to medium",
+        "throughput": "High"
+      },
+      "use_cases": [
+        "General purpose persistent storage",
+        "Databases",
+        "Stateful applications",
+        "Production workloads"
+      ],
+      "installation": {
+        "method": "Helm chart",
+        "namespace": "longhorn-system",
+        "configuration": {
+          "default_replica_count": 3,
+          "storage_class_name": "longhorn"
+        }
+      },
+      "talos_specific": {
+        "extensions_required": ["iscsi-tools"],
+        "machine_config": {
+          "kernel_modules": ["iscsi_tcp"],
+          "sysctls": {
+            "vm.max_map_count": "262144"
+          }
+        }
+      }
+    },
+
+    "nfs": {
+      "description": "Network File System - shared file storage",
+      "type": "Network file system",
+      "requirements": {
+        "nfs_server": "External NFS server required",
+        "network_connectivity": "All nodes must reach NFS server",
+        "nfs_client": "Provided by CSI driver"
+      },
+      "features": [
+        "ReadWriteMany access mode",
+        "Shared storage across pods",
+        "Simple setup",
+        "External backup handled by NFS server"
+      ],
+      "performance": {
+        "iops": "Medium (network dependent)",
+        "latency": "Medium to high",
+        "throughput": "Medium (network dependent)"
+      },
+      "use_cases": [
+        "Shared configuration files",
+        "Media storage",
+        "Log aggregation",
+        "Development environments"
+      ],
+      "installation": {
+        "method": "nfs-subdir-external-provisioner Helm chart",
+        "namespace": "kube-system",
+        "configuration": {
+          "nfs_server": "IP or hostname",
+          "nfs_path": "Export path",
+          "storage_class_name": "nfs-client"
+        }
+      },
+      "limitations": [
+        "Not suitable for databases (lock issues)",
+        "Performance depends on network and NFS server",
+        "Single point of failure (NFS server)"
+      ]
+    },
+
+    "local_path": {
+      "description": "Local storage on each node",
+      "type": "Local node storage",
+      "requirements": {
+        "node_storage": "Available disk space on nodes"
+      },
+      "features": [
+        "Fast performance (local disk)",
+        "No network overhead",
+        "Simple setup"
+      ],
+      "performance": {
+        "iops": "Excellent (local SSD)",
+        "latency": "Very low",
+        "throughput": "Very high"
+      },
+      "use_cases": [
+        "Development clusters",
+        "Single-node clusters",
+        "High-performance workloads pinned to nodes"
+      ],
+      "limitations": [
+        "No replication or redundancy",
+        "Data lost if node fails",
+        "Pods tied to specific nodes",
+        "Not suitable for production databases"
+      ],
+      "installation": {
+        "method": "local-path-provisioner (often pre-installed)",
+        "namespace": "kube-system",
+        "storage_class_name": "local-path"
+      }
+    },
+
+    "ceph_rbd": {
+      "description": "Ceph Rados Block Device - enterprise distributed storage",
+      "type": "Distributed block storage",
+      "requirements": {
+        "ceph_cluster": "External Ceph cluster required",
+        "minimum_osds": 3,
+        "network": "Dedicated storage network recommended"
+      },
+      "features": [
+        "Enterprise-grade reliability",
+        "High performance",
+        "Replication and erasure coding",
+        "Snapshots and clones",
+        "Thin provisioning"
+      ],
+      "performance": {
+        "iops": "Excellent (depends on cluster size)",
+        "latency": "Low",
+        "throughput": "Very high"
+      },
+      "use_cases": [
+        "Large-scale production deployments",
+        "High-performance databases",
+        "Enterprise applications",
+        "Multi-cluster storage"
+      ],
+      "installation": {
+        "method": "Rook operator (Helm chart)",
+        "namespace": "rook-ceph",
+        "complexity": "High - requires Ceph expertise"
+      },
+      "considerations": [
+        "Complex setup and management",
+        "Requires dedicated resources",
+        "Best for large deployments (10+ nodes)"
+      ]
+    }
+  },
+
+  "networking_patterns": {
+    "cilium": {
+      "description": "eBPF-based networking and security",
+      "type": "CNI plugin",
+      "features": [
+        "eBPF datapath (high performance)",
+        "Native routing mode",
+        "Network policy enforcement",
+        "Service mesh capabilities",
+        "Hubble observability",
+        "Load balancing",
+        "Encryption (WireGuard or IPsec)"
+      ],
+      "performance": {
+        "throughput": "Excellent (near line-rate)",
+        "latency": "Very low",
+        "cpu_overhead": "Low (kernel bypass)"
+      },
+      "use_cases": [
+        "Production clusters requiring high performance",
+        "Security-focused deployments",
+        "Multi-tenant environments",
+        "Service mesh without Istio overhead"
+      ],
+      "requirements": {
+        "kernel_version": "4.19+ (5.10+ recommended)",
+        "cpu_architecture": "x86_64 or arm64"
+      },
+      "installation": {
+        "method": "Helm chart or Talos embedded",
+        "configuration": {
+          "routing_mode": "native",
+          "enable_hubble": true,
+          "enable_ipv6": false
+        }
+      },
+      "talos_integration": {
+        "native_support": true,
+        "recommended": "Preferred CNI for Talos"
+      }
+    },
+
+    "flannel": {
+      "description": "Simple overlay network for Kubernetes",
+      "type": "CNI plugin",
+      "features": [
+        "Simple setup",
+        "VXLAN or host-gw backend",
+        "Reliable and stable",
+        "Low resource usage"
+      ],
+      "performance": {
+        "throughput": "Good",
+        "latency": "Medium (VXLAN overhead)",
+        "cpu_overhead": "Low"
+      },
+      "use_cases": [
+        "Development clusters",
+        "Simple production deployments",
+        "Edge computing",
+        "Learning Kubernetes"
+      ],
+      "installation": {
+        "method": "Manifest or Talos embedded",
+        "configuration": {
+          "backend": "vxlan",
+          "network": "10.244.0.0/16"
+        }
+      },
+      "limitations": [
+        "No network policy support (requires Calico)",
+        "Less feature-rich than Cilium",
+        "VXLAN overhead in overlay mode"
+      ]
+    },
+
+    "calico": {
+      "description": "Network policy and security-focused CNI",
+      "type": "CNI plugin",
+      "features": [
+        "Network policy enforcement",
+        "BGP routing",
+        "Multiple dataplane options (iptables, eBPF)",
+        "Enterprise security features",
+        "IP address management"
+      ],
+      "performance": {
+        "throughput": "Good to excellent (depends on dataplane)",
+        "latency": "Low to medium",
+        "cpu_overhead": "Medium (iptables) to low (eBPF)"
+      },
+      "use_cases": [
+        "Security-focused deployments",
+        "Multi-tenant clusters",
+        "Hybrid cloud networking",
+        "Compliance requirements"
+      ],
+      "installation": {
+        "method": "Operator or manifest",
+        "namespace": "calico-system",
+        "configuration": {
+          "dataplane": "eBPF recommended",
+          "ipam": "calico-ipam"
+        }
+      }
+    },
+
+    "ingress_controllers": {
+      "nginx_ingress": {
+        "description": "Popular ingress controller for HTTP/HTTPS routing",
+        "features": [
+          "SSL/TLS termination",
+          "Path-based routing",
+          "Host-based routing",
+          "Rate limiting",
+          "Authentication"
+        ],
+        "installation": {
+          "method": "Helm chart",
+          "namespace": "ingress-nginx"
+        },
+        "use_cases": [
+          "General purpose HTTP ingress",
+          "Simple routing requirements"
+        ]
+      },
+
+      "traefik": {
+        "description": "Modern ingress controller with automatic service discovery",
+        "features": [
+          "Automatic certificate management (Let's Encrypt)",
+          "TCP/UDP routing",
+          "Middleware support",
+          "Dynamic configuration",
+          "Web UI dashboard"
+        ],
+        "installation": {
+          "method": "Helm chart",
+          "namespace": "traefik"
+        },
+        "use_cases": [
+          "Microservices architectures",
+          "Automated certificate management",
+          "Complex routing rules"
+        ]
+      }
+    }
+  },
+
+  "upgrade_procedures": {
+    "talos_os_upgrade": {
+      "frequency": "Quarterly or as needed for security",
+      "preparation": [
+        "Review release notes for breaking changes",
+        "Check Kubernetes version compatibility",
+        "Backup etcd cluster",
+        "Test in staging environment"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "action": "Upgrade first control plane node",
+          "command": "talosctl upgrade --nodes <cp-1> --image ghcr.io/siderolabs/installer:v1.8.0",
+          "wait": "Node fully operational"
+        },
+        {
+          "step": 2,
+          "action": "Upgrade remaining control plane nodes one by one",
+          "command": "talosctl upgrade --nodes <cp-2> --image ghcr.io/siderolabs/installer:v1.8.0",
+          "wait": "Each node fully operational"
+        },
+        {
+          "step": 3,
+          "action": "Upgrade worker nodes in batches",
+          "command": "talosctl upgrade --nodes <worker-1,worker-2> --image ghcr.io/siderolabs/installer:v1.8.0",
+          "batch_size": "20% of workers at a time"
+        }
+      ],
+      "validation": [
+        "Check all nodes are Ready",
+        "Verify all pods are running",
+        "Test application endpoints",
+        "Review logs for errors"
+      ],
+      "rollback": "Possible by downgrading to previous version"
+    },
+
+    "kubernetes_version_upgrade": {
+      "frequency": "2-3 times per year",
+      "compatibility": "Must match Talos version support matrix",
+      "preparation": [
+        "Check Kubernetes version skew policy",
+        "Review API deprecations",
+        "Update manifests for deprecated APIs",
+        "Backup etcd and application data"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "action": "Update machine config with new Kubernetes version",
+          "note": "Generate new configs with desired version"
+        },
+        {
+          "step": 2,
+          "action": "Apply updated config to control plane nodes",
+          "command": "talosctl apply-config --nodes <cp-1> --file controlplane.yaml"
+        },
+        {
+          "step": 3,
+          "action": "Wait for control plane to upgrade",
+          "validation": "kubectl version shows new server version"
+        },
+        {
+          "step": 4,
+          "action": "Apply updated config to worker nodes",
+          "command": "talosctl apply-config --nodes <workers> --file worker.yaml"
+        }
+      ],
+      "version_skew": {
+        "kube_apiserver": "N",
+        "kubelet": "N, N-1, or N-2",
+        "note": "Control plane must be upgraded before workers"
+      }
+    },
+
+    "cni_upgrade": {
+      "frequency": "As needed for features or security",
+      "risk": "Medium - can cause network disruption",
+      "preparation": [
+        "Review release notes",
+        "Test in staging environment",
+        "Schedule maintenance window",
+        "Notify users of potential disruption"
+      ],
+      "procedure": [
+        "Update CNI manifests or Helm values",
+        "Apply updates (pods will restart)",
+        "Monitor network connectivity",
+        "Validate pod-to-pod and pod-to-service communication"
+      ],
+      "rollback": "Revert to previous version manifests"
+    }
+  },
+
+  "troubleshooting_knowledge": {
+    "common_issues": [
+      {
+        "issue": "Node not joining cluster",
+        "symptoms": [
+          "Node boots but not visible in kubectl get nodes",
+          "talosctl health shows errors"
+        ],
+        "diagnosis_steps": [
+          "Check node network connectivity",
+          "Verify machine config applied correctly",
+          "Check time synchronization (NTP)",
+          "Review kubelet logs"
+        ],
+        "common_causes": [
+          "Network misconfiguration",
+          "Certificate issues",
+          "Firewall blocking ports",
+          "Time skew"
+        ],
+        "resolution": [
+          "Fix network configuration",
+          "Regenerate certificates if expired",
+          "Open required ports (6443, 10250, etc.)",
+          "Configure NTP"
+        ]
+      },
+      {
+        "issue": "etcd cluster unhealthy",
+        "symptoms": [
+          "API server slow or unresponsive",
+          "etcd alarms active",
+          "Control plane degraded"
+        ],
+        "diagnosis_steps": [
+          "Check etcd service status",
+          "Review etcd member list",
+          "Check disk I/O and space",
+          "Review etcd logs"
+        ],
+        "common_causes": [
+          "Disk I/O saturation",
+          "Network latency between control plane nodes",
+          "Database size too large",
+          "Quorum loss"
+        ],
+        "resolution": [
+          "Increase disk IOPS (use SSD)",
+          "Defragment etcd database",
+          "Compact old revisions",
+          "Restore from backup if quorum lost"
+        ]
+      },
+      {
+        "issue": "Pods not scheduling",
+        "symptoms": [
+          "Pods stuck in Pending state",
+          "Events show insufficient resources or taints"
+        ],
+        "diagnosis_steps": [
+          "kubectl describe pod <pod-name>",
+          "kubectl describe node <node-name>",
+          "Check node taints and labels",
+          "Review pod resource requests"
+        ],
+        "common_causes": [
+          "Insufficient CPU or memory",
+          "Node taints preventing scheduling",
+          "Pod affinity/anti-affinity rules",
+          "Storage provisioning failures"
+        ],
+        "resolution": [
+          "Scale cluster or reduce resource requests",
+          "Remove unnecessary taints",
+          "Adjust affinity rules",
+          "Fix storage class or PVC issues"
+        ]
+      },
+      {
+        "issue": "CNI network failures",
+        "symptoms": [
+          "Pods cannot communicate",
+          "DNS resolution failures",
+          "Service endpoints unreachable"
+        ],
+        "diagnosis_steps": [
+          "Check CNI pods status",
+          "Test pod-to-pod connectivity",
+          "Review node network interfaces",
+          "Check network policies"
+        ],
+        "common_causes": [
+          "CNI plugin not running",
+          "Pod CIDR misconfiguration",
+          "Network policies blocking traffic",
+          "MTU mismatch"
+        ],
+        "resolution": [
+          "Restart CNI daemon pods",
+          "Verify machine config network settings",
+          "Review and adjust network policies",
+          "Configure correct MTU"
+        ]
+      }
+    ],
+
+    "diagnostic_commands": {
+      "node_health": [
+        "talosctl --nodes <ip> health",
+        "talosctl --nodes <ip> get services",
+        "talosctl --nodes <ip> get addresses",
+        "kubectl get nodes -o wide"
+      ],
+      "pod_troubleshooting": [
+        "kubectl describe pod <pod-name>",
+        "kubectl logs <pod-name>",
+        "kubectl get events --sort-by=.metadata.creationTimestamp",
+        "kubectl exec -it <pod-name> -- sh"
+      ],
+      "network_debugging": [
+        "kubectl get pods -n kube-system | grep <cni>",
+        "kubectl run test-pod --image=busybox --command -- sleep 3600",
+        "kubectl exec -it test-pod -- ping <target-ip>",
+        "kubectl exec -it test-pod -- nslookup kubernetes.default"
+      ],
+      "etcd_health": [
+        "talosctl --nodes <cp-ip> service etcd status",
+        "talosctl --nodes <cp-ip> etcd members",
+        "talosctl --nodes <cp-ip> etcd alarm list",
+        "talosctl --nodes <cp-ip> etcd alarm disarm"
+      ],
+      "storage_issues": [
+        "kubectl get pv",
+        "kubectl get pvc",
+        "kubectl describe pvc <pvc-name>",
+        "kubectl get storageclass"
+      ]
+    }
+  },
+
+  "integration_patterns": {
+    "with_infrastructure_contractor": {
+      "vm_provisioning_handoff": {
+        "direction": "infrastructure -> talos",
+        "trigger": "VMs provisioned and ready",
+        "data_required": [
+          "Node IP addresses",
+          "Node hostnames",
+          "Network configuration (gateway, DNS)",
+          "VM resource specifications"
+        ],
+        "next_actions": [
+          "Generate Talos machine configs",
+          "Apply configs to nodes",
+          "Bootstrap cluster"
+        ]
+      },
+
+      "cluster_ready_handoff": {
+        "direction": "talos -> infrastructure",
+        "trigger": "Cluster bootstrapped and healthy",
+        "data_provided": [
+          "Kubeconfig file",
+          "API endpoint",
+          "Cluster status",
+          "Monitoring endpoints"
+        ],
+        "next_actions": [
+          "Setup external monitoring",
+          "Configure backups",
+          "Update inventory"
+        ]
+      },
+
+      "scaling_coordination": {
+        "trigger": "Resource pressure detected",
+        "workflow": [
+          "talos-contractor identifies need for scaling",
+          "Request VMs from infrastructure-contractor",
+          "infrastructure-contractor provisions VMs",
+          "talos-contractor joins nodes to cluster",
+          "Both contractors update state"
+        ]
+      },
+
+      "node_failure_recovery": {
+        "trigger": "Node failure detected",
+        "workflow": [
+          "infrastructure-contractor attempts VM recovery",
+          "If unrecoverable, notify talos-contractor",
+          "talos-contractor removes node from cluster",
+          "Request replacement VM",
+          "Join replacement to cluster"
+        ]
+      }
+    }
+  },
+
+  "best_practices": {
+    "cluster_design": [
+      "Use odd number of control plane nodes for etcd quorum",
+      "Separate control plane and worker nodes in production",
+      "Deploy control plane across availability zones",
+      "Use SSD storage for etcd",
+      "Plan for 20-30% resource headroom"
+    ],
+
+    "security": [
+      "Enable audit logging",
+      "Implement network policies",
+      "Use pod security standards",
+      "Rotate certificates regularly",
+      "Limit API server access with RBAC",
+      "Use private container registries"
+    ],
+
+    "operations": [
+      "Store machine configs in version control",
+      "Automate etcd backups (daily minimum)",
+      "Test disaster recovery procedures quarterly",
+      "Monitor cluster health continuously",
+      "Document cluster architecture and runbooks",
+      "Implement GitOps for application deployment"
+    ],
+
+    "performance": [
+      "Set resource requests and limits on all pods",
+      "Use horizontal pod autoscaling for variable load",
+      "Implement cluster autoscaling for dynamic workloads",
+      "Monitor and optimize etcd performance",
+      "Use node affinity to optimize workload placement"
+    ],
+
+    "cost_optimization": [
+      "Right-size node resources based on actual usage",
+      "Use spot instances for non-critical workloads",
+      "Implement pod disruption budgets",
+      "Schedule batch jobs during off-peak hours",
+      "Decommission unused clusters and namespaces"
+    ]
+  },
+
+  "resource_requirements": {
+    "minimum_cluster": {
+      "control_plane": {
+        "cpu": "2 cores",
+        "memory": "4 GB",
+        "storage": "50 GB"
+      },
+      "worker": {
+        "cpu": "2 cores",
+        "memory": "4 GB",
+        "storage": "50 GB"
+      }
+    },
+
+    "recommended_production": {
+      "control_plane": {
+        "cpu": "4 cores",
+        "memory": "8 GB",
+        "storage": "100 GB SSD"
+      },
+      "worker": {
+        "cpu": "8 cores",
+        "memory": "16 GB",
+        "storage": "200 GB SSD"
+      }
+    },
+
+    "network_requirements": {
+      "bandwidth": "1 Gbps minimum, 10 Gbps recommended for production",
+      "latency": "< 10ms between nodes in same cluster",
+      "required_ports": {
+        "6443": "Kubernetes API server",
+        "10250": "kubelet API",
+        "10256": "kube-proxy health",
+        "2379-2380": "etcd client and peer",
+        "50000": "Talos API"
+      }
+    }
+  },
+
+  "version_compatibility": {
+    "talos_kubernetes_matrix": {
+      "talos_1.8": ["1.31", "1.30", "1.29"],
+      "talos_1.7": ["1.30", "1.29", "1.28"],
+      "talos_1.6": ["1.29", "1.28", "1.27"]
+    },
+
+    "cni_versions": {
+      "cilium": "1.16+ recommended",
+      "flannel": "0.25+ recommended",
+      "calico": "3.28+ recommended"
+    }
+  }
+}

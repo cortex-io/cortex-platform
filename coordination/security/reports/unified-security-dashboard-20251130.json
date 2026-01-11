@@ -1,0 +1,186 @@
+{
+  "report_id": "unified-security-dashboard-20251130",
+  "generated_at": "2025-11-30T15:37:00-06:00",
+  "scan_type": "multi-repository_parallel_cve_scan",
+  "phase": "Phase 2 - Parallel Multi-Repo Scanning",
+  "executive_summary": {
+    "total_repositories_scanned": 3,
+    "total_vulnerabilities": 2,
+    "critical_vulnerabilities": 0,
+    "high_vulnerabilities": 0,
+    "medium_vulnerabilities": 2,
+    "low_vulnerabilities": 0,
+    "overall_security_posture": "GOOD",
+    "risk_level": "LOW",
+    "action_required": "Minor - Update vite in DriveIQ frontend"
+  },
+  "portfolio_metrics": {
+    "total_components_scanned": 2182,
+    "total_npm_packages": 787,
+    "total_python_packages": 316,
+    "total_dependencies": 1349,
+    "vulnerability_density": 0.0015,
+    "avg_dependency_health_score": 99.8
+  },
+  "repository_details": [
+    {
+      "repo_id": "cortex-main",
+      "name": "cortex",
+      "path": "/Users/ryandahlberg/Projects/cortex",
+      "priority": "critical",
+      "scan_status": "completed",
+      "security_posture": "EXCELLENT",
+      "total_components": 1334,
+      "total_dependencies": 457,
+      "vulnerabilities": {
+        "total": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "sbom_file": "coordination/security/scans/cortex-sbom-20251130.json",
+      "audit_files": [
+        "coordination/security/scans/cortex-npm-audit-20251130.json",
+        "coordination/security/scans/cortex-python-audit-20251130.json"
+      ],
+      "health_score": 100,
+      "notes": "Zero vulnerabilities detected - excellent dependency management"
+    },
+    {
+      "repo_id": "blog-001",
+      "name": "blog",
+      "path": "/Users/ryandahlberg/Projects/blog",
+      "priority": "high",
+      "scan_status": "completed",
+      "security_posture": "EXCELLENT",
+      "total_components": 424,
+      "total_dependencies": 438,
+      "vulnerabilities": {
+        "total": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "sbom_file": "coordination/security/scans/blog-sbom-20251130.json",
+      "audit_files": [
+        "coordination/security/scans/blog-npm-audit-20251130.json"
+      ],
+      "health_score": 100,
+      "notes": "Clean scan - 438 dependencies all vulnerability-free"
+    },
+    {
+      "repo_id": "driveiq-001",
+      "name": "DriveIQ",
+      "path": "/Users/ryandahlberg/Projects/DriveIQ",
+      "priority": "high",
+      "scan_status": "completed",
+      "security_posture": "GOOD",
+      "total_components": 424,
+      "total_dependencies": 454,
+      "vulnerabilities": {
+        "total": 2,
+        "critical": 0,
+        "high": 0,
+        "medium": 2,
+        "low": 0
+      },
+      "sbom_file": "coordination/security/scans/driveiq-frontend-sbom-20251130.json",
+      "audit_files": [
+        "coordination/security/scans/driveiq-frontend-npm-audit-20251130.json"
+      ],
+      "health_score": 99.6,
+      "notes": "2 moderate vulnerabilities in frontend dev dependencies - fixable via vite upgrade"
+    }
+  ],
+  "vulnerability_findings": [
+    {
+      "finding_id": "vuln-driveiq-001",
+      "repository": "DriveIQ",
+      "package": "esbuild",
+      "current_version": "<=0.24.2",
+      "severity": "moderate",
+      "cvss_score": 5.3,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N",
+      "cwe": ["CWE-346"],
+      "title": "esbuild enables any website to send any requests to the development server and read the response",
+      "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+      "fix_available": true,
+      "fix_action": "Upgrade vite to 7.2.4",
+      "fix_complexity": "major_version_upgrade",
+      "impact": "Development server only - not production",
+      "priority": "LOW",
+      "sla_days": 30,
+      "due_date": "2025-12-30"
+    },
+    {
+      "finding_id": "vuln-driveiq-002",
+      "repository": "DriveIQ",
+      "package": "vite",
+      "current_version": "<7.2.4",
+      "severity": "moderate",
+      "fix_available": true,
+      "fix_action": "Upgrade vite to 7.2.4",
+      "fix_complexity": "major_version_upgrade",
+      "impact": "Related to esbuild vulnerability",
+      "priority": "LOW",
+      "sla_days": 30,
+      "due_date": "2025-12-30"
+    }
+  ],
+  "remediation_plan": {
+    "immediate_actions": [],
+    "short_term_actions": [
+      {
+        "action": "Upgrade vite to 7.2.4 in DriveIQ frontend",
+        "repository": "DriveIQ",
+        "priority": "low",
+        "estimated_effort": "1 hour",
+        "risk": "Breaking changes (major version upgrade) - requires testing",
+        "command": "cd /Users/ryandahlberg/Projects/DriveIQ/frontend && npm install vite@7.2.4"
+      }
+    ],
+    "long_term_actions": [
+      {
+        "action": "Set up automated dependency updates with Dependabot",
+        "priority": "medium",
+        "estimated_effort": "2 hours"
+      },
+      {
+        "action": "Deploy Dependency-Track for continuous monitoring",
+        "priority": "medium",
+        "estimated_effort": "4 hours"
+      },
+      {
+        "action": "Integrate CVE scanning into GitHub Actions CI/CD",
+        "priority": "high",
+        "estimated_effort": "3 hours"
+      }
+    ]
+  },
+  "scan_performance": {
+    "total_scan_duration_seconds": 240,
+    "repos_scanned_in_parallel": 3,
+    "average_scan_time_per_repo": 80,
+    "parallelism_speedup": "3x",
+    "total_sbom_size_mb": 2.7
+  },
+  "compliance_status": {
+    "sbom_coverage": "100%",
+    "cve_scanning_coverage": "100%",
+    "critical_vulnerabilities_patched": "N/A - None found",
+    "sla_compliance": "100%"
+  },
+  "next_scan_scheduled": "2025-12-01T02:00:00-06:00",
+  "scan_artifacts": [
+    "coordination/security/scans/cortex-npm-audit-20251130.json",
+    "coordination/security/scans/cortex-python-audit-20251130.json",
+    "coordination/security/scans/cortex-sbom-20251130.json",
+    "coordination/security/scans/blog-npm-audit-20251130.json",
+    "coordination/security/scans/blog-sbom-20251130.json",
+    "coordination/security/scans/driveiq-frontend-npm-audit-20251130.json",
+    "coordination/security/scans/driveiq-frontend-sbom-20251130.json",
+    "coordination/security/scans/driveiq-backend-sbom-20251130.json"
+  ]
+}

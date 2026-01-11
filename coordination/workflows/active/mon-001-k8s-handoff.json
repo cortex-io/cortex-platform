@@ -1,0 +1,395 @@
+{
+  "handoff_id": "mon-001-k8s-to-n8n",
+  "workflow_id": "mon-001",
+  "phase": "2-to-3",
+  "from_contractor": "talos-contractor",
+  "to_contractor": "n8n-contractor",
+  "task_id": "mon-001-k8s",
+  "next_task_id": "mon-001-n8n",
+  "created_at": "2025-12-10T05:22:00Z",
+  "status": "ready_for_pickup",
+
+  "summary": {
+    "phase_completed": "Phase 2: Kubernetes Deployment",
+    "deliverables": [
+      "Monitoring namespace manifest",
+      "kube-prometheus-stack Helm values",
+      "Ingress configuration for Prometheus, Grafana, Alertmanager",
+      "Storage class configuration",
+      "Deployment script with verification"
+    ],
+    "deployment_status": "manifests_ready",
+    "cluster_accessible": false,
+    "notes": "Cluster is not currently accessible (kubeconfig empty). Manifests are ready for deployment once cluster is configured."
+  },
+
+  "monitoring_endpoints": {
+    "prometheus": {
+      "internal_url": "http://prometheus-prometheus.monitoring.svc.cluster.local:9090",
+      "external_url": "http://prometheus.cortex.local",
+      "port_forward": "kubectl port-forward -n monitoring svc/prometheus-prometheus 9090:9090",
+      "metrics_endpoint": "http://prometheus-prometheus.monitoring.svc.cluster.local:9090/metrics",
+      "query_endpoint": "http://prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/query",
+      "service_name": "prometheus-prometheus",
+      "namespace": "monitoring",
+      "port": 9090
+    },
+    "grafana": {
+      "internal_url": "http://prometheus-grafana.monitoring.svc.cluster.local:80",
+      "external_url": "http://grafana.cortex.local",
+      "port_forward": "kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80",
+      "api_endpoint": "http://prometheus-grafana.monitoring.svc.cluster.local:80/api",
+      "service_name": "prometheus-grafana",
+      "namespace": "monitoring",
+      "port": 80,
+      "credentials": {
+        "username": "admin",
+        "password": "cortex-admin-changeme",
+        "secret_name": "prometheus-grafana",
+        "secret_key": "admin-password"
+      }
+    },
+    "alertmanager": {
+      "internal_url": "http://prometheus-alertmanager.monitoring.svc.cluster.local:9093",
+      "external_url": "http://alertmanager.cortex.local",
+      "port_forward": "kubectl port-forward -n monitoring svc/prometheus-alertmanager 9093:9093",
+      "api_endpoint": "http://prometheus-alertmanager.monitoring.svc.cluster.local:9093/api/v2",
+      "webhook_receiver_name": "n8n-webhook",
+      "service_name": "prometheus-alertmanager",
+      "namespace": "monitoring",
+      "port": 9093
+    }
+  },
+
+  "webhook_configuration": {
+    "n8n_webhook_url": "http://n8n.cortex.svc.cluster.local:5678/webhook/alertmanager",
+    "webhook_path": "/webhook/alertmanager",
+    "webhook_method": "POST",
+    "expected_payload_format": "alertmanager_v2",
+    "send_resolved": true,
+    "alert_groups": [
+      "alertname",
+      "cluster",
+      "service"
+    ],
+    "severity_levels": [
+      "critical",
+      "warning"
+    ],
+    "notes": "Webhook is configured in prometheus-values.yaml under alertmanager.config.receivers"
+  },
+
+  "alert_rules": {
+    "cortex_custom_alerts": [
+      {
+        "name": "CortexWorkflowFailed",
+        "expr": "n8n_workflow_failed_total > 0",
+        "severity": "warning",
+        "description": "Triggers when N8N workflow fails"
+      },
+      {
+        "name": "CortexHighMemoryUsage",
+        "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.85",
+        "severity": "warning",
+        "description": "Memory usage above 85%"
+      },
+      {
+        "name": "CortexHighCPUUsage",
+        "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100) > 80",
+        "severity": "warning",
+        "description": "CPU usage above 80%"
+      },
+      {
+        "name": "CortexPodCrashLooping",
+        "expr": "rate(kube_pod_container_status_restarts_total[15m]) > 0",
+        "severity": "critical",
+        "description": "Pod is crash looping"
+      }
+    ],
+    "default_k8s_alerts": [
+      "node",
+      "kubelet",
+      "kubernetes-apps",
+      "kubernetes-resources",
+      "kubernetes-system",
+      "kubernetes-storage"
+    ]
+  },
+
+  "storage_configuration": {
+    "storage_class": "monitoring-local-storage",
+    "prometheus_storage": {
+      "size": "50Gi",
+      "retention": "30d",
+      "retention_size": "50GB",
+      "pv_name": "prometheus-data-pv",
+      "path": "/var/lib/prometheus"
+    },
+    "grafana_storage": {
+      "size": "10Gi",
+      "pv_name": "grafana-data-pv",
+      "path": "/var/lib/grafana"
+    },
+    "alertmanager_storage": {
+      "size": "10Gi",
+      "retention": "120h",
+      "pv_name": "alertmanager-data-pv",
+      "path": "/var/lib/alertmanager"
+    },
+    "notes": "Storage class uses local provisioner. Update node names in storage-class.yaml before applying."
+  },
+
+  "deployment_files": {
+    "base_path": "/Users/ryandahlberg/Projects/cortex/deploy/monitoring",
+    "manifests": [
+      {
+        "file": "namespace.yaml",
+        "description": "Monitoring namespace definition",
+        "status": "created"
+      },
+      {
+        "file": "prometheus-values.yaml",
+        "description": "Helm values for kube-prometheus-stack",
+        "status": "created",
+        "notes": "Includes Prometheus, Grafana, Alertmanager configuration"
+      },
+      {
+        "file": "ingress.yaml",
+        "description": "Ingress resources for external access",
+        "status": "created",
+        "notes": "Requires NGINX Ingress Controller"
+      },
+      {
+        "file": "storage-class.yaml",
+        "description": "Storage class and PV definitions",
+        "status": "created",
+        "notes": "REQUIRES UPDATE: Change node names before applying"
+      },
+      {
+        "file": "deploy-monitoring.sh",
+        "description": "Deployment script with verification",
+        "status": "created",
+        "executable": true
+      }
+    ]
+  },
+
+  "deployment_commands": {
+    "prerequisites": [
+      "kubectl cluster-info",
+      "helm version",
+      "Update node names in storage-class.yaml"
+    ],
+    "deployment_steps": [
+      "cd /Users/ryandahlberg/Projects/cortex/deploy/monitoring",
+      "./deploy-monitoring.sh deploy"
+    ],
+    "alternative_commands": [
+      "./deploy-monitoring.sh verify - Check deployment status",
+      "./deploy-monitoring.sh info - Show access information",
+      "./deploy-monitoring.sh rollback - Rollback deployment",
+      "./deploy-monitoring.sh uninstall - Remove monitoring stack"
+    ],
+    "manual_deployment": [
+      "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts",
+      "helm repo update",
+      "kubectl apply -f namespace.yaml",
+      "kubectl apply -f storage-class.yaml",
+      "helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring -f prometheus-values.yaml --version 56.0.0",
+      "kubectl apply -f ingress.yaml"
+    ]
+  },
+
+  "verification_steps": {
+    "check_pods": "kubectl get pods -n monitoring",
+    "check_services": "kubectl get svc -n monitoring",
+    "check_ingress": "kubectl get ingress -n monitoring",
+    "check_pvc": "kubectl get pvc -n monitoring",
+    "check_prometheus": "kubectl port-forward -n monitoring svc/prometheus-prometheus 9090:9090",
+    "check_grafana": "kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80",
+    "check_alertmanager": "kubectl port-forward -n monitoring svc/prometheus-alertmanager 9093:9093"
+  },
+
+  "n8n_integration_tasks": {
+    "phase_3_tasks": [
+      {
+        "task": "Create n8n webhook workflow for alertmanager",
+        "webhook_url": "/webhook/alertmanager",
+        "method": "POST",
+        "authentication": "none",
+        "expected_payload": "alertmanager_v2_format"
+      },
+      {
+        "task": "Configure alert routing logic",
+        "routes": [
+          "critical alerts -> immediate notification",
+          "warning alerts -> aggregated notification",
+          "info alerts -> log only"
+        ]
+      },
+      {
+        "task": "Set up notification channels",
+        "channels": [
+          "email",
+          "slack",
+          "discord",
+          "webhook (custom)"
+        ]
+      },
+      {
+        "task": "Create Grafana datasource in n8n",
+        "datasource_url": "http://prometheus-prometheus.monitoring.svc.cluster.local:9090",
+        "type": "prometheus"
+      },
+      {
+        "task": "Test alert flow end-to-end",
+        "test_steps": [
+          "Trigger test alert in Prometheus",
+          "Verify webhook receives alert",
+          "Verify notification sent",
+          "Verify alert resolution"
+        ]
+      }
+    ],
+    "required_n8n_nodes": [
+      "Webhook (trigger)",
+      "Switch (route by severity)",
+      "HTTP Request (Prometheus queries)",
+      "Email/Slack/Discord (notifications)",
+      "Function (transform alert data)"
+    ]
+  },
+
+  "dns_configuration": {
+    "required_hostnames": [
+      "prometheus.cortex.local",
+      "grafana.cortex.local",
+      "alertmanager.cortex.local"
+    ],
+    "internal_dns": [
+      "prometheus-prometheus.monitoring.svc.cluster.local",
+      "prometheus-grafana.monitoring.svc.cluster.local",
+      "prometheus-alertmanager.monitoring.svc.cluster.local"
+    ],
+    "setup_instructions": {
+      "local_testing": "Add entries to /etc/hosts pointing to cluster IP",
+      "production": "Configure DNS A records or use external-dns"
+    }
+  },
+
+  "security_considerations": {
+    "grafana_password": {
+      "current": "cortex-admin-changeme",
+      "action_required": "CHANGE BEFORE PRODUCTION USE",
+      "update_command": "kubectl -n monitoring create secret generic grafana-admin-password --from-literal=admin-password=<new-password>"
+    },
+    "tls_certificates": {
+      "issuer": "letsencrypt-prod",
+      "status": "configured in ingress annotations",
+      "requires": "cert-manager installed in cluster"
+    },
+    "network_policies": {
+      "status": "not_configured",
+      "recommendation": "Add network policies to restrict access"
+    }
+  },
+
+  "monitoring_metrics": {
+    "prometheus_metrics": [
+      "node_exporter metrics (system)",
+      "kube_state_metrics (kubernetes)",
+      "prometheus metrics (self-monitoring)",
+      "custom cortex metrics (n8n workflows)"
+    ],
+    "scrape_interval": "30s",
+    "evaluation_interval": "30s"
+  },
+
+  "next_phase_requirements": {
+    "phase_3": "N8N Workflow Integration",
+    "contractor": "n8n-contractor",
+    "dependencies": [
+      "Monitoring stack deployed and accessible",
+      "Webhook endpoint available in n8n",
+      "Network connectivity between alertmanager and n8n"
+    ],
+    "deliverables_expected": [
+      "Alertmanager webhook workflow in n8n",
+      "Alert routing logic",
+      "Notification channel configuration",
+      "Test alert verification",
+      "Documentation for alert handling"
+    ]
+  },
+
+  "blockers": {
+    "critical": [
+      {
+        "issue": "Kubernetes cluster not accessible",
+        "details": "kubeconfig is empty, kubectl cannot connect",
+        "resolution": "Configure Talos cluster and update kubeconfig",
+        "blocks_deployment": true
+      }
+    ],
+    "non_critical": [
+      {
+        "issue": "Storage class node names need update",
+        "details": "storage-class.yaml has placeholder node names",
+        "resolution": "Update to actual Talos node names after cluster is available",
+        "blocks_deployment": false
+      }
+    ]
+  },
+
+  "success_criteria": {
+    "phase_2_complete": [
+      "All manifests created",
+      "Deployment script ready",
+      "Handoff documentation complete"
+    ],
+    "deployment_success_criteria": [
+      "All pods in monitoring namespace running",
+      "Prometheus scraping targets successfully",
+      "Grafana accessible and Prometheus datasource working",
+      "Alertmanager receiving and routing alerts",
+      "Ingress resources created and accessible"
+    ]
+  },
+
+  "additional_notes": {
+    "helm_chart_version": "56.0.0",
+    "tested_on": "Not yet deployed - cluster not accessible",
+    "estimated_resource_usage": {
+      "prometheus": "CPU: 500m-2000m, Memory: 2-4Gi, Storage: 50Gi",
+      "grafana": "CPU: 100m-500m, Memory: 256-512Mi, Storage: 10Gi",
+      "alertmanager": "CPU: 100m-500m, Memory: 200-500Mi, Storage: 10Gi",
+      "operators": "CPU: 100m-200m, Memory: 100-200Mi"
+    },
+    "scaling_notes": "Single replica configuration for initial deployment. Can scale Prometheus and Alertmanager later.",
+    "backup_recommendations": "Configure velero or similar for PVC backups"
+  },
+
+  "handoff_checklist": {
+    "talos_contractor_complete": [
+      "✓ Created namespace.yaml",
+      "✓ Created prometheus-values.yaml with full configuration",
+      "✓ Created ingress.yaml for external access",
+      "✓ Created storage-class.yaml for persistent storage",
+      "✓ Created deploy-monitoring.sh with verification",
+      "✓ Documented all endpoints and webhooks",
+      "✓ Configured alertmanager webhook for n8n",
+      "✓ Defined custom Cortex alert rules",
+      "✓ Created comprehensive handoff document"
+    ],
+    "n8n_contractor_todo": [
+      "☐ Create webhook endpoint /webhook/alertmanager",
+      "☐ Implement alert routing logic by severity",
+      "☐ Configure notification channels",
+      "☐ Test webhook receives alerts correctly",
+      "☐ Create Prometheus datasource in n8n",
+      "☐ Build alert aggregation workflow",
+      "☐ Set up alert resolution tracking",
+      "☐ Document alert handling procedures"
+    ]
+  }
+}

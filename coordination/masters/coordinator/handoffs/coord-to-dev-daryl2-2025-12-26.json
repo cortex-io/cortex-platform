@@ -1,0 +1,56 @@
+{
+  "handoff_id": "coord-to-dev-daryl2-2025-12-26T150705Z",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "daryl-2-dashy-config",
+  "priority": "medium",
+  "task_data": {
+    "title": "Update Dashy Configuration",
+    "type": "development",
+    "description": "Add monitoring dashboard links to Dashy",
+    "complexity": 5,
+    "requirements": [
+      "Find Dashy ConfigMap in dashboard namespace",
+      "Add monitoring section with dashboard links",
+      "Include links for: Cloudflare Dashboard, k3s Dashboard, Sandfly Dashboard, Prometheus",
+      "Include appropriate icons and descriptions",
+      "Restart Dashy pod to apply changes",
+      "Verify links work in Dashy UI"
+    ],
+    "context": {
+      "dashy_pod": "dashy-775c979484-nqgjd in dashboard namespace",
+      "monitoring_services": {
+        "grafana": "http://10.88.145.202",
+        "prometheus": "http://10.88.145.201:9090"
+      },
+      "new_dashboards": [
+        "Cloudflare Dashboard (existing)",
+        "k3s Dashboard (from daryl-1)",
+        "Sandfly Dashboard (from daryl-1)"
+      ],
+      "namespace": "dashboard"
+    },
+    "deliverables": [
+      "Updated Dashy ConfigMap with monitoring section",
+      "Restarted Dashy pod with new configuration",
+      "Verified dashboard links work",
+      "Documentation of Dashy configuration changes"
+    ],
+    "test_criteria": [
+      "Monitoring section appears in Dashy",
+      "All dashboard links navigate correctly",
+      "Icons display properly",
+      "Descriptions are accurate"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development pattern match (update, configure)",
+    "routing_confidence": 0.90,
+    "priority": "medium",
+    "expected_outcome": "Dashy updated with all monitoring dashboard links",
+    "blocking_for": [],
+    "dependencies": ["daryl-1-grafana-dashboards", "daryl-4-monitoring-access"]
+  },
+  "created_at": "2025-12-26T15:07:05Z",
+  "status": "pending_pickup"
+}

@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'dependency-track'
+    environment: 'cortex-security'
+
+scrape_configs:
+  - job_name: 'dependency-track'
+    metrics_path: '/metrics'
+    basic_auth:
+      username: 'metrics'
+      password: 'metrics123'
+    static_configs:
+      - targets: ['dependency-track-apiserver:8080']
+        labels:
+          service: 'dtrack-api'
+          component: 'vulnerability-management'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+        labels:
+          service: 'postgres'
+          component: 'database'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          component: 'monitoring'
+
+# Alerting rules (optional)
+rule_files:
+  # - "alerts.yml"

@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-27T00:00:00Z",
+  "agents": {
+    "development-master": {
+      "description": "Handles feature development, bug fixes, code refactoring, and technical improvements",
+      "capabilities": [
+        "development",
+        "implementation",
+        "refactoring",
+        "bug fixes",
+        "feature development",
+        "code improvements"
+      ],
+      "domains": ["infrastructure", "development"],
+      "status": "active",
+      "added_at": "2025-11-27T00:00:00Z"
+    },
+    "security-master": {
+      "description": "Handles security vulnerabilities, CVE remediation, security audits, and compliance monitoring",
+      "capabilities": [
+        "security",
+        "vulnerabilities",
+        "CVE",
+        "audits",
+        "compliance",
+        "vulnerability scanning",
+        "security fixes"
+      ],
+      "domains": ["security"],
+      "status": "active",
+      "added_at": "2025-11-27T00:00:00Z"
+    },
+    "inventory-master": {
+      "description": "Handles documentation, cataloging, repository metadata, and dependency tracking",
+      "capabilities": [
+        "documentation",
+        "cataloging",
+        "inventory",
+        "metadata",
+        "dependency tracking",
+        "repository documentation"
+      ],
+      "domains": ["inventory"],
+      "status": "active",
+      "added_at": "2025-11-27T00:00:00Z"
+    },
+    "cicd-master": {
+      "description": "Handles builds, tests, deployments, CI/CD pipelines, and release management",
+      "capabilities": [
+        "build",
+        "test",
+        "deploy",
+        "CI/CD",
+        "release",
+        "pipeline management",
+        "automated testing"
+      ],
+      "domains": ["cicd"],
+      "status": "active",
+      "added_at": "2025-11-27T00:00:00Z"
+    },
+    "resource-manager": {
+      "description": "Handles MCP server lifecycle, worker management, and resource allocation across the cortex system",
+      "capabilities": [
+        "mcp server lifecycle",
+        "mcp start",
+        "mcp stop",
+        "mcp scale",
+        "worker provisioning",
+        "worker management",
+        "worker drain",
+        "worker destroy",
+        "resource allocation",
+        "capacity planning",
+        "resource optimization"
+      ],
+      "domains": ["infrastructure", "resources"],
+      "status": "active",
+      "added_at": "2025-12-09T00:00:00Z"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "event_id": "evt_20251201_093829_6ea2dfaac986",
+  "event_type": "security.scan_completed",
+  "timestamp": "2025-12-01T15:38:29+0000",
+  "source": "security-scanner",
+  "correlation_id": "deploy-scan-001",
+  "metadata": {
+    "priority": "low"
+  },
+  "payload": {
+    "scan_id": "deploy-scan-001",
+    "severity": "low",
+    "finding_count": 2
+  }
+}

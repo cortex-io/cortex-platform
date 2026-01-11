@@ -1,0 +1,622 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T00:00:00Z",
+  "description": "Guidelines for non-union (flexible, fast-path) workers - optimized for development velocity",
+
+  "philosophy": {
+    "principle": "Move fast, break things (safely)",
+    "focus": "Development velocity and experimentation",
+    "safety_model": "Fail-safe through environment isolation, not heavy process",
+    "default_stance": "Auto-approve unless risky"
+  },
+
+  "allowed_patterns": {
+    "description": "Task patterns that are safe for non-union workers",
+
+    "development_operations": [
+      "local_development",
+      "feature_development",
+      "bug_investigation",
+      "code_exploration",
+      "proof_of_concept",
+      "prototype_building",
+      "refactoring_non_critical",
+      "documentation_updates",
+      "test_writing",
+      "code_review",
+      "static_analysis",
+      "dependency_updates_dev"
+    ],
+
+    "testing_operations": [
+      "unit_testing",
+      "integration_testing",
+      "performance_testing",
+      "load_testing",
+      "test_data_generation",
+      "test_environment_setup",
+      "ci_pipeline_testing",
+      "qa_validation"
+    ],
+
+    "safe_reads": [
+      "code_reading",
+      "log_analysis",
+      "metrics_querying",
+      "documentation_reading",
+      "api_exploration",
+      "database_schema_inspection",
+      "configuration_reading"
+    ],
+
+    "internal_tools": [
+      "cli_tools",
+      "development_scripts",
+      "build_tools",
+      "linting",
+      "formatting",
+      "code_generation",
+      "scaffolding"
+    ],
+
+    "non_critical_writes": [
+      "markdown_files",
+      "configuration_files_dev",
+      "test_fixtures",
+      "mock_data",
+      "development_seeds",
+      "example_code",
+      "comments_and_todos"
+    ]
+  },
+
+  "environment_indicators": {
+    "description": "Patterns that indicate safe non-production environments",
+
+    "environment_variables": [
+      "NODE_ENV=development",
+      "NODE_ENV=test",
+      "RAILS_ENV=development",
+      "RAILS_ENV=test",
+      "ENV=dev",
+      "ENV=test",
+      "ENV=local",
+      "ENVIRONMENT=development",
+      "ENVIRONMENT=test"
+    ],
+
+    "hostname_patterns": [
+      "localhost",
+      "127.0.0.1",
+      "*.local",
+      "*.dev",
+      "*.test",
+      "*-dev-*",
+      "*-test-*",
+      "dev-*",
+      "test-*"
+    ],
+
+    "domain_patterns": [
+      "*.localhost",
+      "*.local",
+      "*.dev",
+      "*.test",
+      "*.internal",
+      "*.staging"
+    ],
+
+    "infrastructure_markers": {
+      "kubernetes_namespace": ["development", "dev", "test", "qa", "local"],
+      "aws_tags": ["Environment:development", "Environment:test", "Env:dev"],
+      "branch_names": ["feature/*", "bugfix/*", "dev", "develop", "test", "experiment/*"]
+    },
+
+    "file_path_indicators": [
+      "/tmp/",
+      "/var/tmp/",
+      "~/dev/",
+      "~/projects/",
+      "/Users/*/",
+      "/home/*/",
+      "*/.local/",
+      "*/test/",
+      "*/spec/",
+      "*/tests/"
+    ]
+  },
+
+  "auto_approval_rules": {
+    "description": "Conditions where tasks are automatically approved without manual review",
+
+    "instant_approval": {
+      "conditions": {
+        "environment": ["local", "development"],
+        "risk_level": ["very_low", "low"],
+        "data_sensitivity": ["none", "public"],
+        "reversibility": ["fully_reversible"],
+        "impact_scope": ["single_file", "single_component"],
+        "resource_usage": {
+          "max_tokens": 5000,
+          "max_time_minutes": 30,
+          "max_api_calls": 100
+        }
+      },
+      "operations": [
+        "read_only",
+        "local_file_write",
+        "test_execution",
+        "linting",
+        "formatting",
+        "documentation_update"
+      ],
+      "audit_level": "minimal",
+      "approval_time_seconds": 0
+    },
+
+    "fast_approval": {
+      "conditions": {
+        "environment": ["development", "test"],
+        "risk_level": ["low", "medium"],
+        "data_sensitivity": ["none", "public", "internal_dev"],
+        "reversibility": ["automated_rollback", "fully_reversible"],
+        "impact_scope": ["service_component", "single_service"],
+        "resource_usage": {
+          "max_tokens": 15000,
+          "max_time_minutes": 60,
+          "max_api_calls": 500
+        }
+      },
+      "operations": [
+        "feature_implementation",
+        "bug_fix",
+        "refactoring",
+        "test_writing",
+        "dependency_update",
+        "configuration_change_dev"
+      ],
+      "audit_level": "basic",
+      "approval_time_seconds": 5,
+      "auto_rollback_on_error": true
+    }
+  },
+
+  "resource_limits": {
+    "description": "Resource constraints for non-union workers (lighter than union)",
+
+    "default_limits": {
+      "token_allocation": 10000,
+      "time_limit_minutes": 45,
+      "max_api_calls": 200,
+      "max_file_operations": 100,
+      "max_concurrent_operations": 5,
+      "memory_limit_mb": 512
+    },
+
+    "extended_limits": {
+      "description": "Available with justification",
+      "token_allocation": 25000,
+      "time_limit_minutes": 120,
+      "max_api_calls": 500,
+      "max_file_operations": 500,
+      "max_concurrent_operations": 10,
+      "memory_limit_mb": 1024,
+      "requires_justification": true
+    },
+
+    "rate_limits": {
+      "max_workers_per_master_per_hour": 20,
+      "max_workers_per_task": 5,
+      "max_sequential_failures": 3,
+      "cooldown_after_failures_minutes": 15
+    }
+  },
+
+  "safety_boundaries": {
+    "description": "Hard limits that protect non-union workers from dangerous operations",
+
+    "environment_restrictions": {
+      "blocked_environments": [
+        "production",
+        "prod",
+        "live",
+        "prd"
+      ],
+      "enforcement": "hard_block",
+      "error_message": "Non-union workers cannot access production. Request union worker certification."
+    },
+
+    "data_restrictions": {
+      "blocked_data_types": [
+        "pii",
+        "phi",
+        "financial",
+        "credentials",
+        "secrets"
+      ],
+      "enforcement": "hard_block",
+      "error_message": "Non-union workers cannot access sensitive data. Request Level 3+ union worker."
+    },
+
+    "operation_restrictions": {
+      "blocked_operations": [
+        "database_migration",
+        "schema_change",
+        "data_deletion_production",
+        "infrastructure_change",
+        "security_configuration",
+        "user_credential_modification",
+        "payment_processing"
+      ],
+      "enforcement": "hard_block",
+      "error_message": "Operation requires union certification. Contact your master."
+    },
+
+    "network_restrictions": {
+      "blocked_destinations": [
+        "production_databases",
+        "production_apis",
+        "payment_gateways",
+        "customer_facing_services"
+      ],
+      "allowed_destinations": [
+        "localhost",
+        "development_apis",
+        "test_databases",
+        "staging_services"
+      ],
+      "enforcement": "network_policy"
+    }
+  },
+
+  "fast_path_workflows": {
+    "description": "Streamlined workflows for rapid development",
+
+    "feature_development": {
+      "steps": [
+        "Analyze task requirements",
+        "Check environment (must be dev/test)",
+        "Auto-approve if safe",
+        "Execute implementation",
+        "Run tests",
+        "Update documentation",
+        "Report completion"
+      ],
+      "typical_duration_minutes": 30,
+      "approval_gates": 0,
+      "audit_level": "basic"
+    },
+
+    "bug_investigation": {
+      "steps": [
+        "Analyze bug report",
+        "Read relevant code",
+        "Check logs/metrics",
+        "Identify root cause",
+        "Document findings"
+      ],
+      "typical_duration_minutes": 15,
+      "approval_gates": 0,
+      "audit_level": "minimal"
+    },
+
+    "test_writing": {
+      "steps": [
+        "Analyze code to test",
+        "Generate test cases",
+        "Write tests",
+        "Run tests",
+        "Verify coverage"
+      ],
+      "typical_duration_minutes": 20,
+      "approval_gates": 0,
+      "audit_level": "minimal"
+    },
+
+    "documentation": {
+      "steps": [
+        "Analyze code/feature",
+        "Write documentation",
+        "Format markdown",
+        "Commit changes"
+      ],
+      "typical_duration_minutes": 15,
+      "approval_gates": 0,
+      "audit_level": "minimal"
+    }
+  },
+
+  "testing_requirements": {
+    "description": "Lighter testing requirements for non-union workers",
+
+    "minimum_requirements": {
+      "test_coverage": 0.70,
+      "unit_tests": "recommended",
+      "integration_tests": "optional",
+      "manual_testing": "acceptable",
+      "test_documentation": "basic"
+    },
+
+    "recommended_practices": {
+      "test_coverage": 0.85,
+      "unit_tests": "required",
+      "integration_tests": "recommended",
+      "test_documentation": "comprehensive",
+      "ci_integration": "enabled"
+    },
+
+    "exemptions": {
+      "documentation_only": {
+        "test_coverage": 0,
+        "reason": "No code changes"
+      },
+      "proof_of_concept": {
+        "test_coverage": 0.50,
+        "reason": "Experimental code"
+      },
+      "bug_investigation": {
+        "test_coverage": 0,
+        "reason": "Read-only analysis"
+      }
+    }
+  },
+
+  "documentation_requirements": {
+    "description": "Documentation expectations (lighter than union workers)",
+
+    "minimum": {
+      "code_comments": "for_complex_logic",
+      "function_documentation": "public_apis_only",
+      "readme_updates": "if_behavior_changes",
+      "changelog": "optional"
+    },
+
+    "recommended": {
+      "code_comments": "comprehensive",
+      "function_documentation": "all_functions",
+      "readme_updates": "always",
+      "changelog": "maintained",
+      "examples": "provided"
+    }
+  },
+
+  "monitoring_and_logging": {
+    "description": "Lightweight monitoring for non-union workers",
+
+    "required_logs": [
+      "operation_start",
+      "operation_end",
+      "execution_time",
+      "success_or_failure",
+      "error_messages"
+    ],
+
+    "optional_logs": [
+      "input_parameters",
+      "output_results",
+      "resource_usage",
+      "api_calls_made",
+      "files_modified"
+    ],
+
+    "retention": {
+      "success_logs": 30,
+      "error_logs": 90,
+      "debug_logs": 7
+    },
+
+    "real_time_monitoring": false,
+    "alerting": "on_error_only",
+    "dashboard_integration": "summary_only"
+  },
+
+  "error_handling": {
+    "description": "Fail-fast approach with automatic recovery",
+
+    "on_error": {
+      "immediate_actions": [
+        "Stop execution",
+        "Log error details",
+        "Rollback changes if possible",
+        "Notify master",
+        "Clean up resources"
+      ],
+      "retry_policy": {
+        "max_retries": 2,
+        "retry_delay_seconds": 5,
+        "exponential_backoff": true
+      },
+      "escalation": {
+        "after_retries_exhausted": "report_to_master",
+        "on_safety_violation": "immediate_escalation",
+        "on_resource_exhaustion": "graceful_shutdown"
+      }
+    },
+
+    "acceptable_failures": [
+      "test_failures_in_dev",
+      "linting_warnings",
+      "non_critical_dependency_issues",
+      "local_environment_misconfigurations"
+    ],
+
+    "unacceptable_failures": [
+      "safety_boundary_violations",
+      "data_corruption",
+      "resource_exhaustion",
+      "credential_exposure"
+    ]
+  },
+
+  "promotion_criteria": {
+    "description": "When non-union workers should be promoted to union status",
+
+    "indicators_for_promotion": {
+      "task_complexity": {
+        "high_complexity_tasks": 5,
+        "multi_service_coordination": 3,
+        "architecture_changes": 1
+      },
+      "reliability": {
+        "success_rate": 0.95,
+        "consecutive_successes": 10,
+        "no_incidents": true
+      },
+      "scope_expansion": {
+        "needs_staging_access": true,
+        "needs_production_readonly": true,
+        "needs_customer_data_access": true
+      }
+    },
+
+    "promotion_process": {
+      "steps": [
+        "Demonstrate consistent performance",
+        "Complete certification requirements",
+        "Pass testing and security review",
+        "Obtain manager approval",
+        "Receive Level 2 certification"
+      ],
+      "typical_timeline_days": 30
+    }
+  },
+
+  "best_practices": {
+    "description": "Guidelines for effective non-union worker usage",
+
+    "do": [
+      "Start with non-union for all dev/test work",
+      "Use fast-path workflows when possible",
+      "Keep operations scoped and focused",
+      "Document unexpected behaviors",
+      "Report bugs and improvements",
+      "Test thoroughly even if not required",
+      "Clean up after yourself",
+      "Respect resource limits"
+    ],
+
+    "dont": [
+      "Try to bypass safety boundaries",
+      "Request production access without justification",
+      "Ignore error messages",
+      "Skip testing entirely",
+      "Leave incomplete work",
+      "Consume excessive resources",
+      "Create security vulnerabilities",
+      "Expose credentials in logs"
+    ]
+  },
+
+  "optimization_strategies": {
+    "description": "How to maximize non-union worker efficiency",
+
+    "parallel_execution": {
+      "when_to_use": "Independent operations that don't conflict",
+      "max_parallel_workers": 5,
+      "coordination": "minimal_required"
+    },
+
+    "caching": {
+      "cache_read_operations": true,
+      "cache_analysis_results": true,
+      "cache_dependencies": true,
+      "cache_duration_minutes": 60
+    },
+
+    "resource_optimization": {
+      "reuse_worker_context": true,
+      "batch_operations": true,
+      "stream_large_outputs": true,
+      "lazy_loading": true
+    }
+  },
+
+  "common_use_cases": {
+    "feature_implementation": {
+      "certification_required": "none",
+      "typical_token_usage": 8000,
+      "typical_duration_minutes": 30,
+      "approval_time": "instant",
+      "success_rate": 0.92
+    },
+
+    "bug_fix": {
+      "certification_required": "none",
+      "typical_token_usage": 5000,
+      "typical_duration_minutes": 20,
+      "approval_time": "instant",
+      "success_rate": 0.88
+    },
+
+    "documentation": {
+      "certification_required": "none",
+      "typical_token_usage": 3000,
+      "typical_duration_minutes": 15,
+      "approval_time": "instant",
+      "success_rate": 0.98
+    },
+
+    "refactoring": {
+      "certification_required": "none",
+      "typical_token_usage": 10000,
+      "typical_duration_minutes": 45,
+      "approval_time": "5_seconds",
+      "success_rate": 0.85
+    },
+
+    "test_writing": {
+      "certification_required": "none",
+      "typical_token_usage": 6000,
+      "typical_duration_minutes": 25,
+      "approval_time": "instant",
+      "success_rate": 0.94
+    }
+  },
+
+  "metrics_and_reporting": {
+    "tracked_metrics": [
+      "total_operations",
+      "success_rate",
+      "average_execution_time",
+      "token_usage",
+      "error_rate",
+      "safety_violations",
+      "resource_utilization"
+    ],
+
+    "reporting_frequency": {
+      "real_time": ["safety_violations", "errors"],
+      "hourly": ["resource_utilization"],
+      "daily": ["success_rate", "token_usage"],
+      "weekly": ["trends", "optimizations"]
+    },
+
+    "performance_targets": {
+      "success_rate": 0.90,
+      "average_execution_time_minutes": 30,
+      "token_efficiency": 0.80,
+      "safety_violations": 0
+    }
+  },
+
+  "integration_points": {
+    "masters": {
+      "reports_to": "parent_master",
+      "receives_tasks_from": "parent_master",
+      "escalates_to": "parent_master",
+      "coordinates_with": "sibling_workers"
+    },
+
+    "ci_cd": {
+      "triggers_pipelines": true,
+      "waits_for_results": true,
+      "respects_branch_policies": true
+    },
+
+    "monitoring": {
+      "sends_metrics_to": "cortex_metrics",
+      "logs_to": "cortex_logs",
+      "alerts_via": "cortex_alerts"
+    }
+  }
+}

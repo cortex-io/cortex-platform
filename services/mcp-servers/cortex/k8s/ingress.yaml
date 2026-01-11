@@ -1,0 +1,79 @@
+---
+# Traefik IngressRoute for Cortex MCP Server
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cortex-mcp-server
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`cortex-mcp.ry-ops.dev`)
+    kind: Rule
+    services:
+    - name: cortex-mcp-server
+      port: 3000
+    middlewares:
+    - name: cortex-mcp-headers
+    - name: cortex-mcp-ratelimit
+
+  tls:
+    secretName: cortex-mcp-tls
+
+---
+# Middleware for custom headers
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cortex-mcp-headers
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+    customResponseHeaders:
+      X-Content-Type-Options: "nosniff"
+      X-Frame-Options: "DENY"
+      X-XSS-Protection: "1; mode=block"
+      Strict-Transport-Security: "max-age=31536000; includeSubDomains"
+
+---
+# Middleware for rate limiting
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cortex-mcp-ratelimit
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  rateLimit:
+    average: 100
+    period: 1m
+    burst: 50
+
+---
+# Certificate for TLS (using cert-manager)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cortex-mcp-tls
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+spec:
+  secretName: cortex-mcp-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - cortex-mcp.ry-ops.dev

@@ -1,0 +1,54 @@
+{
+  "worker_id": "worker-documentation-148",
+  "worker_type": "documentation-worker",
+  "created_by": "inventory-master",
+  "execution_manager": null,
+  "created_at": "2025-12-03T12:34:36-0600",
+  "task_id": "data-intelligence-documentation",
+  "status": "pending",
+  "identity": {
+    "spiffe_id": "spiffe://cortex/workers/worker-documentation-148",
+    "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcGlmZmU6Ly9jb3J0ZXgvd29ya2Vycy93b3JrZXItZG9jdW1lbnRhdGlvbi0xNDgiLCJhZ2VudF9pZCI6Indvcmtlci1kb2N1bWVudGF0aW9uLTE0OCIsInJvbGUiOiJ3b3JrZXIiLCJ0cnVzdF9sZXZlbCI6NTAsImNhcGFiaWxpdGllcyI6WyJpbnZlbnRvcnk6Y2F0YWxvZyIsImludmVudG9yeTpkb2N1bWVudCIsImludmVudG9yeTphbmFseXplIiwidGFza3M6cmVhZCIsImNvb3JkaW5hdGlvbjpyZWFkIiwiZ292ZXJuYW5jZTpyZWFkIl0sIm1ldGFkYXRhIjp7fSwiaWF0IjoxNzY0Nzg2ODc2LCJleHAiOjE3NjQ3OTA0NzYsImF1ZCI6ImNvcnRleC1hZ2VudHMiLCJpc3MiOiJjb3J0ZXgtaWRlbnRpdHktc3lzdGVtIn0.SSxoef-doObXaKAxzjgDaIabR_HAhJlnbTzaEr0SgS7VJCl1oYNXAwfk71ZXf_t6tY5t61lIH3iHaMWsaiI277HtDJVuDsyv3IHLl9U6PzP48zAt_3l_eHpJ9V14s7MxR26I_LLaY7d-QZbZVtfL9zmbJ_D-EcsQhJtWsk3P87z3pFQrhEqQdKWg3u_B83HpZjtWv_JKgOHU8sokbYe8I-4Wo7AIoJOzzKBL8VNuqHh7hbHj8RsPk-A74P8mhFwZ3DJoWI65RwSY6UEKA-kziBCIHZS2a3jW7sHQ5rfjWdSazGD1XZ9_jhCqYgjLgtBDQmH7qQCxL_PHdAeBbWkXVA",
+    "trust_level": 50
+  },
+  "scope": {},
+  "context": {
+  "parent_task": "data-intelligence-documentation",
+  "priority": "high",
+  "deadline": null
+},
+  "goal_based_planning": {
+    "enabled": true,
+    "strategy": "direct",
+    "goal_type": "knowledge-capture",
+    "complexity": "low",
+    "strategy_plan_location": "coordination/knowledge-base/strategy-plans/worker-documentation-148-plan.json"
+  },
+  "resources": {
+    "token_budget": 6000,
+    "timeout_minutes": 20,
+    "max_retries": 1
+  },
+  "tool_assignment": {"worker_type":"documentation-worker","essential_tools":["Read","Write","Edit","Glob","Grep","Bash(git:*)"],"optional_tools":["WebFetch","WebSearch","Bash"],"total_tools":9,"essential_clusters":["file_operations","code_search","version_control"],"optional_clusters":["web_access","code_execution"],"filtered":true,"rationale":"Writes docs based on code. Web access for example research."},
+  "deliverables": [],
+  "prompt_template": "coordination/prompts/workers/documentation-worker.md",
+  "execution": {
+    "started_at": null,
+    "completed_at": null,
+    "tokens_used": 0,
+    "duration_minutes": 0,
+    "session_id": null
+  },
+  "results": {
+    "status": null,
+    "output_location": null,
+    "summary": null,
+    "artifacts": []
+  },
+  "review": {
+    "enabled": true,
+    "min_cycles": 1,
+    "auto_approve_threshold": 0.95,
+    "history": []
+  }
+}

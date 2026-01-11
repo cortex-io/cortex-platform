@@ -1,0 +1,319 @@
+{
+  "task_id": "task-infra-recovery-2026-01-03",
+  "created_at": "2026-01-03T20:30:00Z",
+  "priority": "critical",
+  "type": "infrastructure_recovery",
+  "title": "Post-Outage Infrastructure Recovery & ITIL Completion",
+  "description": "After massive network outage, fix DNS infrastructure, restore ITIL services, fix database backends, repair MCP servers, and complete Cortex/Cortex Chat upgrade",
+  "assigned_to": "cortex-orchestrator",
+  "namespace": "cortex",
+  "context": {
+    "network_changes": {
+      "sandfly_server": "10.88.140.176",
+      "k3s_ingress": "10.88.145.199",
+      "bgp_routing": "functioning normally"
+    },
+    "cluster_status": {
+      "nodes": "7/7 healthy",
+      "k3s_version": "v1.33.6+k3s1",
+      "uptime_days": 13
+    },
+    "critical_issue": {
+      "dns_broken": true,
+      "coredns_errors": [
+        "10.88.145.1:53 - connection refused",
+        "1.1.1.1:53 - timeout",
+        "IPv6 DNS - network unreachable"
+      ],
+      "impact": "All pods requiring external package downloads are failing (pip, npm, apk)"
+    },
+    "affected_services": {
+      "mcp_servers": ["sandfly-mcp-server", "cloudflare-mcp-server", "proxmox-mcp-server", "unifi-mcp-server"],
+      "databases": ["knowledge-mongodb-0", "knowledge-elasticsearch-0", "redis pods"],
+      "itil_knowledge": ["improvement-detector", "knowledge-extractor", "knowledge-graph-api", "value-stream-optimizer"],
+      "itil_service_desk": ["ai-service-desk", "fulfillment-engine"],
+      "itil_event_mgmt": ["event-correlation", "intelligent-alerting", "kedb"]
+    }
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Fix DNS Infrastructure",
+      "priority": "CRITICAL",
+      "blocking": true,
+      "description": "CoreDNS cannot resolve external domains. All subsequent work depends on this.",
+      "tasks": [
+        {
+          "task": "Verify node-level DNS resolution",
+          "commands": [
+            "ssh k3s@10.88.145.190 'resolvectl status'",
+            "ssh k3s@10.88.145.190 'ping -c 3 8.8.8.8'",
+            "ssh k3s@10.88.145.190 'nslookup pypi.org 8.8.8.8'"
+          ]
+        },
+        {
+          "task": "Update CoreDNS configuration",
+          "action": "Edit ConfigMap coredns in kube-system namespace",
+          "change": {
+            "from": "forward . /etc/resolv.conf",
+            "to": "forward . 8.8.8.8 8.8.4.4 1.1.1.1"
+          },
+          "command": "kubectl edit configmap coredns -n kube-system"
+        },
+        {
+          "task": "Restart CoreDNS",
+          "commands": [
+            "kubectl rollout restart deployment coredns -n kube-system",
+            "kubectl wait --for=condition=available deployment/coredns -n kube-system --timeout=120s"
+          ]
+        },
+        {
+          "task": "Verify DNS resolution works",
+          "test_commands": [
+            "kubectl run dns-test --rm -i --restart=Never --image=busybox -- nslookup pypi.org",
+            "kubectl run dns-test --rm -i --restart=Never --image=busybox -- nslookup registry.npmjs.org",
+            "kubectl run dns-test --rm -i --restart=Never --image=busybox -- nslookup github.com"
+          ],
+          "expected": "All DNS lookups should succeed with IP addresses"
+        }
+      ],
+      "success_criteria": [
+        "CoreDNS can resolve pypi.org, registry.npmjs.org, github.com",
+        "No DNS errors in CoreDNS logs for 2 minutes",
+        "Test pod successfully resolves external domains"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Fix Database Infrastructure",
+      "priority": "HIGH",
+      "depends_on": "Phase 1",
+      "description": "Restore MongoDB, Elasticsearch, and Redis pods",
+      "tasks": [
+        {
+          "task": "Fix MongoDB in cortex-knowledge",
+          "commands": [
+            "kubectl describe pod knowledge-mongodb-0 -n cortex-knowledge",
+            "kubectl get pvc -n cortex-knowledge | grep mongodb",
+            "kubectl delete pod knowledge-mongodb-0 -n cortex-knowledge --force --grace-period=0",
+            "kubectl wait --for=condition=ready pod/knowledge-mongodb-0 -n cortex-knowledge --timeout=300s"
+          ]
+        },
+        {
+          "task": "Fix Elasticsearch in cortex-knowledge",
+          "commands": [
+            "kubectl logs knowledge-elasticsearch-0 -n cortex-knowledge",
+            "kubectl delete pod knowledge-elasticsearch-0 -n cortex-knowledge",
+            "kubectl wait --for=condition=ready pod/knowledge-elasticsearch-0 -n cortex-knowledge --timeout=300s"
+          ]
+        },
+        {
+          "task": "Fix Redis pods across namespaces",
+          "pods_to_restart": [
+            "cortex-chat/redis-6b86c875ff-m8bhv",
+            "cortex-system/postgres-postgresql-0",
+            "cortex-system/redis-master-0",
+            "cortex-system/redis-replicas-0"
+          ],
+          "command_template": "kubectl delete pod {pod_name} -n {namespace} --force --grace-period=0"
+        },
+        {
+          "task": "Verify database health",
+          "tests": [
+            "kubectl exec -it knowledge-mongodb-0 -n cortex-knowledge -- mongosh --eval \"db.adminCommand('ping')\"",
+            "kubectl exec -it knowledge-elasticsearch-0 -n cortex-knowledge -- curl -X GET 'localhost:9200/_cluster/health?pretty'",
+            "kubectl exec -it -n cortex redis-queue-<pod> -- redis-cli ping"
+          ]
+        }
+      ],
+      "success_criteria": [
+        "PostgreSQL pod running and healthy",
+        "MongoDB pod running and accepting connections",
+        "Elasticsearch pod running and cluster status green",
+        "All Redis pods running"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Fix MCP Servers",
+      "priority": "HIGH",
+      "depends_on": "Phase 1",
+      "description": "Restore all MCP server functionality",
+      "tasks": [
+        {
+          "task": "Restart Sandfly MCP Server",
+          "commands": [
+            "kubectl rollout restart deployment sandfly-mcp-server -n cortex-system",
+            "kubectl logs -f -n cortex-system deployment/sandfly-mcp-server --tail=50"
+          ]
+        },
+        {
+          "task": "Fix Unknown status MCP servers",
+          "commands": [
+            "kubectl get pods -n cortex-system --field-selector status.phase=Unknown",
+            "kubectl delete pod -n cortex-system --field-selector status.phase=Unknown --force --grace-period=0"
+          ]
+        },
+        {
+          "task": "Monitor MCP server recreation",
+          "command": "kubectl get pods -n cortex-system -l app.kubernetes.io/component=mcp-server -w"
+        }
+      ],
+      "success_criteria": [
+        "sandfly-mcp-server running (1/1)",
+        "proxmox-mcp-server running (1/1)",
+        "unifi-mcp-server running (1/1)",
+        "cloudflare-mcp-server running (1/1)",
+        "No pods in Unknown status"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Restore ITIL Services",
+      "priority": "MEDIUM",
+      "depends_on": "Phase 2",
+      "description": "Fix Knowledge Management, Service Desk, and Event Management",
+      "tasks": [
+        {
+          "task": "Fix Knowledge Management CrashLoopBackOff pods",
+          "namespace": "cortex-knowledge",
+          "deployments": [
+            "improvement-detector",
+            "knowledge-extractor",
+            "knowledge-graph-api",
+            "value-stream-optimizer"
+          ],
+          "commands": [
+            "kubectl logs {deployment}-{pod-id} -n cortex-knowledge --tail=100",
+            "kubectl describe deployment {deployment} -n cortex-knowledge",
+            "kubectl rollout restart deployment {deployment} -n cortex-knowledge"
+          ]
+        },
+        {
+          "task": "Fix Service Desk pods",
+          "namespace": "cortex-service-desk",
+          "deployments": [
+            "ai-service-desk",
+            "fulfillment-engine"
+          ],
+          "note": "These depend on Knowledge Management being healthy",
+          "commands": [
+            "kubectl logs {deployment}-{pod-id} -n cortex-service-desk --tail=100",
+            "kubectl rollout restart deployment {deployment} -n cortex-service-desk"
+          ]
+        },
+        {
+          "task": "Fix ITIL Event Management",
+          "namespace": "cortex-itil",
+          "pods": [
+            "event-correlation",
+            "intelligent-alerting",
+            "kedb"
+          ],
+          "commands": [
+            "kubectl describe pod {pod-name} -n cortex-itil",
+            "kubectl delete pod {pod-name} -n cortex-itil --force --grace-period=0"
+          ]
+        }
+      ],
+      "success_criteria": [
+        "All cortex-knowledge deployments: 2/2 pods ready",
+        "All cortex-service-desk deployments: 2/2 pods ready",
+        "All cortex-itil deployments: 1/1 pods ready",
+        "Knowledge Dashboard accessible at http://10.88.145.208"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Complete Cortex/Cortex Chat Upgrade",
+      "priority": "MEDIUM",
+      "depends_on": "Phase 3",
+      "description": "Apply pending upgrades and ITIL manifests",
+      "tasks": [
+        {
+          "task": "Review current deployment versions",
+          "commands": [
+            "kubectl get deployment -n cortex cortex-orchestrator -o jsonpath='{.spec.template.spec.containers[0].image}'",
+            "kubectl get deployment -n cortex-chat cortex-chat -o jsonpath='{.spec.template.spec.containers[0].image}'",
+            "kubectl get deployment -n cortex-chat cortex-chat-backend-simple -o jsonpath='{.spec.template.spec.containers[0].image}'"
+          ]
+        },
+        {
+          "task": "Apply ITIL manifests",
+          "manifest_directories": [
+            "/k8s/itil/",
+            "/k3s-deployments/itil-stream-*/",
+            "/cortex-itil*/"
+          ],
+          "commands": [
+            "find /path/to/cortex -name '*.yaml' -path '*/itil/*' -type f",
+            "kubectl apply -f {manifest_file}",
+            "kubectl rollout status deployment -n {namespace} --timeout=5m"
+          ]
+        },
+        {
+          "task": "Upgrade Cortex Chat",
+          "manifest": "/k3s-deployments/cortex-chat/k8s/deployment.yaml",
+          "commands": [
+            "kubectl apply -f /k3s-deployments/cortex-chat/k8s/deployment.yaml",
+            "kubectl rollout status deployment cortex-chat -n cortex-chat --timeout=5m",
+            "kubectl rollout status deployment cortex-chat-backend-simple -n cortex-chat --timeout=5m"
+          ]
+        },
+        {
+          "task": "Verify upgraded services",
+          "tests": [
+            "curl -I http://10.88.145.210",
+            "kubectl exec -it -n cortex deployment/cortex-orchestrator -- curl localhost:8000/health",
+            "kubectl exec -it -n cortex-chat deployment/cortex-chat-backend-simple -- curl localhost:8080/health"
+          ]
+        }
+      ],
+      "success_criteria": [
+        "Cortex Chat upgraded to latest version",
+        "Cortex Orchestrator running latest code",
+        "All ITIL manifests applied successfully",
+        "Cortex Chat accessible at http://10.88.145.210",
+        "All core services responding to health checks"
+      ]
+    }
+  ],
+  "rollback_plan": {
+    "coredns": "kubectl rollout undo deployment coredns -n kube-system",
+    "cortex_deployments": [
+      "kubectl rollout undo deployment cortex-orchestrator -n cortex",
+      "kubectl rollout undo deployment cortex-chat -n cortex-chat"
+    ],
+    "scale_down_itil": [
+      "kubectl scale deployment --replicas=0 -n cortex-knowledge --all",
+      "kubectl scale deployment --replicas=0 -n cortex-service-desk --all"
+    ]
+  },
+  "monitoring": {
+    "commands": [
+      "kubectl get pods -A | grep -v Running | grep -v Completed",
+      "kubectl get events -A --sort-by='.lastTimestamp' | tail -50",
+      "kubectl top nodes",
+      "kubectl top pods -A"
+    ],
+    "log_namespaces": [
+      "kube-system",
+      "cortex",
+      "cortex-chat",
+      "cortex-system",
+      "cortex-knowledge",
+      "cortex-service-desk",
+      "cortex-itil"
+    ]
+  },
+  "documentation": {
+    "task_brief": "/Users/ryandahlberg/Projects/cortex/CORTEX-INFRASTRUCTURE-RECOVERY-TASK.md",
+    "report_findings_to": "user",
+    "include_kubectl_commands": true,
+    "log_level": "verbose"
+  },
+  "execution_mode": "autonomous_with_checkpoints",
+  "checkpoint_after_each_phase": true,
+  "stop_on_critical_failure": true,
+  "max_execution_time": "2 hours"
+}

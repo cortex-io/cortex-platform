@@ -1,0 +1,94 @@
+{
+  "handoff_id": "coord-to-dev-381E7616",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-mcp-integration-002",
+  "priority": "high",
+  "task_data": {
+    "title": "Task 2: Build and Deploy K3s MCP Server",
+    "description": "Clone, build, and deploy k3s-mcp-server to Kubernetes cluster",
+    "repository": "https://github.com/ry-ops/k3s-mcp-server",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Clone repository",
+        "command": "cd /Users/ryandahlberg/Projects && git clone https://github.com/ry-ops/k3s-mcp-server.git",
+        "expected_result": "Repository cloned to /Users/ryandahlberg/Projects/k3s-mcp-server"
+      },
+      {
+        "step": 2,
+        "action": "Review Dockerfile and build configuration",
+        "path": "/Users/ryandahlberg/Projects/k3s-mcp-server/Dockerfile",
+        "expected_result": "Understand build requirements"
+      },
+      {
+        "step": 3,
+        "action": "Build Docker image",
+        "command": "cd /Users/ryandahlberg/Projects/k3s-mcp-server && docker build -t k3s-mcp-server:latest .",
+        "expected_result": "Docker image built successfully"
+      },
+      {
+        "step": 4,
+        "action": "Create Kubernetes deployment manifest",
+        "file": "/Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-system/k3s-mcp-server.yaml",
+        "requirements": [
+          "Namespace: cortex-system",
+          "Service name: k3s-mcp-server",
+          "Port: 3000",
+          "Label: component=mcp-server",
+          "ServiceAccount with cluster-admin or appropriate RBAC for kubectl",
+          "Mount kubeconfig or use in-cluster auth"
+        ]
+      },
+      {
+        "step": 5,
+        "action": "Deploy to cluster",
+        "command": "kubectl apply -f /Users/ryandahlberg/Projects/cortex/k3s-deployments/cortex-system/k3s-mcp-server.yaml",
+        "expected_result": "Pod and service running in cortex-system namespace"
+      },
+      {
+        "step": 6,
+        "action": "Verify deployment",
+        "commands": [
+          "kubectl get pods -n cortex-system -l component=mcp-server",
+          "kubectl get svc -n cortex-system k3s-mcp-server",
+          "kubectl logs -n cortex-system -l app=k3s-mcp-server"
+        ],
+        "expected_result": "Pod running, service has ClusterIP, logs show successful startup"
+      },
+      {
+        "step": 7,
+        "action": "Test MCP server endpoint",
+        "test_query": "kubectl exec -n cortex-system deployment/cortex-api -- curl http://k3s-mcp-server.cortex-system.svc.cluster.local:3000/health",
+        "expected_result": "Health check returns 200 OK"
+      },
+      {
+        "step": 8,
+        "action": "Integrate into Cortex server.js",
+        "subtask": "Add k3s-mcp-server to MCP_SERVERS config and create integration",
+        "reference": "Follow pattern from task-mcp-integration-001"
+      }
+    ],
+    "validation": [
+      "k3s-mcp-server pod is running",
+      "Service has ClusterIP assigned",
+      "Health endpoint responds",
+      "kubectl commands work through MCP",
+      "Integrated into Cortex API server.js"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE: code development + deployment task",
+    "priority": "high",
+    "expected_outcome": "k3s-mcp-server deployed and integrated into Cortex",
+    "dependencies": [
+      "Docker build environment",
+      "Kubernetes cluster access",
+      "Task 1 completion recommended but not required"
+    ],
+    "routing_confidence": 0.90,
+    "estimated_complexity": "medium-high"
+  },
+  "created_at": "2025-12-26T13:41:34Z",
+  "status": "pending_pickup"
+}

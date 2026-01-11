@@ -1,0 +1,117 @@
+{
+  "id": "fix-k3s-master03-ip-1734739200",
+  "type": "infrastructure",
+  "category": "k3s-cluster-management",
+  "priority": "critical",
+  "status": "pending",
+  "created_at": "2025-12-20T19:53:20-06:00",
+  "updated_at": "2025-12-20T20:15:00-06:00",
+  "assigned_to": null,
+  "notes_update": "VMID 303 (k3s-master02) has been fixed and is now at .192. Only VMID 306 (k3s-master03) remains.",
+  "title": "Fix k3s-master03 IP Address via Proxmox Console",
+  "description": "Configure k3s-master03 (VMID 306) to use IP address 10.88.145.196. The VM is running but not accessible via SSH. Requires Proxmox console access to configure netplan.",
+  "context": {
+    "vm_info": {
+      "vmid": 306,
+      "name": "k3s-master03",
+      "proxmox_host": "10.88.140.164",
+      "proxmox_node": "pve01",
+      "status": "running"
+    },
+    "network_config": {
+      "target_ip": "10.88.145.196",
+      "netmask": "24",
+      "gateway": "10.88.145.1",
+      "dns": ["8.8.8.8", "8.8.4.4"],
+      "interface": "ens18"
+    },
+    "credentials": {
+      "vm_user": "k3s",
+      "vm_password": "toor",
+      "proxmox_token": "root@pam!cortex-k3s-display=7e74841c-0eb1-4181-8926-aaa9f0103c58"
+    },
+    "current_state": {
+      "ssh_accessible": false,
+      "current_ip": "unknown",
+      "issue": "VM running but not reachable via SSH - needs console access"
+    }
+  },
+  "requirements": [
+    "Access to Proxmox web console (https://10.88.145.164:8006)",
+    "Ability to use noVNC console interface",
+    "Configure netplan on Ubuntu VM",
+    "Verify SSH access after configuration"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "action": "Access Proxmox Console",
+      "details": "Navigate to https://10.88.145.164:8006, locate VM 306 (k3s-master03), open Console"
+    },
+    {
+      "step": 2,
+      "action": "Login to VM",
+      "details": "Login with credentials k3s/toor via console"
+    },
+    {
+      "step": 3,
+      "action": "Check Current State",
+      "details": "Run: hostname && ip addr show ens18 | grep 'inet 10'"
+    },
+    {
+      "step": 4,
+      "action": "Configure IP Address",
+      "details": "Edit /etc/netplan/50-cloud-init.yaml to set IP to 10.88.145.196/24"
+    },
+    {
+      "step": 5,
+      "action": "Set Hostname",
+      "details": "Run: sudo hostnamectl set-hostname k3s-master03"
+    },
+    {
+      "step": 6,
+      "action": "Apply Configuration",
+      "details": "Run: sudo netplan apply"
+    },
+    {
+      "step": 7,
+      "action": "Reboot VM",
+      "details": "Run: sudo reboot"
+    },
+    {
+      "step": 8,
+      "action": "Verify SSH Access",
+      "details": "From external host, verify: ssh k3s@10.88.145.196 'hostname' returns 'k3s-master03'"
+    }
+  ],
+  "success_criteria": [
+    "k3s-master03 accessible via SSH at 10.88.145.196",
+    "hostname command returns 'k3s-master03'",
+    "ip addr shows 10.88.145.196/24 on ens18 interface"
+  ],
+  "documentation": [
+    "K3S-IP-FIX-SUMMARY.md",
+    "FIX-MASTER03-CONSOLE-STEPS.md"
+  ],
+  "scripts": [
+    "fix-master03-ip.py (for automated fix if SSH is accessible)",
+    "scan-for-master03.py (network scanner)",
+    "find-master03.py (Proxmox API info)",
+    "check-cluster-status.sh (verification)"
+  ],
+  "next_steps_after_completion": [
+    "Join k3s-master02 and k3s-master03 to cluster",
+    "Verify 7-node HA cluster (3 control-plane + 4 workers)",
+    "Run ./check-cluster-status.sh to confirm"
+  ],
+  "estimated_duration": "10-15 minutes",
+  "dependencies": [],
+  "blocking": [],
+  "tags": ["k3s", "infrastructure", "networking", "proxmox", "cluster-expansion"],
+  "notes": "This task requires console access which may not be available to all Cortex instances. If the assigned instance cannot access Proxmox console, task should be escalated or reassigned to an instance with appropriate access.",
+  "access_requirements": {
+    "proxmox_console_access": true,
+    "ssh_access_to_k3s_cluster": true,
+    "network_access_to_10_88_145_0_24": true
+  }
+}

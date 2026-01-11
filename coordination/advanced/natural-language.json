@@ -1,0 +1,889 @@
+{
+  "version": "1.0.0",
+  "description": "Natural Language Interface configuration for cortex automation system",
+  "intent_definitions": {
+    "actions": {
+      "CREATE": {
+        "keywords": [
+          "deploy",
+          "create",
+          "build",
+          "setup",
+          "install",
+          "provision",
+          "start",
+          "launch",
+          "initialize",
+          "spin up",
+          "bring up"
+        ],
+        "confidence_threshold": 0.7,
+        "requires_confirmation": true,
+        "destructive": false
+      },
+      "READ": {
+        "keywords": [
+          "show",
+          "list",
+          "describe",
+          "get",
+          "check",
+          "display",
+          "view",
+          "inspect",
+          "status",
+          "what is",
+          "tell me about"
+        ],
+        "confidence_threshold": 0.6,
+        "requires_confirmation": false,
+        "destructive": false
+      },
+      "UPDATE": {
+        "keywords": [
+          "update",
+          "modify",
+          "change",
+          "edit",
+          "upgrade",
+          "patch",
+          "reconfigure",
+          "adjust",
+          "tune",
+          "scale"
+        ],
+        "confidence_threshold": 0.7,
+        "requires_confirmation": true,
+        "destructive": false
+      },
+      "DELETE": {
+        "keywords": [
+          "delete",
+          "remove",
+          "destroy",
+          "terminate",
+          "drop",
+          "tear down",
+          "kill",
+          "stop",
+          "disable",
+          "decommission"
+        ],
+        "confidence_threshold": 0.9,
+        "requires_confirmation": true,
+        "destructive": true,
+        "requires_double_confirmation": true,
+        "requires_backup": true
+      },
+      "DIAGNOSE": {
+        "keywords": [
+          "fix",
+          "debug",
+          "troubleshoot",
+          "diagnose",
+          "investigate",
+          "repair",
+          "resolve",
+          "what's wrong",
+          "why is",
+          "broken",
+          "not working"
+        ],
+        "confidence_threshold": 0.7,
+        "requires_confirmation": false,
+        "destructive": false
+      },
+      "OPTIMIZE": {
+        "keywords": [
+          "optimize",
+          "improve",
+          "speed up",
+          "tune",
+          "enhance",
+          "make faster",
+          "performance",
+          "efficiency"
+        ],
+        "confidence_threshold": 0.7,
+        "requires_confirmation": false,
+        "destructive": false
+      }
+    },
+    "resources": {
+      "kubernetes": {
+        "keywords": [
+          "kubernetes",
+          "k8s",
+          "cluster",
+          "kube",
+          "control plane",
+          "worker nodes"
+        ],
+        "category": "infrastructure",
+        "contractors": ["talos-contractor", "infrastructure-contractor"],
+        "subtypes": {
+          "cluster": ["cluster", "k8s cluster", "kubernetes cluster"],
+          "deployment": ["deployment", "deploy", "workload"],
+          "service": ["service", "svc", "endpoint"],
+          "pod": ["pod", "container"],
+          "namespace": ["namespace", "ns"]
+        }
+      },
+      "monitoring": {
+        "keywords": [
+          "monitoring",
+          "prometheus",
+          "grafana",
+          "metrics",
+          "alerts",
+          "observability",
+          "dashboards"
+        ],
+        "category": "observability",
+        "contractors": ["monitoring-contractor"],
+        "subtypes": {
+          "prometheus": ["prometheus", "prom"],
+          "grafana": ["grafana", "dashboard"],
+          "alertmanager": ["alertmanager", "alerts"]
+        }
+      },
+      "workflow": {
+        "keywords": [
+          "workflow",
+          "automation",
+          "n8n",
+          "orchestration",
+          "pipeline",
+          "job"
+        ],
+        "category": "automation",
+        "contractors": ["n8n-contractor"],
+        "subtypes": {
+          "workflow": ["workflow", "flow"],
+          "automation": ["automation", "auto"],
+          "integration": ["integration", "connector"]
+        }
+      },
+      "infrastructure": {
+        "keywords": [
+          "infrastructure",
+          "infra",
+          "network",
+          "compute",
+          "storage",
+          "vpc",
+          "load balancer"
+        ],
+        "category": "infrastructure",
+        "contractors": ["infrastructure-contractor"],
+        "subtypes": {
+          "network": ["network", "vpc", "subnet", "cidr"],
+          "compute": ["compute", "vm", "instance", "node"],
+          "storage": ["storage", "disk", "volume", "pv"],
+          "load_balancer": ["load balancer", "lb", "elb"]
+        }
+      },
+      "configuration": {
+        "keywords": [
+          "config",
+          "configuration",
+          "settings",
+          "vault",
+          "secret",
+          "credential"
+        ],
+        "category": "configuration",
+        "contractors": ["infrastructure-contractor"],
+        "subtypes": {
+          "secret": ["secret", "credential", "password", "token"],
+          "configmap": ["configmap", "config", "settings"]
+        }
+      },
+      "backup": {
+        "keywords": [
+          "backup",
+          "restore",
+          "snapshot",
+          "disaster recovery",
+          "dr"
+        ],
+        "category": "data-protection",
+        "contractors": ["infrastructure-contractor", "n8n-contractor"],
+        "subtypes": {
+          "backup": ["backup", "snapshot"],
+          "restore": ["restore", "recovery"]
+        }
+      }
+    },
+    "environments": {
+      "production": {
+        "keywords": ["production", "prod", "live", "prd"],
+        "priority": "high",
+        "requires_confirmation": true,
+        "auto_backup": true
+      },
+      "staging": {
+        "keywords": ["staging", "stage", "stg", "pre-prod"],
+        "priority": "medium",
+        "requires_confirmation": false,
+        "auto_backup": false
+      },
+      "development": {
+        "keywords": ["development", "dev", "devel", "test"],
+        "priority": "low",
+        "requires_confirmation": false,
+        "auto_backup": false
+      }
+    },
+    "modifiers": {
+      "urgency": {
+        "critical": ["urgent", "asap", "critical", "emergency", "now", "immediately"],
+        "high": ["soon", "quickly", "fast", "priority"],
+        "normal": ["when possible", "normal", "regular"],
+        "low": ["later", "low priority", "whenever", "eventually"]
+      },
+      "scale": {
+        "small": ["small", "tiny", "minimal", "dev", "1 node", "single"],
+        "medium": ["medium", "standard", "normal", "3 nodes"],
+        "large": ["large", "big", "production", "ha", "high availability", "6+ nodes"]
+      },
+      "requirements": {
+        "high_availability": ["ha", "high availability", "redundant", "fault tolerant"],
+        "auto_scaling": ["auto scale", "autoscaling", "elastic", "dynamic"],
+        "secure": ["secure", "encrypted", "tls", "ssl", "hardened"],
+        "backup": ["backup", "backed up", "dr", "disaster recovery"]
+      }
+    }
+  },
+  "task_decomposition_rules": {
+    "deploy_k8s_cluster": {
+      "preconditions": [
+        "infrastructure_credentials_available",
+        "talos_config_accessible",
+        "sufficient_resources"
+      ],
+      "tasks": [
+        {
+          "task_id": "provision_infrastructure",
+          "contractor": "infrastructure-contractor",
+          "estimated_duration_minutes": 15,
+          "estimated_tokens": 5000,
+          "subtasks": [
+            {
+              "name": "create_network",
+              "estimated_duration_minutes": 5
+            },
+            {
+              "name": "create_load_balancer",
+              "estimated_duration_minutes": 3
+            },
+            {
+              "name": "provision_nodes",
+              "estimated_duration_minutes": 8
+            }
+          ],
+          "dependencies": []
+        },
+        {
+          "task_id": "install_kubernetes",
+          "contractor": "talos-contractor",
+          "estimated_duration_minutes": 15,
+          "estimated_tokens": 6000,
+          "subtasks": [
+            {
+              "name": "generate_config",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "bootstrap_control_plane",
+              "estimated_duration_minutes": 5
+            },
+            {
+              "name": "join_worker_nodes",
+              "estimated_duration_minutes": 6
+            }
+          ],
+          "dependencies": ["provision_infrastructure"]
+        },
+        {
+          "task_id": "configure_cluster",
+          "contractor": "infrastructure-contractor",
+          "estimated_duration_minutes": 12,
+          "estimated_tokens": 4000,
+          "subtasks": [
+            {
+              "name": "install_cni",
+              "estimated_duration_minutes": 4
+            },
+            {
+              "name": "configure_storage",
+              "estimated_duration_minutes": 3
+            },
+            {
+              "name": "setup_ingress",
+              "estimated_duration_minutes": 3
+            }
+          ],
+          "dependencies": ["install_kubernetes"]
+        },
+        {
+          "task_id": "verify_deployment",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 5,
+          "estimated_tokens": 2000,
+          "subtasks": [
+            {
+              "name": "health_check",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "smoke_tests",
+              "estimated_duration_minutes": 3
+            }
+          ],
+          "dependencies": ["configure_cluster"]
+        }
+      ],
+      "critical_path": [
+        "provision_infrastructure",
+        "install_kubernetes",
+        "configure_cluster",
+        "verify_deployment"
+      ],
+      "total_estimated_duration_minutes": 47,
+      "total_estimated_tokens": 17000
+    },
+    "deploy_monitoring": {
+      "preconditions": [
+        "kubernetes_cluster_available",
+        "storage_class_configured"
+      ],
+      "tasks": [
+        {
+          "task_id": "install_prometheus",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 5,
+          "estimated_tokens": 3000,
+          "subtasks": [
+            {
+              "name": "deploy_prometheus_operator",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "configure_service_discovery",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "setup_persistence",
+              "estimated_duration_minutes": 1
+            }
+          ],
+          "dependencies": []
+        },
+        {
+          "task_id": "install_grafana",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 4,
+          "estimated_tokens": 2500,
+          "subtasks": [
+            {
+              "name": "deploy_grafana",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "configure_datasources",
+              "estimated_duration_minutes": 1
+            },
+            {
+              "name": "import_dashboards",
+              "estimated_duration_minutes": 1
+            }
+          ],
+          "dependencies": ["install_prometheus"]
+        },
+        {
+          "task_id": "configure_alerts",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 3,
+          "estimated_tokens": 2000,
+          "subtasks": [
+            {
+              "name": "create_alert_rules",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "setup_alertmanager",
+              "estimated_duration_minutes": 1
+            }
+          ],
+          "dependencies": ["install_prometheus"]
+        }
+      ],
+      "parallel_execution": [
+        ["install_grafana", "configure_alerts"]
+      ],
+      "critical_path": [
+        "install_prometheus",
+        "install_grafana"
+      ],
+      "total_estimated_duration_minutes": 9,
+      "total_estimated_tokens": 7500
+    },
+    "fix_service": {
+      "preconditions": [
+        "service_identified",
+        "access_to_logs_and_metrics"
+      ],
+      "tasks": [
+        {
+          "task_id": "diagnose_issue",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 8,
+          "estimated_tokens": 4000,
+          "subtasks": [
+            {
+              "name": "collect_logs",
+              "estimated_duration_minutes": 2
+            },
+            {
+              "name": "analyze_metrics",
+              "estimated_duration_minutes": 3
+            },
+            {
+              "name": "identify_root_cause",
+              "estimated_duration_minutes": 3
+            }
+          ],
+          "dependencies": []
+        },
+        {
+          "task_id": "apply_remediation",
+          "contractor": "infrastructure-contractor",
+          "estimated_duration_minutes": 10,
+          "estimated_tokens": 3500,
+          "subtasks": [
+            {
+              "name": "prepare_fix",
+              "estimated_duration_minutes": 3
+            },
+            {
+              "name": "execute_fix",
+              "estimated_duration_minutes": 5
+            },
+            {
+              "name": "verify_fix",
+              "estimated_duration_minutes": 2
+            }
+          ],
+          "dependencies": ["diagnose_issue"]
+        },
+        {
+          "task_id": "monitor_recovery",
+          "contractor": "monitoring-contractor",
+          "estimated_duration_minutes": 5,
+          "estimated_tokens": 2000,
+          "subtasks": [
+            {
+              "name": "track_metrics",
+              "estimated_duration_minutes": 3
+            },
+            {
+              "name": "confirm_stability",
+              "estimated_duration_minutes": 2
+            }
+          ],
+          "dependencies": ["apply_remediation"]
+        }
+      ],
+      "critical_path": [
+        "diagnose_issue",
+        "apply_remediation",
+        "monitor_recovery"
+      ],
+      "total_estimated_duration_minutes": 23,
+      "total_estimated_tokens": 9500
+    }
+  },
+  "ambiguity_resolution": {
+    "strategies": [
+      {
+        "type": "intelligent_defaults",
+        "description": "Apply context-aware defaults and ask for confirmation",
+        "applicable_when": ["missing_non_critical_parameters"],
+        "confidence_threshold": 0.7
+      },
+      {
+        "type": "clarification_questions",
+        "description": "Ask targeted questions to resolve ambiguities",
+        "applicable_when": ["multiple_interpretations", "missing_critical_parameters"],
+        "max_questions": 3
+      },
+      {
+        "type": "progressive_disclosure",
+        "description": "Gather information iteratively across multiple turns",
+        "applicable_when": ["complex_multi_parameter_tasks"],
+        "max_turns": 5
+      }
+    ],
+    "default_values": {
+      "environment": {
+        "default": "development",
+        "production_indicators": ["prod", "production", "live", "critical", "urgent"],
+        "reasoning": "Default to safest environment unless production is explicitly indicated"
+      },
+      "cluster_size": {
+        "development": {
+          "nodes": 1,
+          "control_plane_nodes": 1,
+          "worker_nodes": 0
+        },
+        "staging": {
+          "nodes": 3,
+          "control_plane_nodes": 1,
+          "worker_nodes": 2
+        },
+        "production": {
+          "nodes": 6,
+          "control_plane_nodes": 3,
+          "worker_nodes": 3
+        }
+      },
+      "monitoring_retention": {
+        "development": "7d",
+        "staging": "15d",
+        "production": "30d"
+      },
+      "backup_schedule": {
+        "development": "none",
+        "staging": "weekly",
+        "production": "daily"
+      }
+    },
+    "clarification_templates": {
+      "missing_environment": "Which environment should I target? (production/staging/development)",
+      "missing_resource_name": "Which {resource_type} are you referring to? I found: {options}",
+      "missing_scale": "What size should this be? (small/medium/large)",
+      "missing_region": "Which region? (us-west/us-east/eu-west)",
+      "ambiguous_action": "Did you want me to {option1} or {option2}?"
+    }
+  },
+  "confirmation_workflows": {
+    "destructive_operations": {
+      "DELETE": {
+        "severity": "critical",
+        "confirmation_type": "typed_confirmation",
+        "confirmation_phrase_template": "delete {resource_name}",
+        "impact_analysis_required": true,
+        "backup_required": true,
+        "dry_run_offered": true,
+        "rollback_plan_required": true
+      },
+      "UPDATE_PRODUCTION": {
+        "severity": "high",
+        "confirmation_type": "standard_confirmation",
+        "impact_analysis_required": true,
+        "backup_required": false,
+        "dry_run_offered": true,
+        "rollback_plan_required": true
+      },
+      "SCALE_DOWN": {
+        "severity": "medium",
+        "confirmation_type": "standard_confirmation",
+        "impact_analysis_required": true,
+        "backup_required": false,
+        "dry_run_offered": false,
+        "rollback_plan_required": false
+      }
+    },
+    "confirmation_message_templates": {
+      "critical_destructive": "CRITICAL DESTRUCTIVE OPERATION\n\nYou are about to {action} the following resources:\n{resource_list}\n\nIMPACT:\n{impact_summary}\n\nDEPENDENCIES:\n{dependency_list}\n\nA backup will be created before {action}.\n\nTo confirm, type: {confirmation_phrase}\n\nType 'cancel' to abort.",
+      "standard_confirmation": "You are about to {action}:\n{resource_summary}\n\nIMPACT:\n{impact_summary}\n\nProceed? (yes/no/show-details)",
+      "dry_run_offer": "Would you like me to perform a dry-run first?\n\nDry-run will:\n✓ Validate all configurations\n✓ Check preconditions\n✓ Estimate resource usage\n✓ Identify potential issues\n✗ Not make any actual changes\n\nOptions:\n1. dry-run - See what would happen\n2. proceed - Execute now\n3. cancel - Abort operation"
+    }
+  },
+  "progress_reporting": {
+    "update_frequency": {
+      "tasks_under_5min": "on_milestone",
+      "tasks_5_to_30min": "every_5min",
+      "tasks_over_30min": "every_10min"
+    },
+    "milestone_events": [
+      "task_started",
+      "task_25_percent",
+      "task_50_percent",
+      "task_75_percent",
+      "task_completed",
+      "task_blocked",
+      "task_failed"
+    ],
+    "formats": {
+      "console": {
+        "template": "progress_bar",
+        "includes": ["percentage", "elapsed_time", "estimated_remaining", "current_task", "events"]
+      },
+      "narrative": {
+        "template": "step_by_step",
+        "includes": ["completed_tasks", "current_task_detail", "pending_tasks", "overall_percentage"]
+      },
+      "minimal": {
+        "template": "status_line",
+        "includes": ["current_task", "percentage"]
+      }
+    },
+    "templates": {
+      "started": "Started {task_name}. Estimated duration: {estimated_duration}",
+      "progress": "{task_name} is {percentage}% complete. {time_info}",
+      "completed": "✓ {task_name} completed successfully in {actual_duration}",
+      "blocked": "⚠️  {task_name} is blocked: {reason}. Working on resolution...",
+      "failed": "✗ {task_name} failed: {error}. {next_steps}"
+    }
+  },
+  "error_translation": {
+    "common_patterns": {
+      "connection_refused": {
+        "pattern": "connection refused|ECONNREFUSED",
+        "plain_language": "I couldn't connect to {resource}",
+        "common_causes": [
+          "The service might not be running",
+          "Firewall rules might be blocking access",
+          "The resource might not exist yet"
+        ],
+        "suggestions": [
+          "Check if {resource} is running",
+          "Verify network connectivity",
+          "Review firewall rules"
+        ]
+      },
+      "authentication_failed": {
+        "pattern": "authentication failed|unauthorized|403|401",
+        "plain_language": "I don't have permission to access {resource}",
+        "common_causes": [
+          "Credentials might be expired",
+          "API token might be invalid",
+          "Permissions might not be configured"
+        ],
+        "suggestions": [
+          "Verify credentials are up to date",
+          "Check IAM permissions",
+          "Regenerate API tokens if needed"
+        ]
+      },
+      "resource_not_found": {
+        "pattern": "not found|404|does not exist",
+        "plain_language": "I couldn't find {resource}",
+        "common_causes": [
+          "Resource might have been deleted",
+          "Name might be misspelled",
+          "Looking in wrong region/namespace"
+        ],
+        "suggestions": [
+          "Check resource name spelling",
+          "Verify correct region/namespace",
+          "List available resources to confirm"
+        ]
+      },
+      "insufficient_resources": {
+        "pattern": "insufficient|quota exceeded|out of",
+        "plain_language": "Not enough {resource_type} available",
+        "common_causes": [
+          "Resource quota exceeded",
+          "Infrastructure at capacity",
+          "Cost limits reached"
+        ],
+        "suggestions": [
+          "Increase resource quotas",
+          "Scale down other services",
+          "Upgrade infrastructure tier"
+        ]
+      },
+      "timeout": {
+        "pattern": "timeout|timed out|deadline exceeded",
+        "plain_language": "Operation took too long and timed out",
+        "common_causes": [
+          "Network latency issues",
+          "Resource under heavy load",
+          "Operation is legitimately slow"
+        ],
+        "suggestions": [
+          "Retry the operation",
+          "Check network connectivity",
+          "Increase timeout if operation is expected to be slow"
+        ]
+      }
+    },
+    "detail_levels": {
+      "simple": ["simple_message", "suggested_action"],
+      "standard": ["simple_message", "what_happened", "likely_cause", "suggested_action"],
+      "detailed": ["simple_message", "what_happened", "root_cause", "impact", "remediation", "technical_details", "doc_links"]
+    }
+  },
+  "conversation_management": {
+    "max_history_turns": 10,
+    "context_retention": {
+      "entities": "all_mentioned_in_session",
+      "active_tasks": "until_completed_or_cancelled",
+      "user_preferences": "persistent_across_sessions"
+    },
+    "reference_resolution": {
+      "pronouns": ["it", "that", "them", "this", "these", "those"],
+      "relative_references": ["the cluster", "my service", "our infrastructure"],
+      "temporal_references": ["earlier", "before", "previously", "last time"]
+    },
+    "context_switching": {
+      "allow_interruptions": true,
+      "background_task_tracking": true,
+      "return_to_context_keywords": ["go back", "continue", "resume", "back to"]
+    }
+  },
+  "response_templates": {
+    "acknowledgment": [
+      "I'll {action} {resource} for you.",
+      "Starting {action} of {resource}.",
+      "Got it. I'll {action} {resource}.",
+      "I'll help you {action} {resource}."
+    ],
+    "clarification": [
+      "Just to confirm, you want me to {action} {resource} with {parameters}?",
+      "I'll {action} {resource}. Is that correct?",
+      "Before I proceed, let me verify: {summary}. Correct?",
+      "Let me make sure I understand: {summary}. Should I proceed?"
+    ],
+    "progress": [
+      "I'm currently {current_action}. About {percentage}% done.",
+      "{current_action} is in progress ({percentage}% complete).",
+      "Making progress on {current_action}. {time_remaining} remaining.",
+      "Working on {current_action}. {milestone_info}"
+    ],
+    "completion": [
+      "Done! I've successfully {action} {resource}.",
+      "All set. {resource} is now {state}.",
+      "Completed. Your {resource} is ready.",
+      "✓ Success! {resource} has been {action}."
+    ],
+    "error": [
+      "I ran into an issue: {error}. {remediation}",
+      "Something went wrong with {action}: {error}. Here's what I'm doing: {remediation}",
+      "Problem: {error}. I'm working on {remediation}",
+      "⚠️  Issue encountered: {error}. {next_steps}"
+    ],
+    "suggestion": [
+      "Next, you might want to {suggestion}.",
+      "I can also help you {suggestion} if needed.",
+      "Consider {suggestion} to improve your setup.",
+      "Would you like me to {suggestion}?"
+    ]
+  },
+  "contractor_mapping": {
+    "infrastructure-contractor": {
+      "resource_types": ["compute", "network", "storage", "dns", "load_balancer"],
+      "action_types": ["CREATE", "READ", "UPDATE", "DELETE"],
+      "priority_score": 10
+    },
+    "talos-contractor": {
+      "resource_types": ["kubernetes", "container-orchestration"],
+      "action_types": ["CREATE", "UPDATE", "READ"],
+      "priority_score": 10,
+      "dependencies": ["infrastructure-contractor"]
+    },
+    "n8n-contractor": {
+      "resource_types": ["workflow", "automation", "integration"],
+      "action_types": ["CREATE", "UPDATE", "READ", "DELETE"],
+      "priority_score": 8
+    },
+    "monitoring-contractor": {
+      "resource_types": ["monitoring", "observability", "metrics", "alerts"],
+      "action_types": ["CREATE", "UPDATE", "READ", "DIAGNOSE"],
+      "priority_score": 8
+    }
+  },
+  "example_flows": {
+    "build_k8s_cluster": {
+      "user_input": "Build me a k8s cluster",
+      "parsed_intent": {
+        "action": "CREATE",
+        "resources": [{"type": "kubernetes", "subtype": "cluster"}],
+        "environment": "AMBIGUOUS",
+        "parameters": {},
+        "confidence": 0.75
+      },
+      "ambiguity_resolution": {
+        "strategy": "intelligent_defaults",
+        "questions": [
+          "Environment? (production/staging/development)",
+          "Size? (small/medium/large)",
+          "Region? (us-west/us-east/eu-west)"
+        ],
+        "defaults_offered": {
+          "environment": "development",
+          "size": "small",
+          "region": "us-west"
+        }
+      },
+      "task_decomposition_ref": "deploy_k8s_cluster",
+      "contractors": ["infrastructure-contractor", "talos-contractor"],
+      "estimated_duration": "47 minutes",
+      "estimated_tokens": 17000
+    },
+    "deploy_monitoring": {
+      "user_input": "Deploy monitoring",
+      "parsed_intent": {
+        "action": "CREATE",
+        "resources": [{"type": "monitoring", "subtype": "stack"}],
+        "environment": "INFERRED_FROM_CONTEXT",
+        "parameters": {
+          "stack": "prometheus+grafana"
+        },
+        "confidence": 0.85
+      },
+      "context_used": {
+        "target_cluster": "from_conversation_history",
+        "environment": "inherited_from_cluster"
+      },
+      "task_decomposition_ref": "deploy_monitoring",
+      "contractors": ["monitoring-contractor"],
+      "estimated_duration": "9 minutes",
+      "estimated_tokens": 7500
+    },
+    "fix_broken_service": {
+      "user_input": "Fix the broken service",
+      "parsed_intent": {
+        "action": "DIAGNOSE",
+        "resources": [{"type": "service", "name": "AMBIGUOUS"}],
+        "environment": "UNKNOWN",
+        "confidence": 0.60
+      },
+      "ambiguity_resolution": {
+        "strategy": "clarification_questions",
+        "intelligent_detection": "check_recent_alerts_for_broken_services",
+        "questions": [
+          "Which service?",
+          "What type of issue?",
+          "Which environment?"
+        ]
+      },
+      "task_decomposition_ref": "fix_service",
+      "contractors": ["monitoring-contractor", "infrastructure-contractor"],
+      "estimated_duration": "23 minutes",
+      "estimated_tokens": 9500,
+      "phases": ["diagnose", "remediate", "verify"]
+    }
+  },
+  "metrics": {
+    "track": [
+      "intent_parsing_accuracy",
+      "ambiguity_resolution_success_rate",
+      "task_decomposition_efficiency",
+      "user_satisfaction_score",
+      "time_to_task_completion",
+      "error_explanation_clarity_score",
+      "confirmation_acceptance_rate",
+      "context_resolution_accuracy"
+    ],
+    "thresholds": {
+      "intent_parsing_accuracy": 0.85,
+      "ambiguity_resolution_success_rate": 0.90,
+      "user_satisfaction_score": 4.0,
+      "error_explanation_clarity_score": 0.80
+    }
+  }
+}

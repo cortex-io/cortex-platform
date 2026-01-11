@@ -1,0 +1,61 @@
+{
+  "task_id": "task-trigger-system-1733000008",
+  "description": "Implement workflow trigger system supporting manual, scheduled (cron), webhook, and event-based triggers",
+  "master": "development-master",
+  "priority": "medium",
+  "created_at": "2025-11-29T17:00:08Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/trigger-manager.sh",
+    "dependencies": ["task-main-executor-1733000007"],
+    "estimated_duration_minutes": 150
+  },
+  "requirements": {
+    "inputs": [
+      "Workflow definition with triggers section",
+      "Trigger configuration"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/trigger-manager.sh",
+      "scripts/daemons/workflow-scheduler-daemon.sh",
+      "scripts/daemons/workflow-webhook-server.sh",
+      "scripts/daemons/workflow-event-listener.sh"
+    ],
+    "validation": [
+      "Support all trigger types from workflow YAML",
+      "Run workflows on schedule",
+      "Accept webhook requests",
+      "Listen for system events"
+    ],
+    "features": [
+      "Trigger type: manual - Direct invocation via CLI",
+      "Trigger type: schedule - Cron-based scheduling",
+      "  - Parse cron expressions",
+      "  - Register with system cron or custom scheduler daemon",
+      "  - Track last run, next run times",
+      "Trigger type: webhook - HTTP endpoint triggers",
+      "  - Lightweight HTTP server (nc/socat-based or node.js)",
+      "  - Authenticate webhook requests (HMAC signature)",
+      "  - Extract inputs from webhook payload",
+      "  - Respond with workflow run ID",
+      "Trigger type: event - Internal Cortex events",
+      "  - Listen to coordination/events/ directory",
+      "  - Match event patterns (pr_opened, deployment_completed)",
+      "  - Extract inputs from event data",
+      "  - Trigger workflows matching event",
+      "Register triggers from workflow definitions",
+      "Deregister triggers when workflow deleted",
+      "Prevent duplicate concurrent runs (locking)",
+      "Queue triggers if executor busy"
+    ]
+  },
+  "acceptance_criteria": [
+    "Scheduled workflow runs at correct cron times (tested with */1 * * * *)",
+    "Webhook triggers workflow on POST request",
+    "Event listener triggers workflow on matching event",
+    "No duplicate concurrent runs for same workflow",
+    "Graceful shutdown of trigger daemons",
+    "Includes tests for all trigger types"
+  ]
+}

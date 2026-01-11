@@ -1,0 +1,34 @@
+{
+  "name": "@cortex/worker-pool",
+  "version": "1.0.0",
+  "description": "High-performance persistent worker pool with 95% worker reuse",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test-pool.js",
+    "example": "node example-usage.js",
+    "start": "../scripts/worker-pool-daemon.sh start",
+    "stop": "../scripts/worker-pool-daemon.sh stop",
+    "restart": "../scripts/worker-pool-daemon.sh restart",
+    "status": "../scripts/worker-pool-daemon.sh status"
+  },
+  "keywords": [
+    "worker-pool",
+    "process-pool",
+    "task-queue",
+    "worker-management",
+    "load-balancing",
+    "health-monitoring"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "index.js",
+    "pool-manager.js",
+    "worker-process.js",
+    "task-queue.js",
+    "health-monitor.js",
+    "fifo-channel.js",
+    "README.md"
+  ]
+}

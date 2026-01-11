@@ -1,0 +1,7 @@
+2025-11-30T14:03:49-06:00	INFO	[vulndb] Need to update DB
+2025-11-30T14:03:49-06:00	INFO	[vulndb] Downloading vulnerability DB...
+2025-11-30T14:03:49-06:00	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+2025-11-30T14:03:49-06:00	FATAL	Fatal error	run error: init error: DB error: failed to download vulnerability DB: OCI artifact error: failed to download vulnerability DB: failed to download artifact from mirror.gcr.io/aquasec/trivy-db:2: OCI repository error: 1 error occurred:
+	* error getting credentials - err: exec: "docker-credential-desktop": executable file not found in $PATH, out: ``
+
+

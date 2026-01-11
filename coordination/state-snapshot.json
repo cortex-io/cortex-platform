@@ -1,0 +1,17 @@
+{
+  "workers": {},
+  "tasks": {},
+  "assignments": {},
+  "workerTasks": {},
+  "metadata": {},
+  "timestamps": {},
+  "snapshot_timestamp": "2025-12-05T20:31:20.675Z",
+  "metrics": {
+    "operations": 0,
+    "transactions": 0,
+    "snapshots": 0,
+    "walWrites": 0,
+    "lastSnapshot": null,
+    "lastWalSync": null
+  }
+}

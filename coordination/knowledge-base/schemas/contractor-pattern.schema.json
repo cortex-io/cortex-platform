@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cortex.ry-ops.io/schemas/contractor-pattern.json",
+  "title": "Contractor Pattern",
+  "description": "A learned pattern for contractor behavior and decision-making",
+  "type": "object",
+  "required": ["pattern_id", "contractor", "category", "pattern", "confidence", "created_at"],
+  "properties": {
+    "pattern_id": {
+      "type": "string",
+      "description": "Unique identifier for this pattern",
+      "pattern": "^[a-z0-9-]+$",
+      "examples": ["n8n-parallel-workers-optimal", "proxmox-vm-template-best-practice"]
+    },
+    "contractor": {
+      "type": "string",
+      "description": "Which contractor this pattern applies to",
+      "enum": [
+        "infrastructure-contractor",
+        "n8n-contractor",
+        "talos-contractor",
+        "unifi-contractor",
+        "cloudflare-contractor",
+        "microsoft-graph-contractor",
+        "starlink-contractor",
+        "proxmox-contractor",
+        "ansible-contractor"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "description": "Category of pattern",
+      "enum": [
+        "performance",
+        "reliability",
+        "cost-optimization",
+        "security",
+        "troubleshooting",
+        "workflow-composition",
+        "resource-allocation"
+      ]
+    },
+    "pattern": {
+      "type": "object",
+      "description": "The actual pattern data",
+      "required": ["summary", "context", "recommendation"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "One-line summary of the pattern"
+        },
+        "context": {
+          "type": "object",
+          "description": "When this pattern applies",
+          "properties": {
+            "task_types": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Which task types trigger this pattern"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Conditions that must be met"
+            }
+          }
+        },
+        "recommendation": {
+          "type": "object",
+          "description": "What action to take",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "The recommended action"
+            },
+            "parameters": {
+              "type": "object",
+              "description": "Parameters for the action"
+            },
+            "rationale": {
+              "type": "string",
+              "description": "Why this works"
+            }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "description": "Supporting data for this pattern",
+          "properties": {
+            "sample_size": {
+              "type": "integer",
+              "description": "Number of observations"
+            },
+            "success_rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Success rate (0-1)"
+            },
+            "metrics": {
+              "type": "object",
+              "description": "Performance metrics"
+            }
+          }
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence in this pattern (0-1)"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this pattern was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this pattern"
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Tags for categorization and search"
+    }
+  }
+}

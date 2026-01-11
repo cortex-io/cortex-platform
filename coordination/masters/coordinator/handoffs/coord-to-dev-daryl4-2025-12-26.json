@@ -1,0 +1,51 @@
+{
+  "handoff_id": "coord-to-dev-daryl4-2025-12-26T150705Z",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "daryl-4-monitoring-access",
+  "priority": "critical",
+  "task_data": {
+    "title": "Troubleshoot Monitoring Site Access",
+    "type": "development",
+    "description": "Fix monitoring site accessibility - user reports inability to access monitoring sites",
+    "complexity": 6,
+    "requirements": [
+      "Check if ingress resources exist for monitoring namespace",
+      "Verify LoadBalancer IPs are accessible from user's network",
+      "Check if services need NodePort or Ingress instead of LoadBalancer",
+      "Create ingress resources if needed (grafana.ry-ops.dev, prometheus.ry-ops.dev)",
+      "Document access URLs and troubleshooting steps"
+    ],
+    "context": {
+      "services": {
+        "grafana": "10.88.145.202:80 (LoadBalancer)",
+        "prometheus": "10.88.145.201:9090 (LoadBalancer)"
+      },
+      "namespace": "monitoring",
+      "cluster": "k3s production cluster",
+      "issue": "User cannot access monitoring sites currently"
+    },
+    "deliverables": [
+      "Working ingress configuration or access documentation",
+      "Verified access to Grafana and Prometheus",
+      "Documentation of access URLs",
+      "Troubleshooting guide for future access issues"
+    ],
+    "test_criteria": [
+      "Can access Grafana dashboard from browser",
+      "Can access Prometheus UI from browser",
+      "Access URLs documented and verified",
+      "Ingress or LoadBalancer configuration is stable"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development pattern match (troubleshoot, fix, configure)",
+    "routing_confidence": 0.90,
+    "priority": "critical",
+    "expected_outcome": "Monitoring sites accessible with documented URLs",
+    "blocking_for": ["daryl-1-grafana-dashboards", "daryl-2-dashy-config"],
+    "dependencies": []
+  },
+  "created_at": "2025-12-26T15:07:05Z",
+  "status": "pending_pickup"
+}

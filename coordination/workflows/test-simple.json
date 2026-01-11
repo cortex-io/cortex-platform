@@ -1,0 +1,30 @@
+{
+  "name": "test-simple-workflow",
+  "version": "1.0.0",
+  "description": "Simple test workflow with bash commands",
+  "inputs": {
+    "message": {
+      "type": "string",
+      "required": true,
+      "description": "Message to echo"
+    }
+  },
+  "steps": [
+    {
+      "id": "hello",
+      "description": "Say hello",
+      "action": "bash",
+      "command": "echo 'Hello {{ inputs.message }}'"
+    },
+    {
+      "id": "world",
+      "description": "Say world",
+      "action": "bash",
+      "depends_on": ["hello"],
+      "command": "echo 'World!' && date"
+    }
+  ],
+  "outputs": {
+    "result": "{{ steps.world.outputs.stdout }}"
+  }
+}

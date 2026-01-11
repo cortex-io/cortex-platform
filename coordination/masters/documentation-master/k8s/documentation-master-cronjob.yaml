@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: documentation-master-crawler
+  namespace: cortex
+  labels:
+    app: documentation-master
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: crawler
+            image: alpine:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Running documentation crawler..."
+              echo "Crawling Sandfly documentation..."
+              wget -r -np -k -p --max-depth=5 https://docs.sandflysecurity.com -P /data/cache/
+              echo "Crawl complete: $(date)"
+            volumeMounts:
+            - name: cache-storage
+              mountPath: /data/cache
+          restartPolicy: OnFailure
+          volumes:
+          - name: cache-storage
+            persistentVolumeClaim:
+              claimName: documentation-master-cache

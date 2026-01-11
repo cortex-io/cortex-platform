@@ -1,0 +1,1174 @@
+
+{"task_id":"test-jsonl-format-001","timestamp":"2025-11-16T10:00:26-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.99,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.99,"security":0.25,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-677a1c95","timestamp":"2025-11-16T10:01:31-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-ba35d73a","timestamp":"2025-11-16T10:01:32-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-d67fe411","timestamp":"2025-11-16T10:01:32-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-9020d390","routed_to":"development","rule_used":"code-development","timestamp":"2025-11-16T10:01:38-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-ffaee228","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T10:01:39-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-ffaee228","timestamp":"2025-11-16T10:01:38-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763308845-fc5648e2","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T10:01:39-0600"}
+{"task_id":"moe-test-ddqd-v5-1763308845-fc5648e2","timestamp":"2025-11-16T10:01:39-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"test-system-e2e-001","timestamp":"2025-11-16T10:20:10-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.75,"security":0,"inventory":0}}}
+{"task_id":"test-autonomous-001","timestamp":"2025-11-16T10:33:58-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.75,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-c04d1098","timestamp":"2025-11-16T11:21:04-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-64915431","timestamp":"2025-11-16T11:21:04-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-a4fd140a","timestamp":"2025-11-16T11:21:05-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-946bd71c","timestamp":"2025-11-16T11:21:05-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.74,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.74,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313616-e8d90c3b","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:21:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1763313616-49ab3207","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:21:09-0600"}
+{"task_id":"moe-test-ddqd-v5-1763313927-023fc33b","timestamp":"2025-11-16T11:26:18-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-b070dcb0","timestamp":"2025-11-16T11:26:18-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-beb20526","timestamp":"2025-11-16T11:26:19-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.61,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-333125e5","timestamp":"2025-11-16T11:26:19-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.74,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.74,"security":0,"inventory":0}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-083ec654","timestamp":"2025-11-16T11:26:20-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-02b96c6b","timestamp":"2025-11-16T11:26:20-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00}}}
+{"task_id":"moe-test-ddqd-v5-1763313927-02b96c6b","routed_to":"inventory","rule_used":"inventory-management","timestamp":"2025-11-16T11:26:20-0600"}
+{"task_id":"task-64915432","routed_to":"security","rule_used":"security-scan","timestamp":"2025-11-17T13:15:57-0600"}
+{"task_id":"task-test-001","timestamp":"2025-11-18T14:46:46-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":1.00,"security":0.25,"inventory":0}}}
+{"task_id":"task-test-002","timestamp":"2025-11-18T14:47:00-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.75,"inventory":0}}}
+{"task_id":"task-test-001","timestamp":"2025-11-18T14:50:47-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.87,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.87,"security":0.25,"inventory":0}}}
+{"task_id":"task-dev-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":1.00,"security":0.25,"inventory":0}}}
+{"task_id":"task-sec-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.75,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.75,"inventory":0}}}
+{"task_id":"task-inv-001","timestamp":"2025-11-18T14:50:48-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"inventory","primary_confidence":0.61,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.61}}}
+{"task_id":"task-feat-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.49,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.49,"security":0,"inventory":0}}}
+{"task_id":"task-audit-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"task-conf-001","timestamp":"2025-11-18T14:50:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.87,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.87,"security":0.25,"inventory":0}}}
+{"task_id":"task-highconf-001","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0}}}
+{"task_id":"task-preserve-test-1763499050","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.25,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.25,"security":0,"inventory":0}}}
+{"task_id":"task-log-test-1763499050","timestamp":"2025-11-18T14:50:50-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"development","primary_confidence":0.25,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0.25,"security":0,"inventory":0}}}
+{"task_id":"cara-security-1763559589","timestamp":"2025-11-19T07:39:49-0600","routing_strategy":"mixture_of_experts","decision":{"primary_expert":"security","primary_confidence":0.95,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.45,"security":0.95,"inventory":0}}}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-19T16:30:08Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-19T16:31:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T14:49:29Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T15:49:29Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T19:32:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-20T20:32:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T10:04:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T16:19:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-21T17:19:17Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T17:22:44Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T18:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T19:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T20:22:45Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T21:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T22:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-22T23:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T00:22:46Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T01:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T02:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T03:22:47Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T04:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T05:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T06:22:48Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T07:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T08:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T09:22:49Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T10:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T11:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T12:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T13:22:50Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T14:22:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T15:22:51Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T16:22:52Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T17:22:52Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T18:22:52Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T19:22:53Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T20:22:53Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T21:22:53Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T22:22:53Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-23T23:22:54Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T00:22:54Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T01:22:54Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T02:22:55Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T03:22:55Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T04:22:55Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T05:22:55Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T06:22:56Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T07:22:56Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T08:22:56Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T09:22:57Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T10:22:57Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T11:22:57Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T12:22:58Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T13:22:58Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T14:22:58Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T15:22:58Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T16:22:59Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T17:22:59Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T18:22:59Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T19:23:00Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T20:23:01Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T21:23:02Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T22:23:02Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-24T23:23:03Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T00:23:04Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T01:23:04Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T02:23:05Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T03:23:06Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T04:23:06Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T05:23:07Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T06:23:08Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T07:23:09Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T08:23:09Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T09:23:10Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T10:23:10Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T11:23:11Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T12:23:11Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T13:23:11Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T14:23:11Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T15:23:12Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T16:23:12Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T17:23:12Z",
+  "source": "learner"
+}
+{"task_id":"task-elastic-apm-integration","timestamp":"2025-11-25T12:12:38-0600","routing_strategy":"pattern_fallback","decision":{"primary_expert":"development","primary_confidence":0.75,"strategy":"pattern_match","parallel_experts":[],"scores":{"development":0.75,"security":0,"inventory":0}},"rule_used":"code-development"}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T18:23:13Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T19:23:13Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T20:23:14Z",
+  "source": "learner"
+}
+{"timestamp":"2025-11-25T20:56:51Z","task":"achievement-dashboard-config","routed_to":"development-master","confidence":0.95,"strategy":"achievement_automation"}
+{"timestamp":"2025-11-25T20:56:51Z","task":"workflow-automation-scripts","routed_to":"cicd-master","confidence":0.92,"strategy":"achievement_automation"}
+{"timestamp":"2025-11-25T20:56:51Z","task":"api-integration-guide","routed_to":"development-master","confidence":0.94,"strategy":"achievement_automation"}
+{"timestamp":"2025-11-25T20:56:51Z","task":"kibana-dashboard-export","routed_to":"development-master","confidence":0.93,"strategy":"achievement_automation"}
+{"timestamp":"2025-11-25T20:56:51Z","task":"security-best-practices","routed_to":"security-master","confidence":0.96,"strategy":"achievement_automation"}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T21:23:14Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T22:23:15Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-25T23:23:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T00:23:16Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T01:23:17Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T02:23:17Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T03:23:18Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T04:23:19Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T05:23:20Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T06:23:21Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T07:23:21Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T08:23:22Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T09:23:23Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T10:23:24Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T11:23:24Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T12:23:25Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T13:23:25Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T14:23:25Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T15:23:25Z",
+  "source": "learner"
+}
+{
+  "task_type": "null",
+  "complexity": "null",
+  "recommended_worker_type": "feature-implementer",
+  "confidence": 92.75,
+  "evidence_count": 4,
+  "learned_at": "2025-11-26T16:23:26Z",
+  "source": "learner"
+}
+{"task_id":"task-test-001","timestamp":"2025-11-29T14:51:18-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: fix, test, routing, routing. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-output-resolver-1733000005","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, resolve, pattern, pattern, template. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-parallel-executor-1733000002","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, completion, parallel, management, logic. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-step-runner-1733000004","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, port, error, bash, error handling. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-state-manager-1733000003","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, management, state, system, sed. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-trigger-system-1733000008","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, port, event, system, event. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-cli-commands-1733000009","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.62,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0.12,"inventory":0.62},"explanation":"Routed to inventory (62.00% confidence) based on keywords: list, status, list.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-main-executor-1733000007","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"security","primary_confidence":0.12,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.12,"inventory":0},"explanation":"Routed to security (12.00% confidence) based on keywords: low. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-integration-tests-1733000010","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"security","primary_confidence":0.12,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.12,"inventory":0},"explanation":"Routed to security (12.00% confidence) based on keywords: low. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-workflow-parser-1733000000","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.25,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0.24,"inventory":0.25},"explanation":"Routed to inventory (25.00% confidence) based on keywords: definition.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-workflow-visualizer-1733000006","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"security","primary_confidence":0.12,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0.12,"inventory":0.12},"explanation":"Routed to security (12.00% confidence) based on keywords: low. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-dependency-resolver-1733000001","timestamp":"2025-11-29T14:51:28-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"development","primary_confidence":0,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0},"explanation":"Routed to development (0% confidence) based on keywords: build, implement, resolve, parallel, UI. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-dashboard-aggregation","timestamp":"2025-11-30T08:31:19-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, update, metrics, logic, real-time. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-metrics-collector","timestamp":"2025-11-30T08:31:51-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"development","primary_confidence":0,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0},"explanation":"Routed to development (0% confidence) based on keywords: create, metrics, ratio, script, metrics. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-metrics-schema","timestamp":"2025-11-30T08:31:54-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.75,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.75},"explanation":"Routed to inventory (75.00% confidence) based on keywords: schema, field, schema.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-health-monitor","timestamp":"2025-11-30T08:31:56-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: implement, worker, monitor, health, tracking. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-health-schema","timestamp":"2025-11-30T08:31:57-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.62,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.62},"explanation":"Routed to inventory (62.00% confidence) based on keywords: schema, schema, health.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"resumate-builder-core","timestamp":"2025-12-01T12:50:16-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.06,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.06},"explanation":"Routed to inventory (6.00% confidence) based on keywords: projects, architecture, history. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"resumate-preview-engine","timestamp":"2025-12-01T12:50:20-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"resumate-templates-core","timestamp":"2025-12-01T12:50:24-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"development","primary_confidence":0,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0},"explanation":"Routed to development (0% confidence) via task type classification. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"resumate-ai-writer","timestamp":"2025-12-01T12:50:29-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"resumate-security-audit","timestamp":"2025-12-01T12:50:32-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0.12},"explanation":"Routed to security (100.00% confidence) via task type classification.","model_recommendation":{"model":"llama2-70b","provider":"ollama","tier":"local","complexity_score":8,"sensitivity_level":"high","reasoning":"Selected llama2-70b from local tier (forced local for high sensitivity)"}}}
+{"task_id":"resumate-parser","timestamp":"2025-12-01T12:50:36-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"cleanup-analysis-001","timestamp":"2025-12-03T11:43:59-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00},"explanation":"Routed to inventory (100.00% confidence) based on keywords: document, list, analyze, structure, documentation.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"low","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"cve-scan-cortex-001","timestamp":"2025-12-03T11:52:33-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"security","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":1.00,"inventory":0.60},"explanation":"Routed to security (100.00% confidence) via task type classification.","model_recommendation":{"model":"claude-opus-4","provider":"anthropic","tier":"powerful","complexity_score":8,"sensitivity_level":"none","reasoning":"Selected claude-opus-4 from powerful tier (high complexity score: 8)"}}}
+{"task_id":"package-updates-001","timestamp":"2025-12-03T12:07:52-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.12,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.12},"explanation":"Routed to inventory (12.00% confidence) based on keywords: package. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"vuln-remediation-001","timestamp":"2025-12-03T12:11:58-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-pattern","decision":{"primary_expert":"security","primary_confidence":0.88,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0.88,"inventory":0},"explanation":"Routed to security (88.00% confidence) via task type classification. (Phase 3: NLP classifier - pattern layer)","model_recommendation":{"model":"claude-opus-4","provider":"anthropic","tier":"powerful","complexity_score":8,"sensitivity_level":"none","reasoning":"Selected claude-opus-4 from powerful tier (high complexity score: 8)"}}}
+{"task_id":"data-intelligence-phase1-foundation","timestamp":"2025-12-03T12:33:59-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"data-intelligence-phase2-intelligence","timestamp":"2025-12-03T12:34:02-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"data-intelligence-phase3-scale","timestamp":"2025-12-03T12:34:05-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"llama2-70b","provider":"ollama","tier":"local","complexity_score":6,"sensitivity_level":"high","reasoning":"Selected llama2-70b from local tier (forced local for high sensitivity)"}}}
+{"task_id":"data-intelligence-phase4-collaboration","timestamp":"2025-12-03T12:34:08-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) via task type classification. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"data-intelligence-integration","timestamp":"2025-12-03T12:34:13-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: monitor, rate, ratio, feature, form. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"data-intelligence-documentation","timestamp":"2025-12-03T12:34:15-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":1.00,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":1.00},"explanation":"Routed to inventory (100.00% confidence) via task type classification.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"linkedin-phase-1","timestamp":"2025-12-04T11:23:30-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: develop, implement, profile, sum, template. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"linkedin-phase-2","timestamp":"2025-12-04T11:23:33-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.32,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.32},"explanation":"Routed to inventory (32.00% confidence) based on keywords: track, network, track.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{
+  "task_id": "linkedin-phase-3",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 4,
+  "complexity_level": "moderate",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2025-12-04T11:23:38-0600"
+}
+{
+  "task_id": "linkedin-phase-4",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 4,
+  "complexity_level": "moderate",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2025-12-04T11:23:41-0600"
+}
+{"task_id":"self-opt-timeout-001","timestamp":"2025-12-05T08:26:30-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: create, develop, learning, timeout. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"self-opt-timeout-002","timestamp":"2025-12-05T08:26:31-0600","routing_strategy":"mixture_of_experts","routing_method":"nlp-keyword","decision":{"primary_expert":"development","primary_confidence":0.90,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0.90,"security":0,"inventory":0},"explanation":"Routed to development (90.00% confidence) based on keywords: develop, learning, spawn, worker, timeout. (Phase 3: NLP classifier - keyword layer)","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"self-opt-timeout-003","timestamp":"2025-12-05T08:26:32-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.32,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.32},"explanation":"Routed to inventory (32.00% confidence) based on keywords: report, analytics, repo.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"self-opt-timeout-003","timestamp":"2025-12-05T08:26:33-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.32,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.32},"explanation":"Routed to inventory (32.00% confidence) based on keywords: report, analytics, repo.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"self-opt-timeout-003","timestamp":"2025-12-05T08:27:27-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"inventory","primary_confidence":0.32,"strategy":"single_expert","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0.32},"explanation":"Routed to inventory (32.00% confidence) based on keywords: report, analytics, repo.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"fix-k3s-master03-ip-1734739200","timestamp":"2025-12-20T14:03:07-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"development","primary_confidence":0,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0},"explanation":"Routed to development (0% confidence) based on keywords: add, fix, configure, interface, master. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":5,"sensitivity_level":"low","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{"task_id":"task-sandfly-integration-001","routed_to":"development","rule_used":"implement|develop|code|feature","timestamp":"2025-12-25T16:30:00Z","outcome":"pending","priority":"critical","category":"sandfly-mcp-deployment"}
+{"task_id":"task-sandfly-integration-002","routed_to":"development","rule_used":"implement|develop|code|feature","timestamp":"2025-12-25T16:30:00Z","outcome":"pending","priority":"critical","category":"sandfly-tool-integration"}
+{"task_id":"task-context-persistence-003","routed_to":"development","rule_used":"implement|develop|code|feature","timestamp":"2025-12-25T16:30:00Z","outcome":"pending","priority":"critical","category":"context-persistence"}
+{"task_id":"task-deep-conversation-testing-004","routed_to":"development","rule_used":"test.*deep|conversation|api","timestamp":"2025-12-25T16:30:00Z","outcome":"pending","priority":"high","category":"deep-testing"}
+{"task_id":"task-mcp-integration-001","routed_to":"development","rule_used":"code-development","timestamp":"2025-12-26T13:41:34Z","outcome":"pending","priority":"high","category":"mcp-server-integration","confidence":0.90}
+{"task_id":"task-mcp-integration-002","routed_to":"development","rule_used":"code-development","timestamp":"2025-12-26T13:41:34Z","outcome":"pending","priority":"high","category":"k3s-mcp-deployment","confidence":0.90}
+{"task_id":"task-mcp-integration-003","routed_to":"development","rule_used":"code-development","timestamp":"2025-12-26T13:41:34Z","outcome":"pending","priority":"high","category":"grafana-mcp-creation","confidence":0.90}
+{"task_id":"task-mcp-integration-004","routed_to":"cicd","rule_used":"cicd-operations","timestamp":"2025-12-26T13:41:34Z","outcome":"pending","priority":"high","category":"cortex-deployment-update","confidence":0.88}
+{"task_id":"daryl-4-monitoring-access","routed_to":"development","rule_used":"code-development","pattern_match":"troubleshoot|fix|configure","confidence":0.90,"priority":"critical","timestamp":"2025-12-26T15:07:05Z","reasoning":"Infrastructure troubleshooting and configuration - development master expertise"}
+{"task_id":"daryl-1-grafana-dashboards","routed_to":"development","rule_used":"code-development","pattern_match":"create|implement|code","confidence":0.90,"priority":"high","timestamp":"2025-12-26T15:07:05Z","reasoning":"Dashboard creation requires coding ConfigMaps and YAML - development task"}
+{"task_id":"daryl-2-dashy-config","routed_to":"development","rule_used":"code-development","pattern_match":"update|configure","confidence":0.90,"priority":"medium","timestamp":"2025-12-26T15:07:05Z","reasoning":"Configuration update task - development master handles k8s config changes"}
+{"task_id":"daryl-3-chat-ui-styling","routed_to":"development","rule_used":"code-development","pattern_match":"implement|enhance|code","confidence":0.90,"priority":"medium","timestamp":"2025-12-26T15:07:05Z","reasoning":"Frontend CSS/HTML enhancement - development master specialty"}
+{
+  "task_id": "task-elasticsearch-hostpath-1767480481",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 7,
+  "complexity_level": "very-complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-03T16:48:01-0600"
+}
+{
+  "task_id": "docling-phase-1",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 6,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:04-0600"
+}
+{
+  "task_id": "docling-phase-2",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 5,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:12-0600"
+}
+{
+  "task_id": "docling-phase-3",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 4,
+  "complexity_level": "moderate",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:18-0600"
+}
+{
+  "task_id": "docling-phase-4",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 4,
+  "complexity_level": "moderate",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:25-0600"
+}
+{
+  "task_id": "docling-phase-5",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 5,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:32-0600"
+}
+{
+  "task_id": "docling-phase-6",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 5,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:40-0600"
+}
+{
+  "task_id": "docling-phase-7",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 5,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:47-0600"
+}
+{
+  "task_id": "docling-phase-8",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 6,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:57:53-0600"
+}
+{"task_id":"docling-phase-9","timestamp":"2026-01-08T19:58:01-0600","routing_strategy":"mixture_of_experts","routing_method":"keyword","decision":{"primary_expert":"development","primary_confidence":0,"strategy":"single_expert_low_confidence","parallel_experts":[],"scores":{"development":0,"security":0,"inventory":0},"explanation":"Routed to development (0% confidence) based on keywords: build, create, metrics, performance, success. Low confidence routing - consider manual review.","model_recommendation":{"model":"claude-sonnet-4","provider":"anthropic","tier":"balanced","complexity_score":6,"sensitivity_level":"none","reasoning":"Selected claude-sonnet-4 from balanced tier"}}}
+{
+  "task_id": "docling-phase-10",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 5,
+  "complexity_level": "complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T19:58:11-0600"
+}
+{
+  "task_id": "youtube-channel-intelligence",
+  "expert": "initializer-master",
+  "confidence": 100,
+  "method": "complexity-based",
+  "complexity": 9,
+  "complexity_level": "very-complex",
+  "reason": "Task complexity exceeds threshold - routing to Initializer for decomposition",
+  "timestamp": "2026-01-08T20:15:59-0600"
+}

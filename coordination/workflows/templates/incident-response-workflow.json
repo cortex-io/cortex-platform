@@ -1,0 +1,523 @@
+{
+  "workflow_id": "security-incident-response",
+  "workflow_name": "Security Incident Response",
+  "description": "Coordinated response to security incidents with automated containment, investigation, and remediation",
+  "version": "1.0.0",
+  "contractors": ["n8n-contractor", "talos-contractor", "infrastructure-contractor", "security-master"],
+  "estimated_duration": "2h",
+  "trigger_types": ["security_alert", "manual"],
+  "parameters": {
+    "incident_type": {
+      "type": "string",
+      "required": true,
+      "enum": ["node_compromise", "container_breakout", "unauthorized_access", "malware_detection", "data_exfiltration"],
+      "description": "Type of security incident"
+    },
+    "severity": {
+      "type": "string",
+      "required": true,
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Incident severity level"
+    },
+    "affected_resource": {
+      "type": "object",
+      "required": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["node", "pod", "vm", "network"]
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Resource name or ID"
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "IP address of affected resource"
+        },
+        "cluster": {
+          "type": "string",
+          "description": "Kubernetes cluster (if applicable)"
+        }
+      }
+    },
+    "initial_indicators": {
+      "type": "object",
+      "required": true,
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Alert source (falco, prometheus, manual)"
+        },
+        "rule_triggered": {
+          "type": "string",
+          "description": "Security rule that was triggered"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "When the incident was detected"
+        }
+      }
+    },
+    "auto_containment": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "description": "Automatically isolate affected resources"
+    }
+  },
+  "phases": [
+    {
+      "phase_id": "detect-and-record",
+      "phase_name": "Detection and Initial Response",
+      "contractor": "n8n-contractor",
+      "actions": [
+        {
+          "action_id": "create-incident",
+          "action": "create_incident_record",
+          "parameters": {
+            "incident_id": "SEC-${date}-${sequence}",
+            "severity": "${parameters.severity}",
+            "incident_type": "${parameters.incident_type}",
+            "affected_resource": "${parameters.affected_resource}",
+            "initial_indicators": "${parameters.initial_indicators}"
+          },
+          "timeout": 30,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "notify-security-team",
+          "action": "send_notification",
+          "parameters": {
+            "channels": ["pagerduty", "slack", "email"],
+            "severity": "${parameters.severity}",
+            "pagerduty_config": {
+              "service": "security-incidents",
+              "escalation_policy": "security-team",
+              "urgency": "high"
+            },
+            "slack_config": {
+              "channel": "#security-alerts",
+              "mention": "@security-team",
+              "template": "security_incident_detected"
+            }
+          },
+          "timeout": 60,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "enable-enhanced-logging",
+          "action": "enable_debug_logging",
+          "parameters": {
+            "targets": ["${parameters.affected_resource.identifier}"],
+            "log_level": "debug",
+            "duration": 7200,
+            "export_to": "s3://cortex-forensics/incidents/${create-incident.output.incident_id}/"
+          },
+          "timeout": 60,
+          "on_error": "skip_action"
+        }
+      ],
+      "handoff_to": "conditional",
+      "handoff_decision": {
+        "if": "${parameters.affected_resource.type} == 'node' || ${parameters.affected_resource.type} == 'pod'",
+        "then": "talos-contractor",
+        "else": "infrastructure-contractor"
+      },
+      "handoff_data": {
+        "incident_id": "${create-incident.output.incident_id}",
+        "affected_resource": "${parameters.affected_resource}",
+        "auto_containment": "${parameters.auto_containment}"
+      }
+    },
+    {
+      "phase_id": "k8s-isolation",
+      "phase_name": "Kubernetes-Level Isolation",
+      "contractor": "talos-contractor",
+      "conditional": "${parameters.affected_resource.type} in ['node', 'pod']",
+      "actions": [
+        {
+          "action_id": "cordon-node",
+          "action": "cordon_node",
+          "parameters": {
+            "cluster": "${parameters.affected_resource.cluster}",
+            "node": "${parameters.affected_resource.identifier}"
+          },
+          "timeout": 60,
+          "on_error": "continue_phase"
+        },
+        {
+          "action_id": "apply-network-policy",
+          "action": "apply_network_policy",
+          "parameters": {
+            "cluster": "${parameters.affected_resource.cluster}",
+            "policy_name": "isolate-${parameters.affected_resource.identifier}",
+            "target_selector": {
+              "node": "${parameters.affected_resource.identifier}"
+            },
+            "ingress_rules": [],
+            "egress_rules": [
+              {
+                "to": [{"dns_selector": true}],
+                "ports": [{"port": 53, "protocol": "UDP"}]
+              }
+            ]
+          },
+          "timeout": 60,
+          "on_error": "continue_phase"
+        },
+        {
+          "action_id": "snapshot-state",
+          "action": "capture_cluster_state",
+          "parameters": {
+            "cluster": "${parameters.affected_resource.cluster}",
+            "node": "${parameters.affected_resource.identifier}",
+            "capture": ["pod_list", "events", "logs"],
+            "output_location": "s3://cortex-forensics/incidents/${detect-and-record.handoff_data.incident_id}/k8s-state/"
+          },
+          "timeout": 300,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "drain-node",
+          "action": "drain_node",
+          "parameters": {
+            "cluster": "${parameters.affected_resource.cluster}",
+            "node": "${parameters.affected_resource.identifier}",
+            "ignore_daemonsets": true,
+            "delete_emptydir_data": false,
+            "preserve_forensics": true
+          },
+          "timeout": 600,
+          "on_error": "alert_only"
+        }
+      ],
+      "handoff_to": "infrastructure-contractor",
+      "handoff_data": {
+        "incident_id": "${detect-and-record.handoff_data.incident_id}",
+        "k8s_isolation_complete": true,
+        "node_status": "${cordon-node.output.status}",
+        "pod_count_evacuated": "${drain-node.output.evacuated_pods}"
+      }
+    },
+    {
+      "phase_id": "network-isolation",
+      "phase_name": "Network-Level Isolation",
+      "contractor": "infrastructure-contractor",
+      "actions": [
+        {
+          "action_id": "apply-firewall-rules",
+          "action": "apply_firewall_rules",
+          "parameters": {
+            "target": "${parameters.affected_resource.ip_address}",
+            "policy": "deny_all",
+            "exceptions": [
+              {
+                "source": "bastion_host",
+                "destination": "${parameters.affected_resource.ip_address}",
+                "port": 22,
+                "protocol": "tcp",
+                "purpose": "forensics_access"
+              },
+              {
+                "source": "${parameters.affected_resource.ip_address}",
+                "destination": "monitoring_server",
+                "port": 9090,
+                "protocol": "tcp",
+                "purpose": "metrics_collection"
+              }
+            ]
+          },
+          "timeout": 120,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "capture-network-traffic",
+          "action": "start_packet_capture",
+          "parameters": {
+            "target": "${parameters.affected_resource.ip_address}",
+            "duration": 3600,
+            "output": "s3://cortex-forensics/incidents/${detect-and-record.handoff_data.incident_id}/pcap/"
+          },
+          "timeout": 60,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "snapshot-vm",
+          "action": "create_vm_snapshot",
+          "parameters": {
+            "vm": "${parameters.affected_resource.identifier}",
+            "snapshot_name": "${detect-and-record.handoff_data.incident_id}-forensic-snapshot",
+            "description": "Forensic snapshot for security incident",
+            "preserve_memory": false
+          },
+          "timeout": 300,
+          "on_error": "alert_only"
+        }
+      ],
+      "handoff_to": "n8n-contractor",
+      "handoff_data": {
+        "incident_id": "${detect-and-record.handoff_data.incident_id}",
+        "network_isolated": true,
+        "packet_capture_active": "${capture-network-traffic.output.active}",
+        "snapshot_id": "${snapshot-vm.output.snapshot_id}"
+      }
+    },
+    {
+      "phase_id": "investigation",
+      "phase_name": "Forensic Investigation",
+      "contractor": "n8n-contractor",
+      "actions": [
+        {
+          "action_id": "collect-logs",
+          "action": "aggregate_logs",
+          "parameters": {
+            "sources": ["prometheus", "loki", "falco", "kubernetes_audit"],
+            "time_range": {
+              "start": "${parameters.initial_indicators.timestamp} - 1h",
+              "end": "now"
+            },
+            "filters": {
+              "affected_resource": "${parameters.affected_resource.identifier}"
+            },
+            "output": "s3://cortex-forensics/incidents/${detect-and-record.handoff_data.incident_id}/logs/"
+          },
+          "timeout": 600,
+          "on_error": "continue_phase"
+        },
+        {
+          "action_id": "analyze-logs",
+          "action": "correlate_security_events",
+          "parameters": {
+            "log_source": "${collect-logs.output.location}",
+            "analysis_types": [
+              "timeline_reconstruction",
+              "identify_initial_compromise",
+              "map_attacker_actions",
+              "determine_scope"
+            ]
+          },
+          "timeout": 900,
+          "on_error": "continue_phase"
+        },
+        {
+          "action_id": "check-iocs",
+          "action": "check_indicators_of_compromise",
+          "parameters": {
+            "ioc_sources": ["threat_intel_feeds", "known_bad_ips", "malware_signatures"],
+            "search_in": ["network_logs", "process_logs", "file_hashes"]
+          },
+          "timeout": 300,
+          "on_error": "continue_phase"
+        },
+        {
+          "action_id": "generate-report",
+          "action": "generate_investigation_report",
+          "parameters": {
+            "incident_id": "${detect-and-record.handoff_data.incident_id}",
+            "include_sections": [
+              "executive_summary",
+              "timeline",
+              "attack_vector",
+              "scope_of_compromise",
+              "indicators_of_compromise",
+              "recommendations"
+            ],
+            "output": "s3://cortex-forensics/incidents/${detect-and-record.handoff_data.incident_id}/report.pdf"
+          },
+          "timeout": 300,
+          "on_error": "alert_only"
+        }
+      ],
+      "handoff_to": "security-master",
+      "handoff_data": {
+        "incident_id": "${detect-and-record.handoff_data.incident_id}",
+        "investigation_complete": true,
+        "attack_vector": "${analyze-logs.output.attack_vector}",
+        "scope": "${analyze-logs.output.scope}",
+        "iocs": "${check-iocs.output.indicators}",
+        "report_location": "${generate-report.output.location}"
+      }
+    },
+    {
+      "phase_id": "remediation",
+      "phase_name": "Remediation and Recovery",
+      "contractor": "security-master",
+      "requires_approval": true,
+      "approval_role": "security_lead",
+      "actions": [
+        {
+          "action_id": "review-findings",
+          "action": "review_investigation_findings",
+          "parameters": {
+            "report": "${investigation.handoff_data.report_location}",
+            "generate_remediation_plan": true
+          },
+          "timeout": 1800,
+          "on_error": "fail_workflow"
+        },
+        {
+          "action_id": "coordinate-remediation",
+          "action": "execute_remediation_plan",
+          "parameters": {
+            "plan": "${review-findings.output.remediation_plan}",
+            "steps": [
+              {
+                "contractor": "infrastructure-contractor",
+                "action": "destroy_compromised_resource",
+                "parameters": {
+                  "resource": "${parameters.affected_resource.identifier}",
+                  "preserve_forensic_copy": true
+                }
+              },
+              {
+                "contractor": "infrastructure-contractor",
+                "action": "provision_replacement_resource",
+                "parameters": {
+                  "specs": "${review-findings.output.replacement_specs}",
+                  "hardened": true
+                }
+              },
+              {
+                "contractor": "talos-contractor",
+                "action": "apply_security_patches",
+                "parameters": {
+                  "vulnerabilities": "${review-findings.output.vulnerabilities}",
+                  "scope": "cluster_wide"
+                }
+              },
+              {
+                "contractor": "talos-contractor",
+                "action": "implement_security_controls",
+                "parameters": {
+                  "controls": "${review-findings.output.recommended_controls}"
+                }
+              }
+            ]
+          },
+          "timeout": 3600,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "verify-remediation",
+          "action": "verify_remediation_complete",
+          "parameters": {
+            "checks": [
+              "compromised_resource_removed",
+              "replacement_resource_deployed",
+              "patches_applied",
+              "security_controls_active"
+            ]
+          },
+          "timeout": 300,
+          "on_error": "alert_only"
+        }
+      ],
+      "handoff_to": "n8n-contractor",
+      "handoff_data": {
+        "incident_id": "${detect-and-record.handoff_data.incident_id}",
+        "remediation_complete": true,
+        "remediation_summary": "${coordinate-remediation.output.summary}"
+      }
+    },
+    {
+      "phase_id": "post-incident",
+      "phase_name": "Post-Incident Activities",
+      "contractor": "n8n-contractor",
+      "actions": [
+        {
+          "action_id": "update-monitoring",
+          "action": "enhance_monitoring",
+          "parameters": {
+            "new_rules": "${remediation.handoff_data.remediation_summary.new_detection_rules}",
+            "alert_thresholds": "${remediation.handoff_data.remediation_summary.updated_thresholds}"
+          },
+          "timeout": 300,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "update-runbooks",
+          "action": "update_incident_runbooks",
+          "parameters": {
+            "lessons_learned": "${investigation.handoff_data.report_location}",
+            "new_procedures": "${remediation.handoff_data.remediation_summary.new_procedures}"
+          },
+          "timeout": 180,
+          "on_error": "skip_action"
+        },
+        {
+          "action_id": "schedule-pir",
+          "action": "schedule_post_incident_review",
+          "parameters": {
+            "incident_id": "${detect-and-record.handoff_data.incident_id}",
+            "attendees": ["security_team", "ops_team", "management"],
+            "within_days": 7
+          },
+          "timeout": 60,
+          "on_error": "skip_action"
+        },
+        {
+          "action_id": "close-incident",
+          "action": "close_incident",
+          "parameters": {
+            "incident_id": "${detect-and-record.handoff_data.incident_id}",
+            "resolution": "remediated",
+            "final_report": "${investigation.handoff_data.report_location}"
+          },
+          "timeout": 60,
+          "on_error": "alert_only"
+        },
+        {
+          "action_id": "notify-resolution",
+          "action": "send_notification",
+          "parameters": {
+            "channels": ["slack", "email", "pagerduty"],
+            "slack_config": {
+              "channel": "#security-alerts",
+              "message": "Security incident ${detect-and-record.handoff_data.incident_id} resolved"
+            },
+            "pagerduty_config": {
+              "action": "resolve_incident"
+            }
+          },
+          "timeout": 60,
+          "on_error": "skip_action"
+        }
+      ]
+    }
+  ],
+  "escalation_rules": [
+    {
+      "condition": "${parameters.severity} == 'critical'",
+      "notify": ["security_director", "ciso"],
+      "sla": "15m"
+    },
+    {
+      "condition": "${investigation.handoff_data.scope} == 'multiple_systems'",
+      "notify": ["incident_commander", "management"],
+      "escalate_to": "emergency_response_team"
+    }
+  ],
+  "success_criteria": [
+    "Incident detected and recorded",
+    "Affected resource isolated",
+    "Forensic data collected",
+    "Investigation completed",
+    "Attack vector identified",
+    "Remediation plan executed",
+    "Security controls enhanced",
+    "Post-incident review scheduled"
+  ],
+  "sla": {
+    "detection_to_containment": "15m",
+    "containment_to_investigation": "1h",
+    "investigation_to_remediation": "4h",
+    "total_resolution_time": "24h"
+  },
+  "metadata": {
+    "created_by": "security-master",
+    "created_at": "2025-12-09T00:00:00Z",
+    "last_updated": "2025-12-09T00:00:00Z",
+    "tags": ["security", "incident-response", "forensics", "automation"]
+  }
+}

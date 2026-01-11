@@ -1,0 +1,44 @@
+{
+  "task_id": "task-dependency-resolver-1733000001",
+  "description": "Implement dependency resolver to build execution DAG from workflow steps and identify parallel execution groups",
+  "master": "development-master",
+  "priority": "high",
+  "created_at": "2025-11-29T17:00:01Z",
+  "status": "pending",
+  "metadata": {
+    "component": "workflow-engine",
+    "output_file": "coordination/workflow-engine/dependency-resolver.sh",
+    "dependencies": ["task-workflow-parser-1733000000"],
+    "estimated_duration_minutes": 90
+  },
+  "requirements": {
+    "inputs": [
+      "Parsed workflow steps with depends_on relationships"
+    ],
+    "outputs": [
+      "coordination/workflow-engine/dependency-resolver.sh"
+    ],
+    "validation": [
+      "Build directed acyclic graph (DAG) from dependencies",
+      "Detect circular dependencies",
+      "Identify parallel execution groups",
+      "Topological sort for execution order"
+    ],
+    "features": [
+      "Parse depends_on arrays for each step",
+      "Build dependency graph (adjacency list)",
+      "Detect cycles using DFS (fail if circular dependencies found)",
+      "Topological sort to determine execution order",
+      "Group steps that can run in parallel (same dependency level)",
+      "Calculate critical path through workflow",
+      "Visualize dependency graph as ASCII"
+    ]
+  },
+  "acceptance_criteria": [
+    "Correctly identifies parallel groups in security-audit.yaml (steps 2a, 2b, 2c)",
+    "Detects circular dependencies and fails gracefully",
+    "Outputs execution groups in correct order",
+    "Handles workflows with no dependencies (all sequential)",
+    "Includes unit tests with sample dependency graphs"
+  ]
+}

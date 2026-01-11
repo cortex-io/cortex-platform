@@ -1,0 +1,326 @@
+{
+  "task_id": "eui-dashboard-master-inception",
+  "type": "development:meta",
+  "priority": "critical",
+  "mode": "autonomous_parallel_inception",
+  "title": "🚀 Build EUI Dashboard - Full Parallel Inception Mode",
+  "description": "Use Cortex MoE system to build Cortex's own advanced EUI dashboard in full parallel mode. Deploy all 11 features simultaneously using maximum worker parallelization. This is Cortex building itself!",
+
+  "execution_strategy": {
+    "approach": "massive_parallel_moe",
+    "max_workers": 11,
+    "parallel_execution": true,
+    "coordination": "autonomous",
+    "master_coordination": "coordinator-master",
+    "worker_spawn": "simultaneous",
+    "auto_heal": true,
+    "inception_mode": true
+  },
+
+  "infrastructure": {
+    "framework": "React + Vite",
+    "ui_library": "Elastic UI (@elastic/eui)",
+    "api_server_port": 3001,
+    "dashboard_port": 3002,
+    "target_directory": "eui-dashboard",
+    "api_base": "http://localhost:3001"
+  },
+
+  "subtasks": [
+    {
+      "id": "eui-phase1-001",
+      "title": "Log Streaming Panel with SSE",
+      "type": "development:frontend",
+      "priority": "high",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create LogStreamingPanel.tsx with real-time log viewing using Server-Sent Events",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/panels/LogStreamingPanel.tsx",
+        "Real-time SSE connection to /api/logs/stream",
+        "Log filtering (level, source, search)",
+        "Auto-scroll with pause, export functionality"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 8000,
+      "estimated_duration_minutes": 45,
+      "api_endpoints": ["/api/logs/stream", "/api/logs/available", "/api/logs/tail"],
+      "reference_components": ["DaemonStatusPanel.tsx", "HealthAlertsPanel.tsx"]
+    },
+    {
+      "id": "eui-phase1-002",
+      "title": "User Management CRUD Interface",
+      "type": "development:frontend",
+      "priority": "high",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create UserManagementViz.tsx with complete user management UI",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/UserManagementViz.tsx",
+        "User table with sorting/searching",
+        "Create/Edit/Delete modals",
+        "Role and status management",
+        "Bulk operations"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 10000,
+      "estimated_duration_minutes": 60,
+      "api_endpoints": ["/api/users", "/api/users/:id", "/api/users/bulk", "/api/users/stats"]
+    },
+    {
+      "id": "eui-phase1-003",
+      "title": "Optimizer Dashboard with Forecasting",
+      "type": "development:frontend",
+      "priority": "high",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create OptimizerDashboardViz.tsx with token forecasting and performance analytics",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/OptimizerDashboardViz.tsx",
+        "Scheduler stats visualization",
+        "Token analytics with charts",
+        "Worker pool utilization",
+        "Bottleneck detection and recommendations"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 12000,
+      "estimated_duration_minutes": 75,
+      "api_endpoints": [
+        "/api/optimizer/scheduler/stats",
+        "/api/optimizer/tokens/stats",
+        "/api/optimizer/tokens/forecast",
+        "/api/optimizer/pool/stats",
+        "/api/optimizer/profile/bottlenecks"
+      ]
+    },
+    {
+      "id": "eui-phase1-004",
+      "title": "Executive Summary Dashboard",
+      "type": "development:frontend",
+      "priority": "high",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create ExecutiveSummaryViz.tsx with high-level KPIs and trends",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/ExecutiveSummaryViz.tsx",
+        "Key KPI cards",
+        "7-day trend sparklines",
+        "Top alerts summary",
+        "Resource utilization gauges"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 9000,
+      "estimated_duration_minutes": 50,
+      "api_endpoints": [
+        "/api/metrics",
+        "/api/health",
+        "/api/dashboard/analytics/summary"
+      ]
+    },
+    {
+      "id": "eui-phase2-001",
+      "title": "Agentstudio Management",
+      "type": "development:frontend",
+      "priority": "medium",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create AgentstudioViz.tsx with agent registry and template management",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/AgentstudioViz.tsx",
+        "Agent registry table",
+        "Template browser",
+        "Create agent wizard",
+        "Agent performance metrics"
+      ],
+      "dependencies": ["eui-phase1-002"],
+      "estimated_tokens": 11000,
+      "estimated_duration_minutes": 65,
+      "api_endpoints": [
+        "/api/agentstudio/agents",
+        "/api/agentstudio/templates",
+        "/api/agentstudio/registry/summary"
+      ]
+    },
+    {
+      "id": "eui-phase2-002",
+      "title": "Execution Managers Panel",
+      "type": "development:frontend",
+      "priority": "medium",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create ExecutionManagersPanel.tsx for tracking execution managers",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/panels/ExecutionManagersPanel.tsx",
+        "Active EMs with progress",
+        "Completed EMs summary",
+        "DAG visualization",
+        "Success rate metrics"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 10000,
+      "estimated_duration_minutes": 55,
+      "api_endpoints": ["/api/execution-managers"]
+    },
+    {
+      "id": "eui-phase2-003",
+      "title": "Advanced MoE Analytics",
+      "type": "development:frontend",
+      "priority": "medium",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create MoEAdvancedAnalyticsViz.tsx with routing analytics",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/MoEAdvancedAnalyticsViz.tsx",
+        "Accuracy over time chart",
+        "Confidence distribution",
+        "Pool utilization heatmap",
+        "Routing decision breakdown"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 11000,
+      "estimated_duration_minutes": 70,
+      "api_endpoints": [
+        "/api/moe/accuracy",
+        "/api/moe/confidence-distribution",
+        "/api/moe/pool-utilization"
+      ]
+    },
+    {
+      "id": "eui-phase2-004",
+      "title": "DDQD Scheduling Interface",
+      "type": "development:frontend",
+      "priority": "medium",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create DDQDSchedulingViz.tsx for test scheduling",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/DDQDSchedulingViz.tsx",
+        "Schedule test form",
+        "Upcoming tests table",
+        "Test history with results",
+        "Active test progress",
+        "Quick run buttons"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 10000,
+      "estimated_duration_minutes": 60,
+      "api_endpoints": [
+        "/api/ddqd/schedule",
+        "/api/ddqd/history",
+        "/api/ddqd/active"
+      ]
+    },
+    {
+      "id": "eui-phase3-001",
+      "title": "Distributed Tracing Visualization",
+      "type": "development:frontend",
+      "priority": "low",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create DistributedTracingViz.tsx with waterfall visualization",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/DistributedTracingViz.tsx",
+        "Trace list table",
+        "Waterfall span visualization",
+        "Span detail flyout",
+        "Filter controls",
+        "Timeline zoom"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 13000,
+      "estimated_duration_minutes": 90,
+      "reference_files": [
+        "dashboard/public/css/trace-waterfall.css",
+        "dashboard/public/js/trace-visualization.js"
+      ]
+    },
+    {
+      "id": "eui-phase3-002",
+      "title": "Streams Management Panel",
+      "type": "development:frontend",
+      "priority": "low",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create StreamsManagementPanel.tsx for stream monitoring",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/panels/StreamsManagementPanel.tsx",
+        "Stream list with status",
+        "Health indicators",
+        "Start/stop controls",
+        "Real-time metrics"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 8000,
+      "estimated_duration_minutes": 45,
+      "api_endpoints": ["/api/streams"]
+    },
+    {
+      "id": "eui-phase3-003",
+      "title": "Raw Coordination Viewer",
+      "type": "development:frontend",
+      "priority": "low",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Create CoordinationViewerViz.tsx debug tool",
+      "deliverables": [
+        "eui-dashboard/src/components/dashboard/visualizations/CoordinationViewerViz.tsx",
+        "File selector for coordination files",
+        "JSON viewer with syntax highlighting",
+        "Path search/filter",
+        "Diff view",
+        "Copy and download"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 9000,
+      "estimated_duration_minutes": 50,
+      "api_endpoints": ["/api/coordination/raw"]
+    },
+    {
+      "id": "eui-infrastructure",
+      "title": "Infrastructure & Integration",
+      "type": "development:infrastructure",
+      "priority": "critical",
+      "assigned_to": "development",
+      "worker_type": "implementation-worker",
+      "description": "Set up React+Vite project, routing, and integrate all components",
+      "deliverables": [
+        "eui-dashboard/ project scaffolding",
+        "package.json with dependencies",
+        "vite.config.ts",
+        "src/App.tsx with routing",
+        "src/components/dashboard/DashboardContainer.tsx",
+        "API client (dashboardApi.ts)",
+        "Theme configuration",
+        "Build and deployment scripts"
+      ],
+      "dependencies": [],
+      "estimated_tokens": 7000,
+      "estimated_duration_minutes": 40
+    }
+  ],
+
+  "totals": {
+    "total_subtasks": 12,
+    "total_estimated_tokens": 118000,
+    "total_estimated_duration_minutes": 685,
+    "total_estimated_hours": 11.4
+  },
+
+  "success_criteria": {
+    "all_components_built": "All 12 deliverables completed",
+    "dashboard_running": "Dashboard accessible at http://localhost:3002",
+    "api_integration": "All API endpoints connected and working",
+    "ui_polished": "Elastic UI components properly styled",
+    "tests_passing": "Component tests passing",
+    "documentation": "README with setup instructions"
+  },
+
+  "created_at": "2025-12-04T15:50:00-0600",
+  "created_by": "user-inception-mode",
+  "status": "ready_to_spawn",
+  "inception_meta": {
+    "note": "Cortex building its own dashboard using its own MoE system",
+    "irony_level": "maximum",
+    "awesome_factor": "9000+"
+  }
+}

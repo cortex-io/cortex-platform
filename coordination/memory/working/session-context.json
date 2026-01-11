@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "session_id": null,
+  "started_at": null,
+  "last_activity": null,
+  "context": {
+    "current_focus": null,
+    "recent_decisions": [],
+    "active_experts": [],
+    "pending_aggregations": []
+  },
+  "performance": {
+    "tasks_completed_this_session": 0,
+    "average_completion_time": 0,
+    "success_rate": 0
+  },
+  "moe_metrics": {
+    "routing_decisions": 0,
+    "parallel_activations": 0,
+    "average_activation_rate": 0,
+    "expert_utilization": {
+      "development": 0,
+      "security": 0,
+      "inventory": 0
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "handoff_id": "coord-to-dev-testing-004",
+  "from_master": "coordinator",
+  "to_master": "development",
+  "task_id": "task-deep-conversation-testing-004",
+  "priority": "high",
+  "task_data": {
+    "title": "Deep Conversation Testing - All Vendor APIs",
+    "category": "development",
+    "description": "Test DEEP multi-turn conversations across all vendor MCP servers (Sandfly, Proxmox, UniFi, Wazuh) to verify context persistence and API coverage",
+    "requirements": [
+      "Create comprehensive test scripts for deep conversations",
+      "Test Sandfly API with 20+ message exchanges",
+      "Test Proxmox API with 20+ message exchanges",
+      "Test UniFi API with 20+ message exchanges",
+      "Test Wazuh API with 20+ message exchanges",
+      "Verify context is maintained throughout",
+      "Document all available API endpoints through natural language",
+      "Create test report with results"
+    ],
+    "technical_details": {
+      "test_conversation_scenarios": {
+        "sandfly": [
+          "List all hosts",
+          "Show me details for host X",
+          "What processes are running on that host?",
+          "Are there any security alerts for this host?",
+          "Show me the kernel modules loaded",
+          "What users exist on this system?",
+          "Show me network listeners",
+          "Are there any scheduled tasks?",
+          "What sandfly detection rules are active?",
+          "Run a security scan on this host",
+          "Show me scan results",
+          "What's the severity of any findings?",
+          "Show me the audit log",
+          "What credentials are configured?",
+          "List all scan schedules",
+          "Create a new scan schedule for production hosts",
+          "Show me jump hosts configured",
+          "What notifications are set up?",
+          "Get a host snapshot report",
+          "Show me scan performance metrics"
+        ],
+        "proxmox": [
+          "List all cluster nodes",
+          "Show me VMs on node pve-01",
+          "What's the status of VM 100?",
+          "Show me resource usage for that VM",
+          "What storage is configured?",
+          "Show me backup status",
+          "List all containers",
+          "What's the cluster health?",
+          "Show me network configuration",
+          "What templates are available?",
+          "Show me HA configuration",
+          "What's the CPU usage across the cluster?",
+          "Show me memory utilization",
+          "List all storage pools",
+          "What's the replication status?",
+          "Show me recent tasks",
+          "What users are configured?",
+          "Show me firewall rules",
+          "What's the cluster quorum status?",
+          "Show me update status"
+        ],
+        "unifi": [
+          "List all network devices",
+          "Show me connected clients",
+          "What's the bandwidth usage?",
+          "Show me wireless networks configured",
+          "What access points are online?",
+          "Show me client details for device X",
+          "What VLANs are configured?",
+          "Show me firewall rules",
+          "What's the network topology?",
+          "Show me port forwarding rules",
+          "What switches are in the network?",
+          "Show me PoE status",
+          "What's the WAN status?",
+          "Show me DHCP leases",
+          "What guest networks exist?",
+          "Show me traffic statistics",
+          "What alerts are configured?",
+          "Show me recent events",
+          "What firmware versions are running?",
+          "Show me device uptime"
+        ],
+        "wazuh": [
+          "Show me security alerts from the last 24 hours",
+          "What critical alerts exist?",
+          "Show me agents status",
+          "What hosts are disconnected?",
+          "Show me vulnerability scan results",
+          "What compliance checks failed?",
+          "Show me file integrity monitoring alerts",
+          "What intrusion detection events occurred?",
+          "Show me security configuration assessment results",
+          "What are the top threat actors?",
+          "Show me malware detection events",
+          "What PCI DSS compliance issues exist?",
+          "Show me rootkit detection results",
+          "What suspicious processes were detected?",
+          "Show me network anomalies",
+          "What are the most common alert types?",
+          "Show me agent version distribution",
+          "What MITRE ATT&CK techniques were detected?",
+          "Show me security posture summary",
+          "What remediation actions are recommended?"
+        ]
+      },
+      "test_execution": {
+        "tool": "Manual chat interface testing or automated script",
+        "session_tracking": "Monitor Redis session storage",
+        "context_verification": "Ensure each response references previous context",
+        "timing": "Space messages naturally (5-10 seconds apart)",
+        "failure_tracking": "Document any context loss or tool failures"
+      }
+    },
+    "success_criteria": [
+      "Complete 20+ message conversation for Sandfly without context loss",
+      "Complete 20+ message conversation for Proxmox without context loss",
+      "Complete 20+ message conversation for UniFi without context loss",
+      "Complete 20+ message conversation for Wazuh without context loss",
+      "All vendor API endpoints accessible via natural language",
+      "Context properly maintained including tool results",
+      "Conversation summarization works correctly at 15+ messages",
+      "Test report documents all tested scenarios"
+    ],
+    "deliverables": [
+      "Test script or procedure document",
+      "Test execution logs for all vendors",
+      "Test report with pass/fail for each scenario",
+      "Documentation of available API capabilities per vendor",
+      "Performance metrics (response time, tool execution time)"
+    ]
+  },
+  "context": {
+    "routing_reason": "Pattern-based routing via MoE - development category",
+    "expected_outcome": "Comprehensive validation of deep conversation capabilities",
+    "dependencies": [
+      "task-sandfly-integration-001 (Sandfly MCP deployment)",
+      "task-sandfly-integration-002 (Sandfly tool integration)",
+      "task-context-persistence-003 (Context persistence fixes)"
+    ],
+    "governance_bypass": true,
+    "reason": "Development work for critical testing validation"
+  },
+  "created_at": "2025-12-25T16:30:00Z",
+  "status": "pending_pickup"
+}

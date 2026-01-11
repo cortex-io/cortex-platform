@@ -1,0 +1,83 @@
+{
+  "handoff_id": "coord-to-daryl-proxmox-001",
+  "timestamp": "2025-12-26T18:00:00Z",
+  "from_agent": "coordinator",
+  "to_agent": "daryl-proxmox-query-fix-001",
+  "task_id": "task-proxmox-query-routing-001",
+  "task_type": "fix",
+  "priority": "high",
+  "governance_bypass": true,
+  "context": {
+    "problem": "Proxmox MCP /query endpoint always calls list_nodes regardless of query content",
+    "evidence": "Logs show 'Query: list all running VMs' calling list_nodes instead of list_vms",
+    "impact": "Users cannot query VMs, containers, or other resources via natural language",
+    "root_cause": "HTTP wrapper uses tools[0] (first tool) by default instead of intelligent routing"
+  },
+  "task_details": {
+    "title": "Fix Proxmox MCP Query Router",
+    "description": "Implement intelligent keyword-based routing in the /query endpoint to call the appropriate MCP tool based on query content",
+    "target_components": [
+      "ConfigMap: mcp-http-wrapper (cortex-system)",
+      "Deployment: proxmox-mcp-server (cortex-system)"
+    ],
+    "deliverables": [
+      "Updated mcp-http-wrapper.py with query routing logic",
+      "Test results showing correct tool routing",
+      "Deployment restart and verification",
+      "Before/after logs demonstrating the fix"
+    ]
+  },
+  "technical_details": {
+    "namespace": "cortex-system",
+    "deployment": "proxmox-mcp-server",
+    "configmap": "mcp-http-wrapper",
+    "file_to_modify": "mcp-http-wrapper.py",
+    "endpoint_to_fix": "/query POST handler",
+    "available_tools": [
+      "list_nodes",
+      "get_node_status",
+      "list_vms",
+      "get_vm_config",
+      "get_vm_status",
+      "start_vm",
+      "stop_vm",
+      "shutdown_vm",
+      "reboot_vm",
+      "list_containers",
+      "get_container_status",
+      "start_container",
+      "stop_container",
+      "list_storage",
+      "get_storage_status",
+      "list_tasks",
+      "get_task_status",
+      "create_vm_snapshot",
+      "list_vm_snapshots",
+      "delete_vm_snapshot",
+      "get_cluster_status"
+    ]
+  },
+  "routing_rules": {
+    "vm_keywords": ["vm", "vms", "virtual machine", "qemu", "kvm"],
+    "container_keywords": ["container", "containers", "lxc"],
+    "storage_keywords": ["storage", "disk", "volume"],
+    "task_keywords": ["task", "tasks", "job", "jobs"],
+    "snapshot_keywords": ["snapshot", "snapshots"],
+    "node_keywords": ["node", "nodes", "cluster"]
+  },
+  "success_criteria": [
+    "Query 'what VMs are running?' calls list_vms",
+    "Query 'show containers' calls list_containers",
+    "Query 'list storage' calls list_storage",
+    "Query 'show tasks' calls list_tasks",
+    "Query 'cluster status' calls get_cluster_status",
+    "Logs verify correct tool routing",
+    "No regressions in other endpoints (/call-tool, /list-tools, /health)"
+  ],
+  "worker_brief_location": "/Users/ryandahlberg/Projects/cortex/coordination/workers/daryl-proxmox-query-fix-001/WORKER_BRIEF.md",
+  "worker_directory": "/Users/ryandahlberg/Projects/cortex/coordination/workers/daryl-proxmox-query-fix-001",
+  "resources": {
+    "token_budget": 30000,
+    "timeout_minutes": 60
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-11-30T13:00:00-06:00",
+  "description": "Registry of all repositories under CVE scanning management",
+  "repositories": [
+    {
+      "repo_id": "cortex-main",
+      "name": "cortex",
+      "path": "/Users/ryandahlberg/Projects/cortex",
+      "type": "local",
+      "enabled": true,
+      "ecosystems": ["npm", "python"],
+      "dependency_files": {
+        "npm": ["package.json", "package-lock.json"],
+        "python": ["python-sdk/requirements.txt", "python-sdk/setup.py", "evaluation/requirements.txt"]
+      },
+      "scan_schedule": "daily",
+      "priority": "critical",
+      "last_scanned": null,
+      "notes": "Primary Cortex framework - autonomous AI orchestration system"
+    },
+    {
+      "repo_id": "blog-001",
+      "name": "blog",
+      "path": "/Users/ryandahlberg/Projects/blog",
+      "type": "local",
+      "enabled": true,
+      "ecosystems": ["npm"],
+      "dependency_files": {
+        "npm": ["package.json", "package-lock.json"]
+      },
+      "scan_schedule": "weekly",
+      "priority": "high",
+      "last_scanned": null,
+      "notes": "ry-ops.dev blog - Astro-based static site"
+    },
+    {
+      "repo_id": "driveiq-001",
+      "name": "DriveIQ",
+      "path": "/Users/ryandahlberg/Projects/DriveIQ",
+      "type": "local",
+      "enabled": true,
+      "ecosystems": ["npm", "python"],
+      "dependency_files": {
+        "npm": ["frontend/package.json", "frontend/package-lock.json"],
+        "python": ["backend/requirements.txt"]
+      },
+      "scan_schedule": "weekly",
+      "priority": "high",
+      "last_scanned": null,
+      "notes": "DriveIQ application - React frontend + FastAPI backend with RAG"
+    }
+  ],
+  "stats": {
+    "total_repos": 3,
+    "enabled_repos": 3,
+    "local_repos": 3,
+    "remote_repos": 0,
+    "ecosystems": {
+      "npm": 3,
+      "python": 2
+    },
+    "by_priority": {
+      "critical": 1,
+      "high": 2,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "scanning_config": {
+    "default_schedule": "weekly",
+    "max_concurrent_scans": 5,
+    "timeout_minutes": 30,
+    "severity_threshold": "medium",
+    "tools": {
+      "primary_scanner": "trivy",
+      "secondary_scanner": "grype",
+      "sbom_generator": "syft"
+    }
+  }
+}

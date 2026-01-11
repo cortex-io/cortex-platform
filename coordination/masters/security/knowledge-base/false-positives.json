@@ -1,0 +1,21 @@
+{
+  "false_positives": [
+    {
+      "pattern_id": "fp-001",
+      "vulnerability": "CVE-2025-64718",
+      "package": "js-yaml",
+      "version": "3.14.2",
+      "reason": "version_is_patched",
+      "description": "js-yaml 3.14.2 is the PATCHED version that fixes CVE-2025-64718, not a vulnerable version. The vulnerability affects versions <3.14.2 and 4.0.0-4.1.0.",
+      "detection_pattern": "Alert triggered for js-yaml 3.14.2 prototype pollution",
+      "resolution": "Verify version is 3.14.2 or 4.1.1+ - these are secure",
+      "learned_from": "ry-ops/cara analysis",
+      "verified_at": "2025-11-19T13:47:00Z",
+      "confidence": "high",
+      "references": [
+        "https://github.com/advisories/GHSA-mh29-5h37-fv8m",
+        "https://security.snyk.io/vuln/SNYK-JS-JSYAML-13961110"
+      ]
+    }
+  ]
+}

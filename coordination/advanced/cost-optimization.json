@@ -1,0 +1,901 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "last_updated": "2025-12-09T10:00:00Z",
+
+  "optimization_rules": {
+    "right_sizing": {
+      "enabled": true,
+      "analysis_window_days": 30,
+      "min_data_points": 2000,
+      "thresholds": {
+        "cpu": {
+          "underutilized_avg": 30,
+          "underutilized_p95": 60,
+          "overutilized_avg": 85,
+          "overutilized_p95": 90,
+          "optimal_target_p95": 75
+        },
+        "memory": {
+          "underutilized_avg": 40,
+          "underutilized_p95": 65,
+          "overutilized_avg": 90,
+          "overutilized_p95": 95,
+          "optimal_target_p95": 80
+        },
+        "disk_iops": {
+          "underutilized_avg": 30,
+          "overutilized_avg": 85
+        },
+        "network": {
+          "underutilized_avg": 20,
+          "overutilized_avg": 80
+        }
+      },
+      "headroom_factors": {
+        "steady_workload": 1.10,
+        "periodic_workload": 1.15,
+        "bursty_workload": 1.20
+      },
+      "min_monthly_savings": 50,
+      "min_confidence": 70,
+      "auto_implement_threshold": {
+        "enabled": false,
+        "min_confidence": 95,
+        "max_downtime_minutes": 5,
+        "require_approval": true
+      }
+    },
+
+    "idle_resource_detection": {
+      "enabled": true,
+      "analysis_window_days": 7,
+      "categories": {
+        "completely_idle": {
+          "idle_score_threshold": 90,
+          "action": "tag_for_termination",
+          "grace_period_days": 7,
+          "notify_owner": true
+        },
+        "nearly_idle": {
+          "idle_score_threshold": 70,
+          "action": "investigate",
+          "notify_owner": true
+        },
+        "zombie": {
+          "action": "investigate",
+          "notify_owner": true
+        },
+        "orphaned": {
+          "action": "reclaim_or_terminate",
+          "grace_period_days": 14,
+          "notify_admin": true
+        }
+      },
+      "idle_score_weights": {
+        "cpu_idle": 0.40,
+        "network_idle": 0.30,
+        "request_idle": 0.20,
+        "disk_idle": 0.10
+      },
+      "exemptions": {
+        "tags": ["keep-alive", "disaster-recovery", "standby"],
+        "resource_types": []
+      }
+    },
+
+    "reserved_capacity": {
+      "enabled": true,
+      "analysis_window_days": 90,
+      "minimum_uptime_percentage": 90,
+      "reservation_options": {
+        "1_year": {
+          "enabled": true,
+          "max_roi_months": 6,
+          "payment_option": "partial_upfront",
+          "upfront_percentage": 0.30
+        },
+        "3_year": {
+          "enabled": true,
+          "max_roi_months": 12,
+          "payment_option": "partial_upfront",
+          "upfront_percentage": 0.50,
+          "min_savings_vs_1yr_multiplier": 2.0
+        }
+      },
+      "savings_plans": {
+        "enabled": true,
+        "commitment_buffer": 0.90,
+        "lookback_months": 12,
+        "compute_sp_1yr_discount": 0.28,
+        "compute_sp_3yr_discount": 0.42,
+        "instance_sp_1yr_discount": 0.35,
+        "instance_sp_3yr_discount": 0.54
+      },
+      "min_monthly_savings": 100
+    },
+
+    "spot_instances": {
+      "enabled": true,
+      "suitable_workload_types": [
+        "batch_processing",
+        "data_analysis",
+        "ci_cd",
+        "dev_test",
+        "stateless_web",
+        "queue_worker",
+        "rendering",
+        "simulation"
+      ],
+      "unsuitable_workload_types": [
+        "database_primary",
+        "stateful_application",
+        "real_time_processing",
+        "mission_critical"
+      ],
+      "min_interruption_tolerance": 7,
+      "min_savings_percentage": 30,
+      "strategies": {
+        "full_spot": {
+          "max_interruption_rate": 5,
+          "max_price_volatility": 0.15,
+          "spot_percentage": 100
+        },
+        "mixed_spot_on_demand": {
+          "max_interruption_rate": 15,
+          "max_price_volatility": 0.30,
+          "spot_percentage": 60,
+          "on_demand_percentage": 40
+        },
+        "spot_with_fallback": {
+          "max_interruption_rate": 30,
+          "max_price_volatility": 0.50,
+          "spot_percentage": 80,
+          "fallback_on_interruption": true
+        }
+      },
+      "diversification": {
+        "min_instance_types": 3,
+        "min_availability_zones": 2,
+        "allocation_strategy": "price-capacity-optimized"
+      },
+      "spot_price_limit": "on_demand_price"
+    },
+
+    "storage_tiering": {
+      "enabled": true,
+      "analysis_window_days": 90,
+      "tiers": {
+        "standard": {
+          "min_access_frequency_per_month": 10,
+          "storage_cost_per_gb": 0.023,
+          "retrieval_cost_per_gb": 0.0,
+          "request_cost_per_1000": 0.0004
+        },
+        "intelligent_tiering": {
+          "min_access_frequency_per_month": 1,
+          "max_access_frequency_per_month": 10,
+          "storage_cost_per_gb": 0.023,
+          "monitoring_cost_per_1000_objects": 0.0025,
+          "retrieval_cost_per_gb": 0.0
+        },
+        "infrequent_access": {
+          "min_access_frequency_per_month": 0.25,
+          "max_access_frequency_per_month": 1,
+          "storage_cost_per_gb": 0.0125,
+          "retrieval_cost_per_gb": 0.01,
+          "request_cost_per_1000": 0.001
+        },
+        "glacier_instant": {
+          "max_days_since_last_access": 90,
+          "storage_cost_per_gb": 0.004,
+          "retrieval_cost_per_gb": 0.03,
+          "request_cost_per_1000": 0.01
+        },
+        "glacier_flexible": {
+          "avg_days_between_access": 365,
+          "storage_cost_per_gb": 0.0036,
+          "retrieval_cost_per_gb": 0.02,
+          "retrieval_time_hours": 3,
+          "request_cost_per_1000": 0.05
+        },
+        "glacier_deep_archive": {
+          "min_days_since_last_access": 365,
+          "storage_cost_per_gb": 0.00099,
+          "retrieval_cost_per_gb": 0.02,
+          "retrieval_time_hours": 12,
+          "request_cost_per_1000": 0.05
+        }
+      },
+      "lifecycle_policies": [
+        {
+          "policy_id": "logs_retention",
+          "name": "Application logs lifecycle",
+          "filters": {
+            "prefixes": ["logs/", "application-logs/"],
+            "tags": {"log-type": "application"}
+          },
+          "transitions": [
+            {"days": 30, "tier": "infrequent_access"},
+            {"days": 90, "tier": "glacier_instant"},
+            {"days": 365, "tier": "glacier_deep_archive"}
+          ],
+          "expiration_days": 2555
+        },
+        {
+          "policy_id": "backups_retention",
+          "name": "Database backups lifecycle",
+          "filters": {
+            "prefixes": ["backups/database/"],
+            "tags": {"backup-type": "database"}
+          },
+          "transitions": [
+            {"days": 7, "tier": "glacier_flexible"},
+            {"days": 90, "tier": "glacier_deep_archive"}
+          ],
+          "expiration_days": 2555
+        },
+        {
+          "policy_id": "temp_data_cleanup",
+          "name": "Temporary data cleanup",
+          "filters": {
+            "prefixes": ["tmp/", "temp/", "cache/"],
+            "tags": {"temporary": "true"}
+          },
+          "transitions": [],
+          "expiration_days": 7
+        },
+        {
+          "policy_id": "archive_old_data",
+          "name": "Archive old application data",
+          "filters": {
+            "prefixes": ["data/archive/"],
+            "tags": {"archive": "true"}
+          },
+          "transitions": [
+            {"days": 90, "tier": "glacier_flexible"},
+            {"days": 730, "tier": "glacier_deep_archive"}
+          ],
+          "expiration_days": 3650
+        }
+      ],
+      "min_monthly_savings": 25
+    },
+
+    "network_optimization": {
+      "enabled": true,
+      "inter_region": {
+        "cost_per_gb": 0.02,
+        "min_monthly_gb_threshold": 100,
+        "recommendations": [
+          "consolidate_to_same_region",
+          "implement_regional_caching",
+          "use_private_connectivity"
+        ]
+      },
+      "internet_egress": {
+        "tier_pricing": [
+          {"up_to_gb": 10000, "cost_per_gb": 0.09},
+          {"up_to_gb": 50000, "cost_per_gb": 0.085},
+          {"up_to_gb": 150000, "cost_per_gb": 0.07},
+          {"over_gb": 150000, "cost_per_gb": 0.05}
+        ],
+        "cdn_threshold_gb": 1000,
+        "cdn_cost_per_gb": 0.085,
+        "cdn_cache_hit_target": 0.90
+      },
+      "cross_az": {
+        "cost_per_gb": 0.01,
+        "min_monthly_cost_threshold": 50,
+        "recommendation": "co_locate_resources_same_az"
+      },
+      "cdn_optimization": {
+        "min_cache_hit_ratio": 0.80,
+        "target_cache_hit_ratio": 0.90,
+        "optimization_techniques": [
+          "increase_cache_ttl",
+          "optimize_cache_keys",
+          "configure_query_string_handling",
+          "implement_cache_behaviors",
+          "cache_warming"
+        ]
+      }
+    },
+
+    "token_optimization": {
+      "enabled": true,
+      "analysis_window_days": 30,
+      "model_pricing_per_1m_tokens": {
+        "gpt-4": {
+          "prompt": 30.00,
+          "completion": 60.00
+        },
+        "gpt-4-turbo": {
+          "prompt": 10.00,
+          "completion": 30.00
+        },
+        "gpt-3.5-turbo": {
+          "prompt": 0.50,
+          "completion": 1.50
+        },
+        "claude-3-opus": {
+          "prompt": 15.00,
+          "completion": 75.00
+        },
+        "claude-3-sonnet": {
+          "prompt": 3.00,
+          "completion": 15.00
+        },
+        "claude-3-haiku": {
+          "prompt": 0.25,
+          "completion": 1.25
+        },
+        "gemini-1.5-pro": {
+          "prompt": 3.50,
+          "completion": 10.50
+        },
+        "gemini-1.5-flash": {
+          "prompt": 0.075,
+          "completion": 0.30
+        }
+      },
+      "optimization_strategies": {
+        "model_selection": {
+          "enabled": true,
+          "simple_task_threshold_tokens": 500,
+          "min_savings_percentage": 30,
+          "downgrade_candidates": {
+            "gpt-4": ["gpt-4-turbo", "gpt-3.5-turbo", "claude-3-sonnet", "claude-3-haiku"],
+            "claude-3-opus": ["claude-3-sonnet", "claude-3-haiku"],
+            "gpt-4-turbo": ["gpt-3.5-turbo", "claude-3-sonnet"]
+          }
+        },
+        "prompt_optimization": {
+          "enabled": true,
+          "min_avg_prompt_tokens": 2000,
+          "target_reduction_percentage": 20,
+          "techniques": [
+            "remove_redundant_instructions",
+            "condense_examples",
+            "remove_unnecessary_context",
+            "use_system_message",
+            "optimize_formatting"
+          ]
+        },
+        "response_caching": {
+          "enabled": true,
+          "min_cache_hit_potential": 30,
+          "cache_strategy": "semantic_similarity",
+          "similarity_threshold": 0.90,
+          "cache_ttl_seconds": 3600,
+          "cache_size_mb": 1024
+        },
+        "batch_processing": {
+          "enabled": true,
+          "min_request_frequency": 100,
+          "min_latency_tolerance_seconds": 60,
+          "batch_size": 10,
+          "expected_savings_percentage": 15
+        }
+      },
+      "token_budgets": {
+        "global_monthly": 10000000,
+        "by_service": {
+          "api_service": {
+            "monthly_budget": 5000000,
+            "alert_threshold": 0.80,
+            "hard_limit": 6000000
+          },
+          "batch_processing": {
+            "monthly_budget": 3000000,
+            "alert_threshold": 0.80,
+            "hard_limit": 3500000
+          },
+          "development": {
+            "monthly_budget": 2000000,
+            "alert_threshold": 0.80,
+            "hard_limit": 2500000
+          }
+        }
+      }
+    },
+
+    "time_based_scheduling": {
+      "enabled": true,
+      "strategies": [
+        {
+          "strategy_id": "off_peak_batch",
+          "name": "Off-Peak Batch Processing",
+          "applicable_workload_types": ["batch_jobs", "data_processing", "backups", "analytics"],
+          "schedule": {
+            "weekday_windows": [
+              {"start": "22:00", "end": "06:00"}
+            ],
+            "weekend_windows": [
+              {"start": "00:00", "end": "23:59"}
+            ],
+            "timezone": "UTC"
+          },
+          "expected_savings_percentage": 40,
+          "spot_instance_compatible": true
+        },
+        {
+          "strategy_id": "weekend_scaling",
+          "name": "Weekend Scale-Down",
+          "applicable_workload_types": ["dev_environments", "test_environments", "internal_tools"],
+          "schedule": {
+            "weekday": {
+              "min_capacity": 10,
+              "max_capacity": 100,
+              "desired_capacity": 20
+            },
+            "weekend": {
+              "min_capacity": 2,
+              "max_capacity": 20,
+              "desired_capacity": 5
+            }
+          },
+          "expected_savings_percentage": 25
+        },
+        {
+          "strategy_id": "business_hours_only",
+          "name": "Business Hours Only",
+          "applicable_workload_types": ["dev_environments", "staging_environments", "demo_environments"],
+          "schedule": {
+            "enabled_hours": "09:00-18:00",
+            "enabled_days": "Monday-Friday",
+            "timezone": "America/New_York",
+            "auto_start_buffer_minutes": 30,
+            "auto_stop_buffer_minutes": 60
+          },
+          "expected_savings_percentage": 65
+        },
+        {
+          "strategy_id": "dynamic_scaling",
+          "name": "Dynamic Time-Based Scaling",
+          "applicable_workload_types": ["web_applications", "api_services"],
+          "schedule": {
+            "peak_hours": {
+              "hours": "09:00-17:00",
+              "days": "Monday-Friday",
+              "capacity_multiplier": 1.5
+            },
+            "off_peak_hours": {
+              "hours": "17:00-09:00",
+              "days": "Monday-Friday",
+              "capacity_multiplier": 0.5
+            },
+            "weekend": {
+              "capacity_multiplier": 0.3
+            }
+          },
+          "expected_savings_percentage": 30
+        }
+      ],
+      "min_time_flexibility_percentage": 50,
+      "min_monthly_savings": 100
+    }
+  },
+
+  "recommendation_templates": {
+    "right_sizing": {
+      "title": "Right-size {resource_type}: {resource_name}",
+      "description": "Current configuration is over-provisioned. Average {metric} utilization is {avg_utilization}%, well below optimal range of {optimal_min}-{optimal_max}%.",
+      "implementation_steps": [
+        "Create snapshot/backup of {resource_name}",
+        "Schedule maintenance window (estimated downtime: {downtime})",
+        "Change {resource_type} from {current_config} to {recommended_config}",
+        "Start {resource_type} and verify functionality",
+        "Monitor {key_metrics} for {monitoring_period} days",
+        "Confirm cost savings in billing dashboard"
+      ],
+      "validation_criteria": [
+        "{metric} utilization remains below {threshold}% at p95",
+        "Application performance meets SLA requirements",
+        "Error rate remains below {max_error_rate}%",
+        "Response time within acceptable range"
+      ]
+    },
+
+    "idle_resource": {
+      "title": "Terminate idle {resource_type}: {resource_name}",
+      "description": "Resource has been idle for {idle_days} days with {idle_score}% idle score. No significant activity detected.",
+      "implementation_steps": [
+        "Verify resource is not required (check with owner: {owner})",
+        "Create final snapshot/backup if needed",
+        "Document termination reason and date",
+        "Terminate resource",
+        "Remove from monitoring and inventory",
+        "Verify cost reduction in next billing cycle"
+      ],
+      "validation_criteria": [
+        "No dependent services impacted",
+        "Owner acknowledges termination",
+        "Backup/snapshot created if required",
+        "Cost savings reflected in billing"
+      ]
+    },
+
+    "reserved_capacity": {
+      "title": "Purchase {term} Reserved Instance for {resource_name}",
+      "description": "Resource has {uptime}% uptime over {analysis_days} days with steady utilization pattern. Reserved Instance will provide {savings_percentage}% savings.",
+      "implementation_steps": [
+        "Verify resource will remain in use for {term}",
+        "Confirm budget approval for upfront cost: ${upfront_cost}",
+        "Purchase {term} {payment_option} Reserved Instance",
+        "Apply reservation to {resource_name}",
+        "Document reservation details and expiration date",
+        "Track savings in cost dashboard"
+      ],
+      "validation_criteria": [
+        "Reservation active and applied correctly",
+        "Monthly cost reduced by approximately ${monthly_savings}",
+        "Uptime remains above {min_uptime}%",
+        "ROI achieved within {roi_months} months"
+      ]
+    },
+
+    "spot_instance": {
+      "title": "Migrate {resource_name} to Spot Instances",
+      "description": "Workload is fault-tolerant with {interruption_tolerance}/10 interruption tolerance. Spot instances will provide {savings_percentage}% savings.",
+      "implementation_steps": [
+        "Implement checkpoint/state saving for {workload_type}",
+        "Configure spot instance request with diversification",
+        "Set spot price limit to {spot_price_limit}",
+        "Configure on-demand fallback ({fallback_percentage}%)",
+        "Test interruption handling",
+        "Monitor interruption rate for {monitoring_period} days",
+        "Adjust configuration based on observed patterns"
+      ],
+      "validation_criteria": [
+        "Interruption handling works correctly",
+        "Workload completes successfully despite interruptions",
+        "Interruption rate below {max_interruption_rate}%",
+        "Cost savings above {min_savings_percentage}%"
+      ]
+    },
+
+    "storage_tiering": {
+      "title": "Move {object_id} to {recommended_tier}",
+      "description": "Object accessed {access_frequency} times per month. Current tier ({current_tier}) is more expensive than necessary.",
+      "implementation_steps": [
+        "Verify object access pattern over {analysis_days} days",
+        "Calculate total cost including retrieval costs",
+        "Configure lifecycle policy to transition to {recommended_tier}",
+        "Test retrieval from new tier",
+        "Apply lifecycle policy",
+        "Monitor retrieval costs for {monitoring_period} days",
+        "Verify net cost reduction"
+      ],
+      "validation_criteria": [
+        "Object successfully transitioned to {recommended_tier}",
+        "Retrieval time acceptable for use case",
+        "Total cost (storage + retrieval) reduced by ${monthly_savings}/month",
+        "Access pattern remains within expected range"
+      ]
+    },
+
+    "network_optimization": {
+      "title": "Optimize network traffic: {optimization_type}",
+      "description": "Detected {monthly_gb}GB/month of {traffic_type} traffic costing ${current_cost}/month. {recommendation} can reduce costs by {savings_percentage}%.",
+      "implementation_steps": [
+        "Analyze traffic patterns and sources",
+        "Implement {optimization_strategy}",
+        "Configure appropriate routing/caching",
+        "Test functionality and performance",
+        "Monitor traffic and costs for {monitoring_period} days",
+        "Fine-tune configuration based on results"
+      ],
+      "validation_criteria": [
+        "Application functionality maintained",
+        "Network latency within acceptable range",
+        "Data transfer costs reduced by ${monthly_savings}/month",
+        "No negative impact on user experience"
+      ]
+    },
+
+    "token_optimization": {
+      "title": "Optimize {endpoint_name} token usage",
+      "description": "Endpoint using {current_model} with average {avg_tokens} tokens per request. {optimization_type} can reduce costs by {savings_percentage}%.",
+      "implementation_steps": [
+        "Implement {optimization_strategy}",
+        "Test optimized prompts/configuration in development",
+        "Verify output quality meets requirements",
+        "Deploy optimization to production",
+        "Monitor token usage and costs",
+        "A/B test if quality concerns arise",
+        "Iterate on optimization if needed"
+      ],
+      "validation_criteria": [
+        "Output quality maintained or improved",
+        "Token usage reduced by {reduction_percentage}%",
+        "API costs reduced by ${monthly_savings}/month",
+        "User satisfaction metrics unchanged or improved"
+      ]
+    },
+
+    "scheduling": {
+      "title": "Implement {strategy_name} for {resource_name}",
+      "description": "Resource has {time_flexibility}% time flexibility. Scheduling can reduce costs by {savings_percentage}% through {cost_reduction_mechanism}.",
+      "implementation_steps": [
+        "Verify SLA allows for {schedule_description}",
+        "Configure {scheduling_mechanism}",
+        "Test schedule in non-production environment",
+        "Implement schedule in production",
+        "Monitor for {monitoring_period} days",
+        "Verify cost savings and SLA compliance",
+        "Adjust schedule if needed"
+      ],
+      "validation_criteria": [
+        "Scheduled operations complete successfully",
+        "SLA requirements met",
+        "Cost reduced by ${monthly_savings}/month",
+        "No business impact from schedule changes"
+      ]
+    }
+  },
+
+  "priority_scoring": {
+    "weights": {
+      "savings_impact": 0.40,
+      "confidence": 0.30,
+      "implementation_ease": 0.20,
+      "risk": 0.10
+    },
+    "savings_impact_thresholds": {
+      "very_high": 50000,
+      "high": 10000,
+      "medium": 5000,
+      "low": 1000,
+      "minimal": 0
+    },
+    "savings_impact_scores": {
+      "very_high": 100,
+      "high": 80,
+      "medium": 60,
+      "low": 40,
+      "minimal": 20
+    },
+    "complexity_scores": {
+      "trivial": 100,
+      "low": 80,
+      "medium": 60,
+      "high": 40,
+      "very_high": 20
+    },
+    "priority_thresholds": {
+      "critical": 80,
+      "high": 60,
+      "medium": 40,
+      "low": 0
+    }
+  },
+
+  "roi_calculation": {
+    "labor_rate_per_hour": 150,
+    "discount_rate": 0.10,
+    "analysis_horizon_years": 3,
+    "risk_factors": {
+      "performance_impact": {
+        "none": 0.0,
+        "minimal": -0.02,
+        "moderate": -0.05,
+        "significant": -0.10
+      },
+      "implementation_complexity": {
+        "trivial": 0.0,
+        "low": -0.02,
+        "medium": -0.05,
+        "high": -0.10,
+        "very_high": -0.15
+      },
+      "availability_impact": {
+        "none": 0.0,
+        "minimal": -0.03,
+        "moderate": -0.07,
+        "significant": -0.15
+      }
+    },
+    "roi_thresholds": {
+      "exceptional": {
+        "min_roi_percentage": 300,
+        "max_payback_months": 3,
+        "recommendation": "Implement immediately - exceptional ROI"
+      },
+      "strong": {
+        "min_roi_percentage": 200,
+        "max_payback_months": 6,
+        "recommendation": "High priority - strong ROI"
+      },
+      "good": {
+        "min_roi_percentage": 100,
+        "max_payback_months": 12,
+        "recommendation": "Recommended - good ROI"
+      },
+      "moderate": {
+        "min_roi_percentage": 50,
+        "max_payback_months": 24,
+        "recommendation": "Consider - moderate ROI"
+      },
+      "limited": {
+        "min_roi_percentage": 0,
+        "max_payback_months": 999,
+        "recommendation": "Low priority - limited ROI"
+      }
+    }
+  },
+
+  "cost_analysis_reports": {
+    "daily_snapshot": {
+      "enabled": true,
+      "schedule": "0 1 * * *",
+      "metrics": [
+        "total_daily_cost",
+        "cost_by_service",
+        "cost_by_region",
+        "cost_by_environment",
+        "top_10_resources_by_cost",
+        "cost_vs_budget"
+      ],
+      "retention_days": 90
+    },
+    "weekly_optimization_report": {
+      "enabled": true,
+      "schedule": "0 8 * * 1",
+      "content": [
+        "new_optimization_opportunities",
+        "implemented_optimizations_summary",
+        "weekly_savings_achieved",
+        "month_to_date_savings",
+        "top_10_recommendations",
+        "cost_trend_analysis"
+      ],
+      "recipients": ["platform-team@example.com", "finops-team@example.com"]
+    },
+    "monthly_executive_summary": {
+      "enabled": true,
+      "schedule": "0 9 1 * *",
+      "content": [
+        "total_monthly_cost",
+        "cost_vs_budget",
+        "monthly_savings_achieved",
+        "year_to_date_savings",
+        "top_optimization_opportunities",
+        "projected_annual_savings",
+        "cost_efficiency_metrics",
+        "recommendations_implemented_count"
+      ],
+      "recipients": ["exec-team@example.com", "finops-team@example.com"]
+    },
+    "quarterly_roi_analysis": {
+      "enabled": true,
+      "schedule": "0 10 1 1,4,7,10 *",
+      "content": [
+        "total_optimization_investment",
+        "total_savings_achieved",
+        "roi_percentage",
+        "payback_period_analysis",
+        "savings_by_optimization_type",
+        "top_performing_optimizations",
+        "lessons_learned",
+        "next_quarter_roadmap"
+      ],
+      "recipients": ["exec-team@example.com", "finops-team@example.com", "engineering-leads@example.com"]
+    }
+  },
+
+  "savings_projections": {
+    "conservative_estimate": {
+      "implementation_rate": 0.60,
+      "savings_realization_rate": 0.80,
+      "description": "Assumes 60% of recommendations implemented and 80% of projected savings realized"
+    },
+    "moderate_estimate": {
+      "implementation_rate": 0.75,
+      "savings_realization_rate": 0.90,
+      "description": "Assumes 75% of recommendations implemented and 90% of projected savings realized"
+    },
+    "aggressive_estimate": {
+      "implementation_rate": 0.90,
+      "savings_realization_rate": 0.95,
+      "description": "Assumes 90% of recommendations implemented and 95% of projected savings realized"
+    }
+  },
+
+  "automation_settings": {
+    "auto_implement": {
+      "enabled": false,
+      "allowed_categories": ["idle_resource_tagging", "lifecycle_policies"],
+      "max_monthly_cost_impact": 1000,
+      "require_approval": true,
+      "approval_timeout_hours": 72,
+      "min_confidence": 95,
+      "max_risk": "low"
+    },
+    "auto_remediation": {
+      "enabled": true,
+      "categories": {
+        "tag_idle_resources": true,
+        "apply_lifecycle_policies": true,
+        "scale_down_unused": false,
+        "terminate_orphaned": false
+      }
+    },
+    "notification_settings": {
+      "critical_opportunities": {
+        "enabled": true,
+        "threshold_annual_savings": 10000,
+        "channels": ["email", "slack"],
+        "recipients": ["platform-team@example.com"]
+      },
+      "weekly_digest": {
+        "enabled": true,
+        "channels": ["email"],
+        "recipients": ["platform-team@example.com", "finops-team@example.com"]
+      },
+      "monthly_summary": {
+        "enabled": true,
+        "channels": ["email"],
+        "recipients": ["exec-team@example.com", "finops-team@example.com"]
+      }
+    }
+  },
+
+  "dashboard_config": {
+    "refresh_interval_minutes": 60,
+    "widgets": [
+      {
+        "id": "total_savings_potential",
+        "title": "Total Savings Potential",
+        "type": "metric",
+        "metrics": ["monthly_savings", "annual_savings"],
+        "size": "large"
+      },
+      {
+        "id": "recommendations_by_priority",
+        "title": "Recommendations by Priority",
+        "type": "bar_chart",
+        "size": "medium"
+      },
+      {
+        "id": "recommendations_by_category",
+        "title": "Recommendations by Category",
+        "type": "pie_chart",
+        "size": "medium"
+      },
+      {
+        "id": "top_10_opportunities",
+        "title": "Top 10 Cost Savings Opportunities",
+        "type": "table",
+        "columns": ["resource", "type", "monthly_savings", "priority", "confidence"],
+        "size": "large"
+      },
+      {
+        "id": "savings_trend",
+        "title": "Savings Achieved (Last 12 Months)",
+        "type": "line_chart",
+        "size": "large"
+      },
+      {
+        "id": "roi_summary",
+        "title": "ROI Summary",
+        "type": "metric",
+        "metrics": ["total_investment", "total_savings", "roi_percentage", "avg_payback_months"],
+        "size": "large"
+      },
+      {
+        "id": "implementation_progress",
+        "title": "Implementation Progress",
+        "type": "progress_bar",
+        "size": "medium"
+      },
+      {
+        "id": "cost_efficiency_score",
+        "title": "Cost Efficiency Score",
+        "type": "gauge",
+        "range": [0, 100],
+        "size": "small"
+      }
+    ]
+  }
+}

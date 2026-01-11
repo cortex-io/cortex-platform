@@ -1,0 +1,294 @@
+{
+  "version": "1.0",
+  "created_at": "2025-11-04T18:00:00Z",
+  "updated_at": "2025-11-04T18:00:00Z",
+  "description": "Multi-workforce stream configuration enabling parallel task execution across specialized worker pools",
+  "global_config": {
+    "total_worker_pool": 25,
+    "emergency_pool": 5,
+    "scheduling_algorithm": "priority_load_balanced",
+    "preemption_enabled": true,
+    "max_parallel_tasks": 5,
+    "stream_switching_overhead_ms": 100,
+    "task_assignment_latency_ms": 500
+  },
+  "streams": [
+    {
+      "id": "stream-a",
+      "name": "Critical Priority",
+      "description": "High-priority critical tasks requiring immediate attention",
+      "priority": 1,
+      "max_workers": 5,
+      "active_workers": 0,
+      "queued_tasks": [],
+      "status": "active",
+      "token_allocation": 20000,
+      "preemption_enabled": true,
+      "task_types": [
+        "critical_security",
+        "production_incident",
+        "emergency_rollback",
+        "critical_bug_fix"
+      ],
+      "assigned_masters": [
+        "security",
+        "cicd"
+      ],
+      "scheduling": {
+        "algorithm": "fifo",
+        "timeout_minutes": 120,
+        "retry_on_failure": true,
+        "max_retries": 2
+      },
+      "metrics": {
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "avg_duration_minutes": 0,
+        "avg_wait_time_minutes": 0,
+        "tokens_used": 0,
+        "success_rate": 0,
+        "worker_utilization": 0
+      },
+      "created_at": "2025-11-04T18:00:00Z",
+      "last_updated": "2025-11-04T18:00:00Z"
+    },
+    {
+      "id": "stream-b",
+      "name": "Standard Development",
+      "description": "Normal priority development tasks including features and enhancements",
+      "priority": 2,
+      "max_workers": 5,
+      "active_workers": 0,
+      "queued_tasks": [],
+      "status": "active",
+      "token_allocation": 20000,
+      "preemption_enabled": false,
+      "task_types": [
+        "feature_implementation",
+        "bug_fix",
+        "code_refactoring",
+        "documentation"
+      ],
+      "assigned_masters": [
+        "development",
+        "inventory"
+      ],
+      "scheduling": {
+        "algorithm": "priority_weighted",
+        "timeout_minutes": 180,
+        "retry_on_failure": true,
+        "max_retries": 1
+      },
+      "metrics": {
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "avg_duration_minutes": 0,
+        "avg_wait_time_minutes": 0,
+        "tokens_used": 0,
+        "success_rate": 0,
+        "worker_utilization": 0
+      },
+      "created_at": "2025-11-04T18:00:00Z",
+      "last_updated": "2025-11-04T18:00:00Z"
+    },
+    {
+      "id": "stream-c",
+      "name": "Background/Maintenance",
+      "description": "Low-priority background tasks and routine maintenance",
+      "priority": 3,
+      "max_workers": 5,
+      "active_workers": 0,
+      "queued_tasks": [],
+      "status": "active",
+      "token_allocation": 15000,
+      "preemption_enabled": false,
+      "task_types": [
+        "scheduled_scan",
+        "cleanup",
+        "optimization",
+        "analytics",
+        "reporting"
+      ],
+      "assigned_masters": [
+        "security",
+        "inventory"
+      ],
+      "scheduling": {
+        "algorithm": "round_robin",
+        "timeout_minutes": 240,
+        "retry_on_failure": false,
+        "max_retries": 0
+      },
+      "metrics": {
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "avg_duration_minutes": 0,
+        "avg_wait_time_minutes": 0,
+        "tokens_used": 0,
+        "success_rate": 0,
+        "worker_utilization": 0
+      },
+      "created_at": "2025-11-04T18:00:00Z",
+      "last_updated": "2025-11-04T18:00:00Z"
+    },
+    {
+      "id": "stream-d",
+      "name": "CI/CD Pipeline",
+      "description": "CI/CD pipeline tasks including builds, tests, and deployments",
+      "priority": 1,
+      "max_workers": 5,
+      "active_workers": 0,
+      "queued_tasks": [],
+      "status": "active",
+      "token_allocation": 25000,
+      "preemption_enabled": true,
+      "task_types": [
+        "build",
+        "test",
+        "deploy",
+        "release",
+        "rollback",
+        "pipeline_optimization"
+      ],
+      "assigned_masters": [
+        "cicd"
+      ],
+      "scheduling": {
+        "algorithm": "pipeline_stage",
+        "timeout_minutes": 90,
+        "retry_on_failure": true,
+        "max_retries": 2,
+        "parallel_stages": true
+      },
+      "metrics": {
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "avg_duration_minutes": 0,
+        "avg_wait_time_minutes": 0,
+        "tokens_used": 0,
+        "success_rate": 0,
+        "worker_utilization": 0,
+        "deployments_completed": 0,
+        "builds_succeeded": 0,
+        "tests_passed": 0
+      },
+      "created_at": "2025-11-04T18:00:00Z",
+      "last_updated": "2025-11-04T18:00:00Z"
+    },
+    {
+      "id": "stream-e",
+      "name": "Security/Audit",
+      "description": "Security scanning, auditing, and compliance tasks",
+      "priority": 2,
+      "max_workers": 5,
+      "active_workers": 0,
+      "queued_tasks": [],
+      "status": "active",
+      "token_allocation": 20000,
+      "preemption_enabled": false,
+      "task_types": [
+        "security_scan",
+        "vulnerability_audit",
+        "compliance_check",
+        "secrets_detection",
+        "dependency_audit"
+      ],
+      "assigned_masters": [
+        "security"
+      ],
+      "scheduling": {
+        "algorithm": "priority_weighted",
+        "timeout_minutes": 120,
+        "retry_on_failure": true,
+        "max_retries": 1
+      },
+      "metrics": {
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "avg_duration_minutes": 0,
+        "avg_wait_time_minutes": 0,
+        "tokens_used": 0,
+        "success_rate": 0,
+        "worker_utilization": 0,
+        "vulnerabilities_found": 0,
+        "vulnerabilities_fixed": 0
+      },
+      "created_at": "2025-11-04T18:00:00Z",
+      "last_updated": "2025-11-04T18:00:00Z"
+    }
+  ],
+  "scheduling_policies": {
+    "priority_resolution": {
+      "description": "How to handle priority conflicts between streams",
+      "policy": "priority_1_preempts_all",
+      "rules": [
+        "Priority 1 tasks can preempt lower priority streams",
+        "Within same priority, use FIFO",
+        "Emergency pool available for priority 1 overflow",
+        "Fair scheduling ensures all streams make progress"
+      ]
+    },
+    "load_balancing": {
+      "description": "How to balance workers across active streams",
+      "policy": "dynamic_allocation",
+      "rules": [
+        "Workers assigned based on stream demand",
+        "Minimum 1 worker per active stream",
+        "Maximum max_workers per stream",
+        "Idle workers returned to pool",
+        "Emergency pool held in reserve"
+      ]
+    },
+    "fairness": {
+      "description": "Ensure all streams make progress",
+      "policy": "time_slicing",
+      "rules": [
+        "Monitor stream starvation (>15min without worker)",
+        "Guarantee minimum throughput for all priorities",
+        "Rebalance every 5 minutes",
+        "Alert on stream blocking"
+      ]
+    }
+  },
+  "performance_targets": {
+    "parallel_task_capacity": 5,
+    "throughput_multiplier": "3-5x",
+    "worker_utilization_target": 0.80,
+    "stream_switching_overhead": "< 100ms",
+    "task_assignment_latency": "< 500ms",
+    "mean_time_to_assignment": "< 30s"
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics_interval_seconds": 60,
+    "alert_thresholds": {
+      "worker_utilization_low": 0.50,
+      "worker_utilization_high": 0.95,
+      "queue_depth_high": 10,
+      "stream_starvation_minutes": 15,
+      "task_timeout_rate": 0.10
+    },
+    "dashboard_integration": true
+  },
+  "history": {
+    "total_tasks_processed": 0,
+    "total_workers_spawned": 0,
+    "total_tokens_used": 0,
+    "total_uptime_hours": 0,
+    "system_efficiency": 0,
+    "stream_utilization": {
+      "stream-a": 0,
+      "stream-b": 0,
+      "stream-c": 0,
+      "stream-d": 0,
+      "stream-e": 0
+    }
+  },
+  "workers": {
+    "active": 14,
+    "completed": 60,
+    "failed": 6,
+    "zombie": 44
+  },
+  "last_updated": "2025-11-26T10:26:16-0600"
+}
