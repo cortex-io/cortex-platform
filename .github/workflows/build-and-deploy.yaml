@@ -1,0 +1,166 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'services/**'
+      - 'lib/**'
+      - '.github/workflows/build-and-deploy.yaml'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  GITOPS_REPO: ry-ops/cortex-gitops
+
+jobs:
+  detect-changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.changed-services.outputs.services }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed services
+        id: changed-services
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+
+          # Extract unique service directories
+          SERVICES=$(echo "$CHANGED_FILES" | grep '^services/' | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
+
+          if [ "$SERVICES" = "[]" ] || [ -z "$SERVICES" ]; then
+            echo "services=[]" >> $GITHUB_OUTPUT
+          else
+            echo "services=$SERVICES" >> $GITHUB_OUTPUT
+          fi
+
+          echo "Changed services: $SERVICES"
+
+  build-and-push:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.services != '[]'
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.detect-changes.outputs.services) }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Output image digest
+        run: |
+          echo "Built image: ${{ steps.meta.outputs.tags }}"
+
+  update-gitops:
+    name: Update GitOps Repository
+    runs-on: ubuntu-latest
+    needs: [detect-changes, build-and-push]
+    if: needs.detect-changes.outputs.services != '[]'
+    steps:
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: gitops
+
+      - name: Update image tags
+        run: |
+          cd gitops
+
+          # Get SHA for new image tag
+          IMAGE_TAG="${GITHUB_SHA::7}"
+
+          # Update all deployment files for changed services
+          SERVICES='${{ needs.detect-changes.outputs.services }}'
+          echo "Updating services: $SERVICES"
+
+          for SERVICE in $(echo "$SERVICES" | jq -r '.[]'); do
+            echo "Updating $SERVICE to tag: $IMAGE_TAG"
+
+            # Find deployment files for this service
+            DEPLOYMENT_FILES=$(find apps/ -name "*${SERVICE}*.yaml" -type f)
+
+            for FILE in $DEPLOYMENT_FILES; do
+              if grep -q "image:.*${SERVICE}" "$FILE"; then
+                echo "  Updating $FILE"
+                sed -i "s|image: ghcr.io/.*/\(${SERVICE}\):.*|image: ghcr.io/${{ github.repository_owner }}/\1:${IMAGE_TAG}|g" "$FILE"
+              fi
+            done
+          done
+
+      - name: Commit and push changes
+        run: |
+          cd gitops
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            git add apps/
+            git commit -m "Update service images from ${{ github.repository }}@${GITHUB_SHA::7}
+
+            Updated services: ${{ needs.detect-changes.outputs.services }}
+
+            Triggered by: ${{ github.event.head_commit.message }}"
+            git push
+            echo "✅ GitOps repository updated - ArgoCD will sync within 3 minutes"
+          fi
+
+  notify:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [detect-changes, build-and-push, update-gitops]
+    if: always()
+    steps:
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Services built:** ${{ needs.detect-changes.outputs.services }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${GITHUB_SHA::7}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔄 ArgoCD will deploy to k3s within 3 minutes" >> $GITHUB_STEP_SUMMARY
