@@ -22,10 +22,20 @@ const MOE_ROUTES = {
   },
   sandfly: {
     keywords: [
-      'sandfly', 'security', 'alert', 'vulnerability', 'threat', 'compliance',
-      'cve', 'intrusion', 'siem', 'log', 'agent', 'malware'
+      'sandfly', 'security', 'alert', 'threat', 'compliance',
+      'intrusion', 'siem', 'log', 'agent', 'malware'
     ],
     system: 'sandfly',
+    priority: 90
+  },
+  github_security: {
+    keywords: [
+      'vulnerability', 'vulnerabilities', 'cve', 'dependabot', 'security alert',
+      'dependency', 'dependencies', 'upgrade', 'patch', 'security fix',
+      'snyk', 'npm audit', 'pip-audit', 'remediate', 'remediation',
+      'github alert', 'github security', 'package vulnerability'
+    ],
+    system: 'github_security',
     priority: 100
   },
   checkmk: {
