@@ -1,0 +1,17 @@
+[project]
+name = "outline-mcp-server"
+version = "1.0.0"
+description = "Outline MCP Server - Documentation wiki access for Cortex agents"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+outline-mcp = "mcp_outline.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
