@@ -1,0 +1,2 @@
+"""Cortex Documentation Curator"""
+__version__ = "1.0.0"
