@@ -448,6 +448,225 @@ app.post('/mcp/initialize', validateApiKey, (req, res) => {
   });
 });
 
+// MCP Protocol: SSE Transport Endpoint
+app.get('/sse', (req, res) => {
+  console.log('[SSE] New SSE connection established');
+
+  // Set SSE headers
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
+    'X-Accel-Buffering': 'no'
+  });
+
+  // Send initial connection message
+  res.write(': SSE connection established\n\n');
+
+  // Send server info as first event
+  const serverInfo = {
+    jsonrpc: '2.0',
+    id: 1,
+    result: {
+      protocolVersion: '2024-11-05',
+      serverInfo: {
+        name: 'cortex-desktop-mcp',
+        version: '2.1.0'
+      },
+      capabilities: {
+        tools: {},
+        prompts: {},
+        resources: {}
+      }
+    }
+  };
+
+  res.write(`data: ${JSON.stringify(serverInfo)}\n\n`);
+
+  // Message buffer for incoming client data
+  let messageBuffer = '';
+
+  // Handle incoming client messages (via POST to same endpoint or through request body)
+  req.on('data', async (chunk) => {
+    messageBuffer += chunk.toString();
+
+    // Process complete JSON-RPC messages (newline delimited)
+    const lines = messageBuffer.split('\n');
+    messageBuffer = lines.pop() || '';
+
+    for (const line of lines) {
+      if (!line.trim()) continue;
+
+      try {
+        const request = JSON.parse(line);
+        console.log(`[SSE] Received MCP request: ${request.method}`);
+
+        let response;
+
+        // Handle MCP methods
+        switch (request.method) {
+          case 'initialize':
+            response = {
+              jsonrpc: '2.0',
+              id: request.id,
+              result: {
+                protocolVersion: '2024-11-05',
+                serverInfo: {
+                  name: 'cortex-desktop-mcp',
+                  version: '2.1.0'
+                },
+                capabilities: {
+                  tools: {},
+                  prompts: {},
+                  resources: {}
+                }
+              }
+            };
+            break;
+
+          case 'tools/list':
+            // Get tools list (reuse existing logic)
+            try {
+              const tools = await fetchAllTools();
+              response = {
+                jsonrpc: '2.0',
+                id: request.id,
+                result: { tools }
+              };
+            } catch (error) {
+              response = {
+                jsonrpc: '2.0',
+                id: request.id,
+                error: {
+                  code: -32603,
+                  message: `Failed to fetch tools: ${error.message}`
+                }
+              };
+            }
+            break;
+
+          case 'tools/call':
+            // Execute tool (reuse existing logic)
+            try {
+              const { name, arguments: args } = request.params;
+              const result = await executeToolDirect(name, args);
+              response = {
+                jsonrpc: '2.0',
+                id: request.id,
+                result: {
+                  content: [
+                    {
+                      type: 'text',
+                      text: JSON.stringify(result, null, 2)
+                    }
+                  ]
+                }
+              };
+            } catch (error) {
+              response = {
+                jsonrpc: '2.0',
+                id: request.id,
+                error: {
+                  code: -32603,
+                  message: `Tool execution failed: ${error.message}`
+                }
+              };
+            }
+            break;
+
+          case 'ping':
+            response = {
+              jsonrpc: '2.0',
+              id: request.id,
+              result: {}
+            };
+            break;
+
+          default:
+            response = {
+              jsonrpc: '2.0',
+              id: request.id,
+              error: {
+                code: -32601,
+                message: `Method not found: ${request.method}`
+              }
+            };
+        }
+
+        // Send response via SSE
+        if (response) {
+          res.write(`data: ${JSON.stringify(response)}\n\n`);
+        }
+      } catch (error) {
+        console.error(`[SSE] Error processing message: ${error.message}`);
+        const errorResponse = {
+          jsonrpc: '2.0',
+          id: null,
+          error: {
+            code: -32700,
+            message: 'Parse error',
+            data: { error: error.message }
+          }
+        };
+        res.write(`data: ${JSON.stringify(errorResponse)}\n\n`);
+      }
+    }
+  });
+
+  // Handle client disconnect
+  req.on('close', () => {
+    console.log('[SSE] Client disconnected');
+  });
+
+  // Send periodic heartbeat to keep connection alive
+  const heartbeat = setInterval(() => {
+    res.write(': heartbeat\n\n');
+  }, 30000); // Every 30 seconds
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+  });
+});
+
+// Helper function to fetch all tools (extracted for SSE reuse)
+async function fetchAllTools() {
+  const toolPromises = [
+    axios.get(`${PROXMOX_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
+    axios.get(`${UNIFI_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
+    axios.get(`${SANDFLY_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
+    axios.get(`${CLOUDFLARE_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } }))
+  ];
+
+  const responses = await Promise.all(toolPromises);
+  return responses.flatMap(r => r.data.tools || []);
+}
+
+// Helper function to execute tool directly (extracted for SSE reuse)
+async function executeToolDirect(toolName, args) {
+  // Determine which MCP server hosts this tool
+  let targetUrl;
+
+  if (toolName.startsWith('proxmox_')) {
+    targetUrl = PROXMOX_MCP_URL;
+  } else if (toolName.startsWith('unifi_')) {
+    targetUrl = UNIFI_MCP_URL;
+  } else if (toolName.startsWith('sandfly_')) {
+    targetUrl = SANDFLY_MCP_URL;
+  } else if (toolName.startsWith('cloudflare_')) {
+    targetUrl = CLOUDFLARE_MCP_URL;
+  } else {
+    throw new Error(`Unknown tool: ${toolName}`);
+  }
+
+  const response = await axios.post(`${targetUrl}/tools/call`, {
+    name: toolName,
+    arguments: args
+  });
+
+  return response.data;
+}
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log('='.repeat(60));
