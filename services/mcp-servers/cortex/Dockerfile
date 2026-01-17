@@ -48,5 +48,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-# Start MCP server
-CMD ["node", "src/index.js"]
+# Start MCP SSE server (wraps stdio server)
+CMD ["node", "src/sse-server.js"]
