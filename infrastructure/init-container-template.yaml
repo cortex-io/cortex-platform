@@ -1,0 +1,109 @@
+# =============================================================================
+# Cortex Standard Init Container Template for Python Dependencies
+# =============================================================================
+#
+# This template provides a resilient pattern for installing Python dependencies
+# in Kubernetes pods. It addresses:
+# - Intermittent DNS resolution failures
+# - PyPI availability issues
+# - Network timeouts
+#
+# Usage: Copy the initContainers and volumes sections to your deployment
+# =============================================================================
+
+# Add this to spec.template.spec:
+initContainers:
+- name: install-deps
+  image: python:3.11-slim
+  command:
+  - /bin/bash
+  - -c
+  - |
+    set -e
+
+    MAX_RETRIES=5
+    RETRY_DELAY=15
+    BACKOFF_MULTIPLIER=2
+
+    echo "=== Cortex Dependency Installer ==="
+    echo "Max retries: $MAX_RETRIES"
+    echo "Initial delay: ${RETRY_DELAY}s"
+    echo ""
+
+    install_deps() {
+      pip install --no-cache-dir --target=/deps \
+        fastapi \
+        uvicorn \
+        pydantic \
+        redis \
+        kubernetes \
+        # Add your dependencies here
+    }
+
+    current_delay=$RETRY_DELAY
+
+    for i in $(seq 1 $MAX_RETRIES); do
+      echo "Attempt $i of $MAX_RETRIES..."
+
+      # Test DNS resolution first
+      if ! python3 -c "import socket; socket.getaddrinfo('pypi.org', 443)" 2>/dev/null; then
+        echo "  DNS resolution failed, waiting ${current_delay}s..."
+        sleep $current_delay
+        current_delay=$((current_delay * BACKOFF_MULTIPLIER))
+        continue
+      fi
+
+      # Attempt installation
+      if install_deps 2>&1; then
+        echo ""
+        echo "=== Dependencies installed successfully ==="
+        echo "Installed packages:"
+        ls -la /deps/*.dist-info 2>/dev/null | awk '{print "  - " $NF}' | sed 's/.dist-info//'
+        exit 0
+      fi
+
+      echo "  Installation failed, waiting ${current_delay}s..."
+      sleep $current_delay
+      current_delay=$((current_delay * BACKOFF_MULTIPLIER))
+    done
+
+    echo ""
+    echo "=== FATAL: Failed after $MAX_RETRIES attempts ==="
+    echo "Possible causes:"
+    echo "  - DNS resolution issues on this node"
+    echo "  - PyPI is unreachable"
+    echo "  - Network policy blocking egress"
+    echo ""
+    echo "Node info:"
+    cat /etc/hostname 2>/dev/null || echo "  (hostname unavailable)"
+    echo ""
+    exit 1
+  env:
+  - name: PIP_DISABLE_PIP_VERSION_CHECK
+    value: "1"
+  - name: PIP_NO_WARN_SCRIPT_LOCATION
+    value: "1"
+  volumeMounts:
+  - name: deps
+    mountPath: /deps
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Add this to spec.template.spec.volumes:
+volumes:
+- name: deps
+  emptyDir:
+    sizeLimit: 500Mi
+
+# In your main container, add:
+# env:
+# - name: PYTHONPATH
+#   value: /deps
+# volumeMounts:
+# - name: deps
+#   mountPath: /deps
