@@ -1,0 +1,68 @@
+# =============================================================================
+# Cortex Python Base Image
+# =============================================================================
+#
+# Pre-built image with all common Python dependencies to eliminate runtime
+# pip install failures due to DNS issues.
+#
+# Build: docker build -f Dockerfile.cortex-python-base -t cortex-python-base:3.11 .
+# Push:  docker push <registry>/cortex-python-base:3.11
+#
+# =============================================================================
+
+FROM python:3.11-slim
+
+LABEL maintainer="cortex-team"
+LABEL description="Cortex Python base image with pre-installed dependencies"
+LABEL version="1.0.0"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app user
+RUN useradd -m -u 1000 appuser
+
+# Install common Python dependencies
+RUN pip install --no-cache-dir \
+    # Web framework
+    fastapi>=0.104.0 \
+    uvicorn>=0.24.0 \
+    # Data validation
+    pydantic>=2.5.0 \
+    # HTTP client
+    httpx>=0.25.0 \
+    requests>=2.31.0 \
+    # Redis
+    redis>=5.0.0 \
+    # Kubernetes
+    kubernetes>=28.1.0 \
+    # YAML
+    pyyaml>=6.0 \
+    # Async utilities
+    aiohttp>=3.9.0 \
+    # Anthropic API
+    anthropic>=0.18.0 \
+    # Observability
+    opentelemetry-api>=1.21.0 \
+    opentelemetry-sdk>=1.21.0 \
+    opentelemetry-exporter-otlp>=1.21.0 \
+    prometheus-client>=0.19.0
+
+# Verify installations
+RUN python -c "import fastapi, uvicorn, pydantic, httpx, redis, kubernetes, yaml, anthropic; print('All packages verified')"
+
+# Set working directory
+WORKDIR /app
+
+# Default to non-root user
+USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import fastapi; print('healthy')" || exit 1
+
+# Default command
+CMD ["python", "-c", "print('Cortex Python Base Image - Ready')"]
