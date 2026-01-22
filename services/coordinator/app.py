@@ -8,7 +8,7 @@ import json
 import time
 import logging
 import requests
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from redis import Redis
 from datetime import datetime
 
@@ -117,6 +117,101 @@ def status():
         }), 200
     except Exception as e:
         logger.error(f"Status check failed: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/learn/today')
+def learn_today():
+    """Return summary of what Cortex learned today"""
+    try:
+        import time
+        from datetime import datetime, timedelta
+
+        # Get time filters from query params (default: last 24 hours)
+        hours = int(request.args.get('hours', 24))
+        cutoff_time = time.time() - (hours * 3600)
+
+        # Get all improvements from approved queue within time range
+        approved_keys = redis_client.zrangebyscore('improvements:approved', cutoff_time, '+inf', withscores=True)
+        pending_keys = redis_client.zrangebyscore('improvements:pending_review', cutoff_time, '+inf', withscores=True)
+
+        # Load full improvement data
+        approved_improvements = []
+        for key, timestamp in approved_keys:
+            improvement_data = redis_client.get(key)
+            if improvement_data:
+                improvement = json.loads(improvement_data)
+                improvement['timestamp'] = timestamp
+                approved_improvements.append(improvement)
+
+        pending_improvements = []
+        for key, timestamp in pending_keys:
+            improvement_data = redis_client.get(key)
+            if improvement_data:
+                improvement = json.loads(improvement_data)
+                improvement['timestamp'] = timestamp
+                pending_improvements.append(improvement)
+
+        # Categorize improvements
+        categories = {}
+        sources = {}
+        total_relevance = 0
+
+        for imp in approved_improvements + pending_improvements:
+            # Count by category
+            category = imp.get('category', 'unknown')
+            categories[category] = categories.get(category, 0) + 1
+
+            # Track sources
+            source_title = imp.get('source_title', 'Unknown')
+            source_video = imp.get('source_video', '')
+            if source_title not in sources:
+                sources[source_title] = {
+                    'video_id': source_video,
+                    'improvements': 0,
+                    'relevance': imp.get('relevance', 0)
+                }
+            sources[source_title]['improvements'] += 1
+
+            total_relevance += imp.get('relevance', 0)
+
+        total_improvements = len(approved_improvements) + len(pending_improvements)
+        avg_relevance = total_relevance / total_improvements if total_improvements > 0 else 0
+
+        return jsonify({
+            'summary': {
+                'hours': hours,
+                'total_improvements': total_improvements,
+                'auto_approved': len(approved_improvements),
+                'pending_review': len(pending_improvements),
+                'average_relevance': round(avg_relevance, 2),
+                'categories': categories
+            },
+            'sources': sources,
+            'recent_improvements': {
+                'approved': [
+                    {
+                        'title': imp.get('title', 'Untitled'),
+                        'category': imp.get('category', 'unknown'),
+                        'relevance': imp.get('relevance', 0),
+                        'source': imp.get('source_title', 'Unknown'),
+                        'timestamp': datetime.fromtimestamp(imp['timestamp']).isoformat()
+                    }
+                    for imp in sorted(approved_improvements, key=lambda x: x['timestamp'], reverse=True)[:10]
+                ],
+                'pending_review': [
+                    {
+                        'title': imp.get('title', 'Untitled'),
+                        'category': imp.get('category', 'unknown'),
+                        'relevance': imp.get('relevance', 0),
+                        'source': imp.get('source_title', 'Unknown'),
+                        'timestamp': datetime.fromtimestamp(imp['timestamp']).isoformat()
+                    }
+                    for imp in sorted(pending_improvements, key=lambda x: x['timestamp'], reverse=True)[:10]
+                ]
+            }
+        }), 200
+    except Exception as e:
+        logger.error(f"Learn today check failed: {e}")
         return jsonify({'error': str(e)}), 500
 
 def process_raw_improvements():
