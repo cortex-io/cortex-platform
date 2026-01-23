@@ -1,0 +1,29 @@
+{
+  "name": "youtube-ingestion-service",
+  "version": "1.0.0",
+  "description": "YouTube transcript auto-ingestion and self-improvement pipeline for Cortex",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/tests/*.test.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "ioredis": "^5.3.2",
+    "youtube-transcript": "^1.0.6",
+    "youtubei.js": "^9.0.2",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "keywords": [
+    "youtube",
+    "transcript",
+    "ingestion",
+    "knowledge-base",
+    "self-improvement",
+    "cortex"
+  ],
+  "author": "Cortex Development Team",
+  "license": "MIT"
+}
