@@ -43,7 +43,8 @@ except ImportError:
     print("Install with: pip install watchdog")
 
 # Configuration
-DEFAULT_FABRIC_URL = os.getenv('FABRIC_URL', 'wss://fabric.ry-ops.dev/ws/fabric')
+# Use any k3s node IP with NodePort 30080 (Tailscale-accessible)
+DEFAULT_FABRIC_URL = os.getenv('FABRIC_URL', 'ws://10.88.145.190:30080/ws/fabric')
 LOCAL_FABRIC_URL = 'ws://localhost:8080/ws/fabric'
 CORTEX_PLATFORM_PATH = os.getenv('CORTEX_PLATFORM_PATH', os.path.expanduser('~/Projects/cortex-platform'))
 CLIENT_TYPE = os.getenv('CLIENT_TYPE', 'bridge')
