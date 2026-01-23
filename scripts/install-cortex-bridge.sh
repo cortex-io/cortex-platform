@@ -62,7 +62,7 @@ if [ -f "$CLAUDE_CONFIG_FILE" ]; then
         "--mcp-stdio"
       ],
       "env": {
-        "FABRIC_URL": "wss://fabric.ry-ops.dev/ws/fabric",
+        "FABRIC_URL": "ws://10.88.145.190:30080/ws/fabric",
         "CLIENT_TYPE": "desktop",
         "CORTEX_PLATFORM_PATH": "$PLATFORM_DIR",
         "LOG_LEVEL": "INFO"
@@ -83,7 +83,7 @@ else
         "--mcp-stdio"
       ],
       "env": {
-        "FABRIC_URL": "wss://fabric.ry-ops.dev/ws/fabric",
+        "FABRIC_URL": "ws://10.88.145.190:30080/ws/fabric",
         "CLIENT_TYPE": "desktop",
         "CORTEX_PLATFORM_PATH": "$PLATFORM_DIR",
         "LOG_LEVEL": "INFO"
@@ -101,7 +101,7 @@ echo ""
 
 # Test connection
 echo "Testing connection to Fabric Gateway..."
-if curl -s -o /dev/null -w "%{http_code}" "https://fabric.ry-ops.dev/health" | grep -q "200"; then
+if curl -s -o /dev/null -w "%{http_code}" "http://10.88.145.190:30080/health" | grep -q "200"; then
     echo "✓ Fabric Gateway is reachable"
 else
     echo "✗ Fabric Gateway not reachable yet (may need to deploy first)"
