@@ -1,16 +1,13 @@
-FROM python:3.11-slim
+FROM python:3.12-alpine
 
 LABEL maintainer="Cortex Team"
 LABEL description="Cortex Intelligent Orchestrator - Adaptive pod lifecycle management"
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates
 
-# Create non-root user
-RUN useradd -m -u 1000 -s /bin/bash orchestrator
+# Create non-root user (Alpine uses adduser)
+RUN adduser -D -u 1000 -s /bin/sh orchestrator
 
 # Set working directory
 WORKDIR /app
