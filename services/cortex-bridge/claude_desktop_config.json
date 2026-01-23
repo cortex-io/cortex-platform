@@ -7,7 +7,7 @@
         "--mcp-stdio"
       ],
       "env": {
-        "FABRIC_URL": "wss://fabric.ry-ops.dev/ws/fabric",
+        "FABRIC_URL": "ws://10.88.145.190:30080/ws/fabric",
         "CLIENT_TYPE": "desktop",
         "CORTEX_PLATFORM_PATH": "/Users/ryandahlberg/Projects/cortex-platform",
         "LOG_LEVEL": "INFO"
