@@ -42,3 +42,7 @@ logs/
 *.wasm
 *.zip
 *.tar.gz
+
+# Data directories
+coordination/knowledge-base/embeddings/
+library/
