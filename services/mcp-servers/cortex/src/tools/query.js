@@ -7,7 +7,6 @@ import { routeQuery, getRoutingSuggestion } from '../moe-router.js';
 import { queryUniFi } from '../clients/unifi.js';
 import { queryProxmox } from '../clients/proxmox.js';
 import { querySandfly } from '../clients/sandfly.js';
-import { queryCheckMK } from '../clients/checkmk.js';
 import { queryKubernetes } from '../clients/kubernetes.js';
 import { queryN8n } from '../clients/n8n.js';
 import { querySchool } from '../clients/school.js';
@@ -18,7 +17,7 @@ import { queryYoutube } from '../clients/youtube.js';
  */
 export const cortexQueryTool = {
   name: 'cortex_query',
-  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, CheckMK, Kubernetes, n8n, School, YouTube). Use auto routing for intelligent system selection based on query content.',
+  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, Kubernetes, n8n, School, YouTube). Use auto routing for intelligent system selection based on query content.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -28,7 +27,7 @@ export const cortexQueryTool = {
       },
       system: {
         type: 'string',
-        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n', 'school', 'youtube'],
+        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube'],
         description: 'Target system (auto = MoE intelligent routing)',
         default: 'auto'
       }
@@ -61,7 +60,7 @@ export async function executeCortexQuery(args) {
       return {
         success: false,
         error: 'Could not determine target system from query',
-        suggestion: 'Please specify system explicitly: unifi, proxmox, sandfly, checkmk, k8s, or n8n',
+        suggestion: 'Please specify system explicitly: unifi, proxmox, sandfly, k8s, n8n, school, or youtube',
         routing_info: routingInfo
       };
     }
@@ -80,9 +79,6 @@ export async function executeCortexQuery(args) {
       case 'sandfly':
         result = await querySandfly(query);
         break;
-      case 'checkmk':
-        result = await queryCheckMK(query);
-        break;
       case 'k8s':
         result = await queryKubernetes(query);
         break;
@@ -99,7 +95,7 @@ export async function executeCortexQuery(args) {
         return {
           success: false,
           error: `Unknown system: ${targetSystem}`,
-          valid_systems: ['unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n', 'school', 'youtube']
+          valid_systems: ['unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube']
         };
     }
 
