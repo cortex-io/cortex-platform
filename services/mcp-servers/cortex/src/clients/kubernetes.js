@@ -1,6 +1,6 @@
 /**
  * Kubernetes MCP Client
- * Connects to Kubernetes MCP server via HTTP
+ * Connects to Kubernetes MCP server via HTTP JSON-RPC
  */
 
 import axios from 'axios';
@@ -8,16 +8,22 @@ import axios from 'axios';
 const K8S_MCP_URL = process.env.K8S_MCP_URL || 'http://kubernetes-mcp-server.cortex-system.svc.cluster.local:3001';
 
 /**
- * Execute a tool on the Kubernetes MCP server
+ * Execute a tool on the Kubernetes MCP server using JSON-RPC
  * @param {string} toolName - Name of the tool to execute
  * @param {Object} args - Tool arguments
  * @returns {Promise<Object>} Tool execution result
  */
 export async function executeK8sTool(toolName, args = {}) {
   try {
-    const response = await axios.post(`${K8S_MCP_URL}/execute`, {
-      tool: toolName,
-      arguments: args
+    // Use JSON-RPC format for MCP HTTP wrapper
+    const response = await axios.post(`${K8S_MCP_URL}/`, {
+      jsonrpc: '2.0',
+      id: Date.now(),
+      method: 'tools/call',
+      params: {
+        name: toolName,
+        arguments: args
+      }
     }, {
       timeout: 30000,
       headers: {
@@ -25,9 +31,18 @@ export async function executeK8sTool(toolName, args = {}) {
       }
     });
 
+    // Handle JSON-RPC response
+    if (response.data.error) {
+      return {
+        success: false,
+        error: response.data.error.message || 'Unknown error',
+        details: response.data.error
+      };
+    }
+
     return {
       success: true,
-      data: response.data
+      data: response.data.result
     };
   } catch (error) {
     return {
@@ -44,7 +59,8 @@ export async function executeK8sTool(toolName, args = {}) {
  */
 export async function listK8sTools() {
   try {
-    const response = await axios.get(`${K8S_MCP_URL}/tools`, {
+    // Use the dedicated list-tools endpoint
+    const response = await axios.get(`${K8S_MCP_URL}/list-tools`, {
       timeout: 5000
     });
 
