@@ -70,6 +70,15 @@ const MOE_ROUTES = {
     ],
     system: 'youtube',
     priority: 100
+  },
+  tailscale: {
+    keywords: [
+      'tailscale', 'tailnet', 'vpn', 'mesh', 'wireguard', 'exit node',
+      'magic dns', 'acl', 'auth key', 'device route', 'subnet route',
+      'peer', 'coordination', 'derp', 'relay'
+    ],
+    system: 'tailscale',
+    priority: 100
   }
 };
 
