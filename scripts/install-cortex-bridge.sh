@@ -9,6 +9,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLATFORM_DIR="$(dirname "$SCRIPT_DIR")"
 BRIDGE_DIR="$PLATFORM_DIR/services/cortex-bridge"
+VENV_DIR="$BRIDGE_DIR/.venv"
 
 echo "=== Cortex Bridge Installation ==="
 echo ""
@@ -22,10 +23,20 @@ fi
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
 echo "Found Python $PYTHON_VERSION"
 
-# Install dependencies
+# Create virtual environment
 echo ""
+echo "Setting up virtual environment..."
+if [ ! -d "$VENV_DIR" ]; then
+    python3 -m venv "$VENV_DIR"
+    echo "Created venv at $VENV_DIR"
+else
+    echo "Using existing venv at $VENV_DIR"
+fi
+
+# Activate and install dependencies
+source "$VENV_DIR/bin/activate"
 echo "Installing Python dependencies..."
-pip3 install -q websockets watchdog
+pip install -q websockets watchdog
 
 # Verify bridge script
 if [ ! -f "$BRIDGE_DIR/main.py" ]; then
@@ -46,6 +57,9 @@ CLAUDE_CONFIG_FILE="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 # Create config directory if needed
 mkdir -p "$CLAUDE_CONFIG_DIR"
 
+# Use Python from the venv
+VENV_PYTHON="$VENV_DIR/bin/python"
+
 # Check if config exists
 if [ -f "$CLAUDE_CONFIG_FILE" ]; then
     echo "Existing Claude Desktop config found."
@@ -56,7 +70,7 @@ if [ -f "$CLAUDE_CONFIG_FILE" ]; then
 {
   "mcpServers": {
     "cortex-fabric": {
-      "command": "python3",
+      "command": "$VENV_PYTHON",
       "args": [
         "$BRIDGE_DIR/main.py",
         "--mcp-stdio"
@@ -77,7 +91,7 @@ else
 {
   "mcpServers": {
     "cortex-fabric": {
-      "command": "python3",
+      "command": "$VENV_PYTHON",
       "args": [
         "$BRIDGE_DIR/main.py",
         "--mcp-stdio"
