@@ -32,8 +32,8 @@ spec:
     spec:
       containers:
       - name: channel-monitor
-        image: docker-registry.cortex-chat.svc.cluster.local:5000/youtube-channel-monitor:latest
-        imagePullPolicy: Always
+        image: 10.43.170.72:5000/youtube-channel-monitor:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
           name: http
