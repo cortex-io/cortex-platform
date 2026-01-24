@@ -38,14 +38,6 @@ const MOE_ROUTES = {
     system: 'github_security',
     priority: 100
   },
-  checkmk: {
-    keywords: [
-      'checkmk', 'monitoring', 'host', 'service', 'alert', 'problem',
-      'status', 'health', 'metric', 'check', 'cmk', 'up', 'down'
-    ],
-    system: 'checkmk',
-    priority: 100
-  },
   kubernetes: {
     keywords: [
       'k8s', 'kubernetes', 'pod', 'deployment', 'service', 'namespace',
