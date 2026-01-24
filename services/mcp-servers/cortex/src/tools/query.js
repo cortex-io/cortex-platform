@@ -11,13 +11,14 @@ import { queryKubernetes } from '../clients/kubernetes.js';
 import { queryN8n } from '../clients/n8n.js';
 import { querySchool } from '../clients/school.js';
 import { queryYoutube } from '../clients/youtube.js';
+import { queryTailscale } from '../clients/tailscale.js';
 
 /**
  * Tool definition for MCP
  */
 export const cortexQueryTool = {
   name: 'cortex_query',
-  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, Kubernetes, n8n, School, YouTube). Use auto routing for intelligent system selection based on query content.',
+  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, Kubernetes, n8n, School, YouTube, Tailscale). Use auto routing for intelligent system selection based on query content.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -27,7 +28,7 @@ export const cortexQueryTool = {
       },
       system: {
         type: 'string',
-        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube'],
+        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube', 'tailscale'],
         description: 'Target system (auto = MoE intelligent routing)',
         default: 'auto'
       }
@@ -60,7 +61,7 @@ export async function executeCortexQuery(args) {
       return {
         success: false,
         error: 'Could not determine target system from query',
-        suggestion: 'Please specify system explicitly: unifi, proxmox, sandfly, k8s, n8n, school, or youtube',
+        suggestion: 'Please specify system explicitly: unifi, proxmox, sandfly, k8s, n8n, school, youtube, or tailscale',
         routing_info: routingInfo
       };
     }
@@ -91,11 +92,14 @@ export async function executeCortexQuery(args) {
       case 'youtube':
         result = await queryYoutube(query);
         break;
+      case 'tailscale':
+        result = await queryTailscale(query);
+        break;
       default:
         return {
           success: false,
           error: `Unknown system: ${targetSystem}`,
-          valid_systems: ['unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube']
+          valid_systems: ['unifi', 'proxmox', 'sandfly', 'k8s', 'n8n', 'school', 'youtube', 'tailscale']
         };
     }
 
