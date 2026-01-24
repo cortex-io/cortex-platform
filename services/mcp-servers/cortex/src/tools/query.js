@@ -10,23 +10,25 @@ import { querySandfly } from '../clients/sandfly.js';
 import { queryCheckMK } from '../clients/checkmk.js';
 import { queryKubernetes } from '../clients/kubernetes.js';
 import { queryN8n } from '../clients/n8n.js';
+import { querySchool } from '../clients/school.js';
+import { queryYoutube } from '../clients/youtube.js';
 
 /**
  * Tool definition for MCP
  */
 export const cortexQueryTool = {
   name: 'cortex_query',
-  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, CheckMK, Kubernetes, n8n). Use auto routing for intelligent system selection based on query content.',
+  description: 'Query any Cortex subsystem (UniFi, Proxmox, Sandfly, CheckMK, Kubernetes, n8n, School, YouTube). Use auto routing for intelligent system selection based on query content.',
   inputSchema: {
     type: 'object',
     properties: {
       query: {
         type: 'string',
-        description: 'Natural language query about infrastructure, security, network, monitoring, or automation'
+        description: 'Natural language query about infrastructure, security, network, monitoring, automation, content/knowledge, or video ingestion'
       },
       system: {
         type: 'string',
-        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n'],
+        enum: ['auto', 'unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n', 'school', 'youtube'],
         description: 'Target system (auto = MoE intelligent routing)',
         default: 'auto'
       }
@@ -87,11 +89,17 @@ export async function executeCortexQuery(args) {
       case 'n8n':
         result = await queryN8n(query);
         break;
+      case 'school':
+        result = await querySchool(query);
+        break;
+      case 'youtube':
+        result = await queryYoutube(query);
+        break;
       default:
         return {
           success: false,
           error: `Unknown system: ${targetSystem}`,
-          valid_systems: ['unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n']
+          valid_systems: ['unifi', 'proxmox', 'sandfly', 'checkmk', 'k8s', 'n8n', 'school', 'youtube']
         };
     }
 
