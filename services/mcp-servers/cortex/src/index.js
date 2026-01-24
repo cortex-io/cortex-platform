@@ -7,12 +7,13 @@
 
 import { cortexQueryTool, executeCortexQuery } from './tools/query.js';
 import { cortexGetStatusTool, executeCortexGetStatus } from './tools/status.js';
+import { cortexLearnTodayTool, executeCortexLearnToday } from './tools/learn.js';
 
 // MCP Protocol Version
 const MCP_VERSION = '2024-11-05';
 
 // Available tools
-const TOOLS = [cortexQueryTool, cortexGetStatusTool];
+const TOOLS = [cortexQueryTool, cortexGetStatusTool, cortexLearnTodayTool];
 
 /**
  * Handle MCP initialize request
@@ -63,6 +64,10 @@ async function handleToolsCall(request) {
 
       case 'cortex_get_status':
         result = await executeCortexGetStatus();
+        break;
+
+      case 'cortex_learn_today':
+        result = await executeCortexLearnToday(args);
         break;
 
       default:
@@ -148,7 +153,7 @@ async function handleRequest(request) {
 async function main() {
   console.error('[MCP Server] Cortex MCP Server v1.0.0 starting...');
   console.error('[MCP Server] Mode: stdio');
-  console.error('[MCP Server] Tools: cortex_query, cortex_get_status');
+  console.error('[MCP Server] Tools: cortex_query, cortex_get_status, cortex_learn_today');
   console.error('[MCP Server] Subsystems: UniFi, Proxmox, Sandfly, Kubernetes');
 
   let buffer = '';
