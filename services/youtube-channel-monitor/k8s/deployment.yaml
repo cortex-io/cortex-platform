@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: youtube-channel-monitor-config
+  namespace: cortex-youtube
+data:
+  REDIS_HOST: "redis-queue"
+  REDIS_PORT: "6379"
+  INGESTION_URL: "http://youtube-ingestion:8080"
+  DAILY_LIMIT: "10"
+  CHECK_INTERVAL: "3600"
+  LOG_LEVEL: "INFO"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: youtube-channel-monitor
+  namespace: cortex-youtube
+  labels:
+    app: youtube-channel-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: youtube-channel-monitor
+  template:
+    metadata:
+      labels:
+        app: youtube-channel-monitor
+    spec:
+      containers:
+      - name: channel-monitor
+        image: docker-registry.cortex-chat.svc.cluster.local:5000/youtube-channel-monitor:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        envFrom:
+        - configMapRef:
+            name: youtube-channel-monitor-config
+        env:
+        - name: YOUTUBE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: youtube-secrets
+              key: api-key
+              optional: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: youtube-channel-monitor
+  namespace: cortex-youtube
+spec:
+  selector:
+    app: youtube-channel-monitor
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
