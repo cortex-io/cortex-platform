@@ -394,9 +394,16 @@ class MemoryService:
         self,
         limit: int = 10,
         since: Optional[datetime] = None,
+        include_archived: bool = False,
     ) -> List[Session]:
         all_data = await self.redis.hgetall("memory:sessions")
         sessions = [Session.model_validate_json(d) for d in all_data.values()]
+
+        # Include archived sessions if requested
+        if include_archived:
+            archived_data = await self.redis.hgetall("memory:sessions:archived")
+            archived = [Session.model_validate_json(d) for d in archived_data.values()]
+            sessions.extend(archived)
 
         # Filter by time
         if since:
@@ -406,6 +413,73 @@ class MemoryService:
         sessions.sort(key=lambda s: s.started_at, reverse=True)
 
         return sessions[:limit]
+
+    async def delete_session(self, session_id: str) -> bool:
+        """Permanently delete a session"""
+        # Check active sessions
+        exists = await self.redis.hexists("memory:sessions", session_id)
+        if exists:
+            await self.redis.hdel("memory:sessions", session_id)
+            # Clear if current session
+            current = await self.redis.get("memory:current_session")
+            if current == session_id:
+                await self.redis.delete("memory:current_session")
+            logger.info(f"Deleted session: {session_id}")
+            return True
+
+        # Check archived sessions
+        exists = await self.redis.hexists("memory:sessions:archived", session_id)
+        if exists:
+            await self.redis.hdel("memory:sessions:archived", session_id)
+            logger.info(f"Deleted archived session: {session_id}")
+            return True
+
+        return False
+
+    async def archive_session(self, session_id: str) -> Optional[Session]:
+        """Archive a session (move to archived storage)"""
+        session = await self.get_session(session_id)
+        if not session:
+            return None
+
+        # End session if not already ended
+        if not session.ended_at:
+            session.ended_at = datetime.now()
+
+        # Move to archived storage
+        await self.redis.hdel("memory:sessions", session_id)
+        await self.redis.hset(
+            "memory:sessions:archived",
+            session_id,
+            session.model_dump_json(),
+        )
+
+        # Clear if current session
+        current = await self.redis.get("memory:current_session")
+        if current == session_id:
+            await self.redis.delete("memory:current_session")
+
+        logger.info(f"Archived session: {session_id}")
+        return session
+
+    async def restore_session(self, session_id: str) -> Optional[Session]:
+        """Restore an archived session"""
+        data = await self.redis.hget("memory:sessions:archived", session_id)
+        if not data:
+            return None
+
+        session = Session.model_validate_json(data)
+
+        # Move back to active storage
+        await self.redis.hdel("memory:sessions:archived", session_id)
+        await self.redis.hset(
+            "memory:sessions",
+            session_id,
+            session.model_dump_json(),
+        )
+
+        logger.info(f"Restored session: {session_id}")
+        return session
 
     async def get_session_summary(self, session_id: str) -> SessionSummary:
         session = await self.get_session(session_id)
@@ -1051,11 +1125,14 @@ async def create_session(data: SessionCreate):
 async def list_sessions(
     limit: int = Query(10, ge=1, le=100),
     since: Optional[str] = None,
+    include_archived: bool = Query(False),
 ):
     since_dt = None
     if since:
         since_dt = datetime.fromisoformat(since)
-    sessions = await memory.list_sessions(limit=limit, since=since_dt)
+    sessions = await memory.list_sessions(
+        limit=limit, since=since_dt, include_archived=include_archived
+    )
     return {"sessions": sessions}
 
 
@@ -1091,6 +1168,33 @@ async def end_session(session_id: str, summary: str = ""):
         return session
     except ValueError as e:
         raise HTTPException(404, str(e))
+
+
+@app.delete("/memory/sessions/{session_id}")
+async def delete_session(session_id: str):
+    """Permanently delete a session"""
+    deleted = await memory.delete_session(session_id)
+    if not deleted:
+        raise HTTPException(404, f"Session not found: {session_id}")
+    return {"success": True, "message": f"Session {session_id} deleted"}
+
+
+@app.post("/memory/sessions/{session_id}/archive")
+async def archive_session(session_id: str):
+    """Archive a session"""
+    session = await memory.archive_session(session_id)
+    if not session:
+        raise HTTPException(404, f"Session not found: {session_id}")
+    return {"success": True, "message": f"Session {session_id} archived", "session": session}
+
+
+@app.post("/memory/sessions/{session_id}/restore")
+async def restore_session(session_id: str):
+    """Restore an archived session"""
+    session = await memory.restore_session(session_id)
+    if not session:
+        raise HTTPException(404, f"Archived session not found: {session_id}")
+    return {"success": True, "message": f"Session {session_id} restored", "session": session}
 
 
 @app.get("/memory/sessions/{session_id}/summary")
