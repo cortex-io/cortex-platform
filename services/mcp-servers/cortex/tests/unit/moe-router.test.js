@@ -82,7 +82,7 @@ describe('MoE Router', () => {
     it('should handle case-insensitive matching', () => {
       assert.strictEqual(router.route('UNIFI STATUS'), 'unifi');
       assert.strictEqual(router.route('ProxMox VMs'), 'proxmox');
-      assert.strictEqual(router.route('WaZuH aLeRtS'), 'sandfly');
+      assert.strictEqual(router.route('SaNdFlY aLeRtS'), 'sandfly');
     });
 
     it('should match partial keywords', () => {

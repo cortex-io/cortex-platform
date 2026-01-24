@@ -62,6 +62,22 @@ const MOE_ROUTES = {
     ],
     system: 'n8n',
     priority: 100
+  },
+  school: {
+    keywords: [
+      'school', 'cortex-school', 'blog', 'article', 'content', 'write',
+      'rag', 'knowledge', 'training', 'learn', 'education', 'document'
+    ],
+    system: 'school',
+    priority: 100
+  },
+  youtube: {
+    keywords: [
+      'youtube', 'video', 'transcript', 'channel', 'ingest', 'media',
+      'watch', 'playlist', 'caption', 'subtitle'
+    ],
+    system: 'youtube',
+    priority: 100
   }
 };
 
