@@ -205,7 +205,20 @@ def create_blog_post(improvement):
         slug = title.lower()
         slug = ''.join(c if c.isalnum() or c in (' ', '-') else '' for c in slug)
         slug = '-'.join(slug.split())
-        slug = slug[:80]  # Limit length
+
+        # Limit slug length but ensure it doesn't end with hyphen
+        max_slug_length = 120  # Increased from 80 to allow longer titles
+        if len(slug) > max_slug_length:
+            # Truncate at word boundary to avoid cutting mid-word
+            slug = slug[:max_slug_length]
+            # Find last hyphen (word boundary) and truncate there
+            last_hyphen = slug.rfind('-')
+            if last_hyphen > 0:
+                slug = slug[:last_hyphen]
+
+        # Remove trailing hyphens
+        slug = slug.rstrip('-')
+
         full_slug = f"{date_str}-{slug}"
 
         # Map category
