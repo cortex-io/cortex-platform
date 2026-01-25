@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cortex-activator
+description: |
+  Cortex Layer Activator - The always-on orchestrator that routes queries 
+  to appropriate layers and triggers KEDA scale-up for cold layers.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - cortex
+  - activator
+  - serverless
+  - orchestration
+home: https://ry-ops.dev
+maintainers:
+  - name: Ryan Dahlberg
+    url: https://ry-ops.dev

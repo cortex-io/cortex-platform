@@ -1,0 +1,9 @@
+apiVersion: v2
+name: execution-unifi-ssh
+description: |
+  UniFi SSH Execution Layer - Direct UDM Pro shell access.
+  Used for diagnostics and API failover.
+  KEDA-managed, scales 0→1 on demand.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

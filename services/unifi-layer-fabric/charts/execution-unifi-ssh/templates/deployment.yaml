@@ -1,0 +1,178 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-ssh
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: cortex-unifi
+    cortex.ry-ops.dev/layer-type: execution
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: execution-unifi-ssh
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: execution-unifi-ssh
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        cortex.ry-ops.dev/layer-type: execution
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+    spec:
+      containers:
+        - name: ssh-gateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          
+          env:
+            # SSH connection
+            - name: SSH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ssh.secretName }}
+                  key: {{ .Values.ssh.hostKey }}
+            - name: SSH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ssh.secretName }}
+                  key: {{ .Values.ssh.usernameKey }}
+            - name: SSH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ssh.secretName }}
+                  key: {{ .Values.ssh.passwordKey }}
+            - name: SSH_PORT
+              value: {{ .Values.ssh.port | quote }}
+            - name: SSH_TIMEOUT
+              value: {{ .Values.ssh.timeout | quote }}
+            - name: SSH_MAX_CONNECTIONS
+              value: {{ .Values.ssh.maxConnections | quote }}
+          
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+      
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-ssh
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/name: execution-unifi-ssh
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-ssh
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  commands.yaml: |
+    # Allowed commands
+    allowedCommands:
+      {{- range .Values.allowedCommands }}
+      - name: {{ .name }}
+        command: {{ .command | quote }}
+        category: {{ .category }}
+        riskLevel: {{ .riskLevel }}
+        {{- if .params }}
+        params:
+          {{- range .params }}
+          - name: {{ .name }}
+            {{- if .default }}
+            default: {{ .default | quote }}
+            {{- end }}
+            {{- if .max }}
+            max: {{ .max | quote }}
+            {{- end }}
+            {{- if .required }}
+            required: true
+            {{- end }}
+            {{- if .validation }}
+            validation: {{ .validation | quote }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    
+    # Blocked patterns
+    blockedPatterns:
+      {{- range .Values.blockedPatterns }}
+      - {{ . | quote }}
+      {{- end }}
+
+---
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Release.Name }}-scaler
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-ssh
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: "http://prometheus.observability:9090"
+        metricName: cortex_activator_pending_requests
+        query: |
+          sum(cortex_activator_pending_requests{layer="execution-unifi-ssh"})
+        threshold: "1"
+{{- end }}
