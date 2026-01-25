@@ -1,0 +1,175 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: reasoning-classifier
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: cortex-unifi
+    cortex.ry-ops.dev/layer-type: reasoning
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: reasoning-classifier
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: reasoning-classifier
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        cortex.ry-ops.dev/layer-type: reasoning
+    spec:
+      securityContext:
+        fsGroup: 1000
+      
+      {{- if .Values.initContainer.enabled }}
+      initContainers:
+        - name: model-download
+          image: {{ .Values.initContainer.image }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              if [ -f "/models/{{ .Values.model.file }}" ]; then
+                echo "Model exists, skipping"
+                exit 0
+              fi
+              pip install -q huggingface_hub
+              python3 -c "
+              from huggingface_hub import hf_hub_download
+              hf_hub_download(
+                  repo_id='{{ .Values.model.name }}',
+                  filename='{{ .Values.model.file }}',
+                  local_dir='/models',
+                  local_dir_use_symlinks=False
+              )
+              "
+          volumeMounts:
+            - name: models
+              mountPath: /models
+          resources:
+            {{- toYaml .Values.initContainer.resources | nindent 12 }}
+      {{- end }}
+      
+      containers:
+        - name: llama-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          args:
+            - --model
+            - /models/{{ .Values.model.file }}
+            - --ctx-size
+            - "{{ .Values.model.contextLength }}"
+            - --threads
+            - "{{ .Values.model.threads }}"
+            - --batch-size
+            - "{{ .Values.model.batchSize }}"
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8080"
+          
+          ports:
+            - name: http
+              containerPort: 8080
+          
+          env:
+            - name: LLAMA_SYSTEM_PROMPT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: system-prompt
+          
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            - name: models
+              mountPath: /models
+      
+      volumes:
+        - name: models
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-models
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: reasoning-classifier
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  system-prompt: |
+    {{- .Values.systemPrompt | nindent 4 }}
+
+---
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-models
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- end }}
+
+---
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Release.Name }}-scaler
+  namespace: {{ .Values.global.namespace }}
+spec:
+  scaleTargetRef:
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: "http://prometheus.observability:9090"
+        metricName: cortex_activator_pending_requests
+        query: |
+          sum(cortex_activator_pending_requests{layer="reasoning-classifier"})
+        threshold: "1"
+{{- end }}

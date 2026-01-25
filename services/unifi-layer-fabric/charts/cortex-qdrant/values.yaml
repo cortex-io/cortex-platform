@@ -1,0 +1,138 @@
+# =============================================================================
+# Cortex Qdrant - Shared Memory Layer
+# =============================================================================
+# This layer is ALWAYS ON - it provides the memory backbone for all other layers.
+# PVC-backed to preserve learned patterns across restarts.
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # Single replica with PVC
+
+image:
+  repository: qdrant/qdrant
+  tag: "v1.7.4"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# -----------------------------------------------------------------------------
+# Persistence (CRITICAL)
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  size: "5Gi"
+  accessMode: ReadWriteOnce
+
+# -----------------------------------------------------------------------------
+# Collections
+# -----------------------------------------------------------------------------
+# These collections are created on startup
+collections:
+  # Operational history - query/tool/outcome patterns
+  operations:
+    vectorSize: 384  # all-MiniLM-L6-v2 embeddings
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: tool
+        type: keyword
+      - field: success
+        type: bool
+      - field: timestamp
+        type: datetime
+  
+  # Configuration snapshots - network/device/client configs
+  configurations:
+    vectorSize: 384
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: config_type
+        type: keyword
+      - field: site
+        type: keyword
+  
+  # Troubleshooting patterns - problem/diagnosis/solution
+  troubleshooting:
+    vectorSize: 384
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: category
+        type: keyword
+      - field: resolved
+        type: bool
+  
+  # Client profiles - MAC/name/behavior patterns
+  clients:
+    vectorSize: 384
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: mac
+        type: keyword
+      - field: is_blocked
+        type: bool
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  ports:
+    http: 6333
+    grpc: 6334
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /
+    port: 6333
+  initialDelaySeconds: 10
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 6333
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# Qdrant Configuration
+# -----------------------------------------------------------------------------
+config:
+  # Storage settings
+  storage:
+    # Store vectors on disk for memory efficiency
+    on_disk: true
+    # Snapshot interval (for backup)
+    snapshot_interval_sec: 3600
+  
+  # Performance tuning for small deployment
+  optimizers:
+    # Index threshold (build index after this many vectors)
+    indexing_threshold: 1000
+    # Memory limit for indexing (MB)
+    max_segment_size: 100000
+  
+  # Service settings
+  service:
+    # Enable REST API
+    http_port: 6333
+    # Enable gRPC
+    grpc_port: 6334

@@ -1,0 +1,140 @@
+# =============================================================================
+# ArgoCD ApplicationSet - UniFi Layer Fabric
+# =============================================================================
+# Deploys all layers as a single GitOps-managed unit.
+# Each layer is its own ArgoCD Application for independent sync status.
+# =============================================================================
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: unifi-layer-fabric
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          # Always-on layers
+          - name: cortex-qdrant
+            path: charts/cortex-qdrant
+            syncWave: "1"
+          
+          - name: cortex-activator
+            path: charts/cortex-activator
+            syncWave: "2"
+          
+          # Scale-to-zero layers
+          - name: reasoning-classifier
+            path: charts/reasoning-classifier
+            syncWave: "3"
+          
+          - name: reasoning-slm
+            path: charts/reasoning-slm
+            syncWave: "3"
+          
+          - name: execution-unifi-api
+            path: charts/execution-unifi-api
+            syncWave: "4"
+          
+          - name: execution-unifi-ssh
+            path: charts/execution-unifi-ssh
+            syncWave: "4"
+          
+          - name: cortex-telemetry
+            path: charts/cortex-telemetry
+            syncWave: "5"
+  
+  template:
+    metadata:
+      name: "unifi-{{name}}"
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: unifi-layer-fabric
+        cortex.ry-ops.dev/fabric: unifi
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{syncWave}}"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    
+    spec:
+      project: cortex
+      
+      source:
+        repoURL: https://github.com/ry-ops/cortex-platform.git
+        targetRevision: main
+        path: "services/unifi-layer-fabric/{{path}}"
+        helm:
+          valueFiles:
+            - values.yaml
+            # Environment-specific overrides (optional)
+            # - ../../../environments/production/{{name}}.yaml
+      
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cortex-unifi
+      
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+      
+      # Ignore KEDA-managed replica changes
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jsonPointers:
+            - /spec/replicas
+
+---
+# ArgoCD Project for Cortex
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cortex
+  namespace: argocd
+spec:
+  description: Cortex AI Layer Fabric Project
+  
+  sourceRepos:
+    - https://github.com/ry-ops/cortex-platform.git
+  
+  destinations:
+    - namespace: cortex-*
+      server: https://kubernetes.default.svc
+  
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+  
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  
+  orphanedResources:
+    warn: true
+
+---
+# Namespace (created before Applications)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cortex-unifi
+  labels:
+    app.kubernetes.io/part-of: cortex
+    cortex.ry-ops.dev/fabric: unifi
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
