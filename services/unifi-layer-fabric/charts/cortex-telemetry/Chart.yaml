@@ -1,0 +1,8 @@
+apiVersion: v2
+name: cortex-telemetry
+description: |
+  Cortex Telemetry Layer - Metrics, audit logging, and learning pipeline.
+  Captures query→tool→outcome patterns for continuous improvement.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

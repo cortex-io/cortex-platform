@@ -1,0 +1,208 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: cortex-unifi
+    cortex.ry-ops.dev/layer-type: telemetry
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cortex-telemetry
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cortex-telemetry
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        cortex.ry-ops.dev/layer-type: telemetry
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "{{ .Values.metrics.path }}"
+    spec:
+      containers:
+        - name: telemetry
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          
+          env:
+            # Qdrant
+            - name: QDRANT_ENDPOINT
+              value: {{ .Values.qdrant.endpoint | quote }}
+            - name: QDRANT_COLLECTION_OPERATIONS
+              value: {{ .Values.qdrant.collections.operations | quote }}
+            - name: QDRANT_COLLECTION_TROUBLESHOOTING
+              value: {{ .Values.qdrant.collections.troubleshooting | quote }}
+            
+            # Embedding
+            - name: EMBEDDING_MODEL
+              value: {{ .Values.qdrant.embedding.model | quote }}
+            
+            # Training
+            - name: TRAINING_ENABLED
+              value: {{ .Values.training.enabled | quote }}
+            - name: TRAINING_FORMAT
+              value: {{ .Values.training.format | quote }}
+            - name: TRAINING_PATH
+              value: {{ .Values.training.persistence.mountPath | quote }}
+            
+            # Tracing
+            {{- if .Values.tracing.enabled }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.tracing.otlpEndpoint | quote }}
+            - name: OTEL_TRACES_SAMPLER_ARG
+              value: {{ .Values.tracing.sampleRate | quote }}
+            {{- end }}
+          
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            {{- if .Values.training.persistence.enabled }}
+            - name: training-data
+              mountPath: {{ .Values.training.persistence.mountPath }}
+            {{- end }}
+            {{- if .Values.audit.output.file.enabled }}
+            - name: audit-logs
+              mountPath: /data/audit
+            {{- end }}
+          
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+      
+      volumes:
+        {{- if .Values.training.persistence.enabled }}
+        - name: training-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-training
+        {{- end }}
+        {{- if .Values.audit.output.file.enabled }}
+        - name: audit-logs
+          emptyDir: {}
+        {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+{{- if .Values.training.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-training
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.training.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.training.persistence.size }}
+{{- end }}
+
+---
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Release.Name }}-scaler
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: "http://prometheus.observability:9090"
+        metricName: cortex_activator_pending_telemetry
+        query: |
+          sum(cortex_activator_pending_telemetry)
+        threshold: "1"
+{{- end }}
+
+---
+{{- if .Values.training.export.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-export
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-telemetry
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.training.export.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: export
+              image: amazon/aws-cli:2.15.0
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  # Export training data to cloud storage
+                  DATE=$(date +%Y-%m-%d)
+                  aws s3 sync /data/training s3://{{ .Values.training.export.destination }}/training-data/$DATE/
+              volumeMounts:
+                - name: training-data
+                  mountPath: /data/training
+          volumes:
+            - name: training-data
+              persistentVolumeClaim:
+                claimName: {{ .Release.Name }}-training
+{{- end }}

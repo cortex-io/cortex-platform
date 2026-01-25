@@ -1,0 +1,184 @@
+# =============================================================================
+# Reasoning SLM Layer - Primary Reasoning Engine
+# =============================================================================
+# Uses Phi-3 Mini 3.8B (Q4_K_M quantized) for:
+# - Intent understanding
+# - Tool selection
+# - Parameter extraction
+# - Multi-step reasoning
+#
+# Scales to zero when idle via KEDA.
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Model Configuration
+# -----------------------------------------------------------------------------
+model:
+  # Phi-3 Mini - Best reasoning/size ratio for tool calling
+  name: "microsoft/Phi-3-mini-4k-instruct-gguf"
+  file: "Phi-3-mini-4k-instruct-q4_k_m.gguf"
+  
+  # Alternative models (uncomment to use)
+  # name: "Qwen/Qwen2-1.5B-Instruct-GGUF"
+  # file: "qwen2-1_5b-instruct-q4_k_m.gguf"
+  
+  # Context length
+  contextLength: 4096
+  
+  # Inference settings
+  temperature: 0.1       # Low for deterministic tool calling
+  topP: 0.9
+  repeatPenalty: 1.1
+  
+  # Batch settings
+  batchSize: 512
+  threads: 4             # Adjust based on available CPU
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  # Using llama.cpp server for efficient CPU inference
+  repository: ghcr.io/ggerganov/llama.cpp
+  tag: "server"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "2Gi"
+    cpu: "1000m"
+  limits:
+    memory: "3Gi"
+    cpu: "2000m"
+
+# -----------------------------------------------------------------------------
+# Model Storage
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  size: "10Gi"
+  accessMode: ReadWriteOnce
+
+# -----------------------------------------------------------------------------
+# System Prompt
+# -----------------------------------------------------------------------------
+systemPrompt: |
+  You are a UniFi network operations assistant. Your job is to:
+  1. Understand user queries about network operations
+  2. Select the appropriate tool to fulfill the request
+  3. Extract parameters from the query
+  4. Return a structured tool call
+  
+  Available tools:
+  
+  CLIENT OPERATIONS:
+  - get_clients(site?: string, filter?: string) - List network clients
+  - get_client(site: string, mac: string) - Get specific client details
+  - block_client(site: string, mac: string) - Block a client
+  - unblock_client(site: string, mac: string) - Unblock a client
+  - set_client_alias(site: string, mac: string, name: string) - Set client name
+  - reconnect_client(site: string, mac: string) - Force client reconnection
+  
+  DEVICE OPERATIONS:
+  - get_devices(site?: string) - List network devices
+  - restart_device(site: string, mac: string) - Restart a device
+  - locate_device(site: string, mac: string, enabled: bool) - Flash device LED
+  
+  NETWORK OPERATIONS:
+  - get_networks(site?: string) - List networks/VLANs
+  - create_network(site: string, name: string, vlan_id?: int, subnet?: string) - Create network
+  - get_wlans(site?: string) - List wireless networks
+  - create_wlan(site: string, name: string, password: string, network_id?: string) - Create WiFi
+  
+  FIREWALL OPERATIONS:
+  - get_firewall_rules(site?: string, ruleset?: string) - List firewall rules
+  - create_firewall_rule(site: string, name: string, action: string, ...) - Create rule
+  
+  DIAGNOSTICS:
+  - get_logs(lines?: int, filter?: string) - Get system logs (via SSH)
+  - get_routes() - Get routing table (via SSH)
+  - run_diagnostic(command: string) - Run diagnostic command (via SSH)
+  
+  Respond with a JSON object:
+  {
+    "tool": "tool_name",
+    "params": { ... },
+    "reasoning": "Brief explanation of why this tool was selected"
+  }
+  
+  If the query is unclear, ask for clarification instead of guessing.
+  If the query requires multiple steps, list them in order.
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+  
+  # Scale to zero
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  
+  # Cooldown before scaling to zero (5 minutes)
+  cooldownPeriod: 300
+  
+  # Polling interval
+  pollingInterval: 15
+  
+  # Scale trigger - watches for pending requests via Activator
+  trigger:
+    type: prometheus
+    metadata:
+      serverAddress: "http://prometheus.observability:9090"
+      metricName: cortex_activator_pending_requests
+      query: |
+        sum(cortex_activator_pending_requests{layer="reasoning-slm"})
+      threshold: "1"
+
+# -----------------------------------------------------------------------------
+# Init Container - Model Download
+# -----------------------------------------------------------------------------
+initContainer:
+  enabled: true
+  image: python:3.11-slim
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

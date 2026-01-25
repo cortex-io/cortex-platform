@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-activator
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: cortex-unifi
+    cortex.ry-ops.dev/layer-type: orchestrator
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cortex-activator
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cortex-activator
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        cortex.ry-ops.dev/layer-type: orchestrator
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "{{ .Values.metrics.path }}"
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      
+      containers:
+        - name: activator
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          
+          env:
+            - name: CONFIG_PATH
+              value: /config/config.yaml
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # Cortex Integration
+            - name: CORTEX_ENABLED
+              value: "{{ .Values.cortex.enabled }}"
+            - name: REDIS_URL
+              value: "{{ .Values.cortex.redisUrl }}"
+            - name: AGENT_ID
+              value: "{{ .Values.cortex.agentId }}-$(POD_NAME)"
+            - name: AGENT_NAME
+              value: "{{ .Values.cortex.agentName }}"
+            - name: CORTEX_TASK_STREAM
+              value: "{{ .Values.cortex.taskStream }}"
+            - name: CORTEX_RESULT_STREAM
+              value: "{{ .Values.cortex.resultStream }}"
+            - name: CORTEX_CONSUMER_GROUP
+              value: "{{ .Values.cortex.consumerGroup }}"
+            - name: HEARTBEAT_INTERVAL
+              value: "{{ .Values.cortex.heartbeatInterval }}"
+            {{- if .Values.tracing.enabled }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.tracing.otlpEndpoint }}
+            {{- end }}
+          
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
