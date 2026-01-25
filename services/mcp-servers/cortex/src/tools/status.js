@@ -13,6 +13,10 @@ import { checkYoutubeHealth } from '../clients/youtube.js';
 import { checkTailscaleHealth } from '../clients/tailscale.js';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
+import axios from 'axios';
+
+// Layer Activator URL for on-demand stack activation
+const LAYER_ACTIVATOR_URL = process.env.LAYER_ACTIVATOR_URL || 'http://layer-activator.cortex-system.svc.cluster.local:8080';
 
 /**
  * Tool definition for MCP
@@ -100,11 +104,56 @@ async function getRunningTasks() {
 }
 
 /**
+ * Pre-activate stacks via Layer Activator before health checks
+ * This ensures scaled-down services are brought up on-demand
+ * @returns {Promise<void>}
+ */
+async function preActivateStacks() {
+  const stacksToActivate = [
+    'infra-stack',     // UniFi, Proxmox, K8s, Cloudflare
+    'security-stack',  // Sandfly, GitHub Security
+    'n8n-stack',       // n8n automation
+    'school-stack'     // School, YouTube
+  ];
+
+  console.log('[Cortex Status] Pre-activating stacks via Layer Activator...');
+
+  try {
+    // Fire activation requests in parallel (don't wait for full ready)
+    await Promise.all(
+      stacksToActivate.map(async (stackId) => {
+        try {
+          await axios.post(
+            `${LAYER_ACTIVATOR_URL}/activate`,
+            { stack_id: stackId },
+            { timeout: 5000 }
+          );
+          console.log(`[Cortex Status] Activated ${stackId}`);
+        } catch (error) {
+          // Stack might not exist or already active - that's fine
+          console.log(`[Cortex Status] Stack ${stackId}: ${error.message}`);
+        }
+      })
+    );
+
+    // Give services a moment to initialize if they were scaled from 0
+    console.log('[Cortex Status] Waiting for services to initialize...');
+    await new Promise(resolve => setTimeout(resolve, 3000));
+  } catch (error) {
+    console.log(`[Cortex Status] Layer Activator not available: ${error.message}`);
+    // Continue anyway - services might already be running
+  }
+}
+
+/**
  * Execute the cortex_get_status tool
  * @returns {Promise<Object>} System status
  */
 export async function executeCortexGetStatus() {
   console.log('[Cortex Status] Checking all subsystems...');
+
+  // Pre-activate stacks to ensure scaled-down services come up
+  await preActivateStacks();
 
   // Check all MCP servers in parallel
   const [unifiHealth, proxmoxHealth, sandflyHealth, k8sHealth, n8nHealth, schoolHealth, youtubeHealth, tailscaleHealth, activeWorkers, activeMasters, runningTasks] = await Promise.all([
