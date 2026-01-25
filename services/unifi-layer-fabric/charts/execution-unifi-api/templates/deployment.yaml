@@ -1,0 +1,175 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: cortex-unifi
+    cortex.ry-ops.dev/layer-type: execution
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: execution-unifi-api
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: execution-unifi-api
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        cortex.ry-ops.dev/layer-type: execution
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+    spec:
+      containers:
+        - name: action-engine
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          
+          env:
+            # Default site
+            - name: UNIFI_DEFAULT_SITE
+              value: {{ .Values.unifi.defaultSite | quote }}
+            
+            {{- if .Values.unifi.siteManager.enabled }}
+            # Site Manager API
+            - name: UNIFI_SITE_MANAGER_ENABLED
+              value: "true"
+            - name: UNIFI_SITE_MANAGER_URL
+              value: {{ .Values.unifi.siteManager.baseUrl | quote }}
+            - name: UNIFI_SITE_MANAGER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.unifi.siteManager.secretName }}
+                  key: {{ .Values.unifi.siteManager.secretKey }}
+            {{- end }}
+            
+            {{- if .Values.unifi.networkApi.enabled }}
+            # Network API
+            - name: UNIFI_NETWORK_API_ENABLED
+              value: "true"
+            - name: UNIFI_CONTROLLER_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.unifi.networkApi.secretName }}
+                  key: {{ .Values.unifi.networkApi.hostKey }}
+            - name: UNIFI_CONTROLLER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.unifi.networkApi.secretName }}
+                  key: {{ .Values.unifi.networkApi.usernameKey }}
+            - name: UNIFI_CONTROLLER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.unifi.networkApi.secretName }}
+                  key: {{ .Values.unifi.networkApi.passwordKey }}
+            - name: UNIFI_VERIFY_SSL
+              value: {{ .Values.unifi.networkApi.verifySsl | quote }}
+            - name: UNIFI_TIMEOUT
+              value: {{ .Values.unifi.networkApi.timeout | quote }}
+            {{- end }}
+            
+            # Telemetry
+            {{- if .Values.telemetry.enabled }}
+            - name: TELEMETRY_ENDPOINT
+              value: {{ .Values.telemetry.endpoint | quote }}
+            - name: QDRANT_ENDPOINT
+              value: {{ .Values.telemetry.qdrantEndpoint | quote }}
+            {{- end }}
+          
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+      
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/name: execution-unifi-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  actions.yaml: |
+    # Action definitions
+    {{- toYaml .Values.actions | nindent 4 }}
+
+---
+{{- if .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Release.Name }}-scaler
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: execution-unifi-api
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: "http://prometheus.observability:9090"
+        metricName: cortex_activator_pending_requests
+        query: |
+          sum(cortex_activator_pending_requests{layer="execution-unifi-api"})
+        threshold: "1"
+{{- end }}

@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: cortex-activator
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  config.yaml: |
+    # Cortex Activator Configuration
+    # Generated from Helm values
+    
+    server:
+      port: 8080
+      metricsPort: {{ .Values.metrics.port }}
+      metricsPath: {{ .Values.metrics.path }}
+    
+    # Layer endpoints
+    layers:
+      reasoning:
+        classifier:
+          endpoint: http://{{ .Values.layers.reasoning.classifier.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.reasoning.classifier.port }}
+          healthPath: {{ .Values.layers.reasoning.classifier.healthPath }}
+        slm:
+          endpoint: http://{{ .Values.layers.reasoning.slm.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.reasoning.slm.port }}
+          healthPath: {{ .Values.layers.reasoning.slm.healthPath }}
+      
+      execution:
+        api:
+          endpoint: http://{{ .Values.layers.execution.api.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.execution.api.port }}
+          healthPath: {{ .Values.layers.execution.api.healthPath }}
+        ssh:
+          endpoint: http://{{ .Values.layers.execution.ssh.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.execution.ssh.port }}
+          healthPath: {{ .Values.layers.execution.ssh.healthPath }}
+      
+      memory:
+        qdrant:
+          endpoint: http://{{ .Values.layers.memory.qdrant.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.memory.qdrant.port }}
+          healthPath: {{ .Values.layers.memory.qdrant.healthPath }}
+      
+      telemetry:
+        endpoint: http://{{ .Values.layers.telemetry.service }}.{{ .Values.global.namespace }}:{{ .Values.layers.telemetry.port }}
+        healthPath: {{ .Values.layers.telemetry.healthPath }}
+    
+    # Routing configuration
+    routing:
+      keywords:
+        {{- range .Values.routing.keywords }}
+        - pattern: {{ .pattern | quote }}
+          tool: {{ .tool | quote }}
+          execution: {{ .execution | quote }}
+          {{- if .requiresConfirmation }}
+          requiresConfirmation: true
+          {{- end }}
+        {{- end }}
+      
+      fallbackToClassifier: {{ .Values.routing.fallbackToClassifier }}
+      classifierConfidenceThreshold: {{ .Values.routing.classifierConfidenceThreshold }}
+      
+      complexityKeywords:
+        {{- range .Values.routing.complexityKeywords }}
+        - {{ . | quote }}
+        {{- end }}
+    
+    # Layer activation
+    activation:
+      coldStartTimeout: {{ .Values.activation.coldStartTimeout }}
+      healthCheckInterval: {{ .Values.activation.healthCheckInterval }}
+      parallelWake: {{ .Values.activation.parallelWake }}
+      priority:
+        {{- range .Values.activation.priority }}
+        - {{ . }}
+        {{- end }}
+    
+    # Failover configuration
+    failover:
+      apiToSsh:
+        enabled: {{ .Values.failover.apiToSsh.enabled }}
+        triggers:
+          {{- range .Values.failover.apiToSsh.triggers }}
+          {{- if .apiTimeout }}
+          - type: timeout
+            value: {{ .apiTimeout | quote }}
+          {{- end }}
+          {{- if .apiError }}
+          - type: error
+            value: {{ .apiError | quote }}
+          {{- end }}
+          {{- end }}
+        sshOperations:
+          {{- range .Values.failover.apiToSsh.sshOperations }}
+          - {{ . }}
+          {{- end }}

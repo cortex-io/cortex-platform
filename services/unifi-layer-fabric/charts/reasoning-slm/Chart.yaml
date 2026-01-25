@@ -1,0 +1,8 @@
+apiVersion: v2
+name: reasoning-slm
+description: |
+  Reasoning SLM Layer - Phi-3 Mini 3.8B for tool calling and reasoning.
+  KEDA-managed, scales 0→1 on demand.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

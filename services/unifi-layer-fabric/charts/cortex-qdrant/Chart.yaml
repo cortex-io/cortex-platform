@@ -1,0 +1,8 @@
+apiVersion: v2
+name: cortex-qdrant
+description: |
+  Cortex Qdrant - Shared vector memory layer for RAG and learning.
+  Always-on (not scaled to zero) to provide fast context retrieval.
+type: application
+version: 0.1.0
+appVersion: "1.7.4"

@@ -1,0 +1,246 @@
+# =============================================================================
+# UniFi API Execution Layer
+# =============================================================================
+# Handles all UniFi API operations:
+# - Site Manager API (cloud, multi-site)
+# - Network Application API (local controller)
+#
+# Primary execution layer. SSH is failover only.
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ry-ops/unifi-action-engine
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "50m"
+  limits:
+    memory: "256Mi"
+    cpu: "200m"
+
+# -----------------------------------------------------------------------------
+# UniFi Configuration
+# -----------------------------------------------------------------------------
+unifi:
+  # Default site (for single-site deployments)
+  defaultSite: "default"
+  
+  # Site Manager API (cloud)
+  siteManager:
+    enabled: true
+    baseUrl: "https://api.ui.com"
+    # API key from secret
+    secretName: unifi-credentials
+    secretKey: api-key
+  
+  # Network Application API (local controller)
+  networkApi:
+    enabled: true
+    # Controller URL from secret
+    secretName: unifi-credentials
+    hostKey: controller-host
+    usernameKey: controller-username
+    passwordKey: controller-password
+    # SSL verification (disable for self-signed certs)
+    verifySsl: false
+    # Timeout settings
+    timeout: 30
+    retries: 3
+
+# -----------------------------------------------------------------------------
+# Available Actions
+# -----------------------------------------------------------------------------
+actions:
+  # Client operations
+  clients:
+    - name: get_clients
+      method: GET
+      endpoint: /stat/sta
+      category: read
+      riskLevel: low
+    
+    - name: get_client
+      method: GET
+      endpoint: /stat/user/{mac}
+      category: read
+      riskLevel: low
+    
+    - name: block_client
+      method: POST
+      endpoint: /cmd/stamgr
+      payload: '{"cmd": "block-sta", "mac": "{mac}"}'
+      category: write
+      riskLevel: medium
+      requiresConfirmation: true
+    
+    - name: unblock_client
+      method: POST
+      endpoint: /cmd/stamgr
+      payload: '{"cmd": "unblock-sta", "mac": "{mac}"}'
+      category: write
+      riskLevel: low
+    
+    - name: set_client_alias
+      method: PUT
+      endpoint: /rest/user/{id}
+      category: write
+      riskLevel: low
+    
+    - name: reconnect_client
+      method: POST
+      endpoint: /cmd/stamgr
+      payload: '{"cmd": "kick-sta", "mac": "{mac}"}'
+      category: execute
+      riskLevel: low
+  
+  # Device operations
+  devices:
+    - name: get_devices
+      method: GET
+      endpoint: /stat/device
+      category: read
+      riskLevel: low
+    
+    - name: restart_device
+      method: POST
+      endpoint: /cmd/devmgr
+      payload: '{"cmd": "restart", "mac": "{mac}"}'
+      category: execute
+      riskLevel: medium
+      requiresConfirmation: true
+    
+    - name: locate_device
+      method: POST
+      endpoint: /cmd/devmgr
+      payload: '{"cmd": "{cmd}", "mac": "{mac}"}'
+      category: execute
+      riskLevel: low
+  
+  # Network operations
+  networks:
+    - name: get_networks
+      method: GET
+      endpoint: /rest/networkconf
+      category: read
+      riskLevel: low
+    
+    - name: create_network
+      method: POST
+      endpoint: /rest/networkconf
+      category: write
+      riskLevel: high
+      requiresConfirmation: true
+    
+    - name: update_network
+      method: PUT
+      endpoint: /rest/networkconf/{id}
+      category: write
+      riskLevel: high
+      requiresConfirmation: true
+    
+    - name: delete_network
+      method: DELETE
+      endpoint: /rest/networkconf/{id}
+      category: delete
+      riskLevel: critical
+      requiresConfirmation: true
+  
+  # WLAN operations
+  wlans:
+    - name: get_wlans
+      method: GET
+      endpoint: /rest/wlanconf
+      category: read
+      riskLevel: low
+    
+    - name: create_wlan
+      method: POST
+      endpoint: /rest/wlanconf
+      category: write
+      riskLevel: high
+      requiresConfirmation: true
+    
+    - name: update_wlan
+      method: PUT
+      endpoint: /rest/wlanconf/{id}
+      category: write
+      riskLevel: high
+      requiresConfirmation: true
+  
+  # Firewall operations
+  firewall:
+    - name: get_firewall_rules
+      method: GET
+      endpoint: /rest/firewallrule
+      category: read
+      riskLevel: low
+    
+    - name: create_firewall_rule
+      method: POST
+      endpoint: /rest/firewallrule
+      category: write
+      riskLevel: high
+      requiresConfirmation: true
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+  minReplicaCount: 0
+  maxReplicaCount: 2
+  cooldownPeriod: 300
+  pollingInterval: 15
+
+# -----------------------------------------------------------------------------
+# Telemetry
+# -----------------------------------------------------------------------------
+telemetry:
+  enabled: true
+  # Send operation results to telemetry layer
+  endpoint: "http://cortex-telemetry.cortex-unifi:8080"
+  
+  # Qdrant for learning
+  qdrantEndpoint: "http://cortex-qdrant.cortex-unifi:6333"
+
+# -----------------------------------------------------------------------------
+# Metrics
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090

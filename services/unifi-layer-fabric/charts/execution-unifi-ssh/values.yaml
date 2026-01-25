@@ -1,0 +1,241 @@
+# =============================================================================
+# UniFi SSH Execution Layer - Failover & Diagnostics
+# =============================================================================
+# Direct SSH access to UDM Pro for:
+# - API failover (when controller API is unavailable)
+# - Diagnostics (logs, routes, iptables)
+# - Advanced operations not exposed via API
+#
+# Security: Commands are allowlisted. No arbitrary execution.
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ry-ops/unifi-ssh-gateway
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "25m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+# -----------------------------------------------------------------------------
+# SSH Configuration
+# -----------------------------------------------------------------------------
+ssh:
+  # Credentials from secret
+  secretName: unifi-credentials
+  hostKey: ssh-host
+  usernameKey: ssh-username
+  passwordKey: ssh-password
+  # Or use SSH key
+  # privateKeyKey: ssh-private-key
+  
+  # Connection settings
+  port: 22
+  timeout: 30
+  keepAlive: 60
+  
+  # Max concurrent connections
+  maxConnections: 5
+
+# -----------------------------------------------------------------------------
+# Command Allowlist (SECURITY)
+# -----------------------------------------------------------------------------
+# Only these commands can be executed. No arbitrary shell access.
+allowedCommands:
+  # System info
+  - name: get_system_info
+    command: "ubnt-systool boardname && ubnt-systool cputemp"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_uptime
+    command: "uptime"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_memory
+    command: "free -h"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_disk
+    command: "df -h"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_version
+    command: "cat /etc/unifi-os/version"
+    category: diagnostic
+    riskLevel: low
+  
+  # Network diagnostics
+  - name: get_interfaces
+    command: "ip addr show"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_routes
+    command: "ip route show"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_arp
+    command: "ip neigh show"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_connections
+    command: "ss -tulpn"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_conntrack
+    command: "conntrack -L 2>/dev/null | head -100"
+    category: diagnostic
+    riskLevel: low
+  
+  # Firewall
+  - name: get_iptables
+    command: "iptables -L -n -v"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_nat_rules
+    command: "iptables -t nat -L -n -v"
+    category: diagnostic
+    riskLevel: low
+  
+  # Logs
+  - name: get_system_logs
+    command: "tail -{lines} /var/log/messages"
+    params:
+      - name: lines
+        default: "100"
+        max: "500"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_unifi_logs
+    command: "journalctl -u unifi -n {lines} --no-pager"
+    params:
+      - name: lines
+        default: "100"
+        max: "500"
+    category: diagnostic
+    riskLevel: low
+  
+  # Service status
+  - name: get_service_status
+    command: "systemctl status unifi --no-pager"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: get_containers
+    command: "podman ps"
+    category: diagnostic
+    riskLevel: low
+  
+  # Network tools
+  - name: ping
+    command: "ping -c 4 {host}"
+    params:
+      - name: host
+        required: true
+        validation: "^[a-zA-Z0-9.-]+$"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: traceroute
+    command: "traceroute -m 15 {host}"
+    params:
+      - name: host
+        required: true
+        validation: "^[a-zA-Z0-9.-]+$"
+    category: diagnostic
+    riskLevel: low
+  
+  - name: dns_lookup
+    command: "dig {host} +short"
+    params:
+      - name: host
+        required: true
+        validation: "^[a-zA-Z0-9.-]+$"
+    category: diagnostic
+    riskLevel: low
+
+# Commands that are NEVER allowed (blocked patterns)
+blockedPatterns:
+  - "rm -rf"
+  - "mkfs"
+  - "dd if="
+  - "> /dev/"
+  - "chmod 777"
+  - "wget "
+  - "curl "
+  - "nc "
+  - "ncat "
+  - "bash -i"
+  - "sh -i"
+  - "/bin/sh"
+  - "eval "
+  - "exec "
+  - "`"       # Command substitution
+  - "$("      # Command substitution
+  - "&&"      # Command chaining (unless in allowlist)
+  - "||"      # Command chaining
+  - ";"       # Command separator
+  - "|"       # Piping (unless in allowlist)
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 300
+  pollingInterval: 15
+
+# -----------------------------------------------------------------------------
+# Metrics
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090

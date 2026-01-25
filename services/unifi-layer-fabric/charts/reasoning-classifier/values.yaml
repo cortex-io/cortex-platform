@@ -1,0 +1,131 @@
+# =============================================================================
+# Reasoning Classifier Layer - Fast Intent Classification
+# =============================================================================
+# Uses Qwen2-0.5B (tiny model) for:
+# - Intent classification when keywords don't match
+# - Query complexity assessment
+# - Domain routing (for multi-domain deployments)
+#
+# Much faster than SLM, used as first-pass filter.
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Model Configuration
+# -----------------------------------------------------------------------------
+model:
+  # Qwen2-0.5B - Tiny but capable for classification
+  name: "Qwen/Qwen2-0.5B-Instruct-GGUF"
+  file: "qwen2-0_5b-instruct-q4_k_m.gguf"
+  
+  # Context length (small for classification)
+  contextLength: 1024
+  
+  # Inference settings
+  temperature: 0.0  # Deterministic for classification
+  topP: 1.0
+  
+  # Performance
+  threads: 2
+  batchSize: 256
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ggerganov/llama.cpp
+  tag: "server"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "384Mi"
+    cpu: "200m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# -----------------------------------------------------------------------------
+# Model Storage
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  size: "2Gi"
+  accessMode: ReadWriteOnce
+
+# -----------------------------------------------------------------------------
+# Classification Prompt
+# -----------------------------------------------------------------------------
+systemPrompt: |
+  You are an intent classifier for UniFi network operations.
+  
+  Given a user query, classify it into one of these categories:
+  
+  CATEGORIES:
+  - CLIENT: Operations on network clients (block, unblock, list, kick)
+  - DEVICE: Operations on network devices (restart, locate, upgrade)
+  - NETWORK: VLAN and network configuration (create, modify, delete networks)
+  - WLAN: Wireless network operations (SSIDs, passwords, guest networks)
+  - FIREWALL: Firewall rules and traffic management
+  - DIAGNOSTIC: Troubleshooting, logs, routes, system health
+  - UNKNOWN: Cannot determine intent
+  
+  Also assess complexity:
+  - SIMPLE: Direct lookup or single action
+  - COMPLEX: Requires reasoning, multiple steps, or investigation
+  
+  Respond with JSON only:
+  {"category": "CATEGORY", "complexity": "SIMPLE|COMPLEX", "confidence": 0.0-1.0}
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 300
+  pollingInterval: 15
+
+# -----------------------------------------------------------------------------
+# Init Container
+# -----------------------------------------------------------------------------
+initContainer:
+  enabled: true
+  image: python:3.11-slim
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"

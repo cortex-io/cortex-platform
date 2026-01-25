@@ -1,0 +1,303 @@
+# =============================================================================
+# Cortex Activator - Always-On Layer Orchestrator
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Cortex Platform Integration
+# -----------------------------------------------------------------------------
+cortex:
+  # Enable integration with Cortex master via Redis Streams
+  enabled: true
+  # Redis connection URL (Cortex system Redis)
+  redisUrl: "redis://redis.cortex-system.svc.cluster.local:6379"
+  # Agent identity
+  agentId: "unifi-fabric"
+  agentName: "unifi-layer-fabric"
+  # Redis Streams configuration
+  taskStream: "cortex.network.tasks"
+  resultStream: "cortex.results"
+  consumerGroup: "unifi-fabric-group"
+  # Heartbeat interval in seconds
+  heartbeatInterval: 30
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 2  # HA - must always be available
+
+image:
+  repository: ghcr.io/ry-ops/cortex-activator
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "50m"
+  limits:
+    memory: "128Mi"
+    cpu: "200m"
+
+# -----------------------------------------------------------------------------
+# Layer Discovery
+# -----------------------------------------------------------------------------
+layers:
+  # Reasoning layers
+  reasoning:
+    classifier:
+      name: reasoning-classifier
+      service: reasoning-classifier
+      port: 8080
+      healthPath: /health
+      # When to use this layer
+      trigger: "ambiguous"  # Only for queries that can't be keyword-matched
+    
+    slm:
+      name: reasoning-slm
+      service: reasoning-slm
+      port: 8080
+      healthPath: /health
+      trigger: "default"  # Primary reasoning layer
+  
+  # Execution layers
+  execution:
+    api:
+      name: execution-unifi-api
+      service: execution-unifi-api
+      port: 8080
+      healthPath: /health
+      trigger: "primary"  # Always try API first
+    
+    ssh:
+      name: execution-unifi-ssh
+      service: execution-unifi-ssh
+      port: 8080
+      healthPath: /health
+      trigger: "failover"  # Only if API fails or needs diagnostics
+  
+  # Memory layer
+  memory:
+    qdrant:
+      name: cortex-qdrant
+      service: cortex-qdrant
+      port: 6333
+      healthPath: /
+      trigger: "always"  # Always available (not scaled to zero)
+  
+  # Telemetry layer
+  telemetry:
+    name: cortex-telemetry
+    service: cortex-telemetry
+    port: 8080
+    healthPath: /health
+    trigger: "async"  # Fire and forget
+
+# -----------------------------------------------------------------------------
+# Routing Rules
+# -----------------------------------------------------------------------------
+routing:
+  # Keyword-based routing (fastest, no LLM needed)
+  keywords:
+    # Client operations
+    - pattern: "(block|unblock|kick|reconnect).*client"
+      tool: "client_management"
+      execution: "api"
+    
+    - pattern: "(list|show|get).*client"
+      tool: "get_clients"
+      execution: "api"
+    
+    # Network operations
+    - pattern: "(create|add|new).*vlan"
+      tool: "create_network"
+      execution: "api"
+      requiresConfirmation: true
+    
+    - pattern: "(create|add|new).*network"
+      tool: "create_network"
+      execution: "api"
+      requiresConfirmation: true
+    
+    - pattern: "(list|show|get).*(network|vlan)"
+      tool: "get_networks"
+      execution: "api"
+    
+    # Device operations
+    - pattern: "(restart|reboot).*device"
+      tool: "restart_device"
+      execution: "api"
+      requiresConfirmation: true
+    
+    - pattern: "(locate|find|flash).*device"
+      tool: "locate_device"
+      execution: "api"
+    
+    - pattern: "(list|show|get).*device"
+      tool: "get_devices"
+      execution: "api"
+    
+    # Firewall operations
+    - pattern: "(create|add|new).*firewall"
+      tool: "create_firewall_rule"
+      execution: "api"
+      requiresConfirmation: true
+    
+    - pattern: "(list|show|get).*firewall"
+      tool: "get_firewall_rules"
+      execution: "api"
+    
+    # WiFi operations
+    - pattern: "(create|add|new).*(ssid|wifi|wireless)"
+      tool: "create_wlan"
+      execution: "api"
+      requiresConfirmation: true
+    
+    - pattern: "(list|show|get).*(ssid|wifi|wireless)"
+      tool: "get_wlans"
+      execution: "api"
+    
+    # Diagnostics (SSH)
+    - pattern: "(diagnose|troubleshoot|debug)"
+      tool: "diagnostics"
+      execution: "ssh"
+    
+    - pattern: "(show|get).*(log|logs)"
+      tool: "get_logs"
+      execution: "ssh"
+    
+    - pattern: "(check|show).*(route|routing)"
+      tool: "get_routes"
+      execution: "ssh"
+  
+  # If no keyword match, use classifier
+  fallbackToClassifier: true
+  
+  # If classifier confidence < threshold, use SLM
+  classifierConfidenceThreshold: 0.8
+  
+  # Complexity threshold for SLM vs simple execution
+  complexityKeywords:
+    - "why"
+    - "investigate"
+    - "analyze"
+    - "figure out"
+    - "what's wrong"
+    - "troubleshoot"
+
+# -----------------------------------------------------------------------------
+# Layer Activation
+# -----------------------------------------------------------------------------
+activation:
+  # How long to wait for a cold layer to become ready
+  coldStartTimeout: 60s
+  
+  # How often to poll layer health during wake
+  healthCheckInterval: 1s
+  
+  # Parallel wake (wake multiple layers simultaneously)
+  parallelWake: true
+  
+  # Layer priority (which to wake first if sequential)
+  priority:
+    - cortex-qdrant      # Memory first (likely already warm)
+    - execution-unifi-api # Execution next
+    - reasoning-slm       # Reasoning last (slowest to wake)
+
+# -----------------------------------------------------------------------------
+# Failover Configuration
+# -----------------------------------------------------------------------------
+failover:
+  # API → SSH failover
+  apiToSsh:
+    enabled: true
+    # Conditions that trigger failover
+    triggers:
+      - apiTimeout: 30s
+      - apiError: "connection refused"
+      - apiError: "503"
+      - apiError: "504"
+    # SSH operations available as failover
+    sshOperations:
+      - get_clients
+      - get_devices
+      - get_routes
+      - get_logs
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Observability
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+
+tracing:
+  enabled: true
+  otlpEndpoint: "otel-collector.observability:4317"
+
+# -----------------------------------------------------------------------------
+# Service Account & RBAC
+# -----------------------------------------------------------------------------
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+  # Needs to watch/patch deployments across namespace for layer waking
+  rules:
+    - apiGroups: ["apps"]
+      resources: ["deployments", "deployments/scale"]
+      verbs: ["get", "list", "watch", "patch"]
+    - apiGroups: [""]
+      resources: ["services", "pods"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["keda.sh"]
+      resources: ["scaledobjects"]
+      verbs: ["get", "list", "watch", "patch"]
+
+# -----------------------------------------------------------------------------
+# Pod Configuration
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: cortex-activator
+          topologyKey: kubernetes.io/hostname
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

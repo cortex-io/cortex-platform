@@ -1,0 +1,191 @@
+# =============================================================================
+# Cortex Telemetry Layer
+# =============================================================================
+# Captures operational telemetry for:
+# - Prometheus metrics (layer health, latency, errors)
+# - Audit logging (who did what, when)
+# - Learning pipeline (query → tool → outcome → Qdrant)
+# - Training data generation (JSONL for fine-tuning)
+# =============================================================================
+
+global:
+  namespace: cortex-unifi
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ry-ops/cortex-telemetry
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "25m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+# -----------------------------------------------------------------------------
+# Qdrant Integration (Learning)
+# -----------------------------------------------------------------------------
+qdrant:
+  endpoint: "http://cortex-qdrant.cortex-unifi:6333"
+  
+  # Collections to write to
+  collections:
+    operations: "operations"
+    troubleshooting: "troubleshooting"
+  
+  # Embedding model for vectorizing queries
+  embedding:
+    # Use sentence-transformers compatible model
+    model: "all-MiniLM-L6-v2"
+    # Or use OpenAI-compatible endpoint
+    # endpoint: "http://reasoning-slm.cortex-unifi:8080/v1/embeddings"
+
+# -----------------------------------------------------------------------------
+# Training Data Generation
+# -----------------------------------------------------------------------------
+training:
+  enabled: true
+  
+  # Output format
+  format: "jsonl"  # or "parquet"
+  
+  # Storage
+  persistence:
+    enabled: true
+    storageClass: "longhorn"
+    size: "1Gi"
+    mountPath: "/data/training"
+  
+  # What to capture
+  capture:
+    # Successful operations only (for supervised learning)
+    successOnly: false
+    
+    # Include full context (query, RAG results, tool call, outcome)
+    fullContext: true
+    
+    # Minimum confidence threshold to capture
+    minConfidence: 0.5
+  
+  # Export schedule (CronJob)
+  export:
+    enabled: true
+    schedule: "0 2 * * *"  # Daily at 2 AM
+    # Export to S3/GCS for fine-tuning pipeline
+    destination: ""  # s3://bucket/path or gs://bucket/path
+
+# -----------------------------------------------------------------------------
+# Metrics (Prometheus)
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+  
+  # Metrics to expose
+  expose:
+    # Layer health
+    - cortex_layer_up
+    - cortex_layer_cold_starts_total
+    - cortex_layer_cold_start_duration_seconds
+    
+    # Query metrics
+    - cortex_queries_total
+    - cortex_query_duration_seconds
+    - cortex_query_errors_total
+    
+    # Tool metrics
+    - cortex_tool_calls_total
+    - cortex_tool_duration_seconds
+    - cortex_tool_errors_total
+    
+    # Learning metrics
+    - cortex_patterns_stored_total
+    - cortex_rag_hits_total
+    - cortex_rag_misses_total
+
+# -----------------------------------------------------------------------------
+# Audit Logging
+# -----------------------------------------------------------------------------
+audit:
+  enabled: true
+  
+  # What to log
+  capture:
+    - queries
+    - toolCalls
+    - outcomes
+    - errors
+    - layerActivations
+  
+  # Sensitive data handling
+  redact:
+    - password
+    - api_key
+    - secret
+    - token
+  
+  # Output
+  output:
+    # Console (stdout)
+    console: true
+    
+    # File
+    file:
+      enabled: true
+      path: "/data/audit/audit.log"
+      maxSize: "100Mi"
+      maxAge: 30  # days
+      compress: true
+
+# -----------------------------------------------------------------------------
+# Tracing (OpenTelemetry)
+# -----------------------------------------------------------------------------
+tracing:
+  enabled: true
+  otlpEndpoint: "otel-collector.observability:4317"
+  insecure: true
+  
+  # Sample rate (1.0 = 100%)
+  sampleRate: 1.0
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 300
+  pollingInterval: 15
