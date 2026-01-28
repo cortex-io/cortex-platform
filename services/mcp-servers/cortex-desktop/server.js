@@ -1,10 +1,13 @@
 /**
- * Cortex Desktop MCP Server v2
+ * Cortex Desktop MCP Server v2.3
  * Provides MCP protocol access to Cortex orchestrator for desktop Claude
  * Transport: SSE (Server-Sent Events)
  * Auth: Anthropic API key validation
  *
- * FIXED: Proper tool definitions that match Cortex orchestrator
+ * Learning Integration:
+ * - Tracks tool executions with success/failure outcomes
+ * - Stores execution data in Qdrant for analysis
+ * - Enables learning which tools work for which query types
  */
 
 const express = require('express');
@@ -14,6 +17,19 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
+
+// Learning integration
+let learningClient = null;
+let LEARNING_ENABLED = false;
+
+try {
+  const learning = require('./qdrant-learning');
+  learningClient = learning.learningClient;
+  LEARNING_ENABLED = learning.LEARNING_ENABLED;
+  console.log('[Learning] Module loaded');
+} catch (error) {
+  console.log('[Learning] Module not available:', error.message);
+}
 
 const app = express();
 const PORT = process.env.PORT || 8765;
@@ -448,9 +464,13 @@ app.post('/mcp/initialize', validateApiKey, (req, res) => {
   });
 });
 
-// MCP Protocol: SSE Transport Endpoint
+// Store active SSE connections by session ID
+const sseConnections = new Map();
+
+// MCP Protocol: SSE Transport Endpoint (GET for server-to-client events)
 app.get('/sse', (req, res) => {
-  console.log('[SSE] New SSE connection established');
+  const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  console.log(`[SSE] New SSE connection established: ${sessionId}`);
 
   // Set SSE headers
   res.writeHead(200, {
@@ -461,244 +481,364 @@ app.get('/sse', (req, res) => {
     'X-Accel-Buffering': 'no'
   });
 
-  // Send initial connection message
+  // Store this connection
+  sseConnections.set(sessionId, res);
+
+  // Send initial comment (keep-alive)
   res.write(': SSE connection established\n\n');
 
-  // Send server info as first event
-  const serverInfo = {
-    jsonrpc: '2.0',
-    id: 1,
-    result: {
-      protocolVersion: '2024-11-05',
-      serverInfo: {
-        name: 'cortex-desktop-mcp',
-        version: '2.1.0'
-      },
-      capabilities: {
-        tools: {},
-        prompts: {},
-        resources: {}
-      }
-    }
-  };
-
-  res.write(`data: ${JSON.stringify(serverInfo)}\n\n`);
-
-  // Message buffer for incoming client data
-  let messageBuffer = '';
-
-  // Handle incoming client messages (via POST to same endpoint or through request body)
-  req.on('data', async (chunk) => {
-    messageBuffer += chunk.toString();
-
-    // Process complete JSON-RPC messages (newline delimited)
-    const lines = messageBuffer.split('\n');
-    messageBuffer = lines.pop() || '';
-
-    for (const line of lines) {
-      if (!line.trim()) continue;
-
-      try {
-        const request = JSON.parse(line);
-        console.log(`[SSE] Received MCP request: ${request.method}`);
-
-        let response;
-
-        // Handle MCP methods
-        switch (request.method) {
-          case 'initialize':
-            response = {
-              jsonrpc: '2.0',
-              id: request.id,
-              result: {
-                protocolVersion: '2024-11-05',
-                serverInfo: {
-                  name: 'cortex-desktop-mcp',
-                  version: '2.1.0'
-                },
-                capabilities: {
-                  tools: {},
-                  prompts: {},
-                  resources: {}
-                }
-              }
-            };
-            break;
-
-          case 'tools/list':
-            // Get tools list (reuse existing logic)
-            try {
-              const tools = await fetchAllTools();
-              response = {
-                jsonrpc: '2.0',
-                id: request.id,
-                result: { tools }
-              };
-            } catch (error) {
-              response = {
-                jsonrpc: '2.0',
-                id: request.id,
-                error: {
-                  code: -32603,
-                  message: `Failed to fetch tools: ${error.message}`
-                }
-              };
-            }
-            break;
-
-          case 'tools/call':
-            // Execute tool (reuse existing logic)
-            try {
-              const { name, arguments: args } = request.params;
-              const result = await executeToolDirect(name, args);
-              response = {
-                jsonrpc: '2.0',
-                id: request.id,
-                result: {
-                  content: [
-                    {
-                      type: 'text',
-                      text: JSON.stringify(result, null, 2)
-                    }
-                  ]
-                }
-              };
-            } catch (error) {
-              response = {
-                jsonrpc: '2.0',
-                id: request.id,
-                error: {
-                  code: -32603,
-                  message: `Tool execution failed: ${error.message}`
-                }
-              };
-            }
-            break;
-
-          case 'ping':
-            response = {
-              jsonrpc: '2.0',
-              id: request.id,
-              result: {}
-            };
-            break;
-
-          default:
-            response = {
-              jsonrpc: '2.0',
-              id: request.id,
-              error: {
-                code: -32601,
-                message: `Method not found: ${request.method}`
-              }
-            };
-        }
-
-        // Send response via SSE
-        if (response) {
-          res.write(`data: ${JSON.stringify(response)}\n\n`);
-        }
-      } catch (error) {
-        console.error(`[SSE] Error processing message: ${error.message}`);
-        const errorResponse = {
-          jsonrpc: '2.0',
-          id: null,
-          error: {
-            code: -32700,
-            message: 'Parse error',
-            data: { error: error.message }
-          }
-        };
-        res.write(`data: ${JSON.stringify(errorResponse)}\n\n`);
-      }
-    }
-  });
+  // Send endpoint event telling client where to POST messages
+  // The client will POST to /message with the session ID
+  const endpointEvent = `/message?sessionId=${sessionId}`;
+  res.write(`event: endpoint\ndata: ${endpointEvent}\n\n`);
 
   // Handle client disconnect
   req.on('close', () => {
-    console.log('[SSE] Client disconnected');
+    console.log(`[SSE] Client disconnected: ${sessionId}`);
+    sseConnections.delete(sessionId);
   });
 
   // Send periodic heartbeat to keep connection alive
   const heartbeat = setInterval(() => {
-    res.write(': heartbeat\n\n');
-  }, 30000); // Every 30 seconds
+    if (sseConnections.has(sessionId)) {
+      res.write(': heartbeat\n\n');
+    } else {
+      clearInterval(heartbeat);
+    }
+  }, 30000);
 
   req.on('close', () => {
     clearInterval(heartbeat);
   });
 });
 
-// Helper function to fetch all tools (extracted for SSE reuse)
-async function fetchAllTools() {
-  const toolPromises = [
-    axios.get(`${PROXMOX_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
-    axios.get(`${UNIFI_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
-    axios.get(`${SANDFLY_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } })),
-    axios.get(`${CLOUDFLARE_MCP_URL}/tools`).catch(() => ({ data: { tools: [] } }))
-  ];
+// MCP Protocol: Message endpoint (POST for client-to-server messages)
+app.post('/message', async (req, res) => {
+  const sessionId = req.query.sessionId;
+  const sseRes = sseConnections.get(sessionId);
 
-  const responses = await Promise.all(toolPromises);
-  return responses.flatMap(r => r.data.tools || []);
-}
-
-// Helper function to execute tool directly (extracted for SSE reuse)
-async function executeToolDirect(toolName, args) {
-  // Determine which MCP server hosts this tool
-  let targetUrl;
-
-  if (toolName.startsWith('proxmox_')) {
-    targetUrl = PROXMOX_MCP_URL;
-  } else if (toolName.startsWith('unifi_')) {
-    targetUrl = UNIFI_MCP_URL;
-  } else if (toolName.startsWith('sandfly_')) {
-    targetUrl = SANDFLY_MCP_URL;
-  } else if (toolName.startsWith('cloudflare_')) {
-    targetUrl = CLOUDFLARE_MCP_URL;
-  } else {
-    throw new Error(`Unknown tool: ${toolName}`);
+  if (!sseRes) {
+    console.error(`[Message] No SSE connection found for session: ${sessionId}`);
+    return res.status(400).json({
+      jsonrpc: '2.0',
+      id: null,
+      error: {
+        code: -32600,
+        message: 'Invalid session - SSE connection not found'
+      }
+    });
   }
 
-  const response = await axios.post(`${targetUrl}/tools/call`, {
-    name: toolName,
-    arguments: args
-  });
+  const request = req.body;
+  console.log(`[Message] Received MCP request: ${request.method} (session: ${sessionId})`);
 
-  return response.data;
+  let response;
+
+  try {
+    // Handle MCP methods
+    switch (request.method) {
+      case 'initialize':
+        response = {
+          jsonrpc: '2.0',
+          id: request.id,
+          result: {
+            protocolVersion: '2024-11-05',
+            serverInfo: {
+              name: 'cortex-desktop-mcp',
+              version: '2.2.0'
+            },
+            capabilities: {
+              tools: {},
+              prompts: {},
+              resources: {}
+            }
+          }
+        };
+        break;
+
+      case 'notifications/initialized':
+        // Client notification that initialization is complete - no response needed
+        console.log(`[Message] Client initialized (session: ${sessionId})`);
+        return res.status(202).send();
+
+      case 'tools/list':
+        try {
+          const tools = getLocalTools();
+          response = {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: { tools }
+          };
+        } catch (error) {
+          response = {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+              code: -32603,
+              message: `Failed to fetch tools: ${error.message}`
+            }
+          };
+        }
+        break;
+
+      case 'tools/call':
+        try {
+          const { name, arguments: args } = request.params;
+          const result = await executeToolLocal(name, args || {});
+          response = {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+              content: [
+                {
+                  type: 'text',
+                  text: typeof result === 'string' ? result : JSON.stringify(result, null, 2)
+                }
+              ]
+            }
+          };
+        } catch (error) {
+          response = {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+              code: -32603,
+              message: `Tool execution failed: ${error.message}`
+            }
+          };
+        }
+        break;
+
+      case 'ping':
+        response = {
+          jsonrpc: '2.0',
+          id: request.id,
+          result: {}
+        };
+        break;
+
+      case 'prompts/list':
+        response = {
+          jsonrpc: '2.0',
+          id: request.id,
+          result: { prompts: [] }
+        };
+        break;
+
+      case 'resources/list':
+        response = {
+          jsonrpc: '2.0',
+          id: request.id,
+          result: { resources: [] }
+        };
+        break;
+
+      default:
+        response = {
+          jsonrpc: '2.0',
+          id: request.id,
+          error: {
+            code: -32601,
+            message: `Method not found: ${request.method}`
+          }
+        };
+    }
+  } catch (error) {
+    console.error(`[Message] Error processing request: ${error.message}`);
+    response = {
+      jsonrpc: '2.0',
+      id: request.id,
+      error: {
+        code: -32603,
+        message: `Internal error: ${error.message}`
+      }
+    };
+  }
+
+  // Send response via SSE stream
+  if (response) {
+    sseRes.write(`data: ${JSON.stringify(response)}\n\n`);
+  }
+
+  // Acknowledge receipt
+  res.status(202).send();
+});
+
+// Get local tools (not fetching from remote MCP servers)
+function getLocalTools() {
+  return [
+    {
+      name: 'kubectl',
+      description: 'Execute kubectl commands to query the Kubernetes cluster. Use this for pod status, deployments, services, namespaces, logs, and any k8s resources.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          command: {
+            type: 'string',
+            description: 'The kubectl command to run (e.g., "get pods -n cortex", "describe pod <name> -n cortex")'
+          }
+        },
+        required: ['command']
+      }
+    },
+    {
+      name: 'get_infrastructure_summary',
+      description: 'Get a comprehensive summary of the infrastructure including k8s cluster status.',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+        required: []
+      }
+    }
+  ];
 }
 
-// Start server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log('='.repeat(60));
-  console.log('Cortex Desktop MCP Server v2.1 - Full Access');
-  console.log('='.repeat(60));
-  console.log(`Port: ${PORT}`);
-  console.log(`Transport: SSE (Server-Sent Events)`);
-  console.log(`Token Throttle: ${DESKTOP_RATE_LIMIT_ITPM} tokens/min`);
-  console.log(`Redis: ${redisClient ? 'Enabled' : 'Disabled'}`);
-  console.log('');
-  console.log('MCP Servers (via Traefik ingress):');
-  console.log(`  Proxmox: ${PROXMOX_MCP_URL}`);
-  console.log(`  UniFi: ${UNIFI_MCP_URL}`);
-  console.log(`  Sandfly: ${SANDFLY_MCP_URL}`);
-  console.log(`  Cloudflare: ${CLOUDFLARE_MCP_URL}`);
-  console.log('='.repeat(60));
-  console.log('');
-  console.log('Available endpoints:');
-  console.log('  GET  /health - Health check');
-  console.log('  POST /mcp/initialize - Initialize MCP connection');
-  console.log('  GET  /mcp/tools - List available tools');
-  console.log('  POST /mcp/execute - Execute a tool');
-  console.log('  GET  /mcp/prompts - List available prompts');
-  console.log('  GET  /mcp/resources - List available resources');
-  console.log('='.repeat(60));
-  console.log('');
-  console.log('Tools available:');
-  console.log('  - kubectl (direct execution, no restrictions)');
-  console.log('  - get_infrastructure_summary (k8s + Proxmox)');
-  console.log('  - proxmox_* (Proxmox MCP via Traefik)');
-  console.log('  - unifi_* (UniFi MCP via Traefik)');
-  console.log('  - sandfly_* (Sandfly MCP via Traefik)');
-  console.log('  - cloudflare_* (Cloudflare MCP via Traefik)');
-  console.log('='.repeat(60));
+// Execute tool locally with learning tracking
+async function executeToolLocal(toolName, args, sessionId = null) {
+  console.log(`[Execute] Tool: ${toolName}`, JSON.stringify(args));
+
+  const startTime = Date.now();
+  let result;
+  let success = false;
+  let errorType = null;
+
+  try {
+    if (toolName === 'kubectl') {
+      if (!args.command) {
+        throw new Error('kubectl requires a command parameter');
+      }
+
+      try {
+        const { stdout, stderr } = await execPromise(`kubectl ${args.command}`);
+        result = {
+          output: stdout || stderr,
+          success: true
+        };
+        success = true;
+      } catch (error) {
+        result = {
+          output: error.stdout || error.stderr || error.message,
+          success: false,
+          error: error.message
+        };
+        errorType = 'command_failed';
+      }
+    } else if (toolName === 'get_infrastructure_summary') {
+      try {
+        const { stdout } = await execPromise('kubectl get nodes,pods --all-namespaces -o wide');
+        result = {
+          kubernetes: stdout,
+          timestamp: new Date().toISOString()
+        };
+        success = true;
+      } catch (error) {
+        result = {
+          error: error.message,
+          timestamp: new Date().toISOString()
+        };
+        errorType = 'command_failed';
+      }
+    } else {
+      throw new Error(`Unknown tool: ${toolName}`);
+    }
+  } catch (error) {
+    result = { error: error.message };
+    errorType = 'execution_error';
+  }
+
+  // Track execution for learning (async, don't wait)
+  const latencyMs = Date.now() - startTime;
+  trackExecution(toolName, args, success, latencyMs, errorType, sessionId);
+
+  return result;
+}
+
+/**
+ * Track tool execution for learning (fire and forget)
+ */
+async function trackExecution(toolName, args, success, latencyMs, errorType, sessionId) {
+  if (!learningClient || !learningClient.initialized) {
+    return;
+  }
+
+  try {
+    await learningClient.storeExecution({
+      tool: toolName,
+      parameters: args,
+      success,
+      latencyMs,
+      errorType,
+      sessionId
+    });
+  } catch (error) {
+    // Don't let learning failures affect tool execution
+    console.error('[Learning] Track execution failed:', error.message);
+  }
+}
+
+// Learning statistics endpoint
+app.get('/learning/stats', async (req, res) => {
+  if (!learningClient || !learningClient.initialized) {
+    return res.json({
+      enabled: false,
+      message: 'Learning not initialized'
+    });
+  }
+
+  try {
+    const kubectlStats = await learningClient.getToolStats('kubectl');
+    const summaryStats = await learningClient.getToolStats('get_infrastructure_summary');
+
+    res.json({
+      enabled: true,
+      tools: {
+        kubectl: kubectlStats,
+        get_infrastructure_summary: summaryStats
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message
+    });
+  }
 });
+
+// Initialize learning and start server
+async function startServer() {
+  // Initialize learning client
+  if (learningClient && LEARNING_ENABLED) {
+    try {
+      await learningClient.initialize();
+    } catch (error) {
+      console.error('[Learning] Initialization error:', error.message);
+    }
+  }
+
+  // Start server
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log('='.repeat(60));
+    console.log('Cortex Desktop MCP Server v2.3 - SSE Transport');
+    console.log('='.repeat(60));
+    console.log(`Port: ${PORT}`);
+    console.log(`Transport: SSE (MCP 2024-11-05 compliant)`);
+    console.log(`Learning: ${learningClient?.initialized ? 'ENABLED' : 'disabled'}`);
+    console.log('');
+    console.log('MCP Transport Endpoints:');
+    console.log('  GET  /sse     - SSE stream (server-to-client)');
+    console.log('  POST /message - Message endpoint (client-to-server)');
+    console.log('');
+    console.log('Legacy Endpoints:');
+    console.log('  GET  /health - Health check');
+    console.log('  GET  /mcp/tools - List available tools');
+    console.log('  POST /mcp/execute - Execute a tool');
+    console.log('  GET  /learning/stats - Tool execution statistics');
+    console.log('='.repeat(60));
+    console.log('');
+    console.log('Tools available:');
+    console.log('  - kubectl (direct execution)');
+    console.log('  - get_infrastructure_summary');
+    console.log('='.repeat(60));
+  });
+}
+
+startServer();
