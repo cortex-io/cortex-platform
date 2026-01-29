@@ -53,6 +53,20 @@ CATEGORY_MAP = {
     'integration': 'Engineering'
 }
 
+# Changelog type mapping based on improvement type
+CHANGELOG_TYPE_MAP = {
+    'new_capability': 'feature',
+    'enhancement': 'improvement',
+    'optimization': 'improvement',
+    'bug_fix': 'fix',
+    'security_patch': 'fix',
+    'refactor': 'improvement',
+    'learning': 'learning',
+    'knowledge': 'learning',
+    'monitoring': 'feature',
+    'integration': 'feature',
+}
+
 def get_svg_hero_spec():
     """Return the SVG hero generation spec"""
     return """You are generating an animated SVG hero image for a blog post.
@@ -137,6 +151,204 @@ def render_svg_to_png(svg_content, output_path):
     except Exception as e:
         logger.error(f"Error rendering PNG: {e}")
         return False
+
+
+def generate_changelog_summary(improvement):
+    """Generate a brief changelog summary using Claude.
+
+    Creates a concise summary suitable for the changelog timeline (1-2 sentences)
+    plus a fuller description with what/where/why details.
+    """
+    try:
+        prompt = f"""You are writing a changelog entry for Cortex, an autonomous AI learning system.
+
+IMPROVEMENT DETAILS:
+Title: {improvement.get('title')}
+Category: {improvement.get('category')}
+Type: {improvement.get('improvement_type')}
+Description: {improvement.get('description', '')}
+Implementation Notes: {improvement.get('implementation_notes', '')}
+
+Write a changelog entry with TWO parts:
+
+1. BRIEF (1-2 sentences, max 200 chars): A concise summary for the timeline view. Focus on WHAT changed.
+
+2. FULL (2-3 sentences): A fuller description including:
+   - WHAT: The specific change or feature
+   - WHERE: Which service/component was affected
+   - WHY: The benefit or reason for the change
+
+Format your response EXACTLY like this:
+BRIEF: <brief summary here>
+FULL: <full description here>
+
+Be technical but clear. Write in past tense (e.g., "Implemented...", "Added...", "Fixed...")."""
+
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        response = message.content[0].text.strip()
+
+        # Parse the response
+        brief = ""
+        full = ""
+
+        for line in response.split('\n'):
+            line = line.strip()
+            if line.startswith('BRIEF:'):
+                brief = line[6:].strip()
+            elif line.startswith('FULL:'):
+                full = line[5:].strip()
+
+        # Fallback if parsing fails
+        if not brief:
+            brief = improvement.get('title', 'Improvement deployed')
+        if not full:
+            full = improvement.get('description', brief)
+
+        return {'brief': brief, 'full': full}
+
+    except Exception as e:
+        logger.error(f"Error generating changelog summary: {e}")
+        # Return fallback values
+        return {
+            'brief': improvement.get('title', 'Improvement deployed'),
+            'full': improvement.get('description', improvement.get('title', 'Improvement deployed'))
+        }
+
+
+def create_changelog_entry(improvement, related_blog_slug=None):
+    """Create a changelog entry markdown file for a verified improvement.
+
+    Args:
+        improvement: The improvement data dict
+        related_blog_slug: Optional slug of related blog post (without date prefix)
+
+    Returns:
+        Dict with changelog_path and slug, or False on failure
+    """
+    try:
+        title = improvement.get('title', 'Untitled')
+        date_str = datetime.utcnow().strftime('%Y-%m-%d')
+
+        # Generate slug from title
+        slug = title.lower()
+        slug = ''.join(c if c.isalnum() or c in (' ', '-') else '' for c in slug)
+        slug = '-'.join(slug.split())
+
+        # Limit slug length
+        max_slug_length = 60
+        if len(slug) > max_slug_length:
+            slug = slug[:max_slug_length]
+            last_hyphen = slug.rfind('-')
+            if last_hyphen > 0:
+                slug = slug[:last_hyphen]
+        slug = slug.rstrip('-')
+
+        full_slug = f"{date_str}-{slug}"
+
+        # Map category
+        category = CATEGORY_MAP.get(improvement.get('category', 'knowledge'), 'Engineering')
+
+        # Map changelog type
+        improvement_type = improvement.get('improvement_type', 'enhancement')
+        changelog_type = CHANGELOG_TYPE_MAP.get(improvement_type, 'improvement')
+
+        # Get relevance
+        relevance = improvement.get('relevance', 0.5)
+
+        # Generate summary using Claude
+        logger.info(f"Generating changelog summary for: {title}")
+        summary = generate_changelog_summary(improvement)
+
+        # Build frontmatter
+        frontmatter_lines = [
+            '---',
+            f"title: '{title.replace(chr(39), chr(39)+chr(39))}'",  # Escape single quotes
+            f"date: {datetime.utcnow().isoformat()}Z",
+            f"type: {changelog_type}",
+            f"category: {category}",
+            f"relevance: {relevance:.2f}",
+        ]
+
+        # Add related post reference if a blog post was created
+        if related_blog_slug:
+            frontmatter_lines.append(f"relatedPost: {related_blog_slug}")
+
+        frontmatter_lines.append('---')
+
+        frontmatter = '\n'.join(frontmatter_lines)
+
+        # Create changelog file path
+        changelog_path = f"{BLOG_REPO_PATH}/src/content/changelog/{full_slug}.md"
+
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(changelog_path), exist_ok=True)
+
+        # Write changelog entry
+        with open(changelog_path, 'w') as f:
+            f.write(frontmatter)
+            f.write('\n\n')
+            f.write(summary['full'])
+            f.write('\n')
+
+        logger.info(f"Created changelog entry at {changelog_path}")
+
+        return {
+            'changelog_path': changelog_path,
+            'slug': full_slug,
+            'brief': summary['brief'],
+            'full': summary['full']
+        }
+
+    except Exception as e:
+        logger.error(f"Error creating changelog entry: {e}")
+        return False
+
+
+def commit_and_push_changelog(changelog_info, improvement_title):
+    """Commit changelog entry to Git and push to GitHub"""
+    try:
+        git_env = os.environ.copy()
+        git_env['GIT_DIR'] = f'{BLOG_REPO_PATH}/.git'
+        git_env['GIT_WORK_TREE'] = BLOG_REPO_PATH
+
+        # Configure git
+        subprocess.run(['git', 'config', 'user.email', GITHUB_USER_EMAIL], env=git_env, check=True)
+        subprocess.run(['git', 'config', 'user.name', GITHUB_USER_NAME], env=git_env, check=True)
+
+        # Configure remote URL with token
+        if GITHUB_TOKEN:
+            remote_url = f"https://{GITHUB_TOKEN}@github.com/ry-ops/blog.git"
+            subprocess.run(['git', 'remote', 'set-url', 'origin', remote_url], env=git_env, check=True)
+
+        # Fetch and reset to latest
+        subprocess.run(['git', 'fetch', 'origin'], env=git_env, check=True)
+        subprocess.run(['git', 'reset', '--hard', 'origin/main'], env=git_env, check=True)
+
+        # Add changelog file
+        subprocess.run(['git', 'add', changelog_info['changelog_path']], env=git_env, check=True)
+
+        # Commit
+        commit_msg = f"Changelog: {improvement_title}\n\nGenerated by Cortex for verified deployment"
+        subprocess.run(['git', 'commit', '-m', commit_msg], env=git_env, check=True)
+
+        # Push
+        subprocess.run(['git', 'push', 'origin', 'main'], env=git_env, check=True)
+
+        logger.info(f"Successfully pushed changelog to GitHub: {changelog_info['slug']}")
+        return True
+
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Git operation failed for changelog: {e}")
+        return False
+    except Exception as e:
+        logger.error(f"Error pushing changelog to GitHub: {e}")
+        return False
+
 
 def generate_blog_post(improvement):
     """Generate blog post content using Claude"""
@@ -434,7 +646,11 @@ def status():
             'relevance_threshold': RELEVANCE_THRESHOLD,
             'blog_repo': BLOG_REPO_PATH,
             'verified_queue_size': verified_count,
-            'trigger_queue': 'improvements:verified'
+            'trigger_queue': 'improvements:verified',
+            'features': {
+                'changelog': 'Creates changelog entry for ALL verified improvements',
+                'blog_posts': f'Creates blog post for improvements with relevance >= {RELEVANCE_THRESHOLD} (1/day limit)'
+            }
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -458,25 +674,32 @@ def should_create_blog_post_today():
     return today > last_post_day
 
 def process_verified_improvements():
-    """Process VERIFIED improvements (successfully deployed) for blog posts.
-    
-    This function only blogs about improvements that have been:
+    """Process VERIFIED improvements for changelog entries and blog posts.
+
+    This function processes improvements that have been:
     1. Approved by the coordinator
     2. Deployed by the implementation-worker
     3. VERIFIED as healthy by the health-monitor
-    
-    This ensures we only write about things that are actually working in production.
+
+    For EVERY verified improvement:
+    - Creates a changelog entry (appears on changelog page/timeline)
+
+    For HIGH-RELEVANCE improvements (above RELEVANCE_THRESHOLD):
+    - Also creates a full blog post (limited to 1 per day)
+    - Links the changelog entry to the blog post
     """
     try:
-        # Get all unprocessed improvements from VERIFIED queue (not approved!)
+        # Get all improvements from VERIFIED queue
         improvement_keys = redis_client.zrange('improvements:verified', 0, -1, withscores=True)
 
         if not improvement_keys:
             logger.debug("No verified improvements to process")
             return
 
-        # Load all improvements and filter for unprocessed ones
-        unprocessed = []
+        # Separate improvements into those needing changelog vs blog posts
+        needs_changelog = []  # All unprocessed improvements
+        needs_blog = []       # High-relevance improvements not yet blogged
+
         for improvement_key, timestamp in improvement_keys:
             improvement_data = redis_client.get(improvement_key)
             if not improvement_data:
@@ -484,59 +707,88 @@ def process_verified_improvements():
 
             improvement = json.loads(improvement_data)
 
-            # Skip if already blogged
-            if improvement.get('blogged'):
+            # Skip if already has changelog entry
+            if improvement.get('changelog_created'):
                 continue
 
-            # Skip if below threshold
             relevance = improvement.get('relevance', 0)
-            if relevance < RELEVANCE_THRESHOLD:
-                continue
+            needs_changelog.append((improvement_key, improvement, relevance))
 
-            unprocessed.append((improvement_key, improvement, relevance))
+            # Also check if eligible for blog post
+            if relevance >= RELEVANCE_THRESHOLD and not improvement.get('blogged'):
+                needs_blog.append((improvement_key, improvement, relevance))
 
-        if not unprocessed:
-            logger.debug("No unprocessed verified improvements to blog")
+        if not needs_changelog:
+            logger.debug("No unprocessed verified improvements")
             return
 
-        # Sort by relevance (highest first)
-        unprocessed.sort(key=lambda x: x[2], reverse=True)
+        # Sort by relevance (highest first) for blog post selection
+        needs_blog.sort(key=lambda x: x[2], reverse=True)
 
-        # Check if we should create a blog post today
-        create_blog = should_create_blog_post_today()
+        # Determine if we can create a blog post today
+        can_create_blog = should_create_blog_post_today()
+        blog_post_created_for = None  # Track which improvement got a blog post
 
-        if not create_blog:
-            logger.info("Already created a blog post today, skipping")
-            return
+        # If we can create a blog post, do it first for the top candidate
+        if can_create_blog and needs_blog:
+            improvement_key, improvement, relevance = needs_blog[0]
+            title = improvement.get('title')
 
-        # Process the top verified improvement as blog post
-        improvement_key, improvement, relevance = unprocessed[0]
-        
-        logger.info(f"Creating blog post for VERIFIED improvement: {improvement.get('title')} (relevance: {relevance})")
+            logger.info(f"Creating blog post for VERIFIED improvement: {title} (relevance: {relevance})")
 
-        # Create blog post
-        post_info = create_blog_post(improvement)
-        if post_info:
-            # Commit and push to GitHub
-            if commit_and_push_blog_post(post_info):
-                # Verify Cloudflare deployment
-                deployment_success = verify_cloudflare_deployment(post_info['slug'])
+            post_info = create_blog_post(improvement)
+            if post_info:
+                if commit_and_push_blog_post(post_info):
+                    deployment_success = verify_cloudflare_deployment(post_info['slug'])
 
-                # Mark as blogged
-                improvement['blogged'] = True
-                improvement['blog_slug'] = post_info['slug']
-                improvement['blogged_at'] = datetime.utcnow().isoformat()
-                improvement['cloudflare_verified'] = deployment_success
-                improvement['deployment_status'] = 'success' if deployment_success else 'failed'
+                    # Mark as blogged
+                    improvement['blogged'] = True
+                    improvement['blog_slug'] = post_info['slug']
+                    improvement['blogged_at'] = datetime.utcnow().isoformat()
+                    improvement['cloudflare_verified'] = deployment_success
+                    improvement['deployment_status'] = 'success' if deployment_success else 'failed'
 
-                redis_client.set(improvement_key, json.dumps(improvement))
-                redis_client.set('last_blog_post_date', datetime.utcnow().isoformat())
+                    redis_client.set(improvement_key, json.dumps(improvement))
+                    redis_client.set('last_blog_post_date', datetime.utcnow().isoformat())
 
-                logger.info(f"Successfully blogged VERIFIED improvement: {post_info['slug']}")
+                    blog_post_created_for = improvement_key
+                    logger.info(f"Successfully blogged VERIFIED improvement: {post_info['slug']}")
+                else:
+                    logger.error(f"Failed to push blog post for {title}")
             else:
-                logger.error(f"Failed to push blog post for {improvement.get('title')}")
-        else:
-            logger.error(f"Failed to create blog post for {improvement.get('title')}")
+                logger.error(f"Failed to create blog post for {title}")
+
+        # Now create changelog entries for ALL unprocessed improvements
+        for improvement_key, improvement, relevance in needs_changelog:
+            title = improvement.get('title')
+
+            # Determine if this improvement has an associated blog post
+            related_blog_slug = None
+            if improvement_key == blog_post_created_for:
+                related_blog_slug = improvement.get('blog_slug')
+            elif improvement.get('blogged') and improvement.get('blog_slug'):
+                related_blog_slug = improvement.get('blog_slug')
+
+            logger.info(f"Creating changelog entry for: {title}")
+
+            changelog_info = create_changelog_entry(improvement, related_blog_slug)
+            if changelog_info:
+                if commit_and_push_changelog(changelog_info, title):
+                    # Verify Cloudflare deployment for changelog
+                    changelog_deployment_success = verify_cloudflare_deployment(changelog_info['slug'])
+
+                    # Mark changelog as created
+                    improvement['changelog_created'] = True
+                    improvement['changelog_slug'] = changelog_info['slug']
+                    improvement['changelog_created_at'] = datetime.utcnow().isoformat()
+                    improvement['changelog_cloudflare_verified'] = changelog_deployment_success
+
+                    redis_client.set(improvement_key, json.dumps(improvement))
+                    logger.info(f"Successfully created changelog entry: {changelog_info['slug']}")
+                else:
+                    logger.error(f"Failed to push changelog for {title}")
+            else:
+                logger.error(f"Failed to create changelog entry for {title}")
 
     except Exception as e:
         logger.error(f"Error processing verified improvements: {e}")
@@ -545,6 +797,7 @@ def run_blog_writer_loop():
     """Main blog writer loop - triggers on improvements:verified queue"""
     logger.info("Starting blog writer loop")
     logger.info("Monitoring queue: improvements:verified (only verified deployments)")
+    logger.info(f"Changelog: ALL verified improvements | Blog posts: relevance >= {RELEVANCE_THRESHOLD}")
 
     while True:
         try:
