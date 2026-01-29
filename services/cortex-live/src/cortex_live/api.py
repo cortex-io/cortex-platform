@@ -85,6 +85,63 @@ class PrometheusClient:
 
         return metrics
 
+    def get_network_io(self) -> Dict[str, int]:
+        """Get cluster-wide network I/O (bytes per second)"""
+        if not self.prom:
+            return {"in": 0, "out": 0}  # Fallback
+
+        metrics = {"in": 0, "out": 0}
+
+        try:
+            # Network receive (download) rate in bytes/sec
+            in_query = 'sum(rate(node_network_receive_bytes_total{device!~"lo|veth.*|docker.*|flannel.*|cali.*"}[1m]))'
+            in_result = self.prom.custom_query(in_query)
+            if in_result and len(in_result) > 0:
+                metrics["in"] = int(float(in_result[0]["value"][1]))
+
+            # Network transmit (upload) rate in bytes/sec
+            out_query = 'sum(rate(node_network_transmit_bytes_total{device!~"lo|veth.*|docker.*|flannel.*|cali.*"}[1m]))'
+            out_result = self.prom.custom_query(out_query)
+            if out_result and len(out_result) > 0:
+                metrics["out"] = int(float(out_result[0]["value"][1]))
+
+        except Exception as e:
+            logger.debug(f"Network I/O query failed: {e}")
+
+        return metrics
+
+    def get_node_disk_usage(self, node_name: str) -> int:
+        """Get disk usage percentage for a specific node"""
+        if not self.prom:
+            return 0  # Fallback
+
+        try:
+            # Disk usage percentage (root filesystem)
+            query = f'(1 - (node_filesystem_avail_bytes{{instance=~"{node_name}.*",mountpoint="/",fstype!="tmpfs"}} / node_filesystem_size_bytes{{instance=~"{node_name}.*",mountpoint="/",fstype!="tmpfs"}})) * 100'
+            result = self.prom.custom_query(query)
+            if result and len(result) > 0:
+                return int(float(result[0]["value"][1]))
+        except Exception as e:
+            logger.debug(f"Disk usage query failed for {node_name}: {e}")
+
+        return 0  # Fallback
+
+    def get_api_latency(self) -> int:
+        """Get Kubernetes API server request latency (milliseconds)"""
+        if not self.prom:
+            return 0  # Fallback
+
+        try:
+            # API server request duration (p95) in seconds, convert to ms
+            query = 'histogram_quantile(0.95, sum(rate(apiserver_request_duration_seconds_bucket{verb!="WATCH"}[5m])) by (le)) * 1000'
+            result = self.prom.custom_query(query)
+            if result and len(result) > 0:
+                return int(float(result[0]["value"][1]))
+        except Exception as e:
+            logger.debug(f"API latency query failed: {e}")
+
+        return 0  # Fallback
+
 
 class KubernetesClient:
     """Client for querying Kubernetes API"""
@@ -168,3 +225,33 @@ class KubernetesClient:
         if pod.spec and pod.spec.containers:
             containers = [c.name for c in pod.spec.containers]
         return containers
+
+    def get_pod_distribution(self) -> Dict[str, int]:
+        """Get pod count per namespace"""
+        if not self.v1:
+            return {}
+
+        try:
+            pods = self.get_pods()
+            distribution = {}
+            for pod in pods:
+                namespace = pod.metadata.namespace
+                distribution[namespace] = distribution.get(namespace, 0) + 1
+
+            # Sort by count descending
+            return dict(sorted(distribution.items(), key=lambda x: x[1], reverse=True))
+        except Exception as e:
+            logger.error(f"Failed to get pod distribution: {e}")
+            return {}
+
+    def get_namespaces(self) -> List[str]:
+        """Get all namespace names"""
+        if not self.v1:
+            return []
+
+        try:
+            namespaces = self.v1.list_namespace()
+            return [ns.metadata.name for ns in namespaces.items]
+        except Exception as e:
+            logger.error(f"Failed to get namespaces: {e}")
+            return []

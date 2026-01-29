@@ -14,7 +14,8 @@ from .widgets import (
     ClusterPulse,
     LiveEvents,
     AgentsPanel,
-    NodesPanel
+    NodesPanel,
+    PodDistribution
 )
 from .screens import (
     PodsScreen,
@@ -38,43 +39,54 @@ class CortexLive(App):
 
     CSS = """
     Screen {
-        background: $surface;
+        background: #0a0e14;
     }
 
     StatusBar {
         dock: top;
         height: 1;
-        background: $boost;
-        color: $text;
+        background: #1a1f29;
+        color: #00d9ff;
     }
 
     ClusterPulse {
-        height: 5;
-        margin: 1 0;
+        height: 8;
+        margin: 1 1;
+        background: #0a0e14;
     }
 
     LiveEvents {
-        height: 9;
-        margin: 1 0;
+        height: 10;
+        margin: 1 1;
+        background: #0a0e14;
+    }
+
+    PodDistribution {
+        height: 10;
+        margin: 1 1;
+        background: #0a0e14;
     }
 
     #bottom-row {
         layout: horizontal;
-        height: 9;
-        margin: 1 0;
+        height: 12;
+        margin: 1 1;
     }
 
     AgentsPanel {
-        width: 33;
+        width: 36;
         margin-right: 1;
+        background: #0a0e14;
     }
 
     NodesPanel {
         width: 1fr;
+        background: #0a0e14;
     }
 
     Footer {
-        background: $boost;
+        background: #1a1f29;
+        color: #00d9ff;
     }
     """
 
@@ -97,6 +109,7 @@ class CortexLive(App):
         yield StatusBar()
         yield ClusterPulse()
         yield LiveEvents()
+        yield PodDistribution()
         with Container(id="bottom-row"):
             yield AgentsPanel()
             yield NodesPanel()
@@ -133,6 +146,10 @@ class CortexLive(App):
             nodes = self.k8s_client.get_nodes()
             self.query_one(StatusBar).node_count = len(nodes)
 
+            # Get API latency
+            api_latency = self.prom_client.get_api_latency()
+            self.query_one(StatusBar).api_latency = api_latency
+
             # Update cluster pulse with Prometheus metrics
             pods = self.k8s_client.get_pods()
             ready = sum(1 for p in pods if p.status.phase == "Running")
@@ -146,12 +163,19 @@ class CortexLive(App):
             cpu = self.prom_client.get_cluster_cpu()
             mem = self.prom_client.get_cluster_memory()
 
+            # Get network I/O from Prometheus
+            network_io = self.prom_client.get_network_io()
+            network_in = network_io.get("in", 0)
+            network_out = network_io.get("out", 0)
+
             self.query_one(ClusterPulse).metrics = {
                 "cpu": cpu,
                 "mem": mem,
                 "pods_ready": ready,
                 "pods_total": total,
-                "events_per_min": events_per_min
+                "events_per_min": events_per_min,
+                "network_in": network_in,
+                "network_out": network_out
             }
 
             # Update live events
@@ -165,6 +189,10 @@ class CortexLive(App):
 
             self.query_one(LiveEvents).events = event_lines
 
+            # Update pod distribution
+            pod_distribution = self.k8s_client.get_pod_distribution()
+            self.query_one(PodDistribution).distribution = pod_distribution
+
             # Update agents
             jobs = self.k8s_client.get_jobs()
             active = sum(1 for j in jobs if j.status.active and j.status.active > 0)
@@ -173,20 +201,26 @@ class CortexLive(App):
             total_jobs = len(jobs)
             success = int((completed / total_jobs * 100)) if total_jobs > 0 else 0
 
+            # Count unique namespaces with jobs
+            job_namespaces = set(j.metadata.namespace for j in jobs)
+
             self.query_one(AgentsPanel).stats = {
                 "active": active,
                 "spawning": 0,
                 "completed": completed,
                 "failed": failed,
                 "total": total_jobs,
-                "success": success
+                "success": success,
+                "namespaces": len(job_namespaces)
             }
 
-            # Update nodes with Prometheus metrics
+            # Update nodes with Prometheus metrics (including disk)
             node_data = {}
             for node in nodes[:4]:
                 name = node.metadata.name.replace("k3s-", "")[:10]
                 metrics = self.prom_client.get_node_metrics(node.metadata.name)
+                # Add disk usage
+                metrics["disk"] = self.prom_client.get_node_disk_usage(node.metadata.name)
                 node_data[name] = metrics
 
             self.query_one(NodesPanel).nodes = node_data
