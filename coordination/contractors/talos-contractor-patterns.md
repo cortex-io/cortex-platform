@@ -904,12 +904,22 @@ kubectl get storageclass longhorn
 ```
 
 **Longhorn Configuration**:
+
+> **IMPORTANT**: Longhorn volumes can exceed their specified size due to snapshot
+> retention, causing disk pressure. Always use StorageClasses with snapshot limits.
+> See: https://www.suse.com/c/limit-volume-replica-actual-space-usage/
+>
+> StorageClass manifests with snapshot limits are in:
+> `infrastructure/storage/longhorn-storageclasses.yaml`
+
 ```yaml
-# StorageClass with custom parameters
+# StorageClass with snapshot limits (RECOMMENDED)
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: longhorn-fast
+  name: longhorn
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 reclaimPolicy: Delete
@@ -919,9 +929,20 @@ parameters:
   staleReplicaTimeout: "2880"  # 48 hours
   fromBackup: ""
   fsType: "ext4"
-  dataLocality: "disabled"  # or "best-effort"
+  dataLocality: "disabled"
   replicaAutoBalance: "disabled"
+  # CRITICAL: Snapshot limits to prevent disk pressure
+  # Formula: max usage = (snapshotMaxCount + 1) × volume_size
+  snapshotMaxCount: "5"
 ```
+
+**Available StorageClasses**:
+| StorageClass | Replicas | Snapshot Limit | Best For |
+|--------------|----------|----------------|----------|
+| `longhorn` | 3 | 5 | General workloads, model storage |
+| `longhorn-fast` | 3 | 3 | High-churn data, caches |
+| `longhorn-compact` | 2 | 2 | Large volumes, vector DBs |
+| `longhorn-encrypted` | 3 | 5 | Sensitive data |
 
 **Longhorn Features**:
 
