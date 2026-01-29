@@ -39,32 +39,32 @@ class CortexLive(App):
 
     CSS = """
     Screen {
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     StatusBar {
         dock: top;
         height: 1;
-        background: #1a1f29;
-        color: #00d9ff;
+        background: #1a1500;
+        color: #ffb000;
     }
 
     ClusterPulse {
         height: 8;
         margin: 1 1;
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     LiveEvents {
         height: 10;
         margin: 1 1;
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     PodDistribution {
         height: 10;
         margin: 1 1;
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     #bottom-row {
@@ -76,17 +76,17 @@ class CortexLive(App):
     AgentsPanel {
         width: 36;
         margin-right: 1;
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     NodesPanel {
         width: 1fr;
-        background: #0a0e14;
+        background: #0a0a00;
     }
 
     Footer {
-        background: #1a1f29;
-        color: #00d9ff;
+        background: #1a1500;
+        color: #ffb000;
     }
     """
 
