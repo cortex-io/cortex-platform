@@ -20,18 +20,18 @@ image:
 
 resources:
   requests:
-    memory: "256Mi"
-    cpu: "100m"
+    memory: "128Mi"
+    cpu: "50m"
   limits:
-    memory: "512Mi"
-    cpu: "500m"
+    memory: "384Mi"
+    cpu: "300m"
 
 # -----------------------------------------------------------------------------
 # Persistence (CRITICAL)
 # -----------------------------------------------------------------------------
 persistence:
   enabled: true
-  storageClass: "longhorn"
+  storageClass: "longhorn-compact"  # Longhorn with snapshot limits (snapshotMaxCount=2)
   size: "5Gi"
   accessMode: ReadWriteOnce
 
@@ -52,7 +52,44 @@ collections:
         type: bool
       - field: timestamp
         type: datetime
-  
+
+  # Query routing learning - stores query embeddings with routing decisions
+  # Used by Activator to learn from past successful routes
+  routing_queries:
+    vectorSize: 384  # all-MiniLM-L6-v2 embeddings
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: route_type
+        type: keyword      # keyword, similarity, classifier, slm
+      - field: tool
+        type: keyword      # selected tool
+      - field: execution_layer
+        type: keyword      # api, ssh, reasoning
+      - field: success
+        type: bool
+      - field: latency_ms
+        type: integer
+      - field: timestamp
+        type: datetime
+
+  # Routing outcomes - links query to final result for learning
+  routing_outcomes:
+    vectorSize: 384
+    distance: Cosine
+    onDiskPayload: true
+    indexes:
+      - field: query_id
+        type: keyword      # Links to routing_queries point
+      - field: success
+        type: bool
+      - field: error_type
+        type: keyword      # null, timeout, tool_error, layer_unavailable
+      - field: user_feedback
+        type: keyword      # null, positive, negative
+      - field: timestamp
+        type: datetime
+
   # Configuration snapshots - network/device/client configs
   configurations:
     vectorSize: 384

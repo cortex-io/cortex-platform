@@ -6,3 +6,5 @@ prometheus-client==0.19.0
 structlog==24.1.0
 pyyaml==6.0.1
 redis>=5.0.0
+# Qdrant learning layer
+sentence-transformers>=2.2.0
