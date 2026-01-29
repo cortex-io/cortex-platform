@@ -1,0 +1,97 @@
+# =============================================================================
+# Longhorn StorageClasses with Snapshot Limits
+# =============================================================================
+# These StorageClasses include snapshotMaxCount and snapshotMaxSize parameters
+# to prevent unbounded disk usage from snapshot accumulation.
+#
+# Reference: https://www.suse.com/c/limit-volume-replica-actual-space-usage/
+#
+# Without these limits, Longhorn replicas can consume significantly more space
+# than the volume's specified size due to snapshot retention, potentially
+# causing disk pressure, node crashes, or data loss.
+# =============================================================================
+
+---
+# Standard StorageClass with snapshot limits
+# Best for: General workloads, model storage, application data
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"           # 48 hours
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "disabled"
+  replicaAutoBalance: "disabled"
+  # Snapshot limits to prevent disk pressure
+  # Max 5 snapshots = theoretical max usage of (5+1) × volume_size
+  snapshotMaxCount: "5"
+
+---
+# Fast StorageClass with aggressive snapshot limits
+# Best for: High-churn workloads, ML model storage, caches
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-fast
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "best-effort"           # Prefer local replica for speed
+  replicaAutoBalance: "best-effort"
+  # Aggressive snapshot limits for high-churn data
+  snapshotMaxCount: "3"
+
+---
+# Compact StorageClass with minimal snapshots
+# Best for: Large volumes where disk space is critical (e.g., vector DBs)
+# Use this to migrate cortex-qdrant back to Longhorn
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-compact
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"                  # 2 replicas to save space
+  staleReplicaTimeout: "1440"            # 24 hours
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "best-effort"
+  replicaAutoBalance: "disabled"
+  # Minimal snapshots - max usage ~3x volume size
+  snapshotMaxCount: "2"
+
+---
+# Encrypted StorageClass with snapshot limits
+# Best for: Sensitive data, credentials, PII
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-encrypted
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Retain                    # Retain for sensitive data
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  encrypted: "true"
+  # Snapshot limits
+  snapshotMaxCount: "5"
