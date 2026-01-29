@@ -25,7 +25,13 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-      
+
+      # Allow scheduling on master nodes if workers are full
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoExecute"
+
       containers:
         - name: qdrant
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
