@@ -54,7 +54,7 @@ resources:
 # -----------------------------------------------------------------------------
 persistence:
   enabled: true
-  storageClass: "longhorn"
+  storageClass: "longhorn"  # Default Longhorn with snapshot limits (snapshotMaxCount=5)
   size: "2Gi"
   accessMode: ReadWriteOnce
 

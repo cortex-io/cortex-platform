@@ -6,8 +6,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source
-COPY main.py .
+# Copy all Python source files
+COPY *.py .
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser
