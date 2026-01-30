@@ -1,0 +1,13 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "cortex-unified.fullname" . }}
+  labels:
+    {{- include "cortex-unified.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "cortex-unified.selectorLabels" . | nindent 6 }}
+{{- end }}
