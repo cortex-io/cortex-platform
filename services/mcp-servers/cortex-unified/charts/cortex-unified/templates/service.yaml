@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex-unified.fullname" . }}
+  labels:
+    {{- include "cortex-unified.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: mcp
+      protocol: TCP
+      name: mcp
+    - port: {{ .Values.service.healthPort }}
+      targetPort: health
+      protocol: TCP
+      name: health
+  selector:
+    {{- include "cortex-unified.selectorLabels" . | nindent 4 }}

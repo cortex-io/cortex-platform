@@ -1,0 +1,133 @@
+# Cortex Unified MCP Server Helm Values
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/ry-ops/cortex-unified-mcp
+  pullPolicy: IfNotPresent
+  tag: "v0.1.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service
+service:
+  type: ClusterIP
+  port: 3000
+  healthPort: 8080
+
+# Resources
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+
+# Autoscaling (optional, disabled by default - use KEDA instead)
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - cortex-unified-mcp
+          topologyKey: kubernetes.io/hostname
+
+# Environment configuration
+config:
+  # Chat Activator (Chat Layer Fabric)
+  chatActivatorUrl: "http://chat-activator.cortex-chat:8080"
+
+  # Qdrant (conversation memory)
+  qdrantUrl: "http://chat-qdrant.cortex-chat:6333"
+
+  # Prometheus (cluster metrics)
+  prometheusUrl: "http://prometheus-server.cortex-system:80"
+
+  # Redis (agent framework)
+  redisUrl: "redis://redis.cortex-system:6379"
+
+  # MCP servers (passthrough)
+  kubernetesMcpUrl: "http://kubernetes-mcp-server.cortex-system:3001"
+  proxmoxMcpUrl: "http://proxmox-mcp-server.cortex-system:3000"
+  sandflyMcpUrl: "http://sandfly-mcp-server.cortex-system:8080"
+  unifiMcpUrl: "http://unifi-mcp-server.cortex-system:3000"
+  n8nMcpUrl: "http://n8n-mcp-server.cortex-system:3002"
+  cortexMcpUrl: "http://cortex-mcp-server.cortex-system:3000"
+
+  # Logging
+  logLevel: "20"  # INFO
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /health
+    port: health
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Network policy (optional)
+networkPolicy:
+  enabled: false
