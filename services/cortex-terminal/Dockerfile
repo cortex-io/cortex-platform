@@ -28,9 +28,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Install Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
-# Install Cortex Live TUI (will be mounted or installed at runtime)
-COPY services/cortex-live /opt/cortex-live
-RUN pip install --no-cache-dir /opt/cortex-live || true
+# Cortex Live TUI dependencies (optional - install at runtime if needed)
+# To install: pip install git+https://github.com/ry-ops/cortex-platform.git#subdirectory=services/cortex-live
+RUN pip install --no-cache-dir textual kubernetes prometheus-api-client || true
 
 # Create cortex user
 RUN useradd -m -s /bin/bash -u 1000 cortex \

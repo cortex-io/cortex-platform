@@ -16,12 +16,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m -u 1000 cortex
 WORKDIR /app
 
-# Install Python dependencies
-COPY pyproject.toml .
-RUN pip install --no-cache-dir -e .
-
-# Copy application code
+# Copy all files needed for install
+COPY pyproject.toml README.md ./
 COPY src/ src/
+
+# Install Python dependencies (not editable - production install)
+RUN pip install --no-cache-dir .
 
 # Set ownership
 RUN chown -R cortex:cortex /app
