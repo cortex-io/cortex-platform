@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex-unified.fullname" . }}
+  labels:
+    {{- include "cortex-unified.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cortex-unified.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      labels:
+        {{- include "cortex-unified.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cortex-unified.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: mcp
+              containerPort: 3000
+              protocol: TCP
+            - name: health
+              containerPort: 8080
+              protocol: TCP
+          env:
+            # Chat Layer Fabric
+            - name: CHAT_ACTIVATOR_URL
+              value: {{ .Values.config.chatActivatorUrl | quote }}
+            # Qdrant
+            - name: QDRANT_URL
+              value: {{ .Values.config.qdrantUrl | quote }}
+            # Prometheus
+            - name: PROMETHEUS_URL
+              value: {{ .Values.config.prometheusUrl | quote }}
+            # Redis
+            - name: REDIS_URL
+              value: {{ .Values.config.redisUrl | quote }}
+            # MCP Servers
+            - name: K8S_MCP_URL
+              value: {{ .Values.config.kubernetesMcpUrl | quote }}
+            - name: PROXMOX_MCP_URL
+              value: {{ .Values.config.proxmoxMcpUrl | quote }}
+            - name: SANDFLY_MCP_URL
+              value: {{ .Values.config.sandflyMcpUrl | quote }}
+            - name: UNIFI_MCP_URL
+              value: {{ .Values.config.unifiMcpUrl | quote }}
+            - name: N8N_MCP_URL
+              value: {{ .Values.config.n8nMcpUrl | quote }}
+            - name: CORTEX_MCP_URL
+              value: {{ .Values.config.cortexMcpUrl | quote }}
+            # Logging
+            - name: LOG_LEVEL
+              value: {{ .Values.config.logLevel | quote }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
