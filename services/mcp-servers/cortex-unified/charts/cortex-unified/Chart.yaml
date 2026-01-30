@@ -1,0 +1,20 @@
+apiVersion: v2
+name: cortex-unified-mcp
+description: Unified MCP server for Cortex Platform - Claude Code integration brain
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+keywords:
+  - cortex
+  - mcp
+  - claude-code
+  - ai-assistant
+
+home: https://github.com/ry-ops/cortex-platform
+sources:
+  - https://github.com/ry-ops/cortex-platform/tree/main/services/mcp-servers/cortex-unified
+
+maintainers:
+  - name: ry-ops
+    email: ryan@ry-ops.dev
