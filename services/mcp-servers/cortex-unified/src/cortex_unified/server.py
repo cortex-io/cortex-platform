@@ -5,16 +5,20 @@ The brain of Cortex for Claude Code integration. Exposes all Cortex capabilities
 as MCP tools, routing through Chat Fabric for intelligence and cost optimization.
 
 Usage:
-    cortex-unified
+    cortex-unified          # HTTP server mode (default for K8s)
+    cortex-unified --stdio  # stdio mode (for local Claude Code)
 
 Or via Python:
     python -m cortex_unified.server
 """
 
 import asyncio
+import json
 import os
 import signal
 import sys
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from threading import Thread
 from typing import Any
 
 import structlog
@@ -221,11 +225,147 @@ async def shutdown_clients():
 
 
 # =============================================================================
+# HTTP Server for K8s Deployment
+# =============================================================================
+
+class MCPHTTPHandler(BaseHTTPRequestHandler):
+    """HTTP handler for JSON-RPC MCP protocol."""
+
+    def log_message(self, format, *args):
+        """Override to use structured logging."""
+        pass  # Suppress default logging
+
+    def do_GET(self):
+        """Handle GET requests."""
+        if self.path == "/health":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"OK")
+        elif self.path == "/ready":
+            # Check if clients are initialized
+            if _chat_client:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"Ready")
+            else:
+                self.send_response(503)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"Not Ready")
+        elif self.path == "/tools":
+            # Return tool list for debugging
+            tools = [{"name": t.name, "description": t.description} for t in ALL_TOOLS]
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(tools).encode())
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_POST(self):
+        """Handle POST requests (MCP JSON-RPC)."""
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length)
+
+        try:
+            request = json.loads(body)
+        except json.JSONDecodeError:
+            self.send_error(400, "Invalid JSON")
+            return
+
+        # Handle JSON-RPC
+        if "jsonrpc" in request:
+            self._handle_jsonrpc(request)
+        else:
+            self.send_error(400, "Expected JSON-RPC request")
+
+    def _handle_jsonrpc(self, request):
+        """Handle JSON-RPC 2.0 requests."""
+        req_id = request.get("id", 1)
+        method = request.get("method", "")
+        params = request.get("params", {})
+
+        try:
+            if method == "initialize":
+                result = {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {"tools": {}},
+                    "serverInfo": {"name": "cortex-unified", "version": "0.1.0"},
+                }
+            elif method == "tools/list":
+                tools_list = []
+                for tool in ALL_TOOLS:
+                    tools_list.append({
+                        "name": tool.name,
+                        "description": tool.description,
+                        "inputSchema": tool.inputSchema,
+                    })
+                result = {"tools": tools_list}
+            elif method == "tools/call":
+                tool_name = params.get("name")
+                arguments = params.get("arguments", {})
+                # Run async tool call in event loop
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    tool_result = loop.run_until_complete(call_tool(tool_name, arguments))
+                    content = [{"type": c.type, "text": c.text} for c in tool_result]
+                    result = {"content": content}
+                finally:
+                    loop.close()
+            else:
+                raise ValueError(f"Unknown method: {method}")
+
+            response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode())
+
+        except Exception as e:
+            logger.error("jsonrpc_error", method=method, error=str(e))
+            error_response = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "error": {"code": -32603, "message": str(e)},
+            }
+            self.send_response(200)  # JSON-RPC errors use 200
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(error_response).encode())
+
+
+def run_http_server(port: int = 3000):
+    """Run HTTP server for K8s deployment."""
+    logger.info("starting_http_server", port=port)
+
+    # Initialize clients synchronously
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(initialize_clients())
+
+    # Start HTTP server
+    httpd = HTTPServer(("0.0.0.0", port), MCPHTTPHandler)
+    logger.info("mcp_http_server_ready", port=port)
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        loop.run_until_complete(shutdown_clients())
+        loop.close()
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
-async def run_server():
-    """Run the MCP server."""
+async def run_stdio_server():
+    """Run the MCP server over stdio (for local Claude Code)."""
     logger.info(
         "starting_cortex_unified_mcp",
         version="0.1.0",
@@ -264,11 +404,17 @@ async def run_server():
 
 def main():
     """Entry point."""
-    try:
-        asyncio.run(run_server())
-    except KeyboardInterrupt:
-        logger.info("keyboard_interrupt")
-        sys.exit(0)
+    # Check for --stdio flag
+    if "--stdio" in sys.argv:
+        try:
+            asyncio.run(run_stdio_server())
+        except KeyboardInterrupt:
+            logger.info("keyboard_interrupt")
+            sys.exit(0)
+    else:
+        # Default: HTTP server mode for K8s
+        port = int(os.getenv("MCP_PORT", "3000"))
+        run_http_server(port)
 
 
 if __name__ == "__main__":
