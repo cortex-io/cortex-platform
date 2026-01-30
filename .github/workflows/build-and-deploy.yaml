@@ -32,8 +32,28 @@ jobs:
           # Get list of changed files
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
 
-          # Extract unique service directories
-          SERVICES=$(echo "$CHANGED_FILES" | grep '^services/' | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
+          # Find services with Dockerfiles (handles both direct and nested services)
+          SERVICES="[]"
+          for file in $CHANGED_FILES; do
+            if [[ $file == services/* ]]; then
+              # Get the directory containing the changed file
+              dir=$(dirname "$file")
+
+              # Walk up to find nearest Dockerfile
+              while [[ $dir != "services" && $dir != "." ]]; do
+                if [[ -f "$dir/Dockerfile" ]]; then
+                  # Extract service path relative to services/
+                  service_path="${dir#services/}"
+                  # Use the last component as the image name
+                  image_name=$(basename "$dir")
+                  echo "Found service: $service_path (image: $image_name)"
+                  SERVICES=$(echo "$SERVICES" | jq -c ". + [\"$service_path\"]" | jq -c 'unique')
+                  break
+                fi
+                dir=$(dirname "$dir")
+              done
+            fi
+          done
 
           if [ "$SERVICES" = "[]" ] || [ -z "$SERVICES" ]; then
             echo "services=[]" >> $GITHUB_OUTPUT
@@ -68,11 +88,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Determine image name
+        id: image-name
+        run: |
+          # Use the last component of the path as image name
+          IMAGE_NAME=$(basename "${{ matrix.service }}")
+          echo "name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "Image name: $IMAGE_NAME"
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ steps.image-name.outputs.name }}
           tags: |
             type=sha,prefix=
             type=ref,event=branch
