@@ -13,5 +13,5 @@ pydantic-settings==2.6.0
 statsmodels==0.14.4
 pmdarima==2.0.4
 joblib==1.4.2
-requests==2.32.3
+requests>=2.32.4  # Updated to fix CVE-2024-47081 .netrc credentials leak
 python-json-logger==3.2.1
