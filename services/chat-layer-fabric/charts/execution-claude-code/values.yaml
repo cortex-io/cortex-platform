@@ -1,0 +1,157 @@
+# =============================================================================
+# Execution Claude Code Layer - Agentic Task Execution
+# =============================================================================
+# Uses Claude Code CLI for complex, multi-step agentic tasks.
+# This is the escalation path when local DMR can't handle complexity.
+# Scales to zero when idle via KEDA.
+# =============================================================================
+
+global:
+  namespace: cortex-chat
+
+# -----------------------------------------------------------------------------
+# Claude Code Configuration
+# -----------------------------------------------------------------------------
+claudeCode:
+  # Model to use
+  model: "claude-sonnet-4-20250514"
+
+  # Execution limits
+  maxExecutionTime: 120  # seconds
+  maxTurns: 10
+
+  # Cost controls
+  maxCostPerRequest: 0.10  # USD
+
+  # MCP servers allowed
+  allowedMcpServers:
+    - kubernetes
+    - cortex
+    - sandfly
+    - proxmox
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ry-ops/execution-claude-code
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+  limits:
+    memory: "2Gi"
+    cpu: "1000m"
+
+# -----------------------------------------------------------------------------
+# Secrets
+# -----------------------------------------------------------------------------
+secrets:
+  # Reference to existing secret with Anthropic API key
+  # Reuses the same secret already deployed for moe-router in cortex-chat
+  anthropicApiKey:
+    secretName: cortex-chat-secrets
+    key: anthropic-api-key
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+
+  # Scale to zero
+  minReplicaCount: 0
+  maxReplicaCount: 2  # Allow 2 for concurrent complex tasks
+
+  # Cooldown before scaling to zero (3 minutes - shorter than DMR)
+  cooldownPeriod: 180
+
+  # Polling interval
+  pollingInterval: 10
+
+  # Scale trigger
+  trigger:
+    type: prometheus
+    metadata:
+      serverAddress: "http://prometheus.observability:9090"
+      metricName: cortex_chat_pending_claude_code_requests
+      query: |
+        sum(cortex_chat_pending_requests{layer="execution-claude-code"})
+      threshold: "1"
+
+# -----------------------------------------------------------------------------
+# Observability
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  readOnlyRootFilesystem: false  # Claude Code needs to write temp files
+
+# -----------------------------------------------------------------------------
+# Pod Configuration
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Init Container for Claude Code Installation
+# -----------------------------------------------------------------------------
+initContainer:
+  enabled: true
+  image: node:20-slim
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  command:
+    - /bin/sh
+    - -c
+    - |
+      npm install -g @anthropic-ai/claude-code
+      echo "Claude Code installed successfully"

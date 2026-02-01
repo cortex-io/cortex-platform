@@ -1,0 +1,14 @@
+apiVersion: v2
+name: reasoning-dmr
+description: Local LLM inference via Docker Model Runner for Chat Layer Fabric
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - cortex
+  - chat
+  - ai
+  - llm
+  - docker-model-runner
+maintainers:
+  - name: ry-ops

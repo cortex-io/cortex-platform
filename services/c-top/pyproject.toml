@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "c-top"
+version = "0.1.0"
+description = "Cortex Operations Dashboard - htop-style monitoring for Cortex platform"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Cortex Team"}
+]
+dependencies = [
+    "textual>=0.47.0",
+    "kubernetes>=28.1.0",
+    "prometheus-api-client>=0.5.3",
+    "redis>=5.0.0",
+    "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.0.0",
+    "mypy>=1.5.0",
+]
+
+[project.scripts]
+c-top = "c_top.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

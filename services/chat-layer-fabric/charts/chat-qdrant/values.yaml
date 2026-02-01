@@ -1,0 +1,93 @@
+# =============================================================================
+# Chat Qdrant - Vector Memory Layer
+# =============================================================================
+# Always-on vector database for:
+# - Conversation history embeddings
+# - Query pattern matching
+# - Routing decision learning
+# - Tool selection optimization
+# =============================================================================
+
+global:
+  namespace: cortex-chat
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # Single replica, always on
+
+image:
+  repository: qdrant/qdrant
+  tag: "v1.7.4"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# -----------------------------------------------------------------------------
+# Storage
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  size: "5Gi"
+  accessMode: ReadWriteOnce
+
+# -----------------------------------------------------------------------------
+# Collections (initialized on startup)
+# -----------------------------------------------------------------------------
+collections:
+  # Query routing patterns
+  routing_patterns:
+    vectorSize: 384
+    distance: Cosine
+    description: "Query embeddings with routing decisions and outcomes"
+
+  # Conversation history
+  conversations:
+    vectorSize: 384
+    distance: Cosine
+    description: "Conversation message embeddings for context"
+
+  # Tool selection patterns
+  tool_patterns:
+    vectorSize: 384
+    distance: Cosine
+    description: "Successful tool selection patterns"
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 6333
+  grpcPort: 6334
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /
+    port: 6333
+  initialDelaySeconds: 10
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 6333
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+# -----------------------------------------------------------------------------
+# Pod Configuration
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+affinity: {}
