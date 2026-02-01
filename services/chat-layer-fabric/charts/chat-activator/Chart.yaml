@@ -1,0 +1,13 @@
+apiVersion: v2
+name: chat-activator
+description: Always-on query router and layer orchestrator for Chat Layer Fabric
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - cortex
+  - chat
+  - ai
+  - router
+maintainers:
+  - name: ry-ops

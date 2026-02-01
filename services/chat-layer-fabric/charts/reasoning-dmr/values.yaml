@@ -1,0 +1,150 @@
+# =============================================================================
+# Reasoning DMR Layer - Local LLM via Docker Model Runner
+# =============================================================================
+# Uses Docker Model Runner to provide zero-cost local inference.
+# Scales to zero when idle via KEDA.
+# =============================================================================
+
+global:
+  namespace: cortex-chat
+
+# -----------------------------------------------------------------------------
+# Docker Model Runner Configuration
+# -----------------------------------------------------------------------------
+dmr:
+  # Model to use (must be available in DMR)
+  model: "microsoft/phi-4"
+
+  # Alternative models (uncomment to use)
+  # model: "Qwen/Qwen2.5-7B-Instruct"
+  # model: "meta-llama/Llama-3.2-3B-Instruct"
+
+  # DMR endpoint (within cluster)
+  # Note: DMR runs as a sidecar or separate service
+  endpoint: "http://localhost:12434/v1"
+
+  # Inference settings
+  contextLength: 4096
+  temperature: 0.1
+  maxTokens: 1024
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 1  # KEDA manages this
+
+image:
+  repository: ghcr.io/ry-ops/reasoning-dmr
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+# Main container resources
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "200m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# DMR sidecar container
+dmrSidecar:
+  enabled: true
+  image:
+    repository: docker/model-runner
+    tag: "latest"
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "2000m"
+    limits:
+      memory: "6Gi"
+      cpu: "4000m"
+
+# -----------------------------------------------------------------------------
+# Model Storage
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: "longhorn-fast"  # Fast storage for models
+  size: "20Gi"
+  accessMode: ReadWriteOnce
+  mountPath: /models
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# -----------------------------------------------------------------------------
+# KEDA Scaling
+# -----------------------------------------------------------------------------
+keda:
+  enabled: true
+
+  # Scale to zero
+  minReplicaCount: 0
+  maxReplicaCount: 1
+
+  # Cooldown before scaling to zero (5 minutes)
+  cooldownPeriod: 300
+
+  # Polling interval
+  pollingInterval: 15
+
+  # Scale trigger - watches for pending requests via Activator
+  trigger:
+    type: prometheus
+    metadata:
+      serverAddress: "http://prometheus.observability:9090"
+      metricName: cortex_chat_pending_dmr_requests
+      query: |
+        sum(cortex_chat_pending_requests{layer="reasoning-dmr"})
+      threshold: "1"
+
+# -----------------------------------------------------------------------------
+# Observability
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+
+# -----------------------------------------------------------------------------
+# Pod Configuration
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+
+# Prefer nodes with GPU if available
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: nvidia.com/gpu
+              operator: Exists

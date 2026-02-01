@@ -1,0 +1,13 @@
+apiVersion: v2
+name: chat-qdrant
+description: Vector memory and pattern storage for Chat Layer Fabric
+type: application
+version: 0.1.0
+appVersion: "1.7.4"
+keywords:
+  - cortex
+  - chat
+  - qdrant
+  - vector-db
+maintainers:
+  - name: ry-ops

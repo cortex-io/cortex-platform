@@ -1,0 +1,110 @@
+# =============================================================================
+# ArgoCD ApplicationSet - Chat Layer Fabric
+# =============================================================================
+# Deploys all chat fabric layers as a single GitOps-managed unit.
+# Each layer is its own ArgoCD Application for independent sync status.
+#
+# Architecture:
+#   - chat-qdrant: Always-on vector memory (sync wave 1)
+#   - chat-activator: Always-on query router (sync wave 2)
+#   - reasoning-dmr: Scale-to-zero local LLM (sync wave 3)
+#   - execution-local-response: Scale-to-zero simple responses (sync wave 3)
+#   - execution-claude-code: Scale-to-zero agentic execution (sync wave 4)
+#   - chat-telemetry: Scale-to-zero metrics/learning (sync wave 5)
+# =============================================================================
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: chat-layer-fabric
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          # Always-on layers
+          - name: chat-qdrant
+            path: charts/chat-qdrant
+            syncWave: "1"
+
+          - name: chat-activator
+            path: charts/chat-activator
+            syncWave: "2"
+
+          # Scale-to-zero layers
+          - name: reasoning-dmr
+            path: charts/reasoning-dmr
+            syncWave: "3"
+
+          - name: execution-local-response
+            path: charts/execution-local-response
+            syncWave: "3"
+
+          - name: execution-claude-code
+            path: charts/execution-claude-code
+            syncWave: "4"
+
+          - name: chat-telemetry
+            path: charts/chat-telemetry
+            syncWave: "5"
+
+  template:
+    metadata:
+      name: "chat-{{name}}"
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: chat-layer-fabric
+        cortex.ry-ops.dev/fabric: chat
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{syncWave}}"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: cortex
+
+      source:
+        repoURL: https://github.com/ry-ops/cortex-platform.git
+        targetRevision: main
+        path: "services/chat-layer-fabric/{{path}}"
+        helm:
+          valueFiles:
+            - values.yaml
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cortex-chat
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+
+      # Ignore KEDA-managed replica changes
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jsonPointers:
+            - /spec/replicas
+
+---
+# Namespace (created before Applications)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cortex-chat
+  labels:
+    app.kubernetes.io/part-of: cortex
+    cortex.ry-ops.dev/fabric: chat
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
