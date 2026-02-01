@@ -1,0 +1,14 @@
+apiVersion: v2
+name: execution-claude-code
+description: Agentic task execution via Claude Code CLI for Chat Layer Fabric
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - cortex
+  - chat
+  - ai
+  - claude-code
+  - agentic
+maintainers:
+  - name: ry-ops
