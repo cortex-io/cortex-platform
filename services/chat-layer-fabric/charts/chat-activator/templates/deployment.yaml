@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/part-of: chat-layer-fabric
+    cortex.ry-ops.dev/fabric: chat
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/part-of: chat-layer-fabric
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "{{ .Values.metrics.path }}"
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Chart.Name }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+          env:
+            # Routing configuration
+            - name: LOCAL_THRESHOLD
+              value: "{{ .Values.routing.localThreshold }}"
+            - name: DMR_THRESHOLD
+              value: "{{ .Values.routing.dmrThreshold }}"
+            - name: CLAUDE_THRESHOLD
+              value: "{{ .Values.routing.claudeThreshold }}"
+            - name: SIMILARITY_THRESHOLD
+              value: "{{ .Values.routing.similarityThreshold }}"
+            - name: CONFIDENCE_THRESHOLD
+              value: "{{ .Values.routing.confidenceThreshold }}"
+            # Layer endpoints
+            - name: QDRANT_URL
+              value: "http://{{ .Values.layers.qdrant.service }}:{{ .Values.layers.qdrant.port }}"
+            - name: DMR_ENDPOINT
+              value: "http://{{ .Values.layers.reasoning.dmr.service }}:{{ .Values.layers.reasoning.dmr.port }}"
+            - name: CLAUDE_CODE_ENDPOINT
+              value: "http://{{ .Values.layers.execution.claudeCode.service }}:{{ .Values.layers.execution.claudeCode.port }}"
+            # Cache configuration
+            - name: CACHE_MAX_SIZE
+              value: "{{ .Values.cache.maxSize }}"
+            - name: CACHE_TTL_SECONDS
+              value: "{{ .Values.cache.ttlSeconds }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

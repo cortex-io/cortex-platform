@@ -1,0 +1,169 @@
+# =============================================================================
+# Chat Activator - Always-On Layer Orchestrator
+# =============================================================================
+
+global:
+  namespace: cortex-chat
+
+# -----------------------------------------------------------------------------
+# Deployment
+# -----------------------------------------------------------------------------
+replicaCount: 2  # HA - must always be available
+
+image:
+  repository: ghcr.io/ry-ops/chat-activator
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "50m"
+  limits:
+    memory: "128Mi"
+    cpu: "200m"
+
+# -----------------------------------------------------------------------------
+# Routing Configuration
+# -----------------------------------------------------------------------------
+routing:
+  # Complexity thresholds (0-100)
+  localThreshold: 50      # <50 = use cached/pattern match
+  dmrThreshold: 75        # 50-75 = use local DMR
+  claudeThreshold: 100    # >75 = use Claude Code
+
+  # Similarity matching
+  similarityThreshold: 0.92
+  confidenceThreshold: 0.85
+
+  # Escalation triggers
+  escalateOnUncertain: true
+  escalateOnToolNeed: true
+  escalateOnMultiStep: true
+
+# -----------------------------------------------------------------------------
+# Layer Discovery
+# -----------------------------------------------------------------------------
+layers:
+  qdrant:
+    name: chat-qdrant
+    service: chat-qdrant
+    port: 6333
+    healthPath: /readyz
+
+  reasoning:
+    dmr:
+      name: reasoning-dmr
+      service: reasoning-dmr
+      port: 8080
+      healthPath: /health
+
+  execution:
+    localResponse:
+      name: execution-local-response
+      service: execution-local-response
+      port: 8080
+      healthPath: /health
+
+    claudeCode:
+      name: execution-claude-code
+      service: execution-claude-code
+      port: 8080
+      healthPath: /health
+
+  telemetry:
+    name: chat-telemetry
+    service: chat-telemetry
+    port: 8080
+    healthPath: /health
+
+# -----------------------------------------------------------------------------
+# Layer Activation
+# -----------------------------------------------------------------------------
+activation:
+  coldStartTimeout: 60s
+  healthCheckInterval: 1s
+  parallelWake: true
+  priority:
+    - chat-qdrant
+    - execution-local-response
+    - reasoning-dmr
+    - execution-claude-code
+
+# -----------------------------------------------------------------------------
+# Cache Configuration
+# -----------------------------------------------------------------------------
+cache:
+  maxSize: 1000
+  ttlSeconds: 300
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 8080
+
+# -----------------------------------------------------------------------------
+# Health Checks
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Observability
+# -----------------------------------------------------------------------------
+metrics:
+  enabled: true
+  port: 9090
+  path: /metrics
+
+# -----------------------------------------------------------------------------
+# Service Account & RBAC
+# -----------------------------------------------------------------------------
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: ["apps"]
+      resources: ["deployments", "deployments/scale"]
+      verbs: ["get", "list", "watch", "patch"]
+    - apiGroups: [""]
+      resources: ["services", "pods"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["keda.sh"]
+      resources: ["scaledobjects"]
+      verbs: ["get", "list", "watch", "patch"]
+
+# -----------------------------------------------------------------------------
+# Pod Configuration
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: chat-activator
+          topologyKey: kubernetes.io/hostname
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
