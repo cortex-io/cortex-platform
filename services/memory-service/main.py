@@ -19,6 +19,21 @@ from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
 
+try:
+    from qdrant_client import AsyncQdrantClient
+    from qdrant_client.models import (
+        Distance,
+        VectorParams,
+        PointStruct,
+        Filter,
+        FieldCondition,
+        MatchValue,
+    )
+    import httpx as _httpx
+    QDRANT_AVAILABLE = True
+except ImportError:
+    QDRANT_AVAILABLE = False
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -230,6 +245,10 @@ class CorrelationResult(BaseModel):
 # ============================================================================
 
 
+QDRANT_COLLECTION = "memory-events"
+QDRANT_VECTOR_DIM = 1536  # text-embedding-3-small / ada-002 dimension
+
+
 class MemoryService:
     def __init__(self, redis_url: str):
         self.redis_url = redis_url
@@ -238,6 +257,53 @@ class MemoryService:
         self.k8s_apps: Optional[client.AppsV1Api] = None
         self._collector_task: Optional[asyncio.Task] = None
         self._running = False
+        self._qdrant: Optional["AsyncQdrantClient"] = None
+        self._openai_api_key = os.getenv("OPENAI_API_KEY", "")
+        self._qdrant_host = os.getenv("QDRANT_HOST", "qdrant.cortex-ai-infra.svc.cluster.local")
+        self._qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
+
+    async def _init_qdrant(self):
+        """Connect to Qdrant and ensure the memory-events collection exists."""
+        if not QDRANT_AVAILABLE:
+            logger.warning("qdrant-client not installed; semantic search disabled")
+            return
+        try:
+            self._qdrant = AsyncQdrantClient(
+                host=self._qdrant_host, port=self._qdrant_port
+            )
+            collections = await self._qdrant.get_collections()
+            existing = {c.name for c in collections.collections}
+            if QDRANT_COLLECTION not in existing:
+                await self._qdrant.create_collection(
+                    collection_name=QDRANT_COLLECTION,
+                    vectors_config=VectorParams(
+                        size=QDRANT_VECTOR_DIM, distance=Distance.COSINE
+                    ),
+                )
+                logger.info(f"Created Qdrant collection: {QDRANT_COLLECTION}")
+            else:
+                logger.info(f"Qdrant collection ready: {QDRANT_COLLECTION}")
+        except Exception as e:
+            logger.warning(f"Qdrant unavailable; semantic search disabled: {e}")
+            self._qdrant = None
+
+    async def _embed(self, text: str) -> Optional[List[float]]:
+        """Generate an embedding via OpenAI API (or return None if unavailable)."""
+        if not self._openai_api_key or not self._qdrant:
+            return None
+        try:
+            async with _httpx.AsyncClient() as hc:
+                resp = await hc.post(
+                    "https://api.openai.com/v1/embeddings",
+                    headers={"Authorization": f"Bearer {self._openai_api_key}"},
+                    json={"input": text[:8000], "model": "text-embedding-3-small"},
+                    timeout=10,
+                )
+                resp.raise_for_status()
+                return resp.json()["data"][0]["embedding"]
+        except Exception as e:
+            logger.warning(f"Embedding failed: {e}")
+            return None
 
     async def start(self):
         logger.info("Starting Memory Service...")
@@ -246,6 +312,9 @@ class MemoryService:
         self.redis = redis.from_url(self.redis_url, decode_responses=True)
         await self.redis.ping()
         logger.info("Connected to Redis")
+
+        # Connect to Qdrant (optional — degrades gracefully)
+        await self._init_qdrant()
 
         # Connect to Kubernetes
         try:
@@ -961,7 +1030,79 @@ class MemoryService:
             )
             await self.redis.ltrim(f"memory:timeline:component:{component}", 0, 499)
 
+        # Index in Qdrant for semantic search (fire-and-forget, non-blocking)
+        if self._qdrant:
+            asyncio.create_task(self._index_event(event))
+
         return event
+
+    async def _index_event(self, event: "TimelineEvent"):
+        """Embed and upsert a timeline event into Qdrant."""
+        # Build a rich text representation for embedding
+        text = f"{event.event_type.value}: {event.description}"
+        if event.affected_components:
+            text += f" [components: {', '.join(event.affected_components)}]"
+        if event.details:
+            text += f" {json.dumps(event.details)[:500]}"
+
+        vector = await self._embed(text)
+        if not vector:
+            return
+
+        try:
+            # Use UUID hash of event_id as integer point id
+            point_id = uuid.UUID(event.event_id).int % (2**63)
+            await self._qdrant.upsert(
+                collection_name=QDRANT_COLLECTION,
+                points=[PointStruct(
+                    id=point_id,
+                    vector=vector,
+                    payload={
+                        "event_id": event.event_id,
+                        "event_type": event.event_type.value,
+                        "source": event.source,
+                        "description": event.description,
+                        "severity": event.severity.value,
+                        "affected_components": event.affected_components,
+                        "timestamp": event.timestamp.isoformat(),
+                    },
+                )],
+            )
+        except Exception as e:
+            logger.warning(f"Failed to index event in Qdrant: {e}")
+
+    async def semantic_search(
+        self, query: str, limit: int = 10, event_type: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """Semantic search over timeline events using Qdrant."""
+        if not self._qdrant:
+            return []
+
+        vector = await self._embed(query)
+        if not vector:
+            return []
+
+        search_filter = None
+        if event_type:
+            search_filter = Filter(
+                must=[FieldCondition(key="event_type", match=MatchValue(value=event_type))]
+            )
+
+        try:
+            results = await self._qdrant.search(
+                collection_name=QDRANT_COLLECTION,
+                query_vector=vector,
+                limit=limit,
+                query_filter=search_filter,
+                with_payload=True,
+            )
+            return [
+                {"score": r.score, **r.payload}
+                for r in results
+            ]
+        except Exception as e:
+            logger.warning(f"Qdrant search failed: {e}")
+            return []
 
     async def get_timeline(
         self,
@@ -1345,6 +1486,21 @@ async def metrics():
             "total_events": timeline_size,
         },
     }
+
+
+class SemanticSearchRequest(BaseModel):
+    query: str
+    limit: int = 10
+    event_type: Optional[str] = None
+
+
+@app.post("/memory/search")
+async def semantic_search(req: SemanticSearchRequest):
+    """Semantic similarity search over timeline events using Qdrant."""
+    if not memory._qdrant:
+        raise HTTPException(503, "Semantic search unavailable (Qdrant not connected)")
+    results = await memory.semantic_search(req.query, limit=req.limit, event_type=req.event_type)
+    return {"query": req.query, "results": results, "count": len(results)}
 
 
 if __name__ == "__main__":
