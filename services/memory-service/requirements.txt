@@ -3,3 +3,5 @@ uvicorn>=0.24.0
 pydantic>=2.5.0
 redis>=5.0.0
 kubernetes>=28.1.0
+qdrant-client>=1.7.0
+httpx>=0.25.0
