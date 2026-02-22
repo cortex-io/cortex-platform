@@ -9,6 +9,7 @@ Watches cortex-docs repository and performs automated curation tasks:
 - Generate curation reports
 """
 
+import hashlib
 import os
 import logging
 from pathlib import Path
@@ -17,9 +18,17 @@ import yaml
 import re
 from datetime import datetime, timedelta
 
+import redis
 from anthropic import Anthropic
 from git import Repo
 from github import Github
+
+try:
+    from qdrant_client import QdrantClient
+    from qdrant_client.models import Distance, VectorParams, PointStruct, ScoredPoint
+    QDRANT_AVAILABLE = True
+except ImportError:
+    QDRANT_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(
@@ -29,23 +38,145 @@ logging.basicConfig(
 logger = logging.getLogger("docs-curator")
 
 
+DOCS_QDRANT_COLLECTION = "cortex-docs"
+DOCS_VECTOR_DIM = 1536
+
+
 class CuratorConfig:
     """Configuration from environment"""
     def __init__(self):
         self.github_token = os.getenv("GITHUB_TOKEN")
-        self.github_repo = os.getenv("GITHUB_REPO", "ry-ops/cortex-docs")
+        self.github_repo = os.getenv("GITHUB_REPO", "cortex-io/cortex-docs")
         self.anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+        self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
         self.vault_path = os.getenv("VAULT_PATH", "vault")
         self.curation_mode = os.getenv("CURATION_MODE", "suggest")  # suggest | auto-minor | auto-full
         self.trust_level = int(os.getenv("TRUST_LEVEL", "1"))  # 0-4
+        self.redis_host = os.getenv("REDIS_HOST", "redis-queue")
+        self.redis_port = int(os.getenv("REDIS_PORT", "6379"))
+        self.qdrant_host = os.getenv("QDRANT_HOST", "qdrant.cortex-ai-infra.svc.cluster.local")
+        self.qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
+        self.duplicate_threshold = float(os.getenv("DUPLICATE_THRESHOLD", "0.92"))
+
+
+def _redis_connect(config: CuratorConfig) -> Optional[redis.Redis]:
+    """Connect to Redis; return None if unavailable."""
+    try:
+        r = redis.Redis(host=config.redis_host, port=config.redis_port, decode_responses=True)
+        r.ping()
+        return r
+    except Exception as e:
+        logger.warning(f"Redis unavailable: {e}")
+        return None
+
+
+def _qdrant_connect(config: CuratorConfig) -> Optional["QdrantClient"]:
+    """Connect to Qdrant; return None if unavailable."""
+    if not QDRANT_AVAILABLE:
+        return None
+    try:
+        qc = QdrantClient(host=config.qdrant_host, port=config.qdrant_port)
+        collections = {c.name for c in qc.get_collections().collections}
+        if DOCS_QDRANT_COLLECTION not in collections:
+            qc.create_collection(
+                collection_name=DOCS_QDRANT_COLLECTION,
+                vectors_config=VectorParams(size=DOCS_VECTOR_DIM, distance=Distance.COSINE),
+            )
+            logger.info(f"Created Qdrant collection: {DOCS_QDRANT_COLLECTION}")
+        return qc
+    except Exception as e:
+        logger.warning(f"Qdrant unavailable: {e}")
+        return None
+
+
+def _embed_text(text: str, api_key: str) -> Optional[List[float]]:
+    """Generate embedding via OpenAI API."""
+    if not api_key:
+        return None
+    try:
+        import urllib.request, json as _json
+        data = _json.dumps({"input": text[:8000], "model": "text-embedding-3-small"}).encode()
+        req = urllib.request.Request(
+            "https://api.openai.com/v1/embeddings",
+            data=data,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return _json.loads(resp.read())["data"][0]["embedding"]
+    except Exception as e:
+        logger.warning(f"Embedding failed: {e}")
+        return None
 
 
 class DocumentTriager:
     """Triages new documents in inbox"""
 
-    def __init__(self, config: CuratorConfig, claude: Anthropic):
+    def __init__(self, config: CuratorConfig, claude: Anthropic,
+                 redis_client=None, qdrant_client=None):
         self.config = config
         self.claude = claude
+        self._redis = redis_client
+        self._qdrant = qdrant_client
+
+    def _doc_hash(self, content: str) -> str:
+        return hashlib.sha256(content.encode()).hexdigest()
+
+    def is_already_processed(self, doc_path: Path, content: str) -> bool:
+        """Return True if this doc (by path+content hash) was already triaged."""
+        if not self._redis:
+            return False
+        key = f"curator:processed:{doc_path.name}:{self._doc_hash(content)}"
+        return bool(self._redis.exists(key))
+
+    def mark_processed(self, doc_path: Path, content: str):
+        """Record that this doc has been triaged (TTL 30 days)."""
+        if not self._redis:
+            return
+        key = f"curator:processed:{doc_path.name}:{self._doc_hash(content)}"
+        self._redis.setex(key, 60 * 60 * 24 * 30, "1")
+
+    def find_semantic_duplicates(self, content: str, limit: int = 3) -> List[Dict[str, Any]]:
+        """Search Qdrant for existing docs semantically similar to this one."""
+        if not self._qdrant or not self.config.openai_api_key:
+            return []
+        vector = _embed_text(content[:3000], self.config.openai_api_key)
+        if not vector:
+            return []
+        try:
+            results = self._qdrant.search(
+                collection_name=DOCS_QDRANT_COLLECTION,
+                query_vector=vector,
+                limit=limit,
+                with_payload=True,
+            )
+            return [
+                {"score": r.score, "path": r.payload.get("path", ""), "title": r.payload.get("title", "")}
+                for r in results
+                if r.score >= self.config.duplicate_threshold
+            ]
+        except Exception as e:
+            logger.warning(f"Qdrant duplicate search failed: {e}")
+            return []
+
+    def index_document(self, doc_path: Path, content: str):
+        """Embed and index a document in Qdrant after successful triage."""
+        if not self._qdrant or not self.config.openai_api_key:
+            return
+        vector = _embed_text(content[:3000], self.config.openai_api_key)
+        if not vector:
+            return
+        try:
+            point_id = int(hashlib.md5(str(doc_path).encode()).hexdigest(), 16) % (2**63)
+            self._qdrant.upsert(
+                collection_name=DOCS_QDRANT_COLLECTION,
+                points=[PointStruct(
+                    id=point_id,
+                    vector=vector,
+                    payload={"path": str(doc_path), "title": doc_path.stem},
+                )],
+            )
+        except Exception as e:
+            logger.warning(f"Failed to index doc in Qdrant: {e}")
 
     def triage_document(self, doc_path: Path, content: str) -> Dict[str, Any]:
         """Analyze document and suggest categorization"""
@@ -79,10 +210,14 @@ Be concise and specific."""
 
         analysis = response.content[0].text
 
+        # Check for semantic duplicates in Qdrant
+        duplicates = self.find_semantic_duplicates(content)
+
         return {
             "doc_path": str(doc_path),
             "frontmatter": frontmatter,
             "analysis": analysis,
+            "semantic_duplicates": duplicates,
             "timestamp": datetime.utcnow().isoformat()
         }
 
@@ -253,7 +388,11 @@ class DocumentCurator:
     def __init__(self):
         self.config = CuratorConfig()
         self.claude = Anthropic(api_key=self.config.anthropic_api_key)
-        self.triager = DocumentTriager(self.config, self.claude)
+        self._redis = _redis_connect(self.config)
+        self._qdrant = _qdrant_connect(self.config)
+        self.triager = DocumentTriager(self.config, self.claude,
+                                       redis_client=self._redis,
+                                       qdrant_client=self._qdrant)
         self.enricher = DocumentEnricher(self.config)
         self.health_checker = HealthChecker(self.config)
         self.github = GitHubIntegration(self.config)
@@ -272,10 +411,20 @@ class DocumentCurator:
             if doc_path.name.startswith("."):
                 continue
 
-            logger.info(f"Triaging: {doc_path.name}")
             content = doc_path.read_text()
+
+            # Skip docs already processed (Redis deduplication)
+            if self.triager.is_already_processed(doc_path, content):
+                logger.info(f"Skipping already-processed: {doc_path.name}")
+                continue
+
+            logger.info(f"Triaging: {doc_path.name}")
             result = self.triager.triage_document(doc_path, content)
             triage_results.append(result)
+
+            # Mark processed in Redis and index in Qdrant
+            self.triager.mark_processed(doc_path, content)
+            self.triager.index_document(doc_path, content)
 
         if triage_results:
             self._create_triage_report(triage_results)

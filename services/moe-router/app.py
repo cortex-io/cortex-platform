@@ -6,7 +6,9 @@ Routes improvements to specialized expert agents using LLM-D coordination
 import os
 import json
 import logging
+import hashlib
 import requests
+import redis
 from flask import Flask, request, jsonify
 from anthropic import Anthropic
 
@@ -19,6 +21,29 @@ app = Flask(__name__)
 # Configuration
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
 LLMD_ENDPOINT = os.getenv('LLMD_ENDPOINT', 'http://llmd-service.cortex.svc.cluster.local:8000')
+
+# Redis cache for expert evaluations (avoids repeat LLM calls for similar improvements)
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis-queue')
+REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
+CACHE_TTL = int(os.getenv('MOE_CACHE_TTL', str(60 * 60 * 24)))  # 24 hours default
+
+try:
+    _redis = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
+    _redis.ping()
+    logger.info(f"Connected to Redis at {REDIS_HOST}:{REDIS_PORT}")
+except Exception as e:
+    logger.warning(f"Redis unavailable, caching disabled: {e}")
+    _redis = None
+
+
+def _cache_key(improvement: dict) -> str:
+    """Stable cache key from improvement identity fields."""
+    raw = json.dumps({
+        'title': improvement.get('title', ''),
+        'category': improvement.get('category', ''),
+        'description': improvement.get('description', ''),
+    }, sort_keys=True)
+    return f"moe:eval:{hashlib.sha256(raw.encode()).hexdigest()}"
 
 # Expert model assignments
 EXPERT_MODELS = {
@@ -159,9 +184,17 @@ Consider:
 def health():
     """Health check endpoint"""
     api_configured = bool(ANTHROPIC_API_KEY)
+    cache_ok = False
+    if _redis:
+        try:
+            _redis.ping()
+            cache_ok = True
+        except Exception:
+            pass
     return jsonify({
         'status': 'healthy',
         'anthropic_configured': api_configured,
+        'cache_enabled': cache_ok,
         'experts': list(EXPERT_MODELS.keys())
     }), 200
 
@@ -178,8 +211,26 @@ def route_improvement():
         expert_category = determine_expert_category(improvement)
         logger.info(f"Routing to {expert_category} expert: {improvement.get('title')}")
 
+        # Check Redis cache before calling LLM
+        cache_hit = False
+        if _redis:
+            key = _cache_key(improvement)
+            cached = _redis.get(key)
+            if cached:
+                logger.info(f"Cache hit for improvement: {improvement.get('title')}")
+                evaluation = json.loads(cached)
+                evaluation['_cached'] = True
+                return jsonify(evaluation), 200
+
         # Call expert
         evaluation = call_expert(expert_category, improvement)
+
+        # Store result in Redis cache
+        if _redis and 'error' not in evaluation:
+            try:
+                _redis.setex(_cache_key(improvement), CACHE_TTL, json.dumps(evaluation))
+            except Exception as e:
+                logger.warning(f"Failed to cache evaluation: {e}")
 
         return jsonify(evaluation), 200
 

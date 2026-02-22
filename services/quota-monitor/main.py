@@ -7,6 +7,7 @@ Integrates with Memory Service for historical tracking.
 """
 
 import asyncio
+import json
 import logging
 import os
 from datetime import datetime
@@ -17,6 +18,7 @@ from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel
 import httpx
+import redis.asyncio as redis
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,16 +55,21 @@ class QuotaMonitor:
     def __init__(
         self,
         memory_service_url: Optional[str] = None,
+        redis_url: Optional[str] = None,
         warning_threshold: float = 0.75,
         critical_threshold: float = 0.90,
     ):
         self.memory_service_url = memory_service_url
+        self.redis_url = redis_url
         self.warning_threshold = warning_threshold
         self.critical_threshold = critical_threshold
         self.k8s_core: Optional[client.CoreV1Api] = None
         self.http_client: Optional[httpx.AsyncClient] = None
+        self._redis: Optional[redis.Redis] = None
         self._monitor_task: Optional[asyncio.Task] = None
         self._running = False
+        # Rolling history window: keep 48 samples (48 × 60s = 48 min at 1/min)
+        self._history_window = int(os.getenv("QUOTA_HISTORY_WINDOW", "2880"))  # 48h at 1/min
 
     async def start(self):
         logger.info("Starting Quota Monitor...")
@@ -77,6 +84,16 @@ class QuotaMonitor:
         # HTTP client for memory service
         if self.memory_service_url:
             self.http_client = httpx.AsyncClient(timeout=10.0)
+
+        # Connect to Redis for quota history
+        if self.redis_url:
+            try:
+                self._redis = redis.from_url(self.redis_url, decode_responses=True)
+                await self._redis.ping()
+                logger.info("Connected to Redis for quota history")
+            except Exception as e:
+                logger.warning(f"Redis unavailable, history disabled: {e}")
+                self._redis = None
 
         self._running = True
         self._monitor_task = asyncio.create_task(self._monitor_loop())
@@ -93,6 +110,8 @@ class QuotaMonitor:
                 pass
         if self.http_client:
             await self.http_client.aclose()
+        if self._redis:
+            await self._redis.aclose()
 
     def _parse_quantity(self, quantity: str) -> float:
         """Parse Kubernetes quantity string to float."""
@@ -235,6 +254,32 @@ class QuotaMonitor:
 
         alerts = [q for q in summary.quotas if q.status in ["warning", "critical"]]
 
+        # Persist rolling quota snapshot to Redis for trend analysis
+        if self._redis:
+            try:
+                ts = summary.timestamp.timestamp()
+                snapshot = {
+                    "timestamp": summary.timestamp.isoformat(),
+                    "total": summary.total_quotas,
+                    "ok": summary.ok,
+                    "warning": summary.warning,
+                    "critical": summary.critical,
+                    "quotas": [q.model_dump() for q in summary.quotas],
+                }
+                pipe = self._redis.pipeline()
+                # Sorted set: score = unix timestamp, member = JSON snapshot
+                pipe.zadd("quota:history", {json.dumps(snapshot): ts})
+                # Trim to configured window
+                pipe.zremrangebyrank("quota:history", 0, -(self._history_window + 1))
+                # Per-namespace/resource time series for quick trend queries
+                for q in summary.quotas:
+                    key = f"quota:ts:{q.namespace}:{q.resource}"
+                    pipe.zadd(key, {str(q.percentage): ts})
+                    pipe.zremrangebyrank(key, 0, -(self._history_window + 1))
+                await pipe.execute()
+            except Exception as e:
+                logger.warning(f"Failed to persist quota history to Redis: {e}")
+
         if alerts:
             logger.warning(f"Found {len(alerts)} quota alerts:")
             for alert in alerts:
@@ -270,6 +315,14 @@ class QuotaMonitor:
 
         return alerts
 
+    async def get_quota_trend(self, namespace: str, resource: str, limit: int = 60) -> List[Dict]:
+        """Return recent percentage samples for a namespace/resource from Redis."""
+        if not self._redis:
+            return []
+        key = f"quota:ts:{namespace}:{resource}"
+        raw = await self._redis.zrange(key, -limit, -1, withscores=True)
+        return [{"percentage": float(member), "timestamp": score} for member, score in raw]
+
     async def _monitor_loop(self):
         """Background monitoring loop."""
         while self._running:
@@ -294,6 +347,7 @@ async def startup():
     global monitor
     monitor = QuotaMonitor(
         memory_service_url=os.getenv("MEMORY_SERVICE_URL"),
+        redis_url=os.getenv("REDIS_URL", "redis://redis-queue:6379"),
         warning_threshold=float(os.getenv("WARNING_THRESHOLD", "0.75")),
         critical_threshold=float(os.getenv("CRITICAL_THRESHOLD", "0.90")),
     )
@@ -361,6 +415,29 @@ async def get_metrics():
     ])
 
     return "\n".join(lines)
+
+
+@app.get("/history")
+async def get_history(limit: int = 60):
+    """Get rolling quota snapshot history from Redis (up to `limit` samples)."""
+    if not monitor._redis:
+        raise HTTPException(503, "Redis unavailable")
+    raw = await monitor._redis.zrange("quota:history", -limit, -1, withscores=True)
+    snapshots = []
+    for member, score in raw:
+        snap = json.loads(member)
+        snap["_score"] = score
+        snapshots.append(snap)
+    return {"count": len(snapshots), "snapshots": snapshots}
+
+
+@app.get("/trend/{namespace}/{resource}")
+async def get_trend(namespace: str, resource: str, limit: int = 60):
+    """Get percentage trend for a specific namespace/resource."""
+    trend = await monitor.get_quota_trend(namespace, resource, limit)
+    if not trend:
+        raise HTTPException(404, f"No trend data for {namespace}/{resource}")
+    return {"namespace": namespace, "resource": resource, "samples": trend}
 
 
 if __name__ == "__main__":
