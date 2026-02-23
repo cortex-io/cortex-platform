@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Local macOS launchd plist for git-steer daemon.
+
+  Install:
+    cp git-steer.plist ~/Library/LaunchAgents/dev.cortex.git-steer.plist
+    launchctl load ~/Library/LaunchAgents/dev.cortex.git-steer.plist
+
+  Stop:
+    launchctl unload ~/Library/LaunchAgents/dev.cortex.git-steer.plist
+
+  Logs:
+    tail -f /tmp/git-steer.log
+    tail -f /tmp/git-steer.err
+
+  Environment variables are read from ~/.config/git-steer/env (KEY=VALUE, one per line).
+  Required: GITHUB_TOKEN
+  Optional: GITHUB_ORG, REDIS_URL, GIT_STEER_PORT (default 3000), LOG_LEVEL
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.cortex.git-steer</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>
+      set -a
+      [ -f "$HOME/.config/git-steer/env" ] &amp;&amp; . "$HOME/.config/git-steer/env"
+      set +a
+      exec git-steer
+    </string>
+  </array>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/git-steer.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/tmp/git-steer.err</string>
+
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
+</dict>
+</plist>
