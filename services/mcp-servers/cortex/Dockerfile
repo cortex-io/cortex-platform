@@ -50,3 +50,4 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 # Start MCP SSE server (wraps stdio server)
 CMD ["node", "src/sse-server.js"]
+
