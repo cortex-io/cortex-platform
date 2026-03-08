@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" width="900" height="450">
+  <defs>
+    <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1f6feb;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#58a6ff;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="svcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#238636;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3fb950;stop-opacity:1"/>
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes flowRight {
+      to { stroke-dashoffset: -24; }
+    }
+    @keyframes fadeIn {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .pipe-flow { stroke-dasharray: 12 6; animation: flowRight 1.2s linear infinite; }
+    .svc-pulse { animation: fadeIn 3s ease-in-out infinite; }
+    .label { fill: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+    .small { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; text-anchor: middle; dominant-baseline: central; }
+    .section { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-anchor: start; }
+  </style>
+
+  <!-- Background -->
+  <rect width="900" height="450" rx="12" fill="#0d1117"/>
+  <rect x="1" y="1" width="898" height="448" rx="12" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Section labels -->
+  <text x="40" y="40" class="section">Deployment Pipeline</text>
+  <text x="40" y="230" class="section">Platform Services</text>
+
+  <!-- Pipeline boxes -->
+  <rect x="50" y="70" width="130" height="50" rx="10" fill="url(#pipeGrad)" filter="url(#glow2)"/>
+  <text x="115" y="95" class="label">Code</text>
+
+  <rect x="230" y="70" width="130" height="50" rx="10" fill="url(#pipeGrad)" filter="url(#glow2)"/>
+  <text x="295" y="95" class="label">Build</text>
+
+  <rect x="410" y="70" width="130" height="50" rx="10" fill="url(#pipeGrad)" filter="url(#glow2)"/>
+  <text x="475" y="95" class="label">Registry</text>
+
+  <rect x="590" y="70" width="130" height="50" rx="10" fill="url(#pipeGrad)" filter="url(#glow2)"/>
+  <text x="655" y="95" class="label">ArgoCD</text>
+
+  <rect x="770" y="70" width="100" height="50" rx="10" fill="url(#pipeGrad)" filter="url(#glow2)"/>
+  <text x="820" y="95" class="label">K3s</text>
+
+  <!-- Pipeline flow lines -->
+  <line x1="180" y1="95" x2="230" y2="95" class="pipe-flow" stroke="#58a6ff" stroke-width="3"/>
+  <line x1="360" y1="95" x2="410" y2="95" class="pipe-flow" stroke="#58a6ff" stroke-width="3"/>
+  <line x1="540" y1="95" x2="590" y2="95" class="pipe-flow" stroke="#58a6ff" stroke-width="3"/>
+  <line x1="720" y1="95" x2="770" y2="95" class="pipe-flow" stroke="#58a6ff" stroke-width="3"/>
+
+  <!-- Arrows on flow lines -->
+  <polygon points="228,90 228,100 235,95" fill="#58a6ff"/>
+  <polygon points="408,90 408,100 415,95" fill="#58a6ff"/>
+  <polygon points="588,90 588,100 595,95" fill="#58a6ff"/>
+  <polygon points="768,90 768,100 775,95" fill="#58a6ff"/>
+
+  <!-- Vertical connectors from pipeline to services -->
+  <line x1="450" y1="145" x2="450" y2="250" class="pipe-flow" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Service boxes row 1 -->
+  <g class="svc-pulse">
+    <rect x="50" y="260" width="170" height="55" rx="10" fill="url(#svcGrad)"/>
+    <text x="135" y="282" class="label">MCP Servers</text>
+    <text x="135" y="300" class="small" style="fill:#d2f4d3">Agent tool endpoints</text>
+  </g>
+
+  <g class="svc-pulse" style="animation-delay: 0.5s">
+    <rect x="250" y="260" width="170" height="55" rx="10" fill="url(#svcGrad)"/>
+    <text x="335" y="282" class="label">API Services</text>
+    <text x="335" y="300" class="small" style="fill:#d2f4d3">FastAPI backends</text>
+  </g>
+
+  <g class="svc-pulse" style="animation-delay: 1s">
+    <rect x="450" y="260" width="170" height="55" rx="10" fill="url(#svcGrad)"/>
+    <text x="535" y="282" class="label">Workers</text>
+    <text x="535" y="300" class="small" style="fill:#d2f4d3">Background tasks</text>
+  </g>
+
+  <g class="svc-pulse" style="animation-delay: 1.5s">
+    <rect x="650" y="260" width="210" height="55" rx="10" fill="url(#svcGrad)"/>
+    <text x="755" y="282" class="label">Shared Libraries</text>
+    <text x="755" y="300" class="small" style="fill:#d2f4d3">cortex-core, orchestration</text>
+  </g>
+
+  <!-- Service boxes row 2 — data stores -->
+  <rect x="50" y="350" width="120" height="40" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="110" y="370" class="small">Redis</text>
+
+  <rect x="190" y="350" width="120" height="40" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="250" y="370" class="small">Qdrant</text>
+
+  <rect x="330" y="350" width="120" height="40" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="390" y="370" class="small">PostgreSQL</text>
+
+  <rect x="470" y="350" width="120" height="40" rx="8" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="530" y="370" class="small">Docker</text>
+
+  <!-- Connecting lines between services and data stores -->
+  <line x1="135" y1="315" x2="110" y2="350" stroke="#30363d" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="335" y1="315" x2="250" y2="350" stroke="#30363d" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="335" y1="315" x2="390" y2="350" stroke="#30363d" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="535" y1="315" x2="530" y2="350" stroke="#30363d" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- Legend -->
+  <rect x="50" y="415" width="12" height="12" rx="3" fill="url(#pipeGrad)"/>
+  <text x="68" y="424" class="small" style="text-anchor:start">Pipeline</text>
+  <rect x="140" y="415" width="12" height="12" rx="3" fill="url(#svcGrad)"/>
+  <text x="158" y="424" class="small" style="text-anchor:start">Services</text>
+  <rect x="230" y="415" width="12" height="12" rx="3" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+  <text x="248" y="424" class="small" style="text-anchor:start">Data Stores</text>
+</svg>

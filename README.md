@@ -1,41 +1,48 @@
+<div align="center">
+
 # Cortex Platform
 
 **The monorepo for all Cortex application code, libraries, and services.**
+
+> ⚠️ **This project is archived.** No longer under active development.
+
+</div>
+
+---
 
 ## Structure
 
 ```
 cortex-platform/
-├── services/           # Microservices and applications
+├── services/           # Microservices
 │   ├── mcp-servers/   # MCP server implementations
 │   ├── api/           # API services
-│   └── workers/       # Worker processes
+│   └── workers/       # Background workers
 ├── lib/               # Shared libraries
-│   ├── cortex-core/   # Core platform libraries
-│   ├── orchestration/ # Orchestration logic
-│   ├── coordination/  # Agent coordination
-│   └── tools/         # Utilities and helpers
-├── coordination/      # Agent coordination system
-│   ├── masters/       # Master agent configurations
-│   ├── workers/       # Worker agent specs
-│   └── policies/      # Coordination policies
-├── docs/              # Documentation
-├── examples/          # Usage examples
-├── testing/           # Test suites
-└── scripts/           # Build and deployment scripts
+│   ├── cortex-core/   # Core platform SDK
+│   ├── orchestration/ # Agent orchestration
+│   └── coordination/  # Multi-agent coordination
+├── coordination/      # Agent coordination config
+├── scripts/           # Build & deploy tooling
+└── testing/           # Test suites
 ```
 
-## Philosophy
+## Design Principles
 
-This is application code only. Infrastructure manifests live in `cortex-gitops`.
+- **Code lives here, infrastructure lives in cortex-gitops**
+- Code → Container → Registry → ArgoCD → K3s
+- GitOps-only deployment: no manual `kubectl apply`
 
-- **Code here** → Build containers → Push to registry
-- **Manifests in cortex-gitops** → ArgoCD pulls → Deploys to k3s
+## Architecture
 
-The control plane whispers; the cluster thunders.
+<div align="center"><img src="docs/architecture.svg" alt="Platform Pipeline" width="800"></div>
+
+## Tech Stack
+
+`Python` · `TypeScript` · `FastAPI` · `Redis` · `Qdrant` · `Docker` · `K3s`
 
 ---
 
-**Repository**: https://github.com/ry-ops/cortex-platform
-**GitOps Repo**: https://github.com/ry-ops/cortex-gitops
-**Project**: Cortex - AI Infrastructure Orchestration
+<div align="center">
+<sub>Built with Claude. No longer maintained.</sub>
+</div>
