@@ -69,7 +69,7 @@ _redis_port = os.getenv('CORTEX_REDIS_PORT', '6379')
 if _redis_port.startswith('tcp://'):
     _redis_port = '6379'
 REDIS_PORT = int(_redis_port)
-REDIS_PASSWORD = os.getenv('CORTEX_REDIS_PASSWORD', 'cortex-redis-password')
+REDIS_PASSWORD = os.getenv('CORTEX_REDIS_PASSWORD', '')
 
 try:
     redis_client = redis.Redis(
