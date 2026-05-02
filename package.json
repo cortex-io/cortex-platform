@@ -1,0 +1,9 @@
+{
+  "name": "cortex-platform",
+  "version": "0.0.1",
+  "private": true,
+  "overrides": {
+    "express": ">=4.19.2",
+    "axios": ">=1.7.2"
+  }
+}
