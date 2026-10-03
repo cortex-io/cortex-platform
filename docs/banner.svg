@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200" role="img" aria-labelledby="t d">
+  <title id="t">cortex-platform</title>
+  <desc id="d">cortex-platform, part of the archived Cortex project: Monorepo of services, MCP servers and shared libraries for the Cortex platform.</desc>
+  <defs>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#58a6ff"/><stop offset="1" stop-color="#a371f7"/></linearGradient>
+    <radialGradient id="core" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#9ecbff"/><stop offset=".6" stop-color="#58a6ff"/><stop offset="1" stop-color="#7d5be0"/></radialGradient>
+    <radialGradient id="glow" cx="83%" cy="50%" r="40%"><stop offset="0" stop-color="#3fb950" stop-opacity=".14"/><stop offset="1" stop-color="#3fb950" stop-opacity="0"/></radialGradient>
+  </defs>
+  <style>
+    .core{animation:core 6s ease-in-out infinite}@keyframes core{0%,100%{opacity:.55}50%{opacity:1}}
+    
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}.pkt{display:none}}
+  </style>
+  <rect x="1" y="1" width="898" height="198" rx="16" fill="#0d1117" stroke="#30363d"/>
+  <rect x="1" y="1" width="898" height="198" rx="16" fill="url(#glow)"/>
+  <g transform="translate(32 40) scale(0.2344)"><path d="M378.9 170.0A150 150 0 1 0 378.9 342.0" fill="none" stroke="url(#ring)" stroke-width="34" stroke-linecap="round"/><g stroke="#58a6ff" stroke-opacity=".55" stroke-width="8"><line x1="256" y1="256" x2="331.0" y2="126.1"/><line x1="256" y1="256" x2="181.0" y2="126.1"/><line x1="256" y1="256" x2="106.0" y2="256.0"/><line x1="256" y1="256" x2="181.0" y2="385.9"/><line x1="256" y1="256" x2="331.0" y2="385.9"/></g><circle cx="331.0" cy="126.1" r="27" fill="#0d1117" stroke="#e6edf3" stroke-width="9"/><circle cx="181.0" cy="126.1" r="27" fill="#0d1117" stroke="#e6edf3" stroke-width="9"/><circle cx="106.0" cy="256.0" r="27" fill="#0d1117" stroke="#e6edf3" stroke-width="9"/><circle cx="181.0" cy="385.9" r="27" fill="#0d1117" stroke="#e6edf3" stroke-width="9"/><circle cx="331.0" cy="385.9" r="27" fill="#0d1117" stroke="#e6edf3" stroke-width="9"/><circle class="core" cx="256" cy="256" r="46" fill="url(#core)"/></g>
+  <text x="176" y="62" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="13" fill="#8b949e">cortex-io /</text>
+  <text x="174" y="106" font-family='"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif' font-size="40" font-weight="700" fill="#e6edf3" letter-spacing="-.5">cortex-platform</text>
+  <text x="176" y="134" font-family='"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif' font-size="15.5" fill="#8b949e">Monorepo of services, MCP servers and</text>
+  <text x="176" y="155" font-family='"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif' font-size="15.5" fill="#8b949e">shared libraries for the Cortex platform.</text>
+  <rect x="270" y="48" width="84" height="20" rx="4" fill="none" stroke="#f0883e" stroke-width="1.5"/>
+  <text x="312" y="62" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" font-weight="700" fill="#f0883e" letter-spacing="1.5">ARCHIVED</text>
+  <rect x="176" y="166" width="40" height="4" rx="2" fill="#3fb950"/>
+  <path id="pl" d="M626 100H850" stroke="#30363d" stroke-width="4"/><circle cx="626" cy="100" r="13" fill="#0d1117" stroke="#3fb950" stroke-width="3"/><text x="626" y="134" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" fill="#8b949e">code</text><circle cx="682" cy="100" r="13" fill="#0d1117" stroke="#3fb950" stroke-width="3"/><text x="682" y="134" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" fill="#8b949e">build</text><circle cx="738" cy="100" r="13" fill="#0d1117" stroke="#3fb950" stroke-width="3"/><text x="738" y="134" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" fill="#8b949e">registry</text><circle cx="794" cy="100" r="13" fill="#0d1117" stroke="#3fb950" stroke-width="3"/><text x="794" y="134" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" fill="#8b949e">argocd</text><circle cx="850" cy="100" r="13" fill="#0d1117" stroke="#3fb950" stroke-width="3"/><text x="850" y="134" text-anchor="middle" font-family='ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace' font-size="10.5" fill="#8b949e">k3s</text><g class="pkt"><rect x="-7" y="-7" width="14" height="14" rx="3" fill="#3fb950"><animateMotion dur="5s" repeatCount="indefinite" calcMode="linear" keyPoints="0.0;0.0;0.25;0.25;0.5;0.5;0.75;0.75;1.0;1.0;1" keyTimes="0.000;0.080;0.200;0.280;0.400;0.480;0.600;0.680;0.800;0.880;1"><mpath href="#pl"/></animateMotion></rect></g>
+</svg>
