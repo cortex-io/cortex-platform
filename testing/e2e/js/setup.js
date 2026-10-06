@@ -65,11 +65,27 @@ global.getServiceEndpoint = (serviceName, port = 80) => {
   return `http://${serviceName}.${namespace}.svc.cluster.local:${port}`;
 };
 
+function buildValidatedUrl(baseUrl) {
+  try {
+    if (baseUrl.includes('/../') || /\/%2e%2e\//i.test(baseUrl)) {
+      throw new Error('Invalid path');
+    }
+    const url = new URL(baseUrl);
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('Invalid protocol');
+    }
+    url.pathname = url.pathname.replace(/\/$/, '') + '/health';
+    return url.href;
+  } catch {
+    throw new Error('Invalid URL');
+  }
+}
+
 // Health check for a service
 global.healthCheck = async (serviceUrl, retries = 10, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      const response = await axios.get(`${serviceUrl}/health`, { timeout: 5000 });
+      const response = await axios.get(buildValidatedUrl(serviceUrl), { timeout: 5000 });
       if (response.status === 200) {
         console.log(`Health check passed for ${serviceUrl}`);
         return true;
