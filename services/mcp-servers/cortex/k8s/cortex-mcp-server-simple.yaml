@@ -293,7 +293,12 @@ spec:
               name: cortex-mcp-config
               key: NODE_ENV
 
-        # Secret environment variables (optional for future use)
+        # Secret environment variables
+        - name: MCP_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-mcp-secrets
+              key: mcp-api-key
         # - name: ANTHROPIC_API_KEY
         #   valueFrom:
         #     secretKeyRef:

@@ -1,5 +1,7 @@
 ---
 # Traefik IngressRoute for Cortex MCP Server
+# SECURITY NOTE: Authentication is enforced at the application level via MCP_API_KEY
+# All requests to /sse endpoint require a valid API key in Authorization or X-API-Key header
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
