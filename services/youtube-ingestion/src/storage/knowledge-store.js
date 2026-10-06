@@ -7,6 +7,11 @@ import fs from 'fs/promises';
 import path from 'path';
 import { config } from '../config.js';
 
+const isPathInside = (baseDir, targetPath) => {
+  const rel = path.relative(path.resolve(baseDir), path.resolve(targetPath));
+  return !(rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel));
+};
+
 export class KnowledgeStore {
   constructor(redisClient = null) {
     this.redis = redisClient;
@@ -39,6 +44,9 @@ export class KnowledgeStore {
 
     // Store to filesystem
     const knowledgePath = path.join(this.knowledgeDir, `${video_id}.json`);
+    if (!isPathInside(this.knowledgeDir, knowledgePath)) {
+      throw new Error('Invalid file path');
+    }
     await fs.writeFile(knowledgePath, JSON.stringify(knowledge, null, 2));
 
     // Store to Redis if available
@@ -98,6 +106,9 @@ export class KnowledgeStore {
 
     // Fallback to filesystem
     const knowledgePath = path.join(this.knowledgeDir, `${videoId}.json`);
+    if (!isPathInside(this.knowledgeDir, knowledgePath)) {
+      throw new Error('Invalid file path');
+    }
 
     try {
       const data = await fs.readFile(knowledgePath, 'utf8');
