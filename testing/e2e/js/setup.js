@@ -1,6 +1,6 @@
 // Global setup for E2E tests with K3s
 
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const axios = require('axios');
 
 // Set test environment
@@ -15,9 +15,8 @@ global.testServices = {};
 // Utility to execute kubectl commands
 global.kubectl = (command, options = {}) => {
   const namespace = options.namespace || global.testNamespace;
-  const fullCommand = `kubectl ${command} -n ${namespace}`;
   try {
-    const result = execSync(fullCommand, {
+    const result = execFileSync('kubectl', [command, '-n', namespace], {
       encoding: 'utf8',
       stdio: options.silent ? 'pipe' : 'inherit',
       ...options
