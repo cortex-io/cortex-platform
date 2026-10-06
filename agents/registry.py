@@ -5,6 +5,7 @@ Maintains a Redis-backed registry of all agents (masters and workers)
 with their status, capabilities, and health information.
 """
 
+import ast
 import logging
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
@@ -93,7 +94,7 @@ class AgentInfo:
             status=AgentStatus(data["status"]),
             capabilities=data["capabilities"].split(",") if data["capabilities"] else [],
             stream=data["stream"],
-            metadata=eval(data.get("metadata", "{}")),  # Safe for simple dicts
+            metadata=ast.literal_eval(data.get("metadata", "{}")),
             registered_at=datetime.fromisoformat(data["registered_at"]),
             last_heartbeat=datetime.fromisoformat(data["last_heartbeat"]),
             task_count=int(data.get("task_count", 0)),
