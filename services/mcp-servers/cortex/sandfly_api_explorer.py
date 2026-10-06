@@ -31,7 +31,7 @@ class SandflyExplorer:
         }
 
         try:
-            response = requests.post(url, json=payload, verify=False, timeout=10)
+            response = requests.post(url, json=payload, timeout=10)
             print(f"POST {url}")
             print(f"Status: {response.status_code}")
 
@@ -62,9 +62,9 @@ class SandflyExplorer:
 
         try:
             if method == "GET":
-                response = requests.get(url, headers=self.headers(), params=params, verify=False, timeout=10)
+                response = requests.get(url, headers=self.headers(), params=params, timeout=10)
             elif method == "POST":
-                response = requests.post(url, headers=self.headers(), json=payload, verify=False, timeout=10)
+                response = requests.post(url, headers=self.headers(), json=payload, timeout=10)
             else:
                 return None
 
