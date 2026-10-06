@@ -3,12 +3,22 @@
 Cortex Fabric Gateway
 Unified WebSocket gateway for all Cortex clients (chat, Claude Desktop, Claude Code)
 Provides bidirectional event streaming, MCP routing, and session management.
+
+Authentication:
+    All endpoints (WebSocket and REST) require API key authentication via the X-API-Key header
+    or api_key query parameter (WebSocket only). Set the FABRIC_API_KEY environment variable
+    to configure the required API key. If not set, a temporary key is generated at startup.
+    
+    WebSocket: wss://gateway/ws/fabric?api_key=YOUR_KEY or X-API-Key header
+    REST: All /api/* endpoints require X-API-Key header
+    Health/Ready: /health and /ready endpoints are unauthenticated for monitoring
 """
 import os
 import json
 import logging
 import asyncio
 import uuid
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Set
 from contextlib import asynccontextmanager
@@ -16,8 +26,9 @@ from enum import Enum
 
 import httpx
 import redis.asyncio as redis
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Query
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
 
 # Configuration
@@ -28,6 +39,15 @@ MCP_GATEWAY_URL = os.getenv('MCP_GATEWAY_URL', 'http://cortex-mcp-server.cortex-
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 HEARTBEAT_INTERVAL = int(os.getenv('HEARTBEAT_INTERVAL', '30'))
 SESSION_TIMEOUT_HOURS = int(os.getenv('SESSION_TIMEOUT_HOURS', '24'))
+
+# Authentication Configuration
+FABRIC_API_KEY = os.getenv('FABRIC_API_KEY', '')
+if not FABRIC_API_KEY:
+    # Generate a secure random API key if not provided
+    FABRIC_API_KEY = secrets.token_urlsafe(32)
+    logger_temp = logging.getLogger(__name__)
+    logger_temp.warning(f"FABRIC_API_KEY not set. Generated temporary key: {FABRIC_API_KEY}")
+    logger_temp.warning("Set FABRIC_API_KEY environment variable for production use.")
 
 # MCP Server URLs (can be overridden via config)
 MCP_SERVERS = {
@@ -49,6 +69,71 @@ MCP_SERVERS = {
 
 logging.basicConfig(level=getattr(logging, LOG_LEVEL))
 logger = logging.getLogger(__name__)
+
+
+# Authentication dependency
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+async def verify_api_key(api_key: Optional[str] = Depends(api_key_header)) -> str:
+    """
+    Verify the API key from the request header.
+    
+    Args:
+        api_key: API key from X-API-Key header
+        
+    Returns:
+        The validated API key
+        
+    Raises:
+        HTTPException: If API key is missing or invalid
+    """
+    if not api_key:
+        logger.warning("Authentication failed: Missing API key")
+        raise HTTPException(
+            status_code=401,
+            detail="Missing API key. Provide X-API-Key header.",
+            headers={"WWW-Authenticate": "ApiKey"},
+        )
+    
+    if not secrets.compare_digest(api_key, FABRIC_API_KEY):
+        logger.warning(f"Authentication failed: Invalid API key")
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key",
+            headers={"WWW-Authenticate": "ApiKey"},
+        )
+    
+    return api_key
+
+
+async def verify_websocket_api_key(websocket: WebSocket) -> bool:
+    """
+    Verify API key for WebSocket connections.
+    Checks both query parameter and header.
+    
+    Args:
+        websocket: WebSocket connection
+        
+    Returns:
+        True if authenticated, False otherwise
+    """
+    # Check query parameter first
+    api_key = websocket.query_params.get("api_key")
+    
+    # Fall back to header if query param not present
+    if not api_key:
+        api_key = websocket.headers.get("x-api-key")
+    
+    if not api_key:
+        logger.warning(f"WebSocket authentication failed: Missing API key from {websocket.client}")
+        return False
+    
+    if not secrets.compare_digest(api_key, FABRIC_API_KEY):
+        logger.warning(f"WebSocket authentication failed: Invalid API key from {websocket.client}")
+        return False
+    
+    return True
 
 
 class ClientType(str, Enum):
@@ -652,6 +737,11 @@ async def websocket_fabric(
     client_type: str = Query(default="unknown"),
 ):
     """Main WebSocket endpoint for fabric connections."""
+    # Authenticate before accepting the connection
+    if not await verify_websocket_api_key(websocket):
+        await websocket.close(code=1008, reason="Authentication required")
+        return
+    
     try:
         ct = ClientType(client_type) if client_type in [e.value for e in ClientType] else ClientType.UNKNOWN
     except ValueError:
@@ -693,7 +783,7 @@ async def ready():
 
 
 @app.get("/api/clients")
-async def list_clients():
+async def list_clients(api_key: str = Depends(verify_api_key)):
     """List all connected clients."""
     return {
         "clients": [c.to_dict() for c in gateway.clients.values()],
@@ -702,7 +792,7 @@ async def list_clients():
 
 
 @app.get("/api/sessions")
-async def list_sessions():
+async def list_sessions(api_key: str = Depends(verify_api_key)):
     """List active sessions with their clients."""
     return {
         "sessions": {k: list(v) for k, v in gateway.sessions.items()},
@@ -711,7 +801,7 @@ async def list_sessions():
 
 
 @app.get("/api/mcp/servers")
-async def list_mcp_servers():
+async def list_mcp_servers(api_key: str = Depends(verify_api_key)):
     """List available MCP servers."""
     return {
         "servers": list(MCP_SERVERS.keys()),
@@ -720,7 +810,7 @@ async def list_mcp_servers():
 
 
 @app.post("/api/events/publish")
-async def publish_event(event_name: str, data: Dict[str, Any]):
+async def publish_event(event_name: str, data: Dict[str, Any], api_key: str = Depends(verify_api_key)):
     """Publish an event to all subscribed clients (for server-side event sources)."""
     await gateway.publish_event(event_name, data)
     return {"status": "published", "event": event_name}
