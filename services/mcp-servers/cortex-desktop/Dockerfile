@@ -4,7 +4,8 @@ WORKDIR /app
 
 # Install kubectl and dependencies
 RUN apk add --no-cache curl && \
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    curl -LO "https://dl.k8s.io/release/v1.33.1/bin/linux/amd64/kubectl" && \
+    echo "5de4e9f2266738fd112b721265a0c1cd7f4e5208b670f811861f699474a100a3  kubectl" | sha256sum -c - && \
     chmod +x kubectl && \
     mv kubectl /usr/local/bin/ && \
     apk del curl
