@@ -33,6 +33,24 @@ data:
   NODE_ENV: "production"
 
 ---
+# Secret for MCP API Key
+# IMPORTANT: Replace the placeholder value with a strong random key before deploying
+# Generate a secure key with: openssl rand -base64 32
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cortex-mcp-secrets
+  namespace: cortex-system
+  labels:
+    app: cortex-mcp-server
+    component: mcp-gateway
+type: Opaque
+stringData:
+  # SECURITY: Change this to a strong random value before deploying to production
+  # Generate with: openssl rand -base64 32
+  mcp-api-key: "CHANGE_ME_TO_A_SECURE_RANDOM_VALUE"
+
+---
 # Deployment for Cortex MCP Server
 apiVersion: apps/v1
 kind: Deployment
@@ -152,11 +170,17 @@ spec:
               key: NODE_ENV
 
         # Secret environment variables
+        - name: MCP_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-mcp-secrets
+              key: mcp-api-key
         - name: ANTHROPIC_API_KEY
           valueFrom:
             secretKeyRef:
               name: cortex-secrets
               key: anthropic-api-key
+              optional: true
 
         resources:
           requests:

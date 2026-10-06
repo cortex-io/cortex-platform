@@ -15,6 +15,37 @@ const __dirname = dirname(__filename);
 
 const SSE_PORT = process.env.SSE_PORT || 3000;
 const HEALTH_PORT = process.env.HEALTH_PORT || 8080;
+const MCP_API_KEY = process.env.MCP_API_KEY || null;
+
+/**
+ * Authenticate request using API key
+ * @param {http.IncomingMessage} req - HTTP request
+ * @returns {boolean} True if authenticated, false otherwise
+ */
+function authenticateRequest(req) {
+  // If no API key is configured, authentication is disabled (development mode)
+  if (!MCP_API_KEY) {
+    console.error('[Auth] WARNING: MCP_API_KEY not set - authentication disabled');
+    return true;
+  }
+
+  // Check Authorization header (Bearer token)
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    if (token === MCP_API_KEY) {
+      return true;
+    }
+  }
+
+  // Check X-API-Key header
+  const apiKeyHeader = req.headers['x-api-key'];
+  if (apiKeyHeader === MCP_API_KEY) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * Health check server
@@ -47,6 +78,22 @@ function startHealthServer() {
  */
 function handleSSE(req, res) {
   console.error('[SSE] New client connection');
+
+  // Authenticate request before spawning any processes
+  if (!authenticateRequest(req)) {
+    console.error('[SSE] Authentication failed - rejecting connection');
+    res.writeHead(401, {
+      'Content-Type': 'application/json',
+      'WWW-Authenticate': 'Bearer realm="MCP Server"'
+    });
+    res.end(JSON.stringify({
+      error: 'Unauthorized',
+      message: 'Valid API key required. Provide via Authorization: Bearer <token> or X-API-Key header.'
+    }));
+    return;
+  }
+
+  console.error('[SSE] Authentication successful');
 
   // Set SSE headers
   res.writeHead(200, {
@@ -134,6 +181,20 @@ function handleSSE(req, res) {
  * Handle POST requests for bidirectional communication
  */
 function handlePOST(req, res) {
+  // Authenticate request
+  if (!authenticateRequest(req)) {
+    console.error('[POST] Authentication failed - rejecting request');
+    res.writeHead(401, {
+      'Content-Type': 'application/json',
+      'WWW-Authenticate': 'Bearer realm="MCP Server"'
+    });
+    res.end(JSON.stringify({
+      error: 'Unauthorized',
+      message: 'Valid API key required. Provide via Authorization: Bearer <token> or X-API-Key header.'
+    }));
+    return;
+  }
+
   // For mcp-remote compatibility, accept POST to /sse for sending messages
   if (req.url === '/sse' || req.url === '/message') {
     let body = '';
@@ -205,6 +266,14 @@ function startSSEServer() {
  */
 function main() {
   console.error('[Cortex MCP SSE] Starting SSE wrapper server...');
+
+  // Check authentication configuration
+  if (MCP_API_KEY) {
+    console.error('[Cortex MCP SSE] Authentication: ENABLED');
+    console.error('[Cortex MCP SSE] API key authentication required for all requests');
+  } else {
+    console.error('[Cortex MCP SSE] Authentication: DISABLED (WARNING: Set MCP_API_KEY environment variable for production)');
+  }
 
   // Start health check server
   startHealthServer();
