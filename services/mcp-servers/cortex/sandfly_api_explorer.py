@@ -6,7 +6,9 @@ Systematically explores and documents the Sandfly Security API
 import requests
 import json
 import urllib3
+import re
 from datetime import datetime
+from urllib.parse import urlparse, urlunparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -56,9 +58,24 @@ class SandflyExplorer:
             "Content-Type": "application/json"
         }
 
+    def build_validated_url(self, base_url: str, endpoint: str) -> str:
+        try:
+            if "/../" in base_url or re.search(r"/%2e%2e/", base_url, re.IGNORECASE):
+                raise ValueError("Invalid URL")
+            if "/../" in endpoint or re.search(r"/%2e%2e/", endpoint, re.IGNORECASE):
+                raise ValueError("Invalid URL")
+            parsed = urlparse(base_url)
+            if endpoint.startswith("/"):
+                parsed = parsed._replace(path=endpoint)
+            else:
+                parsed = parsed._replace(path=f"/{endpoint}")
+            return urlunparse(parsed)
+        except Exception:
+            raise ValueError("Invalid URL")
+
     def explore_endpoint(self, endpoint, method="GET", payload=None, params=None):
         """Explore a single endpoint"""
-        url = f"{self.base_url}{endpoint}"
+        url = self.build_validated_url(self.base_url, endpoint)
 
         try:
             if method == "GET":
