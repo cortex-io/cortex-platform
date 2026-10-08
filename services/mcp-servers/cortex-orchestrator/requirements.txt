@@ -1,5 +1,5 @@
 # Core MCP dependencies
-mcp>=0.9.0
+mcp==1.9.4
 
 # HTTP Server
 fastapi>=0.109.0
@@ -38,3 +38,5 @@ pytest-cov>=4.1.0
 black>=23.12.0
 ruff>=0.1.8
 mypy>=1.7.1
+
+starlette==1.0.1
