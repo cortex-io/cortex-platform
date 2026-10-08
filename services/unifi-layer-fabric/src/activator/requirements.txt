@@ -1,4 +1,4 @@
-fastapi==0.109.0
+fastapi==0.133.0
 uvicorn==0.27.0
 httpx==0.26.0
 pydantic==2.5.3
@@ -7,4 +7,4 @@ structlog==24.1.0
 pyyaml==6.0.1
 redis>=5.0.0
 # Qdrant learning layer
-sentence-transformers>=2.2.0
+sentence-transformers==3.1.0
